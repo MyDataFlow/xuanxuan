@@ -624,7 +624,7 @@ class ChatApp extends AppCore {
                     this.rename(this.dao.getChat(message.cgid), command.name);
                 }, 500);
             } else if(command.action === 'version') {
-                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''} ${DEBUG ? '[debug]' : ''}` + '";\n```';
+                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
             }
         }
         this.sendChatMessage(message, chat);
