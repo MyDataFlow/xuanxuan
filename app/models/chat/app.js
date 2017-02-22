@@ -160,6 +160,16 @@ class ChatApp extends AppCore {
                         if(msg.isSuccess) {
                             if(!msg.data.join) {
                                 this.dao.deleteChat(msg.data.gid);
+                            } else {
+                                let chat = this.dao.getChat(msg.data.gid);
+                                if(chat) {
+                                    chat.addMember(this.user);
+                                    this.dao.updateChats(chat);
+                                } else {
+                                    chat = new Chat(msg.data.chat);
+                                    chat.updateWithApp(this);
+                                    this.dao.updateChats(chat);
+                                }
                             }
                         }
                     },
@@ -817,10 +827,10 @@ class ChatApp extends AppCore {
      * @param  {Chat} chat
      * @return {void}
      */
-    joinChat(chat) {
+    joinChat(chat, join = true) {
         return this.socket.send(this.socket.createSocketMessage({
             'method': 'joinchat',
-            'params': [chat.gid, true]
+            'params': [chat.gid, join]
         }));
     }
 

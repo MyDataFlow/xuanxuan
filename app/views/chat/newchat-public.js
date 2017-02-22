@@ -122,7 +122,7 @@ const NewChatPublic = React.createClass({
         if(this.state.choosed) {
             let chat = this.state.chats.find(x => x.gid === this.state.choosed);
             if(chat) {
-                App.chat.inviteMembers(chat, [App.user]);
+                App.chat.joinChat(chat);
                 let joined = this.state.joined;
                 joined[chat.gid] = true;
                 this.setState({joined, choosed: null});
