@@ -480,6 +480,7 @@ class chat extends control
             $data = new stdclass();
             $data->gid  = $gid;
             $data->join = $join;
+            $data->chat = $chat;
 
             $response->result = 'success';
             $response->data   = $data;
