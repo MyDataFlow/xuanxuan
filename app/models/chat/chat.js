@@ -80,14 +80,14 @@ class Chat extends Entity {
      * @param  {App} app
      * @return {string}
      */
-    getDisplayName(app) {
+    getDisplayName(app, includeMemberCount = true) {
         if(this.isOne2One) {
             let otherOne = this.getTheOtherOne(app.user);
             return otherOne ? otherOne.displayName : app.lang.chat.tempChat;
         } else if(this.type === 'system') {
-            return app.lang.chat.groupNameFormat.format(this.name || app.lang.chat.systemGroup, app.lang.chat.allMembers);
+            return includeMemberCount ? app.lang.chat.groupNameFormat.format(this.name || app.lang.chat.systemGroup, app.lang.chat.allMembers) : (this.name || app.lang.chat.systemGroup);
         } else if(this.name !== undefined && this.name !== '') {
-            return app.lang.chat.groupNameFormat.format(this.name, this.membersCount);
+            return includeMemberCount ? app.lang.chat.groupNameFormat.format(this.name, this.membersCount) : this.name;
         } else {
             return app.lang.chat.chatGroup + (this.id || (' (' + app.lang.chat.tempChat + ')'));
         }
