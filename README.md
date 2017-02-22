@@ -4,8 +4,6 @@ http://xuanxuan.chat
 
 由[然之协同](http://ranzhico.com)提供的面向企业即时通信解决方案。
 
-![喧喧](https://git.oschina.net/wwccss/xuanxuan/blob/master/doc/img/preview.png?dir=0&filepath=doc%2Fimg%2Fpreview.png&oid=0706e7f5ccf94645d0d7fa8f9489442466d1c725&sha=93301acab963b3cbbd9069aeabe973f5a6588f48)
-
 ## 特色功能
 
 * **开聊**：和服务器上的任何用户开聊，收发表情、图片、截屏、文件样样在行；
