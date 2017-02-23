@@ -225,7 +225,7 @@ class User extends Member {
      * @return {string}
      */
     get zentao() {
-        if(!this.$.zentao) return '';
+        if(!this.$.zentao || !this.$.zentao.host) return '';
         let zentao = this.$.zentao.protocol + '//' + this.$.zentao.host + this.$.zentao.pathname;
         return zentao.endsWith('/') ? zentao : (zentao + '/');
     }
@@ -235,7 +235,7 @@ class User extends Member {
      * @return {number}
      */
     get port() {
-        return this._port || this.$.zentao.port || 8080;
+        return (this.$.zentao && this.$.zentao.port) ? this.$.zentao.port : (this._port ||  8080);
     }
 
     /**
@@ -243,7 +243,7 @@ class User extends Member {
      * @return {string}
      */
     get host() {
-        return this._host && this._host !== '127.0.0.1' ? this._host : this.$.zentao.host;
+        return this.$.zentao.host ? this.$.zentao.host : (this._host || '127.0.0.1');
     }
 
     /**
@@ -287,7 +287,7 @@ class User extends Member {
         if(!this.$.zentao) return '';
         let pathname = this.$.zentao.pathname;
         if(pathname === '/') pathname = '';
-        if(pathname.length) pathname = pathname.replace(/\//g, '_');
+        if(pathname && pathname.length) pathname = pathname.replace(/\//g, '_');
         return this.account + '@' + this.$.zentao.host + pathname;
     }
 

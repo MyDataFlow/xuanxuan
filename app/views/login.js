@@ -180,6 +180,9 @@ const Login = React.createClass({
     },
 
     handleSubmitClick() {
+        if(!this.state.submitable) {
+            return;
+        }
         this.setState({message: '', logining: true});
         App.login(this.user);
         clearTimeout(this.loginTimeoutCheck);
@@ -245,7 +248,7 @@ const Login = React.createClass({
             displayed: false
         });
         this._setUser({
-            address:   appUser.address, 
+            address:  appUser.address, 
             account:  appUser.account, 
             password: appUser.password
         });
