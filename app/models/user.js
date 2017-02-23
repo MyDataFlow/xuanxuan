@@ -288,7 +288,7 @@ class User extends Member {
         let pathname = this.$.zentao.pathname;
         if(pathname === '/') pathname = '';
         if(pathname && pathname.length) pathname = pathname.replace(/\//g, '_');
-        return this.account + '@' + this.$.zentao.host + pathname;
+        return this.account + '@' + this.$.zentao.host.replace(':', '__') + pathname;
     }
 
     /**
