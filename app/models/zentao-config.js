@@ -35,8 +35,8 @@ class ZentaoConfig {
     constructor(config) {
         Object.assign(this, config);
         this.createTime = new Date().getTime();
-        if(this.port && this.port.indexOf(':') > -1) {
-            this.port = this.port.substr(0, this.port.indexOf(':'));
+        if(this.ip && this.ip.indexOf(':') > -1) {
+            this.ip = this.ip.substr(0, this.ip.indexOf(':'));
         }
     }
 
