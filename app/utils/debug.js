@@ -1,9 +1,10 @@
-if(global.DEBUG === undefined) {
-    const debug = process.env.NODE_ENV !== 'production';
-    global.DEBUG = debug;
+if(typeof DEBUG === undefined) {
+    global.DEBUG = process.env.NODE_ENV !== 'production';
+} else {
+    global.DEBUG = DEBUG;
 }
 
-if(DEBUG) {
+if(global.DEBUG) {
     // Mute react warning.
     console._error = console.error;
     console.error = (errMessage, ...args) => {
@@ -14,4 +15,4 @@ if(DEBUG) {
     };
 }
 
-export default DEBUG;
+export default global.DEBUG;

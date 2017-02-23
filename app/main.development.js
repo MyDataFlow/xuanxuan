@@ -13,12 +13,12 @@ let menu;
 let template;
 let mainWindow = null;
 
-if (process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support'); // eslint-disable-line
     sourceMapSupport.install();
 }
 
-if (DEBUG) {
+if(DEBUG && DEBUG !== 'production') {
     require('electron-debug')(); // eslint-disable-line global-require
     const path = require('path'); // eslint-disable-line
     const p = path.join(__dirname, '..', 'app', 'node_modules'); // eslint-disable-line
@@ -33,7 +33,7 @@ app.on('window-all-closed', () => {
 });
 
 const installExtensions = async() => {
-    if (DEBUG) {
+    if (DEBUG && DEBUG !== 'production') {
         const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
         const extensions = [
