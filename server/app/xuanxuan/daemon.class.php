@@ -316,11 +316,20 @@ class daemon extends router
     {
         if(!$this->request->code) return $this->close($client);
     
-        $this->startSession();
-        $this->parseRequest();
-        $this->loadModule();
-        $this->stopSession();
-        $this->bindUser($client);
+        if($this->checkRequest())
+        {
+            $this->startSession();
+            $this->parseRequest();
+            $this->loadModule();
+            $this->stopSession();
+            $this->bindUser($client);
+        }
+        else
+        {
+            $this->response = new stdclass();
+            $this->response->result  = 'fail';
+            $this->response->message = 'Illegal request.';
+        }
         
         if($this->response) 
         {
@@ -328,6 +337,19 @@ class daemon extends router
             socket_write($client, $response);
             $this->log($response);
         }
+    }
+
+    /**
+     * Check if module or method is illegal. 
+     * 
+     * @access public
+     * @return void
+     */
+    public function checkRequest()
+    {
+        if(!preg_match('/^[a-zA-Z0-9]+$/', $this->request->module)) return false;
+        if(!preg_match('/^[a-zA-Z0-9]+$/', $this->request->method)) return false;
+        return true;
     }
 
     /**
