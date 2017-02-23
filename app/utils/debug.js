@@ -1,4 +1,7 @@
-const DEBUG = process.env.NODE_ENV !== 'production';
+if(global.DEBUG === undefined) {
+    const debug = process.env.NODE_ENV !== 'production';
+    global.DEBUG = debug;
+}
 
 if(DEBUG) {
     // Mute react warning.
@@ -10,7 +13,5 @@ if(DEBUG) {
         return console._error(errMessage, ...args);
     };
 }
-
-global.DEBUG = DEBUG;
 
 export default DEBUG;
