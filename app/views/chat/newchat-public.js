@@ -4,6 +4,7 @@ import {App, Lang, Config} from '../../app';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
 import ArrowForwardIcon    from 'material-ui/svg-icons/navigation/arrow-forward';
 import CheckIcon           from 'material-ui/svg-icons/navigation/check';
+import PoundIcon           from '../icons/pound-box';
 import List                from 'material-ui/List/List';
 import Colors              from 'Utils/material-colors';
 import ListDivider         from 'material-ui/Divider';
@@ -122,7 +123,7 @@ const NewChatPublic = React.createClass({
         if(this.state.choosed) {
             let chat = this.state.chats.find(x => x.gid === this.state.choosed);
             if(chat) {
-                App.chat.inviteMembers(chat, [App.user]);
+                App.chat.joinChat(chat);
                 let joined = this.state.joined;
                 joined[chat.gid] = true;
                 this.setState({joined, choosed: null});
@@ -158,8 +159,7 @@ const NewChatPublic = React.createClass({
                 {
                     chats.map(chat => {
                         let actived = !this.state.joined[chat.gid] && this.state.choosed === chat.gid;
-                        let secondaryText = Lang.chat.numberOfMembers.format(chat.members.size);
-                        return <ListItem disabled={this.state.joined[chat.gid]} style={STYLE.normalItem} actived={actived} activeColor={STYLE.activeColor} onClick={this._handleChatItemClick.bind(this, chat)} key={'newchat-public-' + chat._id} primaryText={chat.getDisplayName(App)} secondaryText={secondaryText} leftAvatar={<Avatar icon={<ChatsIcon/>} />} rightIcon={this.state.joined[chat.gid] ? <CheckIcon style={STYLE.checkIcon}/> : null} />
+                        return <ListItem disabled={this.state.joined[chat.gid]} style={STYLE.normalItem} actived={actived} activeColor={STYLE.activeColor} onClick={this._handleChatItemClick.bind(this, chat)} key={'newchat-public-' + chat._id} primaryText={chat.getDisplayName(App)} leftIcon={<PoundIcon color={Colors.lightGreen700}/>} rightIcon={this.state.joined[chat.gid] ? <CheckIcon style={STYLE.checkIcon}/> : null} />
                     })
                 }
                 </List>;

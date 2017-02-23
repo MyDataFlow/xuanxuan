@@ -77,7 +77,7 @@ const MessageList = React.createClass({
                     } else if(today.add(-1, 'days').isSame(date, 'day')) {
                         timeText = Lang.time.yestoday + ' ' + timeText;
                     }
-                    list.push(<MessageListDivider key={message.id + '-date'} text={timeText} />);
+                    list.push(<MessageListDivider key={message.gid + '-divider'} text={timeText} />);
                     lastMessage = null;
                 }
 

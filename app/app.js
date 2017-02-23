@@ -229,6 +229,8 @@ class App extends ReadyNotifier {
                     }
                 });
                 this.requestAttention(1);
+            } else {
+                handleCloseOption(userCloseOption);
             }
         });
     }

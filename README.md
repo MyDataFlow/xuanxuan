@@ -50,7 +50,9 @@ http://xuanxuan.chat
 
 1. 下载 [xuanxuan-server-rangerteam-1.0.0.zip](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-server-rangerteam-1.0.0.zip) 并解压缩至 `server` 目录；
 2. 合并 `server` 目录到然之协同服务目录；
-3. 在然之服务目录执行 `sudo -u username ./app/xuanxuan/server.php`，其中 `username` 为然之协同 Apache 服务运行用户。
+3. 导入 `server/db/xuanxuan.sql` 到然之协同的数据库；
+4. 修改 `php.ini`，确保 php 在 webserver 模式和 cli 模式下的 `session.save_path` 指向同一目录；
+5. Linux系统在然之服务目录执行 `sudo -u username ./app/xuanxuan/server.php`，其中 `username` 为然之协同 Apache 服务运行用户；Windows系统在然之服务目录执行 `x:\xxx\php.exe ./app/xuanxuan/server.php`，其中 `x:\xxx\php.exe` 为php安装路径 。
 
 服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js）实现自己的服务器端。
 

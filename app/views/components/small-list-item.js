@@ -405,7 +405,7 @@ const ListItem = React.createClass({
       style,
     } = this.props;
 
-    const mergedDivStyles = this.mergeAndPrefix(
+    const mergedDivStyles = Object.assign({}, 
       styles.root,
       styles.innerDiv,
       innerDivStyle,
@@ -421,7 +421,7 @@ const ListItem = React.createClass({
       style,
     } = this.props;
 
-    const mergedLabelStyles = this.mergeAndPrefix(
+    const mergedLabelStyles = Object.assign({}, 
       styles.root,
       styles.innerDiv,
       innerDivStyle,

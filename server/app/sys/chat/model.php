@@ -398,7 +398,7 @@ class chatModel extends model
             if($data) 
             {
                 /* If user hasn't quit the chat then return. */
-                if($data->quit != '0000-00-00 00:00:00') return true;
+                if($data->quit == '0000-00-00 00:00:00') return true;
 
                 /* If user has quited the chat then update the record. */
                 $data = new stdclass();

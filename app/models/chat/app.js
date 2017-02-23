@@ -160,6 +160,16 @@ class ChatApp extends AppCore {
                         if(msg.isSuccess) {
                             if(!msg.data.join) {
                                 this.dao.deleteChat(msg.data.gid);
+                            } else {
+                                let chat = this.dao.getChat(msg.data.gid);
+                                if(chat) {
+                                    chat.addMember(this.user);
+                                    this.dao.updateChats(chat);
+                                } else {
+                                    chat = new Chat(msg.data.chat);
+                                    chat.updateWithApp(this);
+                                    this.dao.updateChats(chat);
+                                }
                             }
                         }
                     },
@@ -624,7 +634,7 @@ class ChatApp extends AppCore {
                     this.rename(this.dao.getChat(message.cgid), command.name);
                 }, 500);
             } else if(command.action === 'version') {
-                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''} ${DEBUG ? '[debug]' : ''}` + '";\n```';
+                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
             }
         }
         this.sendChatMessage(message, chat);
@@ -817,10 +827,10 @@ class ChatApp extends AppCore {
      * @param  {Chat} chat
      * @return {void}
      */
-    joinChat(chat) {
+    joinChat(chat, join = true) {
         return this.socket.send(this.socket.createSocketMessage({
             'method': 'joinchat',
-            'params': [chat.gid, true]
+            'params': [chat.gid, join]
         }));
     }
 
