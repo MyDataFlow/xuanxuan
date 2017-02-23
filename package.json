@@ -13,7 +13,10 @@
     "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r babel-register server.js",
     "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
     "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
+    "build-renderer-debug": "cross-env NODE_ENV=debug node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.debug.js --progress --profile --colors",
+    "build-main-debug": "cross-env NODE_ENV=debug node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
     "build": "npm run build-main && npm run build-renderer",
+    "build-debug": "npm run build-main-debug && npm run build-renderer-debug",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "flow-typed-install": "flow-typed install",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron --debug-brk -r babel-register -r babel-polyfill ./app/main.development",
@@ -23,6 +26,7 @@
     "package-win": "npm run build && build --win --x64",
     "package-linux": "npm run build && build --linux",
     "package-all": "npm run build && build -mwl",
+    "package-debug": "npm run build-debug && build --publish never",
     "cleanup": "mop -v"
   },
   "build": {
