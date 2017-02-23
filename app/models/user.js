@@ -235,7 +235,7 @@ class User extends Member {
      * @return {number}
      */
     get port() {
-        return (this.$.zentao && this.$.zentao.port) ? this.$.zentao.port : (this._port ||  8080);
+        return this._port || ((this.$.zentao && this.$.zentao.port) ? this.$.zentao.port : 8080));
     }
 
     /**
@@ -243,7 +243,7 @@ class User extends Member {
      * @return {string}
      */
     get host() {
-        return this.$.zentao.host ? this.$.zentao.host : (this._host || '127.0.0.1');
+        return this._host ? this._host : (this.$.zentao.host || '127.0.0.1');
     }
 
     /**
