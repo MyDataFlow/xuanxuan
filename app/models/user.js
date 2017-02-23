@@ -235,7 +235,7 @@ class User extends Member {
      * @return {number}
      */
     get port() {
-        return this._port || ((this.$.zentao && this.$.zentao.port) ? this.$.zentao.port : 8080));
+        return this._port || ((this.$.zentao && this.$.zentao.port) ? this.$.zentao.port : 8080);
     }
 
     /**
