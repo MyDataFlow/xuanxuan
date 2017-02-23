@@ -19,7 +19,7 @@
     "build-debug": "npm run build-main-debug && npm run build-renderer-debug",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "flow-typed-install": "flow-typed install",
-    "start-hot": "cross-env HOT=1 NODE_ENV=development electron --debug-brk -r babel-register -r babel-polyfill ./app/main.development",
+    "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.development",
     "postinstall": "concurrently \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
     "dev": "npm run hot-server -- --start-hot",
     "package": "npm run build && build --publish never",
