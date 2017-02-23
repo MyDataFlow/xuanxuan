@@ -56,6 +56,9 @@ window.addEventListener('offline',  () => {
 });
 
 document.title = lang.title;
+if(DEBUG) {
+    document.title += '- ' + window.location.href;
+}
 
 App.ready(() => {
     let appElement = document.getElementById('appContainer');

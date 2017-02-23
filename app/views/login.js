@@ -91,7 +91,7 @@ const STYLE = {
     }
 }
 
-const LOGIN_TIME_OUT = 15000;
+const LOGIN_TIME_OUT = 30000;
 
 /**
  * React component SwapUser

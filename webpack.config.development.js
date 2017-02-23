@@ -78,6 +78,7 @@ export default validate(merge(baseConfig, {
 
     // NODE_ENV should be production so that modules do not perform certain development checks
     new webpack.DefinePlugin({
+      DEBUG: true,
       'process.env.NODE_ENV': JSON.stringify('development')
     })
   ],

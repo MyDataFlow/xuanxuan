@@ -129,8 +129,12 @@ class User extends Member {
      */
     set zentaoConfig(zentaoConfig) {
         this.$.zentaoConfig = zentaoConfig;
-        if(zentaoConfig.port) this._port = zentaoConfig.port;
-        if(zentaoConfig.ip) this._host = zentaoConfig.ip;
+        if(zentaoConfig.port) {
+            this._port = zentaoConfig.port;
+        }
+        if(zentaoConfig.ip) {
+            this._host = zentaoConfig.ip;
+        }
     }
 
     /**
@@ -222,7 +226,7 @@ class User extends Member {
      */
     get zentao() {
         if(!this.$.zentao) return '';
-        let zentao = this.$.zentao.protocol + '//' + this.$.zentao.hostname + this.$.zentao.pathname;
+        let zentao = this.$.zentao.protocol + '//' + this.$.zentao.host + this.$.zentao.pathname;
         return zentao.endsWith('/') ? zentao : (zentao + '/');
     }
 
@@ -239,7 +243,7 @@ class User extends Member {
      * @return {string}
      */
     get host() {
-        return this._host && this._host !== '127.0.0.1' ? this._host : this.$.zentao.hostname;
+        return this._host && this._host !== '127.0.0.1' ? this._host : this.$.zentao.host;
     }
 
     /**
@@ -284,7 +288,7 @@ class User extends Member {
         let pathname = this.$.zentao.pathname;
         if(pathname === '/') pathname = '';
         if(pathname.length) pathname = pathname.replace(/\//g, '_');
-        return this.account + '@' + this.$.zentao.hostname + pathname;
+        return this.account + '@' + this.$.zentao.host + pathname;
     }
 
     /**
