@@ -1,4 +1,4 @@
-if(typeof DEBUG === undefined) {
+if(typeof DEBUG === 'undefined') {
     global.DEBUG = process.env.NODE_ENV !== 'production';
 } else {
     global.DEBUG = DEBUG;
