@@ -65,8 +65,11 @@
     "linux": {
       "target": [
         "deb",
-        "AppImage"
-      ]
+        "rpm",
+        "AppImage",
+        "tar.gz"
+      ],
+      "icon": "./resources/icons/32x32.png"
     },
     "nsis": {
       "oneClick": false,
