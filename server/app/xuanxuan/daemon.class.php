@@ -316,20 +316,12 @@ class daemon extends router
     {
         if(!$this->request->code) return $this->close($client);
     
-        if($this->checkRequest())
-        {
-            $this->startSession();
-            $this->parseRequest();
-            $this->loadModule();
-            $this->stopSession();
-            $this->bindUser($client);
-        }
-        else
-        {
-            $this->response = new stdclass();
-            $this->response->result  = 'fail';
-            $this->response->message = 'Illegal request.';
-        }
+        $this->startSession();
+        $this->parseRequest();
+        $this->loadModule();
+        $this->stopSession();
+        $this->bindUser($client);
+        $this->checkError();
         
         if($this->response) 
         {
@@ -340,16 +332,23 @@ class daemon extends router
     }
 
     /**
-     * Check if module or method is illegal. 
+     * Check if has error. 
      * 
      * @access public
      * @return void
      */
-    public function checkRequest()
+    public function checkError()
     {
-        if(!preg_match('/^[a-zA-Z0-9]+$/', $this->request->module)) return false;
-        if(!preg_match('/^[a-zA-Z0-9]+$/', $this->request->method)) return false;
-        return true;
+        if(function_exists('error_get_last')) 
+        {
+            $error = error_get_last();
+            if($error) 
+            {
+                $this->response = new stdclass();
+                $this->response->result  = 'fail';
+                $this->response->message = $error['message'];
+            }
+        }
     }
 
     /**
@@ -650,6 +649,23 @@ class daemon extends router
     {
         if(!empty($this->request->sid)) return $this->request->sid;
         return md5(uniqid() . microtime() . mt_rand());
+    }
+
+    /**
+     * 触发一个错误。
+     * Trigger an error.
+     * 
+     * @param string    $message    错误信息      error message
+     * @param string    $file       所在文件      the file error occers
+     * @param int       $line       错误行        the line error occers
+     * @param bool      $exit       是否停止程序  exit the program or not
+     * @access public
+     * @return void
+     */
+    public function triggerError($message, $file, $line, $exit = false)
+    {
+        /* Do not pass the param $exit to make sure the program won't be exit. */
+        parent::triggerError($message, $file, $line);
     }
 
     /**
