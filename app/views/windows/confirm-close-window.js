@@ -4,7 +4,7 @@ import PureRenderMixin     from 'react-addons-pure-render-mixin';
 import {App, Lang, Config} from '../../app';
 import RadioButtonGroup    from 'material-ui/RadioButton/RadioButtonGroup';
 import RadioButton         from 'material-ui/RadioButton/RadioButton';
-import Checkbox            from 'material-ui/checkbox';
+import Checkbox            from 'material-ui/Checkbox';
 import FlatButton          from 'material-ui/FlatButton';
 
 const ConfirmCloseWindow = React.createClass({
