@@ -11,7 +11,7 @@ import CutIcon             from 'material-ui/svg-icons/content/content-cut';
 import HelpIcon            from 'material-ui/svg-icons/communication/live-help';
 import IconButton          from 'material-ui/IconButton';
 import ColorManipulator    from 'Utils/color-helper';
-import Checkbox            from 'material-ui/checkbox';
+import Checkbox            from 'material-ui/Checkbox';
 import FileIcon            from '../icons/file-outline';
 import ImageIcon           from '../icons/message-image';
 import Moment              from 'moment';

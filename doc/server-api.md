@@ -1,28 +1,4 @@
-# 服务器端及 API
-
-## 然之协同服务器端下载及使用
-
-当前已提供的服务器端（在 `/server` 目录下）是基于 [然之协同](https://github.com/easysoft/rangerteam) 使用 [php socket](http://php.net/manual/en/book.sockets.php) 方案实现。
-
-下载地址：
-
-* 然之协同喧喧服务器端：[xuanxuan-server-rangerteam-1.0.0.zip](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-server-rangerteam-1.0.0.zip)
-
-这里有一个公开的测试服务器供使用：
-
-```
-地址：http://demo.ranzhi.org
-用户：demo
-密码：demo
-```
-
-然之协同服务器端部署基本步骤：
-
-1. 下载 [xuanxuan-server-rangerteam-1.0.0.zip](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-server-rangerteam-1.0.0.zip) 并解压缩至 `server` 目录；
-2. 合并 `server` 目录到然之协同服务目录；
-3. 在然之服务目录执行 `sudo -u username ./app/xuanxuan/server.php`，其中 `username` 为然之协同 Apache 服务运行用户。
-
-你可以参考以下 API 设计来开发自己的服务器端。
+# 服务器端 API
 
 ## 数据库设计参考
 
