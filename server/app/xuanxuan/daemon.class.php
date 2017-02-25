@@ -112,13 +112,20 @@ class daemon extends router
      */
     public function createSystemChat()
     {
-        $chatID = $this->dbh->query("SELECT id FROM " . TABLE_IM_CHAT . " where type='system'")->fetch();
-        if(!$chatID)
+        try
         {
-            $now = helper::now();
-            $id  = md5(time(). mt_rand());
-            $gid = substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
-            $this->dbh->exec("INSERT INTO " . TABLE_IM_CHAT . " (gid, name, type, createdBy, createdDate) values ('$gid', '', 'system', 'system', '$now')");
+            $chatID = $this->dbh->query("SELECT id FROM " . TABLE_IM_CHAT . " where type='system'")->fetch();
+            if(!$chatID)
+            {
+                $now = helper::now();
+                $id  = md5(time(). mt_rand());
+                $gid = substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
+                $this->dbh->exec("INSERT INTO " . TABLE_IM_CHAT . " (gid, name, type, createdBy, createdDate) values ('$gid', '', 'system', 'system', '$now')");
+            }
+        }
+        catch(PDOException $exception)
+        {
+            $this->log($exception->getMessage(), __FILE__, __LINE__);
         }
     }
 
@@ -130,7 +137,14 @@ class daemon extends router
      */
     public function updateUserStatus()
     {
-        $this->dbh->exec("UPDATE " . TABLE_USER . " set `status` = 'offline'");
+        try
+        {
+            $this->dbh->exec("UPDATE " . TABLE_USER . " set `status` = 'offline'");
+        }
+        catch(PDOException $exception)
+        {
+            $this->log($exception->getMessage(), __FILE__, __LINE__);
+        }
     }
 
     /**
@@ -141,6 +155,7 @@ class daemon extends router
      */
     public function process()
     {
+        $this->connected = $this->checkConnection();
         /* Copy all $this->sockets to the temp $sockets and select those changed. */
         $sockets = $this->sockets;
         $writes  = null;
@@ -156,7 +171,47 @@ class daemon extends router
         }
 
         /* Send messages to client. */
-        $this->send();
+        if($this->connected) $this->send();
+    }
+
+    /**
+     * Check if the db connection can work. 
+     * 
+     * @access public
+     * @return bool
+     */
+    public function checkConnection()
+    {
+        if(!$this->dbh)
+        {
+            $this->reconnectDB();
+            return false;
+        }
+        try
+        {
+            $this->dbh->query("SHOW TABLES");
+        }
+        catch(PDOException $exception)
+        {
+            if($exception->errorInfo[1] == 2006 or $exception->errorInfo[1] == 2013)
+            {
+                $this->reconnectDB();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Reconnect DB. 
+     * 
+     * @access public
+     * @return void
+     */
+    public function reconnectDB()
+    {
+        $this->log('Failed to connect MySQL server, trying to connect again.', __FILE__, __LINE__);
+        $this->connectDB();
     }
 
     /**
@@ -191,7 +246,7 @@ class daemon extends router
                     {
                         $errorCode = socket_last_error($client);
                         $error     = socket_strerror($errorCode);
-                        $this->log($error);
+                        $this->log($error, __FILE__, __LINE__);
                     }
                     else
                     {
@@ -224,7 +279,7 @@ class daemon extends router
         }
         catch(PDOException $exception)
         {
-            $this->log($exception->getMessage());
+            $this->log($exception->getMessage(), __FILE__, __LINE__);
         }
 
         return $messages;
@@ -248,7 +303,7 @@ class daemon extends router
             }
             catch(PDOException $exception)
             {
-                $this->log($exception->getMessage());
+                $this->log($exception->getMessage(), __FILE__, __LINE__);
             }
         }
     }
@@ -316,12 +371,21 @@ class daemon extends router
     {
         if(!$this->request->code) return $this->close($client);
     
-        $this->startSession();
-        $this->parseRequest();
-        $this->loadModule();
-        $this->stopSession();
-        $this->bindUser($client);
-        $this->checkError();
+        if($this->connected)
+        {
+            $this->startSession();
+            $this->parseRequest();
+            $this->loadModule();
+            $this->stopSession();
+            $this->bindUser($client);
+            $this->checkError();
+        }
+        else
+        {
+            $this->response = new stdclass();
+            $this->response->result  = 'fail';
+            $this->response->message = 'Failed to connect MySQL server.'; 
+        }
         
         if($this->response) 
         {
@@ -465,8 +529,15 @@ class daemon extends router
      */
     public function logout($socket)
     {
-        $userID = $this->users[strval($socket)];
-        if($userID) $this->dbh->exec("UPDATE " . TABLE_USER . " SET status = 'offline' WHERE `id` = $userID");
+        try
+        {
+            $userID = $this->users[strval($socket)];
+            if($userID) $this->dbh->exec("UPDATE " . TABLE_USER . " SET status = 'offline' WHERE `id` = $userID");
+        }
+        catch(PDOException $exception)
+        {
+            $this->log($exception->getMessage(), __FILE__, __LINE__);
+        }
     }
 
     /**
@@ -491,50 +562,85 @@ class daemon extends router
      */
     public function loadModule()
     {
-        /* Init the response. */
-        $this->response = new stdclass();
-        $this->response->result = 'success';
+        $appName    = $this->appName;
+        $moduleName = $this->moduleName;
+        $methodName = $this->methodName;
 
-        /* Include the contror file of the module. */
-        $appName    = $this->getAppName();
-        $moduleName = $this->getModuleName();
-        $methodName = $this->getMethodName();
-        $file2Included = $this->setActionExtFile() ? $this->extActionFile : $this->getControlFile();
+        /* 
+         * 引入该模块的control文件。
+         * Include the control file of the module.
+         **/
+        $file2Included = $this->setActionExtFile() ? $this->extActionFile : $this->controlFile;
         chdir(dirname($file2Included));
         helper::import($file2Included);
 
-        /* Set the class name of the control. */
+        /*
+         * 设置control的类名。
+         * Set the class name of the control.
+         **/
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
-        if(!class_exists($className))
+        if(!class_exists($className)) 
         {
             $this->triggerError("the control $className not found", __FILE__, __LINE__);
-            $this->response->result  = 'fail';
-            $this->response->message = "control $className not found.";
             return false;
         }
 
-        /* Create a instance of the control. */
+        /*
+         * 创建control类的实例。
+         * Create a instance of the control.
+         **/
         $module = new $className();
-        if(!method_exists($module, $methodName))
+        if(!method_exists($module, $methodName)) 
         {
             $this->triggerError("the module $moduleName has no $methodName method", __FILE__, __LINE__);
-            $this->response->result  = 'fail';
-            $this->response->message = "method $methodName not found.";
             return false;
         }
+        /* If the db server restarted, must reset dbh. */
+        $module->dao->dbh = $this->dbh;
+        $module->$module->dao->dbh = $this->dbh;
         $this->control = $module;
+
+        /* include default value for module*/
+        $defaultValueFiles = glob($this->getTmpRoot() . "defaultvalue/*.php");
+        if($defaultValueFiles) foreach($defaultValueFiles as $file) include $file;
+
+        /* 
+         * 使用反射机制获取函数参数的默认值。
+         * Get the default settings of the method to be called using the reflecting. 
+         *
+         * */
+        $defaultParams = array();
+        $methodReflect = new reflectionMethod($className, $methodName);
+        foreach($methodReflect->getParameters() as $param)
+        {
+            $name = $param->getName();
+
+            $default = '_NOT_SET';
+            if(isset($paramDefaultValue[$appName][$className][$methodName][$name]))
+            {
+                $default = $paramDefaultValue[$appName][$className][$methodName][$name];
+            }
+            elseif(isset($paramDefaultValue[$className][$methodName][$name]))
+            {
+                $default = $paramDefaultValue[$className][$methodName][$name];
+            }
+            elseif($param->isDefaultValueAvailable())
+            {
+                $default = $param->getDefaultValue();
+            }
+
+            $defaultParams[$name] = $default;
+        }
 
         /* Merge params. */
         $params = array();
         if(isset($this->request->params)) 
         {
-            $params = $this->mergeParams2($appName, $className, $methodName, $this->request->params);
+            $params = $this->mergeParams($defaultParams, (array)$this->request->params);
         }
-        if($params === false) 
+        else
         {
             $this->triggerError("param error: {$this->request->raw}", __FILE__, __LINE__);
-            $this->response->result  = 'fail';
-            $this->response->message = "param error.";
             return false;
         }
 
@@ -555,48 +661,35 @@ class daemon extends router
     }
 
     /**
-     * Merge default params and request params.
-     * 
-     * @param  string $appName
-     * @param  string $className 
-     * @param  string $methodName 
-     * @param  array  $requestParams 
-     * @access public
-     * @return void
+     * 合并请求的参数和默认参数，这样就可以省略已经有默认值的参数了。
+     * Merge the params passed in and the default params. Thus the params which have default values needn't pass value, just like a function.
+     *
+     * @param   array $defaultParams     the default params defined by the method.
+     * @param   array $passedParams      the params passed in through url.
+     * @access  public
+     * @return  array the merged params.
      */
-    public function mergeParams2($appName, $className, $methodName, $requestParams)
+    public function mergeParams($defaultParams, $passedParams)
     {
-        /* Include default value for module*/
-        $defaultValueFiles = glob($this->getTmpRoot() . "defaultvalue/*.php");
-        if($defaultValueFiles) foreach($defaultValueFiles as $file) helper::import($file);
-
-        /* Get the default setings of the method to be called useing the reflecting. */
-        $defaultParams = array();
-        $methodReflect = new reflectionMethod($className, $methodName);
-        foreach($methodReflect->getParameters() as $param)
+        /* Check params from URL. */
+        foreach($passedParams as $param => $value)
         {
-            $paramName = $param->getName();
-            $default = '_NOT_SET';
-
-            if($param->isDefaultValueAvailable()) $default = $param->getDefaultValue();
-            if(isset($paramDefaultValue[$appName][$className][$methodName][$paramName])) $default = $paramDefaultValue[$appName][$className][$methodName][$paramName];
-
-            $defaultParams[$paramName] = $default;
+            if(preg_match('/[^a-zA-Z0-9_\.]/', $param)) die('Bad Request!');
         }
 
-        /* Merge them. */
+        $passedParams = array_values($passedParams);
         $i = 0;
-        $requestParams = array_values((array)$requestParams);
         foreach($defaultParams as $key => $defaultValue)
         {
-            if(isset($requestParams[$i]))
+            if(isset($passedParams[$i]))
             {
-                $defaultParams[$key] = $requestParams[$i];
-                $i ++;
-                continue;
+                $defaultParams[$key] = $passedParams[$i];
             }
-
-            if($defaultValue === '_NOT_SET') return false;
+            else
+            {
+                if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__);
+            }
+            $i ++;
         }
 
         return $defaultParams;
@@ -664,8 +757,42 @@ class daemon extends router
      */
     public function triggerError($message, $file, $line, $exit = false)
     {
-        /* Do not pass the param $exit to make sure the program won't be exit. */
+        /* Do not pass the param $exit to make sure the program won't exit. */
         parent::triggerError($message, $file, $line);
+    }
+
+    public function connectByPDO($params)
+    {
+        if(!isset($params->driver)) $this->log('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__);
+        if(!isset($params->user)) return false;
+        if($params->driver == 'mysql')
+        {
+            $dsn = "mysql:host={$params->host}; port={$params->port}; dbname={$params->name}";
+        }    
+        try 
+        {
+            $dbh = new PDO($dsn, $params->user, $params->password, array(PDO::ATTR_PERSISTENT => $params->persistant));
+            $dbh->exec("SET NAMES {$params->encoding}");
+
+            /*
+             * 如果系统是Linux，开启仿真预处理和缓冲查询。
+             * If run on linux, set emulatePrepare and bufferQuery to true.
+             **/
+            if(!isset($params->emulatePrepare) and PHP_OS == 'Linux') $params->emulatePrepare = true;
+            if(!isset($params->bufferQuery) and PHP_OS == 'Linux')    $params->bufferQuery = true;
+
+            $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            if(isset($params->strictMode) and $params->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
+            if(isset($params->emulatePrepare)) $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, $params->emulatePrepare);
+            if(isset($params->bufferQuery))    $dbh->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $params->bufferQuery);
+
+            return $dbh;
+        }
+        catch (PDOException $exception)
+        {
+            $this->log($exception->getMessage(), __FILE__, __LINE__);
+        }
     }
 
     /**
@@ -675,14 +802,16 @@ class daemon extends router
      * @access public
      * @return void
      */
-    public function log($log)
+    public function log($message, $file, $line)
     {
-        $log  = date('Y-m-d H:i:s') . ' LOG: ' . $log . "\n";
+        $log = date('H:i:s') . " $message";
+        if($file) $log .= " in <strong>$file</strong>";
+        if($line) $log .= " on line <strong>$line</strong> ";
         $file = $this->getLogRoot() . 'php.' . date('Ymd') . '.log.php';
         if(!is_file($file)) file_put_contents($file, "<?php\n die();\n?>\n");
 
         $fh = @fopen($file, 'a');
-        if($fh) fwrite($fh, print_r($log)) && fclose($fh);
+        if($fh) fwrite($fh, $log) && fclose($fh);
 
         echo $log; 
     }
