@@ -17,13 +17,28 @@ $username = 'www-data'; // Use the run user of your web server as username.
 if(empty($argv) or $argv[0] == '--help' or $argv[0] == '-h')
 {
     echo <<<EOD
-Usage: xuanxuan.php {start|stop|restart|status}
+Usage: xuanxuan.php {start|stop|restart|status} [options]
 
 Options:
     -h --help Show help.
+    -u --user Your web server's run user, default www-data
 
 EOD;
     exit;
+}
+
+
+if($argv[0] == 'start' or $argv[0] == 'restart')
+{
+    if(isset($argv[1]) && ($argv[1] == '-u' or $argv[1] == '--user'))
+    {
+        if(empty($argv[2]))
+        {
+            echo "Must set a user as param.\n";
+            exit;
+        }
+        $username = $argv[2];
+    }
 }
 
 switch($argv[0])
