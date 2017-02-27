@@ -1,7 +1,7 @@
 {
   "name": "xuanxuan",
   "productName": "Xuanxuan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "企业即时通讯平台",
   "main": "main.js",
   "scripts": {
@@ -24,7 +24,9 @@
     "dev": "npm run hot-server -- --start-hot",
     "package": "npm run build && build --publish never",
     "package-win": "npm run build && build --win --x64",
+    "package-win-32": "npm run build && build --win --ia32",
     "package-linux": "npm run build && build --linux",
+    "package-linux-32": "npm run build && build --linux --ia32",
     "package-all": "npm run build && build -mwl",
     "package-debug": "npm run build-debug && build --publish never",
     "cleanup": "mop -v"
