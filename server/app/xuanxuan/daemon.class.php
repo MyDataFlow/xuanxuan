@@ -597,7 +597,7 @@ class daemon extends router
         }
         /* If the db server restarted, must reset dbh. */
         $module->dao->dbh = $this->dbh;
-        $module->$module->dao->dbh = $this->dbh;
+        $module->$moduleName->dao->dbh = $this->dbh;
         $this->control = $module;
 
         /* include default value for module*/
@@ -806,7 +806,7 @@ class daemon extends router
      */
     public function log($message, $file = '', $line = '')
     {
-        $log = date('H:i:s') . " $message";
+        $log = "\n" . date('H:i:s') . " $message";
         if($file) $log .= " in <strong>$file</strong>";
         if($line) $log .= " on line <strong>$line</strong> ";
         $file = $this->getLogRoot() . 'php.' . date('Ymd') . '.log.php';
