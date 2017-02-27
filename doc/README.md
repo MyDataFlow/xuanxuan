@@ -4,10 +4,7 @@
 
 ## 下载与安装
 
-选择适合自己操作系统版本进行下载安装：
-
- * Windows 7+：[安装包（xuanxuan-setup-1.0.0.exe）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-setup-1.0.0.exe)、[zip 压缩包（xuanxuan-1.0.0.zip）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.zip)
- * MacOS：[xuanxuan-1.0.0.dmg](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.dmg)
+选择适合自己操作系统版本进行下载安装：http://xuanxuan.chat/#downloads
 
 ## 用户账号及登录
 
