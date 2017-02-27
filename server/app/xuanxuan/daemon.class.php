@@ -798,11 +798,13 @@ class daemon extends router
     /**
      * Save a log.
      * 
-     * @param  string    $log 
+     * @param  string $log 
+     * @param  string $file
+     * @param  string $line
      * @access public
      * @return void
      */
-    public function log($message, $file, $line)
+    public function log($message, $file = '', $line = '')
     {
         $log = date('H:i:s') . " $message";
         if($file) $log .= " in <strong>$file</strong>";
