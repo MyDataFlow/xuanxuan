@@ -27,7 +27,6 @@ EOD;
     exit;
 }
 
-
 if($argv[0] == 'start' or $argv[0] == 'restart')
 {
     if(isset($argv[1]) && ($argv[1] == '-u' or $argv[1] == '--user'))
