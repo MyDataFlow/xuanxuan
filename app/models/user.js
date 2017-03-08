@@ -231,6 +231,16 @@ class User extends Member {
     }
 
     /**
+     * Get server address root
+     * @return {string}
+     */
+    get addressRoot() {
+        if(!this.$.zentao || !this.$.zentao.host) return '';
+        let addr = this.$.zentao.protocol + '//' + this.$.zentao.hostname + (this.$.zentao.port ? (':' + this.$.zentao.port) : '');
+        return addr.endsWith('/') ? addr : (addr + '/');
+    }
+
+    /**
      * Get port
      * @return {number}
      */
@@ -351,13 +361,13 @@ class User extends Member {
             let member = avatar;
             avatar = member.avatar;
             if(avatar && avatar.indexOf('http://') !== 0 && avatar.indexOf('https://') !== 0) {
-                member.avatar = this.address + avatar;
+                member.avatar = this.addressRoot + avatar;
             }
             return member.avatar;
         } else {
             avatar = avatar || this.avatar;
             if(avatar && avatar.indexOf('http://') !== 0 && avatar.indexOf('https://') !== 0) {
-                avatar = this.address + avatar;
+                avatar = this.addressRoot + avatar;
             }
             this.avatar = avatar;
             return this.avatar;
