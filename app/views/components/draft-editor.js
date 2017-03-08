@@ -65,10 +65,7 @@ class DraftEditor extends Component {
                     contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
                 }
                 if(thisTextContent.length) {
-                    thisTextContent = thisTextContent.trim();
-                    if(thisTextContent.length) {
-                        contents.push({type: 'text', content: thisTextContent});
-                    }
+                    contents.push({type: 'text', content: Helper.htmlEncode(thisTextContent)});
                     thisTextContent = '';
                 }
             } else {
@@ -79,10 +76,7 @@ class DraftEditor extends Component {
             }
         });
         if(thisTextContent.length) {
-            thisTextContent = thisTextContent.trim();
-            if(thisTextContent.length) {
-                contents.push({type: 'text', content: thisTextContent});
-            }
+            contents.push({type: 'text', content: Helper.htmlEncode(thisTextContent)});
             thisTextContent = '';
         }
         return contents;
