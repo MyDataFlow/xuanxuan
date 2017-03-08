@@ -90,8 +90,9 @@ const MessageSendbox = React.createClass({
                 }, 10);
             }
             e.preventDefault();
-            return false;
+            return 'handled';
         }
+        return 'not-handled';
     },
 
     _handleSelectImageFile(e) {

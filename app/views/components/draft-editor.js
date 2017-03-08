@@ -131,7 +131,10 @@ class DraftEditor extends Component {
     }
 
     handleReturn(e) {
-        this.props.onReturnKeyDown && this.props.onReturnKeyDown(e);
+        if(this.props.onReturnKeyDown) {
+            return this.props.onReturnKeyDown(e);
+        }
+        return 'not-handled';
     }
 
     blockRendererFn(contentBlock) {
