@@ -39,7 +39,7 @@ class Socket extends ReadyNotifier {
         this.client = new Net.Socket();
 
         this._initHandlers();
-        this.app.on(R.event.user_change, status => {
+        this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {
             if(this.user.isOnline && !this.pingTask) {
                 this.startPing();
             } else if(this.pingTask && this.user.isOffline) {
@@ -423,6 +423,7 @@ class Socket extends ReadyNotifier {
      */
     destroy() {
         this.stopPing();
+        this.app.off(this.userStatusChangeEvent);
         this._markDestroy = true;
         this.client.destroy();
     }
