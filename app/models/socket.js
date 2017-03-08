@@ -28,7 +28,7 @@ class Socket extends ReadyNotifier {
     constructor(app, user) {
         super();
 
-        this.pingInterval = 1000 * 60 * 10;
+        this.pingInterval = 1000 * 60 * 5;
         this.app    = app;
         this.user   = user;
         this.emiter = app;
