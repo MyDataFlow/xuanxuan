@@ -517,14 +517,14 @@ class App extends ReadyNotifier {
      * @return {boolean}
      */
     get isWindowOpenAndFocus() {
-        return this.browserWindow.isFocused() && this.browserWindow.isVisible();
+        return this.browserWindow.isFocused() && this.browserWindow.isWindowOpen();
     }
 
     /**
      * Check whether the main window is open
      */
     get isWindowOpen() {
-        return this.browserWindow.isVisible();
+        return this.browserWindow.isVisible() && !this.browserWindow.isMinimized();
     }
 
     /**
@@ -536,7 +536,6 @@ class App extends ReadyNotifier {
 
     /**
      * Request attention to the main window
-     * @param  {number} attention (optional)
      * @return {void}
      */
     requestAttention(attention) {
@@ -546,7 +545,7 @@ class App extends ReadyNotifier {
         clearTimeout(this.flashFrameTask);
         this.flashFrameTask = setTimeout(() => {
             this.browserWindow.flashFrame(false);
-        }, 1000);
+        }, 3000);
     }
 
     /**
