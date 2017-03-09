@@ -235,7 +235,7 @@ class Socket extends ReadyNotifier {
             chat: {
                 login: msg => {
                     if(msg.isSuccess) {
-                        if(!this.user || msg.data.id === this.user.id) {
+                        if(!this.user || this.app.isUserLogining || msg.data.id === this.user.id) {
                             this.sid = msg.sid;
                             let user = Object.assign({sid: msg.sid}, msg.data);
                             this._emit(R.event.user_login_message, user);
