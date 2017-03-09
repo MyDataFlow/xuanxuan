@@ -442,8 +442,8 @@ class App extends ReadyNotifier {
      */
     logout() {
         if(this.user) {
+            if(this.user.isOnline) this.config.save(this.user, true);
             this.user.changeStatus(USER_STATUS.unverified);
-            this.config.save(this.user, true);
             this.socket.logout(this.user);
         }
     }
