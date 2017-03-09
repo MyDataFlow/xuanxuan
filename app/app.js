@@ -462,18 +462,6 @@ class App extends ReadyNotifier {
     }
 
     /**
-     * Logout
-     * @return {Void}
-     */
-    logout() {
-        if(this.user) {
-            this.user.status = 'offline';
-            this.config.save(this.user, true);
-            this.socket.logout(this.user);
-        }
-    }
-
-    /**
      * Show and focus main window
      * @return {void}
      */
