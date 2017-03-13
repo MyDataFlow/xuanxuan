@@ -20,7 +20,7 @@ http://xuanxuan.chat
 
 ### 客户端
 
-受益于 Electron 的跨平台特性，喧喧客户端提供了 Windows 和 MacOS 版本。理论上也支持 Linux，不过暂时没有测试及支持。
+受益于 Electron 的跨平台特性，喧喧客户端提供了 Windows、MacOS 和 Linux 版本。
 
 下载地址见：http://xuanxuan.chat/#downloads
 
