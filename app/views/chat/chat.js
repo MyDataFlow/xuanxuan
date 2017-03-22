@@ -347,7 +347,7 @@ const ChatPage = React.createClass({
         let messagesView = [];
         if(chat.isCommitter(App.user)) {
             messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>);
-            messagesView.push(<MessageSendbox key="message-sendbox" ref={e => {this.messageSendbox = e;}} className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>);
+            messagesView.push(<MessageSendbox key="message-sendbox" ref={e => {this.messageSendbox = e;}} className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={canRename && chat.isNewChat} chatId={chat.gid}/>);
             messagesView.push(<div key="chat-dnd-box" className="drag-n-drop-message center-block" onDragEnter={this._handleDndEnter} onDrop={this._handleDndDrop} onDragLeave={this._handleDndLeave}>
                 <div className="text-center">
                 <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>

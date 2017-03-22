@@ -104,6 +104,7 @@ const ContactsPage = React.createClass({
 
     _handleSearchButtonClick() {
         Popover.show({
+            id       : 'ContactSearchPopover',
             trigger  : this.headerElement,
             placement: 'cover',
             clickAway: () => {return Helper.isEmptyString(this.searchText);},
@@ -120,6 +121,10 @@ const ContactsPage = React.createClass({
             title = <div>{title}<small style={{float: 'right', opacity: 0.5}}>{roleText}</small></div>;
         }
         return title;
+    },
+
+    _handleContactSendBtnClick() {
+        Popover.hide('ContactSearchPopover');
     },
 
     render() {
@@ -144,7 +149,7 @@ const ContactsPage = React.createClass({
               </div>
             </div>
             <div className='table-col relative'>
-              <ContactView className='dock-full scroll-y' member={this.state.member}/>
+              <ContactView className='dock-full scroll-y' member={this.state.member} onSendBtnClick={this._handleContactSendBtnClick}/>
             </div>
           </div>
         </div>

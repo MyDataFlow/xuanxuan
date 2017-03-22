@@ -214,7 +214,7 @@
   "login": {
     "login": "登  录",
     "address": "服务器地址",
-    "addressHint": "pro.demo.ranzhi.org",
+    "addressHint": "demo.ranzhi.org",
     "account": "账号",
     "accountHint": "用户名/邮箱",
     "password": "密码",

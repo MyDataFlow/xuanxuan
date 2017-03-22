@@ -223,10 +223,10 @@ class ChatApp extends AppCore {
                 this.totalNoticeCount = totalNoticeCount || false;
                 this.$app.badgeLabel = this.totalNoticeCount;
                 this.$app.trayTooltip = this.totalNoticeCount ? (this.$app.lang.chat.someNewMessages || '{0} 条新消息').format(this.totalNoticeCount) : false;
-                if(this.totalNoticeCount && (!this.$app.isWindowOpen || !this.$app.isWindowsFocus)) {
+                if(this.totalNoticeCount && !this.$app.isWindowOpenAndFocus) {
                     if(Helper.isWindowsOS) {
                         if(!this.$app.isWindowOpen) this.$app.flashTrayIcon(this.totalNoticeCount);
-                        this.$app.requestAttention(1);
+                        this.$app.requestAttention();
                     }
                     if(!this.$app.isWindowOpen) this.$app.playSound('message');
                 }

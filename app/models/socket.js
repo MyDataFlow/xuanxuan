@@ -28,7 +28,7 @@ class Socket extends ReadyNotifier {
     constructor(app, user) {
         super();
 
-        this.pingInterval = 1000 * 60 * 10;
+        this.pingInterval = 1000 * 60 * 5;
         this.app    = app;
         this.user   = user;
         this.emiter = app;
@@ -39,7 +39,7 @@ class Socket extends ReadyNotifier {
         this.client = new Net.Socket();
 
         this._initHandlers();
-        this.app.on(R.event.user_change, status => {
+        this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {
             if(this.user.isOnline && !this.pingTask) {
                 this.startPing();
             } else if(this.pingTask && this.user.isOffline) {
@@ -235,7 +235,7 @@ class Socket extends ReadyNotifier {
             chat: {
                 login: msg => {
                     if(msg.isSuccess) {
-                        if(!this.user || this.user.isOffline || msg.data.id === this.user.id) {
+                        if(!this.user || this.app.isUserLogining || msg.data.id === this.user.id) {
                             this.sid = msg.sid;
                             let user = Object.assign({sid: msg.sid}, msg.data);
                             this._emit(R.event.user_login_message, user);
@@ -423,6 +423,7 @@ class Socket extends ReadyNotifier {
      */
     destroy() {
         this.stopPing();
+        this.app.off(this.userStatusChangeEvent);
         this._markDestroy = true;
         this.client.destroy();
     }
