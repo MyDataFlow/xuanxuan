@@ -383,9 +383,18 @@ class chat extends control
         {
             $response->result  = 'fail';
             $response->message = $this->lang->chat->notAdmin;
+
+            return $response;
         }
 
         $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notExist;
+
+            return $response;
+        }
         if($chat->type != 'system')
         {
             $response->result  = 'fail';
@@ -432,6 +441,13 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notExist;
+
+            return $response;
+        }
         if($chat->type != 'group')
         {
             $response->result  = 'fail';
@@ -501,6 +517,13 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notExist;
+
+            return $response;
+        }
         if($chat->type != 'group' && $chat->type != 'system')
         {
             $response->result  = 'fail';
@@ -565,6 +588,13 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notExist;
+
+            return $response;
+        }
         if($chat->type != 'group' && $chat->type != 'system')
         {
             $response->result  = 'fail';
@@ -616,6 +646,13 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notExist;
+
+            return $response;
+        }
         if($chat->type != 'group')
         {
             $response->result  = 'fail';
@@ -748,6 +785,13 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notExist;
+
+            return $response;
+        }
         if($chat->type != 'group')
         {
             $response->result  = 'fail';

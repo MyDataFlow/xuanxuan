@@ -2,33 +2,6 @@
 class attach extends control
 {
     /**
-     * Get file list. 
-     * 
-     * @param  string $gid 
-     * @access public
-     * @return object
-     */
-    public function getList($gid = '')
-    {
-        $this->app->loadLang('chat');
-        $fileList = $this->attach->getList($gid);
-
-        $response = new stdclass();
-        if(dao::isError())
-        {
-            $response->result  = 'fail';
-            $response->message = 'Get attach list failed.';
-        }
-        else
-        {
-            $response->result = 'success';
-            $response->data   = $fileList;
-        }
-
-        return $response;
-    }
-
-    /**
      * Upload files for an object.
      * 
      * @access public
@@ -38,31 +11,31 @@ class attach extends control
     {
         $gid    = $_POST['gid'];
         $chatID = $this->dao->select('id')->from(TABLE_IM_CHAT)->where('gid')->eq($gid)->fetch('id');
-        $files  = $this->loadModel('file')->getUpload('files');
-        if($files) $files = $this->file->saveUpload('chat', $chatID);
-
-        $file = new stdclass();
-        $fileList = array();
-        foreach($files as $id => $title)
-        {
-            $file->gid   = $gid;
-            $file->file  = $id;
-            $file->title = $title;
-
-            $this->dao->insert(TABLE_IM_CHATFILE)->data($file)->exec();
-
-            $tmpFile = new stdclass();
-            $tmpFile->id    = $id;
-            $tmpFile->title = $title;
-
-            $fileList[] = $tmpFile;
-        }
+        $files  = $this->loadModel('file')->saveUpload('chat', $chatID);
 
         $response = new stdclass();
         $response->module = $this->moduleName;
         $response->method = $this->methodName;
-        $response->result = 'success';
-        $response->data   = $fileList;
+        
+        if($files)
+        {
+            $fileList = array();
+            foreach($files as $id => $title)
+            {
+                $file = new stdclass();
+                $file->id    = $id;
+                $file->title = $title;
+
+                $fileList[] = $file;
+            }
+            $response->result = 'success';
+            $response->data   = $fileList;
+        }
+        else
+        {
+            $response->result  = 'fail';
+            $response->message = 'Upload file failed.';
+        }
 
         die(json_encode($response));
     }
