@@ -321,6 +321,7 @@ class daemon extends router
         $this->register($client);
 
         socket_getpeername($client, $ip, $port);
+        $_SERVER['REMOTE_ADDR'] = "$ip:$port";
         $this->log("$client connected, $ip:$port.");
     }
 
