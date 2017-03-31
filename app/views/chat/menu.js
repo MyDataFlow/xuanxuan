@@ -284,30 +284,8 @@ const ChatMenu = React.createClass({
             
         }
 
-        let tabs = [{
-            key: 'recent',
-            label: <TimeIcon color={this.state.type === 'recent' ? Theme.color.primary1 : Theme.color.icon} hoverColor={Theme.color.primary1}/>,
-            hint: Lang.chat.recentChats
-        }, {
-            key: 'contacts',
-            label: <ListIcon color={this.state.type === 'contacts' ? Theme.color.primary1 : Theme.color.icon} hoverColor={Theme.color.primary1}/>,
-            hint: Lang.chat.allChats
-        }, {
-            key: 'newChat',
-            label: <ChatPlusIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>,
-            hint: Lang.chat.newChat
-        }];
-
         style = Object.assign({}, STYLE.menu, style);
         return <div className='dock-left' style={style} {...other}>
-          <Tabs
-            onTabClick={this._handOnTabClick}
-            tabs={tabs}
-            selected={this.state.type}
-            style={STYLE.tabs}
-            tabStyle={STYLE.tabStyle}
-            activeTabStyle={STYLE.activeTabStyle}
-          />
           <div className='scroll-y dock-full' style={STYLE.listContainer}>{listElements}</div>
         </div>
     }

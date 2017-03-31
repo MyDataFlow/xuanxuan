@@ -30,7 +30,6 @@ const EmoticonList = React.createClass({
     },
     
     _handleCloseButtonClick() {
-        console.info(this.textbox);
         this.textbox.input.value = '';
         this.setState({emptyValue: true});
         this.textbox.focus();

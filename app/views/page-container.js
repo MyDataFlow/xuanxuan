@@ -16,24 +16,17 @@ const PageContianer = React.createClass({
     pages: {
         chat:      {component: ChatPage},
         contacts:  {component: ContactsPage},
-        apps:      {component: ContentNotReady}
+        groups:    {component: ContentNotReady}
     },
 
     getInitialState() {
-        let position = {};
-        position[App.user.config.ui.navbar.dock] = App.user.config.ui.navbar.expand ? App.user.config.ui.navbar.width : App.user.config.ui.navbar.compactWidth;
         return {
-            position: position,
+            position: {left: App.user.config.ui.navbar.compactWidth},
             page: App.user.config.ui.navbar.page || 'chat'
         };
     },
 
     componentDidMount() {
-        this._handleNavbarExpandEvent = App.on(R.event.ui_navbar_expand, e => {
-            let position = {};
-            position[e.dock] = e.width;
-            this.setState({position: position});
-        });
         this._handleUIChangeEvent = App.on(R.event.ui_change, e => {
             if(e.navbar !== this.state.page) {
                 this.setState({page: e.navbar});
@@ -42,7 +35,7 @@ const PageContianer = React.createClass({
     },
 
     componentWillUnmount() {
-        App.off(this._handleUIChangeEvent, this._handleNavbarExpandEvent);
+        App.off(this._handleUIChangeEvent);
     },
 
     getDisplayCacheContentId(cacheName) {
@@ -50,6 +43,7 @@ const PageContianer = React.createClass({
     },
 
     renderCacheContent(contentId, cacheName) {
+        console.info('renderCacheContent', contentId, cacheName);
         let PageComponent = this.pages[contentId].component;
         let options = contentId === 'chat' ? null : {title: '【' + contentId + '】 的内容尚未准备就绪。'};
         return <PageComponent className="page dock-full" {...options}/>;
