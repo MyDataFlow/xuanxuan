@@ -32,7 +32,7 @@
     "cleanup": "mop -v"
   },
   "build": {
-    "productName": "喧喧",
+    "productName": "xuanxuan",
     "appId": "com.cnezsoft.xuanxuan",
     "category": "public.productivity.tools",
     "dmg": {
