@@ -8,7 +8,7 @@ import {
     AtomicBlockUtils,
     convertToRaw,
     Modifier
-}      from 'draft-js';
+}                                    from 'draft-js';
 import Theme                         from 'Theme';
 
 const ImageDraft = props => {
@@ -65,7 +65,7 @@ class DraftEditor extends Component {
                     contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
                 }
                 if(thisTextContent.length) {
-                    contents.push({type: 'text', content: Helper.htmlEncode(thisTextContent)});
+                    contents.push({type: 'text', content: thisTextContent});
                     thisTextContent = '';
                 }
             } else {
@@ -76,7 +76,7 @@ class DraftEditor extends Component {
             }
         });
         if(thisTextContent.length) {
-            contents.push({type: 'text', content: Helper.htmlEncode(thisTextContent)});
+            contents.push({type: 'text', content: thisTextContent});
             thisTextContent = '';
         }
         return contents;

@@ -12,7 +12,7 @@ Marked.setOptions({
         return HighlightJS.highlightAuto(code).value;
     },
     gfm: true,
-    sanitize: false
+    sanitize: true
 });
 
 const OS_PLATFORM = os.platform();
