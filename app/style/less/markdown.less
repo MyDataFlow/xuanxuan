@@ -6,44 +6,45 @@
   }
 
   ul, ol {
-    margin: 0;
+    margin: 0 0 8px 0;
     padding-left: 16px;
-    margin-bottom: 8px;
   }
 
   pre {
-    background: #f6f8fa;
+    background: rgba(0,0,0,.05);
     margin: 4px 0 8px;
 
     + pre {margin-top: -3px;}
+
+    code {background: none;}
   }
 
   h1, h2, h3 {
-    margin: 16px 0;
+    margin: 4px 0 16px 0;
     font-weight: 500;
   }
 
   h4, h5, h6 {
-    margin: 16px 0 8px;
+    margin: 4px 0 8px;
     font-weight: 500;
   }
 
   h1 {
     padding: 16px 0;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid rgba(0,0,0,.1);
   }
 
   blockquote {
     margin: 8px 0;
     padding: 0 8px 0 16px;
     color: #777;
-    border-left: 4px solid #e5e5e5;
+    border-left: 4px solid rgba(0,0,0,.1);
   }
 
   table {
     margin: 4px 0 8px;
     max-width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0,0,0,.1);
 
     > thead > tr > td,
     > thead > tr > th,
@@ -51,7 +52,7 @@
     > tbody > tr > th,
     > tfoot > tr > td,
     > tfoot > tr > th {
-      border: 1px solid #ddd;
+      border: 1px solid rgba(0,0,0,.1);
       padding: 4px 8px;
     }
 
@@ -67,12 +68,12 @@
   hr {
     margin: 4px 0 8px;
     border: none;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid rgba(0,0,0,.1);
   }
 
   p > code {
     padding: 0 .5em;
     display: inline-block;
-    background: #f6f8fa;
+    background: rgba(0,0,0,.05);
   }
 }

@@ -207,6 +207,10 @@ const MessageListItem = React.createClass({
             messageContent = message.renderTextContent(content => {
                 return App.linkMembersInText(content);
             });
+            if(message.isBlockContent) {
+                contentStyle.padding = '16px 24px';
+                contentStyle.backgroundColor = Theme.color.pale2;
+            }
         } else if(message.contentType === 'file') {
             messageContent = <div className='clearfix'><Paper zDepth={1} style={STYLE.fileContent}><FileListItem message={message}/></Paper></div>;
         } else if(message.contentType === 'image') {

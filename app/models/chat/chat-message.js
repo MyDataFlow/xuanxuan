@@ -157,8 +157,17 @@ class Message extends Entity {
             content = Emojione.toImage(content);
             if(typeof render === 'function') content = render(content);
             this.$._renderTextContent = content;
+            this.$._isBlockContent = content && (content.indexOf('<h1 id="') > -1 || content.indexOf('<h2 id="') > -1 || content.indexOf('<h3 id="') > -1);
         }
         return this.$._renderTextContent;
+    }
+
+    /**
+     * Check content has headings
+     * @return {Boolean}
+     */
+    get isBlockContent() {
+        return !!this.$._isBlockContent;
     }
 
     /**
