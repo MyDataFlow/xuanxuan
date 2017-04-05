@@ -68,7 +68,7 @@ class ListGroup extends Component {
         };
 
         return <List {...other}>
-            <ListItem
+            {heading !== false ? <ListItem
                 key={'group-header-' + Helper.guid}
                 onClick={this.toggle.bind(this)}
                 primaryText={heading}
@@ -76,7 +76,7 @@ class ListGroup extends Component {
                 open={headingIcon !== undefined ? expand : null}
                 leftIcon={headingIcon !== undefined ? headingIcon : <ArrowDownIcon className={expand ? 'rotate-360' : 'rotate-270'} color={Theme.color.primary1} style={Object.assign({}, STYLE.headingIcon, headingIconStyle)} />}
                 style={Object.assign({}, STYLE.heading, headingStyle)}
-            />
+            /> : null}
             {expand ? (items || children) : null}
         </List>
     }

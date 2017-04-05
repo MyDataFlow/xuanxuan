@@ -17,19 +17,19 @@ const Page = React.createClass({
     
     getInitialState() {
         return {
-            page: null,
+            chatGid: null,
         };
     },
 
-    _handleMenuItemClick(name, data, tag) {
-        this.setState({page: tag});
+    _handleChatMenuItemClick(chatGid) {
+        this.setState({chatGid});
     },
 
     componentDidMount() {
         this._handleDataDeleteEvent = App.on(R.event.data_delete, data => {
             if(data.chats) {
                 data.chats.forEach(chat => {
-                    this.removeCacheContent('chat#' + chat.gid);
+                    this.removeCacheContent(chat.gid);
                 });
                 this.forceUpdate();
             }
@@ -37,7 +37,7 @@ const Page = React.createClass({
 
         this._handleUserSwapEvent = App.on(R.event.user_swap, data => {
             this.clearCache();
-            this.setState({page: null});
+            this.setState({chatGid: null});
         });
     },
 
@@ -46,30 +46,19 @@ const Page = React.createClass({
     },
 
     getDisplayCacheContentId(cacheName) {
-        return this.state.page;
+        return this.state.chatGid;
     },
 
     renderCacheContent(contentId, cacheName) {
-        const STYLE = {
-            page: {
-                left: App.user.config.ui.chat.menu.width
-            }
-        };
-        let className = "dock-full";
-        if(contentId === 'newchat') {
-            return <NewChatWindow className={className} style={STYLE.page}/>
-        } else if(contentId === 'contacts') {
-            return <ContactsWindow className={className} style={STYLE.page}/>
-        } else if(contentId) {
-            let chatId = contentId.split('#')[1];
-            App.chat.activeChatWindow = chatId;
-            return <ChatWindow chatId={chatId} className={className} style={STYLE.page}/>
+        if(contentId) {
+            App.chat.activeChatWindow = contentId;
+            return <ChatWindow chatGid={contentId} className="dock-full" style={{left: App.user.config.ui.chat.menu.width}}/>
         }
     },
 
     render() {
         return <div {...this.props}>
-            <Menu onItemClick={this._handleMenuItemClick}/>
+            <Menu onChatItemClick={this._handleChatMenuItemClick}/>
             {this.renderCacheContents()}
         </div>
     }

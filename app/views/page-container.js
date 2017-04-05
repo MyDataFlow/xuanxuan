@@ -12,17 +12,17 @@ import R                   from '../resource';
  * Page container react component class
  */
 const PageContianer = React.createClass({
+
     mixins: [CacheContents],
     pages: {
-        chat:      {component: ChatPage},
-        contacts:  {component: ContactsPage},
-        groups:    {component: ContentNotReady}
+        [R.ui.navbar_chat]: {component: ChatPage, page: R.ui.navbar_chat},
+        [R.ui.navbar_contacts]: {page: R.ui.navbar_chat},
+        [R.ui.navbar_groups]: {page: R.ui.navbar_chat}
     },
 
     getInitialState() {
         return {
-            position: {left: App.user.config.ui.navbar.compactWidth},
-            page: App.user.config.ui.navbar.page || 'chat'
+            page: this.pages[App.user.config.ui.navbar.page].page ? this.pages[App.user.config.ui.navbar.page].page : R.ui.navbar_chat
         };
     },
 
@@ -39,27 +39,29 @@ const PageContianer = React.createClass({
     },
 
     getDisplayCacheContentId(cacheName) {
-        return this.state.page;
+        let pageConfig = this.pages[this.state.page];
+        return pageConfig.page ? pageConfig.page : this.state.page;
     },
 
     renderCacheContent(contentId, cacheName) {
-        console.info('renderCacheContent', contentId, cacheName);
-        let PageComponent = this.pages[contentId].component;
-        let options = contentId === 'chat' ? null : {title: '【' + contentId + '】 的内容尚未准备就绪。'};
-        return <PageComponent className="page dock-full" {...options}/>;
+        let pageConfig = this.pages[contentId];
+        if(pageConfig) {
+            if(pageConfig.component) {
+                let PageComponent = pageConfig.component;
+                return <PageComponent className="page dock-full"/>;
+            }
+            if(pageConfig.page) {
+                return this.renderCacheContent(pageConfig.page, cacheName);
+            }
+        }
+        return <ContentNotReady className="page dock-full" title={'【' + contentId + '】 的内容尚未准备就绪。'} />;
     },
 
     render() {
-        const STYLE = {
-            container: {transition: Theme.transition.normal('left', 'right')},
-        };
-
-        let pageStyle = Object.assign({}, STYLE.container, this.state.position);
-
         return (
           <div {...this.props} 
             className="page-container dock-full"
-            style={pageStyle}>
+            style={{left: 50}}>
             {this.renderCacheContents()}
           </div>
         );

@@ -680,15 +680,6 @@ class App extends ReadyNotifier {
     }
 
     /**
-     * Change ui
-     * @param  {Object} options
-     * @return {Void}
-     */
-    changeUI(options) {
-        this.emit(R.event.ui_change, options);
-    }
-
-    /**
      * Get all members
      * @return {Array[Member]}
      */

@@ -151,12 +151,10 @@ const Navbar = React.createClass({
         };
     },
 
-    componentClickAway() {
-        if(this.state.expand) this.setExpand(false);
-    },
-
     handleItemClick(name) {
-        App.changeUI({navbar: name});
+        App.emit(R.event.ui_change, {
+            navbar: name
+        });
     },
 
     hideMenu() {
@@ -165,10 +163,6 @@ const Navbar = React.createClass({
 
     handleUserAvatarClick() {
         this.setState({menu: !this.state.menu});
-    },
-
-    handleExpandToggerClick() {
-        this.setExpand(!this.state.expand);
     },
 
     handleSettingBtnClick() {
@@ -190,6 +184,8 @@ const Navbar = React.createClass({
         this._handleChatNoticeEvent = App.on(R.event.chats_notice_change, chatNoticeCount => {
             this.setState({chatNoticeCount});
         });
+
+        this.handleItemClick(this.state.active);
     },
 
     componentWillUnmount() {
@@ -198,22 +194,22 @@ const Navbar = React.createClass({
 
     render() {
         const STYLE = {
-          compactWidth: App.user.config.ui.navbar.compactWidth,
-          navbar:     {width: 50, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
-          icon:       {left: 5},
-          rightIcon:  {right: 6, top: 14},
-          list:       {backgroundColor: 'transparent'},
-          navItem:    {paddingTop: 6, paddingBottom: 6, maxHeight: 60},
-          avatar:     {left: 7},
-          footer:     {backgroundColor: 'transparent', position: 'absolute', left: 0, right: 0, bottom: 0, padding: 0},
-          footerItem: {maxHeight: 48},
-          iconButton: {position: 'absolute', left: 1, top: -4},
-          tooltip:    {pointerEvents: 'none', fontSize: '12px', zIndex: 100},
-          status:     {
-              base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
-              dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
-          },
-          noticeBadge: {position: 'absolute', top: 8, left: 5, width: 40, height: 20, color: Theme.color.primary1, textAlign: 'center', lineHeight: '20px', zIndex: 1, fontSize: '12px'}
+            compactWidth: App.user.config.ui.navbar.compactWidth,
+            navbar:     {width: 50, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
+            icon:       {left: 5},
+            rightIcon:  {right: 6, top: 14},
+            list:       {backgroundColor: 'transparent'},
+            navItem:    {paddingTop: 6, paddingBottom: 6, maxHeight: 60},
+            avatar:     {left: 7},
+            footer:     {backgroundColor: 'transparent', position: 'absolute', left: 0, right: 0, bottom: 0, padding: 0},
+            footerItem: {maxHeight: 48},
+            iconButton: {position: 'absolute', left: 1, top: -4},
+            tooltip:    {pointerEvents: 'none', fontSize: '12px', zIndex: 100},
+            status:     {
+                base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
+                dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
+            },
+            noticeBadge: {position: 'absolute', top: 8, left: 5, width: 40, height: 20, color: Theme.color.primary1, textAlign: 'center', lineHeight: '20px', zIndex: 1, fontSize: '12px'}
         };
 
         let listItems = [
@@ -224,7 +220,6 @@ const Navbar = React.createClass({
 
         let that = this;
         let statusStyle = Object.assign({}, STYLE.status.base);
-
         let userDisplayName = this.state.user.displayName || this.state.user.realName || this.state.user.account;
         let userAvatar = <UserAvatar user={this.state.user} style={STYLE.avatar} size={36}/>;
         let userInfo =  <div style={{position: 'relative'}}><UserStatus style={statusStyle} dotStyle={STYLE.status.dot} status={this.state.user.status} />&nbsp;</div>;

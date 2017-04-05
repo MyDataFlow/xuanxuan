@@ -552,33 +552,45 @@ class Chat extends Entity {
     /**
      * Sort chats
      */
-    static sort(chats, app, order = -1, onlyTime = false) {
+    static sort(chats, options, app) {
+        options = Object.assign({
+            order: -1,
+            starFirst: true,
+            compareNotice: false,
+            compareLastActiveTime: true,
+            compareOnline: true,
+            compareCreateDate: true,
+            compareName: false
+        }, options);
         return chats.sort((x, y) => {
             let result = 0;
             if(result === 0) {
                 result = (!x.hide ? 1 : 0) - (!y.hide ? 1 : 0);
             }
-            if(result === 0) {
+            if(options.starFirst && result === 0) {
                 result = (x.star ? 1 : 0) - (y.star ? 1 : 0);
             }
-            if(!onlyTime) {
-                if(result === 0 && (x.noticeCount || y.noticeCount)) {
-                    result = (x.noticeCount || 0) - (y.noticeCount || 0);
-                }
-                if(result === 0 && app) {
-                    result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
-                }
-            }
-            if(result === 0 && (x.lastActiveTime || y.lastActiveTime)) {
+            if(options.compareLastActiveTime && result === 0 && (x.lastActiveTime || y.lastActiveTime)) {
                 result = (x.lastActiveTime || 0) - (y.lastActiveTime || 0);
             }
-            if(result === 0) {
+            if(options.compareNotice && result === 0 && (x.noticeCount || y.noticeCount)) {
+                result = (x.noticeCount || 0) - (y.noticeCount || 0);
+            }
+            if(options.compareOnline && result === 0 && app) {
+                result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
+            }
+            if(options.compareCreateDate && result === 0) {
                 result = (x.createdDate || 0) - (y.createdDate || 0);
+            }
+            if(options.compareName && result === 0) {
+                let xName = x.getDisplayName(app, false);
+                let yName = y.getDisplayName(app, false);
+                result = xName === yName ? 0 : (xName > yName ? 1 : -1);
             }
             if(result === 0) {
                 result = x.id - y.id;
             }
-            return order * result;
+            return result * options.order;
         });
     }
 }

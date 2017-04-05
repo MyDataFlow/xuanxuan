@@ -64,6 +64,19 @@ class Dao {
      */
     getChat(gid, includeHiddenItem = false, ignoreMessage = false) {
         let chat = this.chats[gid];
+        if(!chat) {
+            if(gid.indexOf('&') > -1) {
+                let members = gid.split('&').map(x => Number.parseInt(x));
+                chat = new Chat({
+                    gid,
+                    members,
+                    createdBy: this.app.user.account,
+                    type: 'one2one'
+                });
+                chat.updateMembersSet(this.app);
+                return chat;
+            }
+        }
         if(!ignoreMessage && chat && (!chat.messages || chat.messages.length === 0)) {
             this.getChatMessages(gid, true).then(messages => {
                 if(messages && messages.length) {

@@ -19,47 +19,57 @@ import Helper              from 'Helper';
 import Colors              from 'Utils/material-colors';
 import Chat                from 'Models/chat/chat';
 import ListPanel           from 'Components/list-panel';
-import Tabs                from 'Components/tabs';
 import Modal               from 'Components/modal';
+import SearchBox           from 'Components/classic-searchbox';
 import TimeIcon            from 'material-ui/svg-icons/device/access-time';
 import ListIcon            from 'material-ui/svg-icons/action/view-list';
 import NewChatWindow       from './newchat';
 
+let MENU_TYPES = {
+    recent: 'recent',
+    contacts: 'contacts',
+    groups: 'groups'
+};
+MENU_TYPES[R.ui.navbar_chat]     = MENU_TYPES.recent;
+MENU_TYPES[R.ui.navbar_contacts] = MENU_TYPES.contacts;
+MENU_TYPES[R.ui.navbar_groups]   = MENU_TYPES.groups;
+
+/**
+ * Chat menu
+ */
 const ChatMenu = React.createClass({
-    
+
     propTypes: {
-        onItemClick: PropTypes.func
+        onChatItemClick: PropTypes.func
     },
 
     getInitialState() {
         return {
-            data: {
-                fav: [],
-                recent: []
-            },
-            type: App.user.config.ui.chat.menu.type || 'recent',
-            listExpandState: {
-                fav: true,
-                recent: true,
-                one2one: true,
-                channel: true
-            },
-            activedItem: false,
-            showHiddenItems: false
+            data: {},
+            type: MENU_TYPES[App.user.config.ui.chat.menu.type] ? MENU_TYPES[App.user.config.ui.chat.menu.type] : MENU_TYPES.contacts,
+            activeChat: false,
+            search: ''
         };
     },
 
-    _handleItemClick(type, id, chat) {
+    _handleItemClick(chatGid, chat) {
+        if(typeof chatGid === 'object') {
+            let chatTemp = chatGid;
+            chatGid = chatTemp.gid;
+            chat = chatTemp;
+        }
+
         if(chat && chat.noticeCount) {
             chat.noticeCount = 0;
             App.emit(R.event.chats_notice, {muteChats: [chat]});
         }
 
-        if(type === 'chat' && Helper.isEmptyString(id)) return;
-        
-        let tag = type + (id !== undefined && id !== null ? ('#' + id) : '');
-        if(this.state.activedItem !== tag) this.setState({activedItem: tag});
-        return this.props.onItemClick && this.props.onItemClick(type, id, tag);
+        if(chatGid) {
+            if(this.state.activeChat !== chatGid) {
+                this.setState({activeChat: chatGid});
+            }
+            this.props.onChatItemClick && this.props.onChatItemClick(chatGid, chat);
+        }
     },
 
     _handleItemContextMenu(chat, e) {
@@ -67,121 +77,156 @@ const ChatMenu = React.createClass({
         App.popupContextMenu(App.chat.createActionsContextMenu(chat), e);
     },
 
-    _updateData(chats, type) {
-        if(typeof chats === 'string') {
-            type = chats;
-            chats = null;
-        }
-        type = type || this.state.type;
-        chats = chats || App.chat.all;
-        if(!chats) return;
-
-        let data;
-        if(type === 'recent') {
-            let favs = [], recent = [];
-            chats.forEach(chat => {
-                if(chat.star) favs.push(chat);
-                else recent.push(chat);
-            });
-
-            Chat.sort(favs, App, -1, true);
-            Chat.sort(recent, App, -1, true);
-
-            data = [];
-            if(favs.length) {
-                data.push({name: 'fav', title: Lang.chat.favList, items: favs});
-            }
-            if(recent.length) {
-                data.push({name: 'recent', title: Lang.chat.recentList, items: recent});
-            }
-        } else {
-            const groupedOrder = {
-                fav: 0,
-                one2one: 1,
-                channel: 2,
-                group: 3
-            };
-            data = Helper.sortedArrayGroup(chats, chat => {
-                if(chat.star) return 'fav';
-                if(chat.public || chat.isSystem) return 'channel';
-                if(chat.isOne2One) return 'one2one';
-                return 'group';
-            }, (group1, group2) => {
-                return groupedOrder[group1.name] - groupedOrder[group2.name];
-            });
-            data.forEach(x => {
-                 Chat.sort(x.items, App);
-            });
-        }
-
-        this.setState({data, type});
-        if(!this.state.activedItem && data) {
-            let first = null;
-            for(let dataItems of data) {
-                if(dataItems.items && dataItems.items.length) {
-                    first = dataItems.items[0];
-                    break;
-                }
-            }
-            if(first) this._handleItemClick('chat', first.gid, first);
-        }
+    _handleSearchChange(search, isEmpty) {
+        this.setState({search});
     },
 
-    _handleGroupExpandChange(key, isExpand) {
-        let listExpandState = this.state.listExpandState;
-        listExpandState[key] = isExpand;
-        this.setState({listExpandState});
+    // _updateData(chats, type) {
+    //     if(typeof chats === 'string') {
+    //         type = chats;
+    //         chats = null;
+    //     }
+    //     type = type || this.state.type;
+    //     chats = chats || App.chat.all;
+    //     if(!chats) return;
+
+    //     let data;
+    //     if(type === 'recent') {
+    //         let favs = [], recent = [];
+    //         chats.forEach(chat => {
+    //             if(chat.star) favs.push(chat);
+    //             else recent.push(chat);
+    //         });
+
+    //         Chat.sort(favs, App, -1, true);
+    //         Chat.sort(recent, App, -1, true);
+
+    //         data = [];
+    //         if(favs.length) {
+    //             data.push({name: 'fav', title: Lang.chat.favList, items: favs});
+    //         }
+    //         if(recent.length) {
+    //             data.push({name: 'recent', title: Lang.chat.recentList, items: recent});
+    //         }
+    //     } else {
+    //         const groupedOrder = {
+    //             fav: 0,
+    //             one2one: 1,
+    //             channel: 2,
+    //             group: 3
+    //         };
+    //         data = Helper.sortedArrayGroup(chats, chat => {
+    //             if(chat.star) return 'fav';
+    //             if(chat.public || chat.isSystem) return 'channel';
+    //             if(chat.isOne2One) return 'one2one';
+    //             return 'group';
+    //         }, (group1, group2) => {
+    //             return groupedOrder[group1.name] - groupedOrder[group2.name];
+    //         });
+    //         data.forEach(x => {
+    //              Chat.sort(x.items, App);
+    //         });
+    //     }
+
+    //     this.setState({data, type});
+    //     if(!this.state.activedItem && data) {
+    //         let first = null;
+    //         for(let dataItems of data) {
+    //             if(dataItems.items && dataItems.items.length) {
+    //                 first = dataItems.items[0];
+    //                 break;
+    //             }
+    //         }
+    //         if(first) this._handleItemClick('chat', first.gid, first);
+    //     }
+    // },
+
+    _getData(type, search) {
+        if(!App.user || App.user.isOffline) return [];
+        type = type || this.state.type || MENU_TYPES.contacts;
+        search = search || this.state.search;
+        if(!Helper.isEmptyString(search)) {
+            console.info('search>', search);
+            return [{name: 'search', items: App.chat.searchChats(search)}];
+        }
+        if(!this.dataCache) this.dataCache = {};
+        if(this.dataCache[type]) return this.dataCache[type];
+        var data = [];
+        if(MENU_TYPES[type]) {
+            switch(type) {
+                case MENU_TYPES.recent:
+                    var items = App.chat.getRecents(true);
+                    items = Chat.sort(items, {compareNotice: true}, App);
+                    data.push({name: MENU_TYPES.recent, items});
+                    break;
+                case MENU_TYPES.contacts:
+                    var items = App.chat.getContactsChats();
+                    items = Chat.sort(items, {
+                        order: -1,
+                        starFirst: true,
+                        compareNotice: false,
+                        compareLastActiveTime: false,
+                        compareOnline: true,
+                        compareCreateDate: false,
+                        compareName: true
+                    }, App);
+                    data.push({name: MENU_TYPES.contacts, items});
+                    break;
+                case MENU_TYPES.groups:
+                    var items = App.chat.getGroups();
+                    items = Chat.sort(items, {compareNotice: true}, App);
+                    data.push({name: MENU_TYPES.groups, items});
+                    break;
+            }
+            this.dataCache[type] = data;
+        }
+        return data;
     },
 
     componentDidMount() {
-        this._updateData();
-
         this._handleUIChangeEvent = App.on(R.event.ui_change, ui => {
-            if(ui.navbar === R.ui.navbar_chat && ui.menu !== undefined) {
-                if(!Array.isArray(ui.menu) && typeof(ui.menu) === 'string') {
-                    ui.menu = ui.menu.split('#');
+            if(ui.navbar && MENU_TYPES[ui.navbar]) {
+                let newState = {type: MENU_TYPES[ui.navbar]};
+                if(ui.search) {
+                    newState.search = ui.search;
                 }
-                this._handleItemClick(...ui.menu);
+                if(ui.activeChat) {
+                    let chat = null, chatId = 0;
+                    if(typeof ui.activeChat === 'object') {
+                        chat = ui.activeChat;
+                        chatId = chat.id;
+                    } else {
+                        chatId = ui.activeChat;
+                    }
+                    newState.activeChat = chatId;
+                    this._handleItemClick(chatId, chat);
+                }
+                this.setState(newState);
             }
         });
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
             if(data.chats || data.members) {
-                this._updateData();
+                this.dataCache = null;
+                this.forceUpdate();
             }
         });
     },
 
     componentWillUnmount() {
+        if(this.saveUserTask) {
+            clearTimeout(this.saveUserTask);
+            App.saveUser();
+        }
         App.off(this._handleUIChangeEvent, this._handleDataChangeEvent);
     },
 
-    _handOnTabClick(tab) {
-        if(tab !== 'newChat') {
-            this._updateData(tab);
-        } else {
-            Modal.show({
-                id: 'new-chat',
-                removeAfterHide: true,
-                header: Lang.chat.newChat,
-                headerStyle: {backgroundColor: Theme.color.pale2},
-                content:  () => {
-                    return <NewChatWindow chat={this.state.chat} className="dock-full" style={{top: 50}}/>;
-                },
-                style: {left: 20, top: 20, right: 20, bottom: 0, position: 'absolute', overflow: 'hidden'},
-                actions: false
-            });
-        }
-    },
-
     componentDidUpdate(prevProps, prevState) {
-        if(prevState && prevState.expand !== this.state.expand) {
-            this.props.onExpand && this.props.onExpand(this.state.expand);
-        }
         if(App.user.config.ui.chat.menu.type != this.state.type) {
             App.user.config.ui.chat.menu.type = this.state.type;
             clearTimeout(this.saveUserTask);
             this.saveUserTask = setTimeout(() => {
                 App.saveUser();
+                this.saveUserTask = null;
             }, 2000);
         }
     },
@@ -196,6 +241,9 @@ const ChatMenu = React.createClass({
             },
             listContainer: {
                 top: 48
+            },
+            starItemStyle: {
+                backgroundColor: 'yellow'
             },
             buttonItem: {color: Theme.color.primary1},
             rightIcon: {
@@ -226,22 +274,8 @@ const ChatMenu = React.createClass({
                 bottom: 0,
                 right: 0
             },
-            tabs: {
-                backgroundColor: 'rgba(0,0,0,.075)',
-                width: '100%'
-            },
-            tabStyle: {
-                height: 49,
-                minWidth: 49,
-                paddingLeft: 8,
-                paddingRight: 8,
-                width: '33.3333333%',
-                display: 'table-cell',
-                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.075'
-            },
-            activeTabStyle: {
-                backgroundColor: 'rgba(255,255,255,.3)',
-                boxShadow: 'none'
+            header: {
+                height: 50
             }
         };
         
@@ -251,42 +285,64 @@ const ChatMenu = React.createClass({
         } = this.props;
 
         let listElements = [];
-        if(Array.isArray(this.state.data)) {
-            this.state.data.forEach(data => {
+        let listData = this._getData();
+        if(Array.isArray(listData) && listData.length) {
+            listData.forEach(data => {
                 if(!data.items || !data.items.length) return;
                 let key = data.name;
                 let list = <ListPanel
-                className={'small menu-list-' + key}
-                headingStyle={{color: Theme.color.icon, fontSize: '12px'}}
-                headingIconStyle={{color: Theme.color.icon, fill: Theme.color.icon}}
-                key={'menu-list-' + key} 
-                style={STYLE.list}
-                heading={(data.title || Lang.chat.chatTypes[key])}
-                expand={!!this.state.listExpandState[key]}
-                onExpand={isExpand => {this._handleGroupExpandChange(key, isExpand);}}
+                    className={'small menu-list-' + key}
+                    headingStyle={{color: Theme.color.icon, fontSize: '12px'}}
+                    headingIconStyle={{color: Theme.color.icon, fill: Theme.color.icon}}
+                    key={'menu-list-' + key} 
+                    style={STYLE.list}
+                    heading={(data.title || false)}
+                    expand={true}
                 >
                 {
                     data.items.map(item => {
                         let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;
-                        let itemKey = 'chat#' + item.gid;
+                        let itemKey = item.gid;
                         if(item.isOne2One) {
                             let theOtherOne = item.getTheOtherOne(App.user);
                             let primaryText = item.getDisplayName(App);
-                            return <ListItem key={itemKey} actived={this.state.activedItem === itemKey} onContextMenu={this._handleItemContextMenu.bind(this, item)} onClick={this._handleItemClick.bind(null, 'chat', item.gid, item)} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale' : ''}/>} rightIcon={rightIcon}/>;
+                            return <ListItem
+                                key={itemKey}
+                                style={item.star ? STYLE.starItemStyle : null}
+                                actived={this.state.activeChat === itemKey}
+                                onContextMenu={this._handleItemContextMenu.bind(this, item)} 
+                                onClick={this._handleItemClick.bind(null, item.gid, item)} 
+                                primaryText={primaryText} 
+                                leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale' : ''}/>}
+                                rightIcon={rightIcon}
+                            />;
                         } else {
-                            return <ListItem key={itemKey} actived={this.state.activedItem === itemKey} onContextMenu={this._handleItemContextMenu.bind(this, item)} onClick={this._handleItemClick.bind(null, 'chat', item.gid, item)} primaryText={item.getDisplayName(App)} rightIcon={rightIcon} leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <PersonOutlineIcon color={Colors.lightBlue500}/>}/>;
+                            return <ListItem
+                                key={itemKey}
+                                style={item.star ? STYLE.starItemStyle : null}
+                                actived={this.state.activeChat === itemKey}
+                                onContextMenu={this._handleItemContextMenu.bind(this, item)}
+                                onClick={this._handleItemClick.bind(null, item.gid, item)}
+                                primaryText={item.getDisplayName(App)}
+                                rightIcon={rightIcon}
+                                leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <PersonOutlineIcon color={Colors.lightBlue500}/>}
+                            />;
                         }
                     })
                 }
                 </ListPanel>;
                 listElements.push(list);
             });
-            
         }
 
         style = Object.assign({}, STYLE.menu, style);
         return <div className='dock-left' style={style} {...other}>
-          <div className='scroll-y dock-full' style={STYLE.listContainer}>{listElements}</div>
+          <div className='dock-top' style={STYLE.header}>
+            <SearchBox onValueChange={this._handleSearchChange}/>
+          </div>
+          <div className='scroll-y dock-full' style={STYLE.listContainer}>
+            {listElements}
+          </div>
         </div>
     }
 });

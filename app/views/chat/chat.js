@@ -51,7 +51,7 @@ const ChatPage = React.createClass({
     },
 
     componentDidMount() {
-        let chat = App.chat.dao.getChat(this.props.chatId);
+        let chat = App.chat.dao.getChat(this.props.chatGid);
         this.setState({chat}, () => {
             let chatMessageBox = this.chatMessageBox;
             if(this.messageSendbox) {
@@ -71,20 +71,20 @@ const ChatPage = React.createClass({
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
             let chat = null;
             if(data.chats) {
-                chat = data.chats.find(x => x.gid === this.props.chatId);
+                chat = data.chats.find(x => x.gid === this.props.chatGid);
             }
-            if(chat && chat.gid === this.props.chatId) this.setState({chat});
+            if(chat && chat.gid === this.props.chatGid) this.setState({chat});
         });
 
         if(chat.isCommitter(App.user)) {
             this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
-                if(image && chat && chat.gid === this.props.chatId) {
+                if(image && chat && chat.gid === this.props.chatGid) {
                     this.messageSendbox.appendImages(image);
                 }
             });
 
             this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
-                if(App.chat.activeChatWindow === this.props.chatId && actionLink.action === '@Member') {
+                if(App.chat.activeChatWindow === this.props.chatGid && actionLink.action === '@Member') {
                     let editbox = this.messageSendbox.editbox;
                     editbox.appendContent('@' + actionLink.target + ' ');
                     editbox.focus(false);
@@ -190,8 +190,8 @@ const ChatPage = React.createClass({
 
         e.persist();
         Popover.toggle({
-            getLazyContent: () => <InviteMembers onInviteButtonClick={this._handleInviteMembers} members={members} chatId={this.props.chatId} />,
-            contentId: 'chat-' + this.props.chatId,
+            getLazyContent: () => <InviteMembers onInviteButtonClick={this._handleInviteMembers} members={members} chatId={this.props.chatGid} />,
+            contentId: 'chat-' + this.props.chatGid,
             id: 'ChatInviteMemberPopover',
             trigger: this.inviteBtnWrapper,
             placement: 'bottom',

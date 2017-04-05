@@ -13,8 +13,16 @@ import SetCommitters                     from 'Views/chat/set-committers';
 import Theme                             from 'Theme';
 import Lang                              from 'Lang';
 import AppActionLink                     from 'Utils/app-link';
+import Helper                            from 'Helper';
+import PinYin                            from 'pinyin';
 
-const Helper = global.Helper;
+const MAX_RECENT_TIME = 1000*60*60*24*7;
+const SEARCH_SCORE_MAP      = {
+    matchAll: 100,
+    matchPrefix: 75,
+    include: 50,
+    similar: 10
+};
 
 /**
  * Chat application handler
@@ -238,7 +246,7 @@ class ChatApp extends AppCore {
             if(Helper.isWindowsOS) this.$app.flashTrayIcon(false);
             if(this.totalNoticeCount && this.lastNoticeChatGid) {
                 let chat = this.dao.getChat(this.lastNoticeChatGid, true, true);
-                this.$app.changeUI({navbar: R.ui.navbar_chat, menu: ['chat', this.lastNoticeChatGid, chat]});
+                this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, menu: ['chat', this.lastNoticeChatGid, chat]});
             }
         });
 
@@ -247,7 +255,7 @@ class ChatApp extends AppCore {
             if(this.activeChatWindow) {
                 let chat = this.dao.getChat(this.activeChatWindow, true, true);
                 if(chat && chat.noticeCount) {
-                    this.$app.changeUI({navbar: R.ui.navbar_chat, menu: ['chat', chat.gid, chat]});
+                    this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, menu: ['chat', chat.gid, chat]});
                 }
             }
         });
@@ -301,7 +309,7 @@ class ChatApp extends AppCore {
             }));
         }
         
-        this.$app.changeUI({navbar: R.ui.navbar_chat, menu: ['chat', chat.gid]});
+        this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, menu: ['chat', chat.gid]});
     }
 
     /**
@@ -309,7 +317,130 @@ class ChatApp extends AppCore {
      * @return {[type]} [description]
      */
     get all() {
-        return this.dao ? this.dao.getChats() : null;
+        return this.dao ? this.dao.getChats() : [];
+    }
+
+    /**
+     * Get recent chats
+     * @param  {bool} ignoreStar
+     * @return {array}
+     */
+    getRecents(includeStar) {
+        var now = new Date().getTime();
+        return this.all.filter(chat => {
+            return (includeStar || chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
+        });
+    }
+
+    /**
+     * Get contacts chats
+     * @return {array}
+     */
+    getContactsChats() {
+        let chats = [];
+        this.$app.members.forEach(member => {
+            if(member.id !== this.user.id) {
+                chats.push(this.getContactChat(member));
+            }
+        });
+        return chats;
+    }
+
+    /**
+     * Get contact chat
+     * @param  {object} member
+     * @return {object}
+     */
+    getContactChat(member) {
+        let members = [member.id, this.$app.user.id].sort();
+        const gid = members.join('&');
+        let chat = this.dao.chats[gid];
+        if(chat) return chat;
+        chat = new Chat({
+            gid,
+            members,
+            createdBy: this.user.account,
+            type: 'one2one'
+        });
+        chat.updateMembersSet(this);
+        this.dao.chats[gid] = chat;
+        return chat;
+    }
+
+    /**
+     * Get group chats
+     * @return {array}
+     */
+    getGroups() {
+        return this.all.filter(chat => {
+            return chat.isGroup || chat.isSystem;
+        });
+    }
+
+    /**
+     * Search chats
+     * @param  {string} search
+     * @return {array}  chat array
+     */
+    searchChats(search) {
+        if(Helper.isEmptyString(search)) return [];
+        search = search.trim().toLowerCase().split(' ');
+        if(!search.length) return [];
+
+        this.getContactsChats();
+
+        let result = [];
+        let caculateScore = (sKey, whitch) => {
+            if(Helper.isEmptyString(sKey) || Helper.isEmptyString(whitch)) return 0;
+            if(sKey === whitch) return SEARCH_SCORE_MAP.matchAll;
+            let idx = whitch.indexOf(sKey);
+            return idx === 0 ? SEARCH_SCORE_MAP.matchPrefix : (idx > 0 ? SEARCH_SCORE_MAP.include : 0);
+        };
+        Object.keys(this.dao.chats).forEach(gid => {
+            let chat = this.dao.chats[gid];
+            let score = 0;
+            let chatGid = chat.gid.toLowerCase();
+            let chatName = chat.getDisplayName(this.$app, false).toLowerCase();
+            let pinYin = [
+                PinYin(chatName, {style: PinYin.STYLE_FIRST_LETTER}).map(x => x[0]).join(''),
+                PinYin(chatName, {style: PinYin.STYLE_NORMAL}).map(x => x[0]).join(''),
+                PinYin(chatName, {style: PinYin.STYLE_INITIALS}).map(x => x[0]).join('')
+            ].join(' ');
+
+            let theOtherOneName = '';
+            let theOtherOneAccount = '';
+            if(chat.isOne2One) {
+                let theOtherOne = chat.getTheOtherOne(this.user);
+                theOtherOneAccount = theOtherOne.account;
+            }
+            search.forEach(s => {
+                if(!s.length) return;
+                if(s.length > 1) {
+                    if(s[0] === '#') { // id
+                        s = s.substr(1);
+                        score += 2*caculateScore(s, chatGid);
+                        if(chat.isSystem || chat.isGroup) {
+                            score += 2*caculateScore(s, chatName);
+                            if(chat.isSystem) {
+                                score += 2*caculateScore(s, 'system');
+                            }
+                        }
+                    } else if(s[0] === '@') { // account or username
+                        s = s.substr(1);
+                        if(chat.isOne2One) {
+                            score += 2*caculateScore(s, theOtherOneAccount);
+                        }
+                    }
+                }
+                score += caculateScore(s, chatName);
+                score += caculateScore(s, pinYin);
+            });
+            chat.$.score = score;
+            if(score > 0) {
+                result.push(chat);
+            }
+        });
+        return result.sort((x, y) => x.$.score - y.$.score);
     }
 
     /**
@@ -514,6 +645,25 @@ class ChatApp extends AppCore {
             'method': 'setCommitters',
             'params': [chat.gid, committers]
         }));
+    }
+
+    /**
+     * Open create new chat modal
+     * @param  {number} chat
+     * @return {void}
+     */
+    openCreateNewChat(chat) {
+        Modal.show({
+            id: 'new-chat',
+            removeAfterHide: true,
+            header: Lang.chat.newChat,
+            headerStyle: {backgroundColor: Theme.color.pale2},
+            content:  () => {
+                return <NewChatWindow chat={chat} className="dock-full" style={{top: 50}}/>;
+            },
+            style: {left: 20, top: 20, right: 20, bottom: 0, position: 'absolute', overflow: 'hidden'},
+            actions: false
+        });
     }
 
     /**
