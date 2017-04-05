@@ -146,7 +146,6 @@ const ChatMenu = React.createClass({
         type = type || this.state.type || MENU_TYPES.contacts;
         search = search || this.state.search;
         if(!Helper.isEmptyString(search)) {
-            console.info('search>', search);
             return [{name: 'search', items: App.chat.searchChats(search)}];
         }
         if(!this.dataCache) this.dataCache = {};
