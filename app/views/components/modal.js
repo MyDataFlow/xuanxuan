@@ -264,6 +264,30 @@ class ModalView extends Component {
         let buttons = null;
         if(actions) {
             let buttonsIndex = 0;
+            const isWindowsOS = Helper.isWindowsOS;
+            actions.map((act, idx) => {
+                if(!act.order) {
+                    act.order = idx;
+                    switch(act.type) {
+                        case 'submit':
+                            act.order += isWindowsOS ? (-9000) : 9000;
+                            break;
+                        case 'primary':
+                            act.order += isWindowsOS ? (-8000) : 8000;
+                            break;
+                        case 'secondary':
+                            act.order += isWindowsOS ? (-7000) : 7000;
+                            break;
+                        case 'cancel':
+                            act.order += isWindowsOS ? (9000) : -9000;
+                            break;
+                    }
+                }
+                return act;
+            });
+            actions = actions.sort((act1, act2) => {
+                return act1.order - act2.order;
+            });
             buttons = actions.map(action => {
                 if(action.label === undefined) {
                     action.label = action.type === 'submit' ? Lang.common.confirm : action.type === 'cancel' ? Lang.common.cancel : 'SUBMIT';
