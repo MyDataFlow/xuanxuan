@@ -40,7 +40,8 @@
         {
           "x": 130,
           "y": 220
-        }, {
+        },
+        {
           "x": 410,
           "y": 220,
           "type": "link",
@@ -186,6 +187,7 @@
     "md5": "^2.2.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.17.1",
+    "pinyin": "^2.8.3",
     "react": "^15.4.2",
     "react-addons-css-transition-group": "^15.4.2",
     "react-addons-pure-render-mixin": "^15.4.2",
