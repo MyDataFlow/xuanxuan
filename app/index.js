@@ -11,6 +11,7 @@ import lang                   from './lang';
 import EventCenter            from './event-center';
 import App                    from './app';
 import injectTapEventPlugin   from 'react-tap-event-plugin';
+import AppActionLink          from './utils/app-link';
 
 injectTapEventPlugin();
 
@@ -59,6 +60,20 @@ document.title = lang.title;
 if(DEBUG) {
     document.title += '- ' + window.location.href;
 }
+
+document.addEventListener('click', e => {
+    let target = e.target;
+    while(target && !((target.classList && target.classList.contains('link-app')) || (target.tagName === 'A' && target.attributes['href']))) {
+        target = target.parentNode;
+    }
+    if(target && ((target.classList && target.classList.contains('link-app')) || (target.tagName === 'A' && target.attributes['href']))) {
+        let link = target.attributes['href'] || target.attributes['data-target'];
+        if(link && link.value) {
+            App.emit(R.event.ui_link, new AppActionLink(link.value, e));
+        }
+        e.preventDefault();
+    }
+});
 
 App.ready(() => {
     let appElement = document.getElementById('appContainer');

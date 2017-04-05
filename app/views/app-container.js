@@ -7,7 +7,6 @@ import PageContianer        from './page-container';
 import Login                from './login';
 import Hotkey               from './mixins/hotkey';
 import Messager             from './components/messager';
-import AppActionLink        from '../utils/app-link';
 import R                    from '../resource';
 import App                  from '../app';
 
@@ -67,25 +66,11 @@ const AppContainer = React.createClass({
         App.off(this._handleUserChangeEvent, this._handleUserStatusChangeEvent);
     },
 
-    _handleOnAppClick(e) {
-        let target = e.target;
-        while(target && !((target.classList && target.classList.contains('link-app')) || (target.tagName === 'A' && target.attributes['href']))) {
-            target = target.parentNode;
-        }
-        if(target && ((target.classList && target.classList.contains('link-app')) || (target.tagName === 'A' && target.attributes['href']))) {
-            let link = target.attributes['href'] || target.attributes['data-target'];
-            if(link && link.value) {
-                App.emit(R.event.ui_link, new AppActionLink(link.value, e));
-            }
-            e.preventDefault();
-        }
-    },
-
     render() {
         let appStyle = Object.assign({left: this.state.login ? '100%' : 0}, STYLE.app);
 
         return (
-          <div id="app" className="dock-full" style={appStyle} onClick={this._handleOnAppClick}>
+          <div id="app" className="dock-full" style={appStyle}>
             <Navbar id='navbar'/>
             <PageContianer />
             <Login id="login"/>
