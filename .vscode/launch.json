@@ -21,7 +21,17 @@
                 "babel-polyfill",
                 "./app/main.development"
             ],
-            "sourceMaps": true
+            "sourceMaps": true,
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
+                "runtimeArgs": [
+                    "-r",
+                    "babel-register",
+                    "-r",
+                    "babel-polyfill",
+                    "./app/main.development"
+                ]
+            }
         },
         {
             "type": "node",
