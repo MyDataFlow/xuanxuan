@@ -81,66 +81,6 @@ const ChatMenu = React.createClass({
         this.setState({search});
     },
 
-    // _updateData(chats, type) {
-    //     if(typeof chats === 'string') {
-    //         type = chats;
-    //         chats = null;
-    //     }
-    //     type = type || this.state.type;
-    //     chats = chats || App.chat.all;
-    //     if(!chats) return;
-
-    //     let data;
-    //     if(type === 'recent') {
-    //         let favs = [], recent = [];
-    //         chats.forEach(chat => {
-    //             if(chat.star) favs.push(chat);
-    //             else recent.push(chat);
-    //         });
-
-    //         Chat.sort(favs, App, -1, true);
-    //         Chat.sort(recent, App, -1, true);
-
-    //         data = [];
-    //         if(favs.length) {
-    //             data.push({name: 'fav', title: Lang.chat.favList, items: favs});
-    //         }
-    //         if(recent.length) {
-    //             data.push({name: 'recent', title: Lang.chat.recentList, items: recent});
-    //         }
-    //     } else {
-    //         const groupedOrder = {
-    //             fav: 0,
-    //             one2one: 1,
-    //             channel: 2,
-    //             group: 3
-    //         };
-    //         data = Helper.sortedArrayGroup(chats, chat => {
-    //             if(chat.star) return 'fav';
-    //             if(chat.public || chat.isSystem) return 'channel';
-    //             if(chat.isOne2One) return 'one2one';
-    //             return 'group';
-    //         }, (group1, group2) => {
-    //             return groupedOrder[group1.name] - groupedOrder[group2.name];
-    //         });
-    //         data.forEach(x => {
-    //              Chat.sort(x.items, App);
-    //         });
-    //     }
-
-    //     this.setState({data, type});
-    //     if(!this.state.activedItem && data) {
-    //         let first = null;
-    //         for(let dataItems of data) {
-    //             if(dataItems.items && dataItems.items.length) {
-    //                 first = dataItems.items[0];
-    //                 break;
-    //             }
-    //         }
-    //         if(first) this._handleItemClick('chat', first.gid, first);
-    //     }
-    // },
-
     _getData(type, search) {
         if(!App.user || App.user.isOffline) return [];
         type = type || this.state.type || MENU_TYPES.contacts;
