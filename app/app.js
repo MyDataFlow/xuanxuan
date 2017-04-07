@@ -950,6 +950,7 @@ class App extends ReadyNotifier {
      * Quit application
      */
     quit() {
+        this.saveUser();
         this.remote('quit');
     }
 }
