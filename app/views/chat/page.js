@@ -52,6 +52,7 @@ const Page = React.createClass({
     renderCacheContent(contentId, cacheName) {
         if(contentId) {
             App.chat.activeChatWindow = contentId;
+            App.user.config.ui.activeChat = contentId;
             return <ChatWindow chatGid={contentId} className="dock-full" style={{left: App.user.config.ui.chat.menu.width}}/>
         }
     },

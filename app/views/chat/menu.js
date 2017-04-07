@@ -47,7 +47,7 @@ const ChatMenu = React.createClass({
         return {
             data: {},
             type: MENU_TYPES[App.user.config.ui.chat.menu.type] ? MENU_TYPES[App.user.config.ui.chat.menu.type] : MENU_TYPES.contacts,
-            activeChat: false,
+            activeChat: App.user.config.ui.activeChat,
             search: ''
         };
     },
