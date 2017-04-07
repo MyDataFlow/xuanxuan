@@ -326,8 +326,11 @@ class ChatApp extends AppCore {
      * @return {array}
      */
     getRecents(includeStar) {
+        const all = this.all;
+        if(all.length < 2) return all;
+
         var now = new Date().getTime();
-        return this.all.filter(chat => {
+        return all.filter(chat => {
             return (includeStar || chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
         });
     }
