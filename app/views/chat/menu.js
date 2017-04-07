@@ -149,9 +149,20 @@ const ChatMenu = React.createClass({
                 this.forceUpdate();
             }
         });
+
+        if(!this.state.activeChat) {
+            this.checkActiveItemTask = setTimeout(() => {
+                if(this.state.activeChat) return;
+                const data = this._getData();
+                if(data.length && data[0].items && data[0].items.length) {
+                    this._handleItemClick(data[0].items[0]);
+                }
+            }, 600);
+        }
     },
 
     componentWillUnmount() {
+        clearTimeout(this.checkActiveItemTask);
         if(this.saveUserTask) {
             clearTimeout(this.saveUserTask);
             App.saveUser();
