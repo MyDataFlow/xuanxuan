@@ -18,6 +18,9 @@ const UserAvatar = React.createClass({
 
     downloadLocalPath() {
         let {user} = this.props;
+        if(!user.dataPath) {
+            return;
+        }
         let localPath = user.getLocalAvatar(App.user.imagesPath);
         if(Helper.isFileExist(localPath)) {
             this.setState({src: localPath});
@@ -26,10 +29,22 @@ const UserAvatar = React.createClass({
                 path: localPath,
                 url: user.avatar
             }).then(() => {
-                setTimeout(() => {
+                this.downloadFileTask = setTimeout(() => {
                     this.setState({src: localPath});
                 }, 500);
             });
+        }
+    },
+
+    componentWillUnmount() {
+        clearTimeout(this.downloadFileTask);
+    },
+
+    componentDidMount() {
+        if(!this.state || !this.state.src) {
+            this.downloadFileTask = setTimeout(() => {
+                this.downloadLocalPath();
+            }, 100);
         }
     },
 
