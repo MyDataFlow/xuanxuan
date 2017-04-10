@@ -15,7 +15,7 @@ const PageContianer = React.createClass({
 
     mixins: [CacheContents],
     pages: {
-        [R.ui.navbar_chat]: {component: ChatPage, page: R.ui.navbar_chat},
+        [R.ui.navbar_chat]: {component: ChatPage, page: R.ui.navbar_chat, online: true},
         [R.ui.navbar_contacts]: {page: R.ui.navbar_chat},
         [R.ui.navbar_groups]: {page: R.ui.navbar_chat}
     },
@@ -47,6 +47,9 @@ const PageContianer = React.createClass({
         let pageConfig = this.pages[contentId];
         if(pageConfig) {
             if(pageConfig.component) {
+                if(pageConfig.online && App.user.isUnverified) {
+                    return <ContentNotReady className="page dock-full" title={'你需要登录验证后才能使用完整功能。'} />;;
+                }
                 let PageComponent = pageConfig.component;
                 return <PageComponent className="page dock-full"/>;
             }
