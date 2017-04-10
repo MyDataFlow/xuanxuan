@@ -16,12 +16,12 @@ import AppActionLink                     from 'Utils/app-link';
 import Helper                            from 'Helper';
 import PinYin                            from 'pinyin';
 
-const MAX_RECENT_TIME = 1000*60*60*24*7;
-const SEARCH_SCORE_MAP      = {
-    matchAll: 100,
+const MAX_RECENT_TIME  = 1000*60*60*24*7;
+const SEARCH_SCORE_MAP = {
+    matchAll   : 100,
     matchPrefix: 75,
-    include: 50,
-    similar: 10
+    include    : 50,
+    similar    : 10
 };
 
 /**

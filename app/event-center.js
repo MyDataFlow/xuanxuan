@@ -13,6 +13,9 @@ class EventCenter extends EventEmitter {
         this.ipc = (this.isMainProcess && electron.ipcMain) ? electron.ipcMain : electron.ipcRenderer;
     }
 
+    /*
+     * Send event to window
+     */
     sendToWindow(windowName, eventName, ...args) {
         if(this.isMainProcess) {
             if(DEBUG) console.error('Can not send to window in main process');
@@ -21,6 +24,9 @@ class EventCenter extends EventEmitter {
         this.ipc.send(EVENT.app_remote_send, windowName, eventName, ...args);
     }
 
+    /*
+     * Send event to main window
+     */
     sendToMainWindow(eventName, ...args) {
         return this.sendToWindow('main', eventName, ...args);
     }
