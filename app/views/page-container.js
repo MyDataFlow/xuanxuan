@@ -15,9 +15,9 @@ const PageContianer = React.createClass({
 
     mixins: [CacheContents],
     pages: {
-        [R.ui.navbar_chat]: {component: ChatPage, page: R.ui.navbar_chat, online: true},
-        [R.ui.navbar_contacts]: {page: R.ui.navbar_chat},
-        [R.ui.navbar_groups]: {page: R.ui.navbar_chat}
+        [R.ui.navbar_chat]     : {component: ChatPage, page: R.ui.navbar_chat, online: true},
+        [R.ui.navbar_contacts] : {page: R.ui.navbar_chat},
+        [R.ui.navbar_groups]   : {page: R.ui.navbar_chat}
     },
 
     getInitialState() {
@@ -30,6 +30,8 @@ const PageContianer = React.createClass({
         this._handleUIChangeEvent = App.on(R.event.ui_change, e => {
             if(e.navbar !== this.state.page) {
                 this.setState({page: e.navbar});
+                App.user.config.ui.navbar.page = e.navbar;
+                App.delaySaveUser();
             }
         });
     },

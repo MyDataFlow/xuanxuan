@@ -156,21 +156,13 @@ const ChatMenu = React.createClass({
 
     componentWillUnmount() {
         clearTimeout(this.checkActiveItemTask);
-        if(this.saveUserTask) {
-            clearTimeout(this.saveUserTask);
-            App.saveUser();
-        }
         App.off(this._handleUIChangeEvent, this._handleDataChangeEvent);
     },
 
     componentDidUpdate(prevProps, prevState) {
         if(App.user.config.ui.chat.menu.type != this.state.type) {
             App.user.config.ui.chat.menu.type = this.state.type;
-            clearTimeout(this.saveUserTask);
-            this.saveUserTask = setTimeout(() => {
-                App.saveUser();
-                this.saveUserTask = null;
-            }, 2000);
+            App.delaySaveUser();
         }
     },
 

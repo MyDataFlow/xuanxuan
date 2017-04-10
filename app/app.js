@@ -304,6 +304,10 @@ class App extends ReadyNotifier {
         if(!(user instanceof User)) {
             user = this.config.getUser(user);
         }
+        if(this.saveUserTimerTask && this._user) {
+            this.config.save(this._user);
+        }
+
         user.listenStatus = true;
         this._user = user;
 
@@ -325,6 +329,24 @@ class App extends ReadyNotifier {
             this.resetUser(user, true);
         } else {
             this.config.save(this.user);
+        }
+        if(this.saveUserTimerTask) {
+            clearTimeout(this.saveUserTimerTask);
+            this.saveUserTimerTask = null;
+        }
+    }
+
+    /**
+     * Delay save user config
+     * @return {void}
+     */
+    delaySaveUser() {
+        clearTimeout(this.saveUserTimerTask);
+        this.saveUserTimerTask = null;
+        if(this.user) {
+            this.saveUserTimerTask = setTimeout(() => {
+                this.saveUser();
+            }, 5000);
         }
     }
 
@@ -949,7 +971,9 @@ class App extends ReadyNotifier {
      * Quit application
      */
     quit() {
-        this.saveUser();
+        if(this.saveUserTimerTask) {
+            this.saveUser();
+        }
         this.remote('quit');
     }
 }
