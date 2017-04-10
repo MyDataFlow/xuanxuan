@@ -9,6 +9,7 @@ import PoundIcon           from '../icons/pound-box';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
 import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import VisibilityOffIcon   from 'material-ui/svg-icons/action/visibility-off';
+import StarIcon            from 'material-ui/svg-icons/toggle/star';
 import List                from 'material-ui/List/List';
 import ListDivider         from 'material-ui/Divider';
 import Subheader           from 'material-ui/Subheader';
@@ -192,8 +193,23 @@ const ChatMenu = React.createClass({
             listContainer: {
                 top: 48
             },
-            starItemStyle: {
-                backgroundColor: 'yellow'
+            itemStyle: {
+                outline: '1px solid transparent'
+            },
+            activeItemStyle: {
+                backgroundColor: '#fff',
+                outline: '1px solid rgba(0,0,0,.075)',
+                outlineOffset: 0
+            },
+            starIconStyle: {
+                color: Theme.color.icon,
+                fill: Theme.color.icon,
+                position: 'absolute',
+                right: 8,
+                top: 14,
+                width: 12,
+                height: 12,
+                opacity: .6
             },
             buttonItem: {color: Theme.color.primary1},
             rightIcon: {
@@ -253,30 +269,39 @@ const ChatMenu = React.createClass({
                     data.items.map(item => {
                         let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;
                         let itemKey = item.gid;
+                        let isItemActived = itemKey === this.state.activeChat;
+                        let itemStyle = Object.assign({}, STYLE.itemStyle);
+                        if(isItemActived) Object.assign(itemStyle, STYLE.activeItemStyle);
+                        let starItem = (item.star && !rightIcon) ? <StarIcon style={STYLE.starIconStyle}/> : null;
                         if(item.isOne2One) {
                             let theOtherOne = item.getTheOtherOne(App.user);
                             let primaryText = item.getDisplayName(App);
+                            if(theOtherOne.isOffline) {
+                                primaryText = <div>{primaryText} <small>{' [离线]'}</small></div>;
+                                itemStyle.opacity = 0.6;
+                            }
                             return <ListItem
                                 key={itemKey}
-                                style={item.star ? STYLE.starItemStyle : null}
-                                actived={this.state.activeChat === itemKey}
+                                style={itemStyle}
+                                actived={isItemActived}
                                 onContextMenu={this._handleItemContextMenu.bind(this, item)} 
                                 onClick={this._handleItemClick.bind(null, item.gid, item)} 
                                 primaryText={primaryText} 
                                 leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale' : ''}/>}
                                 rightIcon={rightIcon}
-                            />;
+                            >{starItem}</ListItem>;
                         } else {
+                            let primaryText = <div>{item.getDisplayName(App, false)} <small style={{opacity: 0.6}}>（{item.isSystem ? '所有人' : item.membersCount + '人'}）</small></div>;
                             return <ListItem
                                 key={itemKey}
-                                style={item.star ? STYLE.starItemStyle : null}
-                                actived={this.state.activeChat === itemKey}
+                                style={itemStyle}
+                                actived={isItemActived}
                                 onContextMenu={this._handleItemContextMenu.bind(this, item)}
                                 onClick={this._handleItemClick.bind(null, item.gid, item)}
-                                primaryText={item.getDisplayName(App)}
+                                primaryText={primaryText}
                                 rightIcon={rightIcon}
                                 leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <PersonOutlineIcon color={Colors.lightBlue500}/>}
-                            />;
+                            >{starItem}</ListItem>;
                         }
                     })
                 }
