@@ -545,52 +545,63 @@ class Chat extends Entity {
         return false;
     }
 
+    /**
+     * Get all chat types
+     */
     static TYPES() {
-        return MESSAGE_TYPES;
+        return CHAT_TYPES;
     }
 
     /**
      * Sort chats
+     * @param  {array}         chats
+     * @param  {array|string}  orders
+     * @param  {object}        app    
+     * @return {array}
      */
-    static sort(chats, options, app) {
-        options = Object.assign({
-            order: -1,
-            starFirst: true,
-            compareNotice: false,
-            compareLastActiveTime: true,
-            compareOnline: true,
-            compareCreateDate: true,
-            compareName: false
-        }, options);
-        return chats.sort((x, y) => {
+    static sort(chats, orders, app) {
+        if(!orders || orders === 'default') {
+            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id'];
+        } else if(typeof orders === 'string') {
+            orders = orders.split(' ');
+        }
+        const isFinalInverse = false;
+        if(orders[0] === '-' || orders[0] === -1) {
+            isFinalInverse = true;
+            orders.shift();
+        }
+        return chats.sort((y, x) => {
             let result = 0;
-            if(result === 0) {
-                result = (!x.hide ? 1 : 0) - (!y.hide ? 1 : 0);
+            for(let order of orders) {
+                if(result !== 0) break;
+                let isInverse = order[0] === '-';
+                if(isInverse) order = order.substr(1);
+                switch(order) {
+                    case 'hide':
+                    case 'star':
+                        result = (x[order] ? 1 : 0) - (y[order] ? 1 : 0);
+                        break;
+                    case 'online':
+                        if(app) {
+                            result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
+                        }
+                        break;
+                    default:
+                        let xValue, yValue;
+                        if(order === 'name' && app) {
+                            xValue = x.getDisplayName(app, false);
+                            yValue = y.getDisplayName(app, false);
+                        } else {
+                            xValue = x[order];
+                            yValue = y[order];
+                        }
+                        if(xValue === undefined || xValue === null) xValue = 0;
+                        if(yValue === undefined || yValue === null) yValue = 0;
+                        result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
+                }
+                result *= isInverse ? (-1) : 1;
             }
-            if(options.starFirst && result === 0) {
-                result = (x.star ? 1 : 0) - (y.star ? 1 : 0);
-            }
-            if(options.compareLastActiveTime && result === 0 && (x.lastActiveTime || y.lastActiveTime)) {
-                result = (x.lastActiveTime || 0) - (y.lastActiveTime || 0);
-            }
-            if(options.compareNotice && result === 0 && (x.noticeCount || y.noticeCount)) {
-                result = (x.noticeCount || 0) - (y.noticeCount || 0);
-            }
-            if(options.compareOnline && result === 0 && app) {
-                result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
-            }
-            if(options.compareCreateDate && result === 0) {
-                result = (x.createdDate || 0) - (y.createdDate || 0);
-            }
-            if(options.compareName && result === 0) {
-                let xName = x.getDisplayName(app, false);
-                let yName = y.getDisplayName(app, false);
-                result = xName === yName ? 0 : (xName > yName ? 1 : -1);
-            }
-            if(result === 0) {
-                result = x.id - y.id;
-            }
-            return result * options.order;
+            return result * (isFinalInverse ? (-1) : 1);
         });
     }
 }

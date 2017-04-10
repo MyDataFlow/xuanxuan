@@ -96,25 +96,17 @@ const ChatMenu = React.createClass({
             switch(type) {
                 case MENU_TYPES.recent:
                     var items = App.chat.getRecents(true);
-                    items = Chat.sort(items, {compareNotice: true}, App);
+                    items = Chat.sort(items, 'default', App);
                     data.push({name: MENU_TYPES.recent, items});
                     break;
                 case MENU_TYPES.contacts:
                     var items = App.chat.getContactsChats();
-                    items = Chat.sort(items, {
-                        order: -1,
-                        starFirst: true,
-                        compareNotice: false,
-                        compareLastActiveTime: false,
-                        compareOnline: true,
-                        compareCreateDate: false,
-                        compareName: true
-                    }, App);
+                    items = Chat.sort(items, ['star', 'online', 'name'], App);
                     data.push({name: MENU_TYPES.contacts, items});
                     break;
                 case MENU_TYPES.groups:
                     var items = App.chat.getGroups();
-                    items = Chat.sort(items, {compareNotice: true}, App);
+                    items = Chat.sort(items, ['name'], App);
                     data.push({name: MENU_TYPES.groups, items});
                     break;
             }
