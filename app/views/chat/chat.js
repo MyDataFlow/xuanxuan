@@ -45,14 +45,18 @@ const ChatPage = React.createClass({
     getInitialState() {
         return {
             chat: null,
-            sidebar: false,
             smallWindow: false,
+            sidebar: false
         };
     },
 
     componentDidMount() {
         let chat = App.chat.dao.getChat(this.props.chatGid);
-        this.setState({chat}, () => {
+        let sidebarConfig = Object.assign({expand: !chat.isOne2One}, App.user.config.ui.chat.sidebar[chat.gid]);
+        this.setState({
+            chat,
+            sidebar: sidebarConfig.expand
+        }, () => {
             let chatMessageBox = this.chatMessageBox;
             if(this.messageSendbox) {
                 let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
@@ -66,6 +70,26 @@ const ChatPage = React.createClass({
                     }
                 });
             }
+            sidebarConfig.width = Math.min(95, Math.max(5, sidebarConfig.width || Math.ceil(100 * 300 / this.chatBox.clientWidth)));
+            this.colSpliter = SplitJS([ReactDOM.findDOMNode(this.mainCol), ReactDOM.findDOMNode(this.sidebarCol)], {
+                direction: 'horizontal',
+                gutterSize: 2,
+                sizes: [100 - sidebarConfig.width , sidebarConfig.width],
+                minSize: [450, 250],
+                onDragEnd: e => {
+                    this.sidebarConfig = {
+                        width: this.colSpliter.getSizes()[1],
+                        expand: true
+                    };
+                    App.user.config.ui.chat.sidebar[chat.gid] = this.sidebarConfig;
+                    App.delaySaveUser();
+                    this.setState({sidebar: true});
+                }
+            });
+            if(!sidebarConfig.expand || this.state.smallWindow) {
+                this.colSpliter.collapse(1);
+            }
+            this.sidebarConfig = sidebarConfig;
             this.messageList.scrollToBottom(1500);
         });
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
@@ -275,9 +299,7 @@ const ChatPage = React.createClass({
               top: 49,
             },
             sidebar: {
-                width: App.user.config.ui.chat.sidebar.width,
-                maxWidth: 500,
-                transition: Theme.transition.normal('width', 'opacity', 'visibility'),
+                transition: Theme.transition.normal('width', 'opacity', 'visibility')
             },
             sidebarHide: {
                 width: 0,
@@ -318,6 +340,12 @@ const ChatPage = React.createClass({
         if(!this.state.sidebar || this.state.smallWindow) {
             if(!this.state.smallWindow) sidebarIconButton = <IconButton className="hint--bottom" data-hint={Lang.chat.openSidebar} onClick={() => this.setState({sidebar: true})}><SidebarIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>;
             sidebarStyle = Object.assign({}, sidebarStyle, STYLE.sidebarHide);
+            if(this.colSpliter) {
+                this.colSpliter.collapse(1);
+            }
+        } else if(this.colSpliter) {
+            let sidebarWidth = this.sidebarConfig.width;
+            this.colSpliter.setSizes([100 - sidebarWidth, sidebarWidth]);
         }
 
         let ChatStarIcon = chat.star ? StarIcon : StarBorderIcon;
@@ -356,13 +384,13 @@ const ChatPage = React.createClass({
                 </div>
             </div>);
         } else {
-            messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list dock-full' style={{paddingBottom: 40}}/>);
+            messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list dock-full scroll-y' style={{bottom: 40}}/>);
             messagesView.push(<div className="dock-bottom" key="blockedCommitterTip" style={{lineHeight: '24px', padding: '8px 10px 8px 40px', backgroundColor: 'rgba(0,0,0,.1)', color: Theme.color.icon}}><LockIcon color={Theme.color.icon} style={{position: 'absolute', top: 7, left: 8}} /> {Lang.chat.blockedCommitterTip}</div>);
         }
 
         return <div {...other} style={style}>
-          <div className='dock-full table-row'>
-            <div className='table-col relative'>
+          <div className='dock-full' ref={e => {this.chatBox = e;}}>
+            <div className='relative split split-horizontal' ref={(e) => this.mainCol = e}>
               <header className='dock-top' style={STYLE.header}>
                 <div>{chatIcon}<span style={STYLE.headerTitle}>{chatTitle}</span>{chat.public ? <small className="hint--bottom" data-hint={Lang.chat.publicGroupTip} style={STYLE.publicGroup}>{Lang.chat.publicGroup}</small> : null}</div>
                 <div className='dock-right' style={STYLE.headerActions}>
@@ -375,8 +403,8 @@ const ChatPage = React.createClass({
               </header>
               <div className='dock-full' style={messageListStyle} ref={e => {this.chatMessageBox = e;}}>{messagesView}</div>
             </div>
-            <div className='table-col relative' style={sidebarStyle}>
-              {this.state.sidebar ? <Sidebar chat={chat} className='dock-full' onCloseButtonClick={() => this.setState({sidebar: false})}/> : null}
+            <div className='relative split split-horizontal' ref={(e) => this.sidebarCol = e}>
+              {this.state.sidebar ? <Sidebar style={sidebarStyle} chat={chat} className='dock-full' onCloseButtonClick={() => this.setState({sidebar: false})}/> : null}
             </div>
           </div>
         </div>

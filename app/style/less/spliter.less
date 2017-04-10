@@ -6,7 +6,47 @@
   z-index: 1;
   box-sizing: border-box;
 
-  &.gutter-horizontal {cursor: ew-resize;}
+  &.gutter-horizontal {
+    cursor: ew-resize;
+    transition: border @animate-time-normal @animate-type;
+    border: 1px solid @borderColor;
+    border-width: 0 0 0 1px;
+    position: relative;
+
+    &:before,
+    &:after {
+      position: absolute;
+      content: ' ';
+      display: block;
+      width: 2px;
+      height: 2px;
+      border-top: 2px solid darken(@borderColor, 15%);
+      border-bottom: 2px solid darken(@borderColor, 15%);
+      top: 50%;
+      left: 0;
+      transition: left @animate-time-normal @animate-type;
+      z-index: 1;
+      visibility: hidden;
+    }
+
+    &:before {
+      margin-top: -4px;
+    }
+
+    &:after {
+      margin-top: 4px;
+    }
+
+    &:hover {
+      border-left-width: 2px;
+
+      &:before,
+      &:after {
+        visibility: visible;
+        left: -2px;
+      }
+    }
+  }
 
   &.gutter-vertical {
     transition: border @animate-time-normal @animate-type;
@@ -27,7 +67,7 @@
       border-right: 2px solid darken(@borderColor, 15%);
       left: 50%;
       top: 0;
-      transition: border @animate-time-normal @animate-type;
+      transition: top @animate-time-normal @animate-type;
       z-index: 1;
       visibility: hidden;
     }
@@ -55,4 +95,10 @@
 .split {
   position: relative;
   box-sizing: border-box;
+}
+
+.split.split-horizontal,
+.gutter.gutter-horizontal {
+  height: 100%;
+  float: left;
 }
