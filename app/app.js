@@ -313,7 +313,6 @@ class App extends ReadyNotifier {
         this.emit(EVENT.user_change, user);
 
         if(saveConfig) this.config.save(user);
-        // if(notifyRemote) this.ipc.send(EVENT.app_user, this.plainUser, this.config);
 
         return user;
     }
@@ -505,7 +504,7 @@ class App extends ReadyNotifier {
      * @return {boolean}
      */
     get isWindowOpenAndFocus() {
-        return this.browserWindow.isFocused() && this.browserWindow.isWindowOpen();
+        return this.browserWindow.isFocused() && this.isWindowOpen();
     }
 
     /**
