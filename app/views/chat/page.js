@@ -17,7 +17,7 @@ const Page = React.createClass({
     
     getInitialState() {
         return {
-            chatGid: null,
+            chatGid: App.user.config.ui.activeChat
         };
     },
 
@@ -43,6 +43,7 @@ const Page = React.createClass({
 
     componentWillUnmount() {
         App.off(this._handleDataDeleteEvent, this._handleUserSwapEvent);
+        clearTimeout(this.saveUserTask);
     },
 
     getDisplayCacheContentId(cacheName) {
@@ -53,6 +54,10 @@ const Page = React.createClass({
         if(contentId) {
             App.chat.activeChatWindow = contentId;
             App.user.config.ui.activeChat = contentId;
+            clearTimeout(this.saveUserTask);
+            this.saveUserTask = setTimeout(() => {
+                App.saveUser();
+            }, 2000);
             return <ChatWindow chatGid={contentId} className="dock-full" style={{left: App.user.config.ui.chat.menu.width}}/>
         }
     },
