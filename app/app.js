@@ -920,10 +920,10 @@ class App extends ReadyNotifier {
         this.unregisterGlobalShortcut(name);
         this.shortcuts[name] = accelerator;
         GlobalShortcut.register(accelerator, () => {
-            if(DEBUG) console.log("%cGLOBAL KEY ACTIVE " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #fff; border: 1px solid #d9534f; padding: 1px 5px; border-radius: 2px; background: #d9534f');
+            if(DEBUG) console.log("%cGLOBAL KEY ACTIVE " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #fff; border: 1px solid #673AB7; padding: 1px 5px; border-radius: 2px; background: #673AB7');
             callback();
         });
-        if(DEBUG) console.log("%cGLOBAL KEY BIND " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #d9534f; border: 1px solid #d9534f; padding: 1px 5px; border-radius: 2px');
+        if(DEBUG) console.log("%cGLOBAL KEY BIND " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #673AB7; border: 1px solid #673AB7; padding: 1px 5px; border-radius: 2px');
     }
 
     /**

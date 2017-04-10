@@ -42,7 +42,11 @@ class EventCenter extends EventEmitter {
         let name = Symbol(event);
         if(!this._eventsMap) this._eventsMap = {};
         this._eventsMap[name] = {listener, name: event};
-         if(DEBUG) console.log('%c ON EVENT ' + event, 'color: orange');
+        if(DEBUG) {
+            console.groupCollapsed('%cON EVENT ' + event, 'color: #FF9800; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px; border: 1px dotted #ff9800;');
+            console.trace('event', this._eventsMap[name]);
+            console.groupEnd();
+        }
         return name;
     }
 
@@ -57,7 +61,11 @@ class EventCenter extends EventEmitter {
         let name = Symbol(event);
         if(!this._eventsMap) this._eventsMap = {};
         this._eventsMap[name] = {listener, name: event};
-         if(DEBUG) console.log('%c ON EVENT ' + event, 'color: orange');
+        if(DEBUG) {
+            console.groupCollapsed('%cON ONCE EVENT ' + event, 'color: #FF9800; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px; border: 1px dotted #ff9800;');
+            console.trace('event', this._eventsMap[name]);
+            console.groupEnd();
+        }
         return name;
     }
 
@@ -73,7 +81,11 @@ class EventCenter extends EventEmitter {
                 if(event) {
                     this.removeListener(event.name, event.listener);
                     delete this._eventsMap[name];
-                     if(DEBUG) console.log('%c OFF EVENT ' + event.name, 'color: brown');
+                    if(DEBUG) {
+                        console.groupCollapsed('%cOFF EVENT%c' + event, 'color: #FF9800; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px 0 0 2px; border: 1px dotted #ff9800; border-right: 0;', 'background: #FF9800; color: #fff; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 0 2px 2px 0; border: 1px dotted #ff9800; border-left: 0; font-weight: bold;');
+                        console.trace('event', event);
+                        console.groupEnd();
+                    }
                 }
             });
         }
@@ -84,7 +96,11 @@ class EventCenter extends EventEmitter {
      */
     emit(names, ...args) {
         super.emit(names, ...args);
-        if(DEBUG) console.log('%c EMIT EVENT %c' + names, 'color: orange', 'background: orange; color: #fff', args);
+        if(DEBUG) {
+            console.groupCollapsed('%cEMIT EVENT%c' + names, 'color: #EF6C00; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px 0 0 2px; border: 1px solid #EF6C00; border-right: 0;', 'background: #EF6C00; color: #fff; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 0 2px 2px 0; border: 1px solid #EF6C00; border-left: 0; font-weight: bold;');
+            console.log('args', args);
+            console.groupEnd();
+        }
     }
 }
 

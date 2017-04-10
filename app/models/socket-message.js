@@ -30,7 +30,11 @@ class SocketMessage {
     static fromJSON(json) {
         try {
             if(Array.isArray(json)) {
-                if(DEBUG) console.log('Build socket message from buffer array.', json);
+                if(DEBUG) {
+                    console.groupCollapsed('%cBuild socket message from buffer array', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+                    console.log('buffer', json);
+                    console.groupEnd();
+                }
                 json = json.map(x => x.toString()).join('');
             }
             if(typeof json !== 'string') json = json.toString();

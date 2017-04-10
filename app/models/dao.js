@@ -116,9 +116,13 @@ class DAO {
         }).catch(rebuildDb);
 
         this.db.info().then(result => {
-            console.log('%c DB ' + dbName, 'background: blue; color: #fff', result);
+            console.groupCollapsed('%c DATABASE ' + dbName, 'display: inline-block; font-size: 10px; color: #fff; background: #3F51B5; padding: 1px 5px; border-radius: 2px;');
+            console.log(result);
+            console.groupEnd();
         }).catch(err => {
-            console.log('%c DB ' + dbName, 'background: blue; color: #fff', err);
+            console.groupCollapsed('%c DATABASE ' + dbName + ' with error', 'display: inline-block; font-size: 10px; color: #fff; background: #E91E63; padding: 1px 5px; border-radius: 2px;');
+            console.log(err);
+            console.groupEnd();
         });
 
         this.dbName = dbName;

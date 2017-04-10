@@ -184,7 +184,11 @@ class Socket extends ReadyNotifier {
     send(msg) {
         if(!msg.sid && this.user.sid) msg.sid = this.user.sid;
         this.client.write(msg.json, 'utf-8', e => {
-            if(DEBUG) console.log('%cSOCKET SEND ⬆ ' + msg.module + '/' + msg.method, 'color: #03b8cf; font-weight: bold; font-size: 12px', msg);
+            if(DEBUG) {
+                console.groupCollapsed('%cSOCKET SEND ⬆%c' + msg.module + '/' + msg.method, 'display: inline-block; font-size: 10px; color: #0097A7; border: 1px solid #0097A7; padding: 1px 5px; border-radius: 2px 0 0 2px;', 'display: inline-block; font-size: 10px; color: #fff; background: #0097A7; border: 1px solid #0097A7; padding: 1px 5px; border-radius: 0 2px 2px 0;');
+                console.log('msg', msg);
+                console.groupEnd();
+            }
         });
     }
 
@@ -324,7 +328,7 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleConnect() {
-        if(DEBUG) console.log('%cSOCKET CONNECTED ' + this.host +':' + this.port, 'color: purple');
+        if(DEBUG) console.log('%cSOCKET CONNECTED ' + this.host +':' + this.port, 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
         this.login();
         this.ready();
         this._emit(EVENT.socket_connected, {host: this.host, port: this.port});
@@ -363,23 +367,36 @@ class Socket extends ReadyNotifier {
             } else {
                 this._rawData = [data];
             }
-            // if(DEBUG) console.log('%cSOCKET DATA ⬇ CONTINUE RAW: ' + data , 'color: #8666b8; font-weight: bold; font-size: 12px');
             return;
         } else if(this._rawData) {
             this._rawData.push(data);
             data = this._rawData;
             this._rawData = null;
-            // if(DEBUG) console.log('%cSOCKET DATA ⬇ FINISH CONTINUE RAW: ' + data , 'color: #8666b8; font-weight: bold; font-size: 12px', data);
         }
 
         let msg = SocketMessage.fromJSON(data);
         if(!msg) {
-            if(DEBUG) console.log('%cSOCKET DATA ⬇ UNKNOW RAW: ' + data , 'color: #8666b8; font-weight: bold; font-size: 12px', msg);
+            if(!DEBUG) {
+                console.groupCollapsed('%cSOCKET DATA ⬇ UNKNOW RAW', 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #F44336; padding: 1px 5px; border-radius: 2px;');
+                console.log('msg', msg);
+                console.groupEnd();
+            }
             return;
         }
 
-        if(DEBUG) console.log('%cSOCKET DATA ⬇ ' + (Array.isArray(msg) ? (msg.length + ' bundle') : (msg.module + '/' + msg.method)), 'color: #8666b8; font-weight: bold; font-size: 12px', msg);
-
+        if(DEBUG) {
+            var printMessage = msgForPrint => {
+                console.groupCollapsed('%cSOCKET DATA ⬇%c' + msgForPrint.module + '/' + msgForPrint.method, 'display: inline-block; font-size: 10px; color: #673AB7; border: 1px solid #673AB7; padding: 1px 5px; border-radius: 2px 0 0 2px;', 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #673AB7; padding: 1px 5px; border-radius: 0 2px 2px 0;');
+                console.log('msg', msgForPrint);
+                console.groupEnd();
+            }
+            if(Array.isArray(msg)) {
+                console.log('%cSOCKET DATA ⬇ ' + msg.length + ' bundle', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+                msg.forEach(printMessage);
+            } else {
+                printMessage(msg);
+            }
+        }
         if(Array.isArray(msg)) {
             msg.forEach(x => this._handleMessage(x));
         } else {
@@ -393,7 +410,11 @@ class Socket extends ReadyNotifier {
      */
     _handleClose(e) {
         if(this._markDestroy) return;
-        if(DEBUG) console.log('%cSOCKET CLOSE', 'color: purple', e);
+        if(DEBUG) {
+            console.groupCollapsed('%cSOCKET CLOSE ' + this.host +':' + this.port, 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+            console.log('error', e);
+            console.groupEnd();
+        }
         this._emit(EVENT.socket_close, e);
     }
 
