@@ -263,7 +263,7 @@ const MessageSendbox = React.createClass({
             content,
             chatId,
             style,
-            forNewChat,
+            placeholder,
             ...other
         } = this.props;
 
@@ -272,7 +272,7 @@ const MessageSendbox = React.createClass({
         return <div {...other} style={style}>
             <DraftEditor className="dock-full"
               ref={e => {this.editbox = e;}}
-              placeholder={forNewChat ? Lang.chat.sendboxPlaceholderForNewChat : Lang.chat.sendboxPlaceholder}
+              placeholder={placeholder}
               style={STYLE.editbox}
               onPaste={this._handleOnPaste}
               onChange={this._handleOnChange}

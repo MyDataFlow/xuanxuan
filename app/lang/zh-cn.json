@@ -86,6 +86,7 @@
     "hiddensList": "其他",
     "sendboxPlaceholder": "发送消息",
     "sendboxPlaceholderForNewChat": "发送 $$name=新名字 来更改会话名称",
+    "sendboxOfflinePlacehoder": "当前用户已经离线，你发送的消息将在他／她下次上线时送达",
     "sendEmoticon": "发送表情",
     "sendImage": "发送图片",
     "sendFile": "发送文件",
