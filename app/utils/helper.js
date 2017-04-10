@@ -230,7 +230,12 @@ global.Helper = {
                     if(DEBUG) console.warn('WRITE DATA failed', err, {filename, data});
                     reject(err);
                 } else {
-                    if(DEBUG) console.log('WRITE DATA SUCCESS', {filename, data});
+                    if(DEBUG) {
+                        console.groupCollapsed('%cWRITE DATA SUCCESS', 'color: #009688');
+                        console.log('filename', filename);
+                        console.log('data', JSON.parse(data));
+                        console.groupEnd();
+                    }
                     resolve();
                 }
                 callback && callback(err);
