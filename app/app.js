@@ -526,7 +526,7 @@ class App extends ReadyNotifier {
      * @return {boolean}
      */
     get isWindowOpenAndFocus() {
-        return this.browserWindow.isFocused() && this.isWindowOpen();
+        return this.browserWindow.isFocused() && this.isWindowOpen;
     }
 
     /**
