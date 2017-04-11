@@ -31,9 +31,11 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 		client = httpsRequest()
 	}
 
+	util.Println(postData)
 	req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
-	//request.Header.Set("Content-type", "application/json")
-	req.Header.Set("User-Agent", "easysoft-client/0.1")
+	req.Header.Add("Content-type", "application/json")
+	req.Header.Add("User-Agent", "easysoft-client/0.1")
+	req.Header.Add("Authorization", "easysoft")
 	//req.Header.Add("User-Agent", "easysoft")
 	resp, err := client.Do(req)
 	if err != nil {

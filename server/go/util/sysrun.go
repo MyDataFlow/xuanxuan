@@ -14,6 +14,7 @@ import (
 )
 
 var Run bool = true
+var IsDebug bool = true
 var Token []byte
 
 func init() {
