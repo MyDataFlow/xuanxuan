@@ -18,7 +18,7 @@ const UserAvatar = React.createClass({
 
     downloadLocalPath() {
         let {user} = this.props;
-        if(!user.dataPath) {
+        if(!App.user.dataPath) {
             return;
         }
         let localPath = user.getLocalAvatar(App.user.imagesPath);
