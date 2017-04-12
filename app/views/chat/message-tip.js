@@ -2,16 +2,41 @@ import React               from 'react';
 import Theme               from '../../theme';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
 import {App, Lang, Config} from '../../app';
+import FlatButton          from 'material-ui/FlatButton';
+import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 
 // display app component
 const MessageTip = React.createClass({
     mixins: [PureRenderMixin],
 
+    _handleCloseButtonClick() {
+        App.user.config.ui.chat.hideMessageTip = true;
+        App.delaySaveUser();
+        this.props.requestClose && this.props.requestClose();
+    },
+
     render() {
         const STYLE = {
             main: {
                 backgroundColor: Theme.color.canvas,
-                padding: 10
+                padding: 10,
+                position: 'relative'
+            },
+            closeButton: {
+                position: 'absolute',
+                right: 0,
+                top: 0
+            },
+            closeButtonIcon: {
+                width: 12,
+                height: 12,
+                color: Theme.color.icon,
+                fill: Theme.color.icon
+            },
+            closeButtonLabel: {
+                fontSize: '12px',
+                color: Theme.color.icon,
+                fontWeight: 'normal'
             }
         };
 
@@ -23,6 +48,15 @@ const MessageTip = React.createClass({
         style = Object.assign({}, STYLE.main, style);
 
         return <div {...other} style={style}>
+          <FlatButton
+              style={STYLE.closeButton}
+              label="关闭并不再提示"
+              labelPosition="after"
+              primary={true}
+              labelStyle={STYLE.closeButtonLabel}
+              onClick={this._handleCloseButtonClick}
+              icon={<CloseIcon style={STYLE.closeButtonIcon} />}
+          />
           <h4 style={{margin: "5px 0 5px"}}>消息框小技巧</h4>
           <ul style={{paddingLeft: 20, marginBottom: 0}}>
             <li>拖拽图片和文件到消息框来发送；</li>
