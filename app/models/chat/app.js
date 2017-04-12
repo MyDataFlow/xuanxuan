@@ -15,6 +15,7 @@ import Lang                              from 'Lang';
 import AppActionLink                     from 'Utils/app-link';
 import Helper                            from 'Helper';
 import PinYin                            from 'pinyin';
+import NewChatWindow                     from 'Views/chat/newchat';
 
 const MAX_RECENT_TIME  = 1000*60*60*24*7;
 const SEARCH_SCORE_MAP = {
