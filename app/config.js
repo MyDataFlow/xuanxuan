@@ -46,7 +46,9 @@ class Config extends ReadyNotifier {
             if(json && json.version !== DEFAULT.version) json = null;
             this.$ = {};
             Object.assign(this.$, DEFAULT, json);
-            if(DEBUG) console.info('Load config from ', this.filePath);
+            if(DEBUG) {
+                console.log('%cLoad config from ' + this.filePath, 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
+            }
             this.ready();
         });
     }
@@ -73,7 +75,14 @@ class Config extends ReadyNotifier {
         if(user) {
             this.user = user;
         }
-        return Helper.writeData(this.filePath, this.$, callback);
+        return Helper.writeData(this.filePath, this.$, callback).then(() => {
+            if(DEBUG) {
+                console.groupCollapsed('%cSAVE USER DATA SUCCESS', 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
+                console.log('filename', this.filePath);
+                console.log('config', this.$);
+                console.groupEnd();
+            }
+        });
     }
 
     /**

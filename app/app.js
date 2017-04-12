@@ -91,7 +91,11 @@ class App extends ReadyNotifier {
                 path: 'sound/',
                 preload: true,
             });
-            if(DEBUG) console.log('%cSOUND init', 'color: orange', window.ion);
+            if(DEBUG) {
+                console.groupCollapsed('%cSOUND inited', 'display: inline-block; font-size: 10px; color: #689F38; background: #CCFF90; border: 1px solid #CCFF90; padding: 1px 5px; border-radius: 2px;');
+                console.log('ion', window.ion);
+                console.groupEnd();
+            }
         }
     }
 
@@ -427,7 +431,9 @@ class App extends ReadyNotifier {
 
             // init user data path
             this._makeUserDataPath(user).then(() => {
-                if(DEBUG) console.log('USER DATA PATH', this.user.dataPath);
+                if(DEBUG) {
+                    console.log('%cUSER DATA PATH ' + this.user.dataPath, 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
+                }
                 this.config.save(user);
                 // ZentaoAPI.tryLogin(user);
 
