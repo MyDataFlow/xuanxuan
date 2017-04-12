@@ -19,6 +19,7 @@ import UserStatus          from './user-status';
 import Searchbox           from '../components/searchbox';
 import R                   from '../../resource';
 import Modal               from 'Components/modal';
+import Member              from 'Models/member';
 
 const Helper = global.Helper;
 
@@ -113,7 +114,7 @@ const NewChatGroup = React.createClass({
                        || (member.id && member.id == this.searchText);
                 });
             }
-            this.setState({members});
+            this.setState({members: Member.sort(members)});
         }
     },
 

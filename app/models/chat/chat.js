@@ -1,5 +1,6 @@
 import Entity from '../entity';
 import UUID   from 'uuid';
+import Helper from 'Helper';
 
 const CHAT_TYPES = {
     'one2one': {},
@@ -91,6 +92,19 @@ class Chat extends Entity {
         } else {
             return app.lang.chat.chatGroup + (this.id || (' (' + app.lang.chat.tempChat + ')'));
         }
+    }
+
+    /**
+     * Get pinyin str
+     * @param  {object} app
+     * @return {string}
+     */
+    getPinYin(app) {
+        if(!this.$.pinyin) {
+            let str = app ? this.name : this.getDisplayName(app, false);
+            this.$.pinyin = Helper.pinyin(str);
+        }
+        return this.$.pinyin;
     }
 
     /**
@@ -561,7 +575,7 @@ class Chat extends Entity {
      */
     static sort(chats, orders, app) {
         if(!orders || orders === 'default') {
-            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id'];
+            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id']; // namePinyin
         } else if(typeof orders === 'string') {
             orders = orders.split(' ');
         }
@@ -574,6 +588,10 @@ class Chat extends Entity {
             let result = 0;
             for(let order of orders) {
                 if(result !== 0) break;
+                if(typeof order === 'function') {
+                    result = order(y, x);
+                    continue;
+                }
                 let isInverse = order[0] === '-';
                 if(isInverse) order = order.substr(1);
                 switch(order) {
@@ -591,6 +609,9 @@ class Chat extends Entity {
                         if(order === 'name' && app) {
                             xValue = x.getDisplayName(app, false);
                             yValue = y.getDisplayName(app, false);
+                        } else if(order === 'namePinyin') {
+                            xValue = x.getPinYin(app);
+                            yValue = y.getPinYin(app);
                         } else {
                             xValue = x[order];
                             yValue = y[order];

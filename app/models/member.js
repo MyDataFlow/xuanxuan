@@ -63,6 +63,18 @@ class Member extends Entity {
         return this.realname ? this.realname : `[${this.account}]`;
     }
 
+
+    /**
+     * Get pinyin str
+     * @return {string}
+     */
+    namePinyin() {
+        if(!this.$.pinyin) {
+            this.$.pinyin = Helper.pinyin(this.displayName);
+        }
+        return this.$.pinyin;
+    }
+
     /**
      * Get user status name
      */
@@ -151,20 +163,63 @@ class Member extends Entity {
     }
 
     /**
-     * Get a number for compare function
-     * @return {number}
+     * Get local avatar image path
+     * @param  {string} imagePath
+     * @return {string}
      */
-    get orderCompareValue() {
-        let isMyselfVal = this.isMyself ? 1 : 0;
-        let statusVal = USER_STATUS.getValue(this.status);
-        return isMyselfVal * 10 + statusVal;
-    }
-
     getLocalAvatar(imagePath) {
         if(this.avatar) {
             return Path.join(imagePath, Path.basename(this.avatar));
         }
         return null;
+    }
+
+    /**
+     * Sort members
+     * @param  {array}         members
+     * @param  {array|string}  orders
+     * @param  {object}        app    
+     * @return {array}
+     */
+    static sort(members, orders, app) {
+        if(!orders || orders === 'default') {
+            orders = ['status', 'namePinyin', '-id'];
+        } else if(typeof orders === 'string') {
+            orders = orders.split(' ');
+        }
+        const isFinalInverse = false;
+        if(orders[0] === '-' || orders[0] === -1) {
+            isFinalInverse = true;
+            orders.shift();
+        }
+        return members.sort((y, x) => {
+            let result = 0;
+            for(let order of orders) {
+                if(result !== 0) break;
+                if(typeof order === 'function') {
+                    result = order(y, x);
+                    continue;
+                }
+                let isInverse = order[0] === '-';
+                if(isInverse) order = order.substr(1);
+                switch(order) {
+                    case 'status':
+                        let xStatus = x.statusValue,
+                            yStatus = y.statusValue;
+                        if(xStatus === USER_STATUS.online) xStatus = 100;
+                        if(yStatus === USER_STATUS.online) yStatus = 100;
+                        result = xStatus > yStatus ? 1 : (xStatus == yStatus ? 0 : -1);
+                        break;
+                    default:
+                        let xValue = x[order], yValue = y[order];
+                        if(xValue === undefined || xValue === null) xValue = 0;
+                        if(yValue === undefined || yValue === null) yValue = 0;
+                        result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
+                }
+                result *= isInverse ? (-1) : 1;
+            }
+            return result * (isFinalInverse ? (-1) : 1);
+        });
     }
 }
 

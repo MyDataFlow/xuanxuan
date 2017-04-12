@@ -1,6 +1,7 @@
 import {Entity}        from './entities';
 import R               from '../resource';
 import PouchDB         from '../assets/pouchdb';
+import Member          from 'Models/member';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('DAO must run in renderer process.');
@@ -239,7 +240,7 @@ class DAO {
             return result;
         }
         let members = Object.keys(this.$.members).map(x => this.$.members[x]);
-        if(condition === true || sortList) members.sort((x, y) => y.orderCompareValue - x.orderCompareValue);
+        if(condition === true || sortList) members = Member.sort(members);
         return members;
     }
 

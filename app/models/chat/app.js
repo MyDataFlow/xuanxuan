@@ -14,7 +14,6 @@ import Theme                             from 'Theme';
 import Lang                              from 'Lang';
 import AppActionLink                     from 'Utils/app-link';
 import Helper                            from 'Helper';
-import PinYin                            from 'pinyin';
 import NewChatWindow                     from 'Views/chat/newchat';
 
 const MAX_RECENT_TIME  = 1000*60*60*24*7;
@@ -405,12 +404,7 @@ class ChatApp extends AppCore {
             let score = 0;
             let chatGid = chat.gid.toLowerCase();
             let chatName = chat.getDisplayName(this.$app, false).toLowerCase();
-            let pinYin = [
-                PinYin(chatName, {style: PinYin.STYLE_FIRST_LETTER}).map(x => x[0]).join(''),
-                PinYin(chatName, {style: PinYin.STYLE_NORMAL}).map(x => x[0]).join(''),
-                PinYin(chatName, {style: PinYin.STYLE_INITIALS}).map(x => x[0]).join('')
-            ].join(' ');
-
+            let pinYin = chat.getPinYin(chatName);
             let theOtherOneName = '';
             let theOtherOneAccount = '';
             if(chat.isOne2One) {

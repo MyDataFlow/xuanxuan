@@ -13,6 +13,7 @@ import Modal               from 'Components/modal';
 import UserStatus          from './user-status';
 import ListItem            from '../components/small-list-item';
 import UserAvatar          from '../user-avatar';
+import Member              from 'Models/member';
 
 const STYLE = {
     main: {
@@ -131,7 +132,15 @@ const ChatSidebar = React.createClass({
                 </div>;
             }
 
-            let members = this.props.chat.membersSet.sort((x, y) => y.orderCompareValue - x.orderCompareValue);
+            let user = App.user;
+            let chat = this.props.chat;
+            let members = Member.sort(this.props.chat.membersSet, [(x, y) => {
+                if(x.account === user.account) return -1;
+                if(y.account === user.account) return 1;
+                if(chat.isAdmin(x)) return -1;
+                if(chat.isAdmin(y)) return 1;
+                return 0;
+            }, 'status', 'namePinyin', '-id']);
             if(!this.tabsNameAlias) this.tabsNameAlias = {};
             this.tabsNameAlias[contentId] = members.length;
 

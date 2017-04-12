@@ -14,6 +14,7 @@ import Spinner             from '../components/spinner';
 import ListItem            from '../components/small-list-item';
 import UserAvatar          from '../user-avatar';
 import UserStatus          from './user-status';
+import Member              from 'Models/member';
 
 const STYLE = {
     main: {
@@ -123,7 +124,7 @@ const InviteMembers = React.createClass({
         if(!members) {
             return <div {...other} style={style}><Spinner/></div>
         } else {
-            members.sort((x, y) => y.orderCompareValue - x.orderCompareValue);
+            members = Member.sort(members);
         }
 
         let choosedMembers = [], unChoosedMembers = [];
