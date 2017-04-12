@@ -11,6 +11,7 @@ const event = {
 
     data_change: 'data.change',
     data_delete: 'data.delete',
+    chat_create: 'chat.create',
     data_get_public_list: 'data.getPublicList',
     chats_notice: 'chats.notice',
     chats_notice_change: 'chats.notice.change',

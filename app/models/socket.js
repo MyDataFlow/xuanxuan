@@ -129,6 +129,9 @@ class Socket extends ReadyNotifier {
      * @return {void}
      */
     createSocketMessage(data) {
+        if(data instanceof SocketMessage) {
+            return data;
+        }
         return new SocketMessage(Object.assign({sid: this.sid, ['module']: 'chat'}, data));
     }
 

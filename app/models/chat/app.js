@@ -105,6 +105,7 @@ class ChatApp extends AppCore {
                             chat.updateWithApp(this);
 
                             this.dao.updateChats(chat);
+                            this.$app.emit(R.event.chat_create, chat);
                         }
                     },
                     message: msg => {
@@ -246,7 +247,7 @@ class ChatApp extends AppCore {
             if(Helper.isWindowsOS) this.$app.flashTrayIcon(false);
             if(this.totalNoticeCount && this.lastNoticeChatGid) {
                 let chat = this.dao.getChat(this.lastNoticeChatGid, true, true);
-                this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, menu: ['chat', this.lastNoticeChatGid, chat]});
+                this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, activeChat: this.lastNoticeChatGid});
             }
         });
 
@@ -255,7 +256,7 @@ class ChatApp extends AppCore {
             if(this.activeChatWindow) {
                 let chat = this.dao.getChat(this.activeChatWindow, true, true);
                 if(chat && chat.noticeCount) {
-                    this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, menu: ['chat', chat.gid, chat]});
+                    this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, activeChat: chat.gid});
                 }
             }
         });
@@ -285,6 +286,22 @@ class ChatApp extends AppCore {
     }
 
     /**
+     * Create chat
+     * @param  {Object}   chat
+     * @param  {function} callback
+     * @return {void
+     */
+    createChat(chat, callback) {
+        if(callback) {
+            this.$app.once(R.event.chat_create, callback);
+        }
+        this.socket.send(this.socket.createSocketMessage({
+            'method': 'create',
+            'params': [chat.gid, chat.name || '', chat.type, chat.members, 0]
+        }));
+    }
+
+    /**
      * Create chat with with members
      * @param  {...[Member]} members
      * @return {void}
@@ -303,13 +320,10 @@ class ChatApp extends AppCore {
         if(checkChat) chat = checkChat;
         else {
             this.dao.updateChats(chat);
-            this.socket.send(this.socket.createSocketMessage({
-                'method': 'create',
-                'params': [chat.gid, chat.name || '', chat.type, chat.members, 0]
-            }));
+            this.createChat(chat);
         }
         
-        this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, menu: ['chat', chat.gid]});
+        this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, activeChat: chat.gid});
     }
 
     /**
@@ -734,6 +748,24 @@ class ChatApp extends AppCore {
     }
 
     /**
+     * Send socket message for chat
+     * @param  {object} socketMessage
+     * @param  {object} chat
+     * @return {void}
+     */
+    sendSocketMessageForChat(socketMessage, chat) {
+        socketMessage = this.socket.createSocketMessage(socketMessage);
+        let sendCallback = () => {
+            this.socket.send(socketMessage);
+        };
+        if(chat.remoteId) {
+            sendCallback();
+        } else {
+            this.createChat(chat, sendCallback);
+        }
+    }
+
+    /**
      * Send chat messages
      * @param  {[ChatMessage]} messages
      * @param  {Chat} chat
@@ -752,12 +784,12 @@ class ChatApp extends AppCore {
 
         if(chat) chat.addMessage(...messages);
         this.dao.$dao.upsert(messages);
-        return this.socket.send(this.socket.createSocketMessage({
+        return this.sendSocketMessageForChat({
             'method': 'message',
             'params': {
                 messages: messages.map(m => {return {gid: m.gid, cgid: m.cgid, type: m.type, contentType: m.contentType, content: m.content, date: "", user: m.user}})
             }
-        }));
+        }, chat);
     }
 
     /**
@@ -796,10 +828,10 @@ class ChatApp extends AppCore {
      */
     rename(chat, newName) {
         if(chat && chat.canRename(this.user)) {
-            return this.socket.send(this.socket.createSocketMessage({
+            this.sendSocketMessageForChat({
                 'method': 'changeName',
                 'params': [chat.gid, newName]
-            }));
+            }, chat);
         }
     }
 
