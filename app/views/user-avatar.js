@@ -24,7 +24,7 @@ const UserAvatar = React.createClass({
         let localPath = user.getLocalAvatar(App.user.imagesPath);
         if(Helper.isFileExist(localPath)) {
             this.setState({src: localPath});
-        } else {
+        } else if(localPath) {
             App.downloadFile({
                 path: localPath,
                 url: user.avatar
