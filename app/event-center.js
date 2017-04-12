@@ -98,7 +98,10 @@ class EventCenter extends EventEmitter {
         super.emit(names, ...args);
         if(DEBUG) {
             console.groupCollapsed('%cEMIT EVENT%c' + names, 'color: #EF6C00; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px 0 0 2px; border: 1px solid #EF6C00; border-right: 0;', 'background: #EF6C00; color: #fff; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 0 2px 2px 0; border: 1px solid #EF6C00; border-left: 0; font-weight: bold;');
-            console.log('args', args);
+            let argIdx = 0;
+            for(let arg of args) {
+                console.log('arg' + argIdx++, arg);
+            }
             console.groupEnd();
         }
     }
