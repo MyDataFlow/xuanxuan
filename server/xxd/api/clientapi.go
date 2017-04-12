@@ -46,7 +46,7 @@ func ChatLogin(clientData ParseData) ([]byte, string, bool) {
 	return retMessage, retData.userID(), retData.Result() == "success"
 }
 
-func ChatLogout() {
+func ChatLogout(clientData ParseData) {
 }
 
 func UserGetlist(serverName, userID string) ([]byte, error) {

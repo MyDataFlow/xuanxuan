@@ -19,12 +19,20 @@ import (
 )
 
 type vtscInfo struct {
-	Version    string `json:"version"`
-	Token      string `json:"token"`
-	SiteType   string `json:"siteType"`
-	CommonPort int    `json:"commonPort"`
+	// server version
+	Version string `json:"version"`
+
+	// encrypt key
+	Token string `json:"token"`
+
+	// multiSite or singleSite
+	SiteType string `json:"siteType"`
+
+	ChatPort  int  `json:"chatPort"`
+	TestModel bool `json:"testModel"`
 }
 
+// route
 const (
 	download = "/download"
 	upload   = "/upload"
@@ -99,16 +107,24 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 func serverInfo(w http.ResponseWriter, r *http.Request) {
 	//该处需要做登录验证
 
+	chatPort, err := util.String2Int(util.Config.ChatPort)
+	if err != nil {
+		util.LogError().Println("string to int error:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	info := vtscInfo{
-		Version:    util.Version,
-		Token:      string(util.Token),
-		SiteType:   util.Config.SiteType,
-		CommonPort: util.String2Int64(util.Config.CommonPort)}
+		Version:   util.Version,
+		Token:     string(util.Token),
+		SiteType:  util.Config.SiteType,
+		ChatPort:  chatPort,
+		TestModel: util.IsTest}
 
 	jsonData, err := json.Marshal(info)
 	if err != nil {
 		util.LogError().Println("json unmarshal error:", err)
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

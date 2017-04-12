@@ -17,10 +17,11 @@ import (
 )
 
 func main() {
+
 	crontask.CronTask()
 
 	go hyperttp.InitHttp()
-	go wsocket.WsInit()
+	go wsocket.InitWs()
 
 	exitServer()
 }
