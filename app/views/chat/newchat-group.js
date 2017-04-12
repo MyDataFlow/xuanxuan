@@ -146,9 +146,11 @@ const NewChatGroup = React.createClass({
 
     _handleOnCreateBtnClick() {
         let members = Object.keys(this.state.choosed).map(x => this.state.choosed[x]);
-        App.chat.create(...members);
-        this.setState({choosed: {[App.user.id]: App.user}});
-        Modal.hide('new-chat');
+        App.chat.create(members, {
+            confirmGroupName: true
+        }, ct => {
+            Modal.hide('new-chat');
+        });
     },
 
     _handleSearchboxChange(searchText) {

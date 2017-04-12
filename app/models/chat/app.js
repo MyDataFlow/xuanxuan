@@ -15,6 +15,7 @@ import Lang                              from 'Lang';
 import AppActionLink                     from 'Utils/app-link';
 import Helper                            from 'Helper';
 import NewChatWindow                     from 'Views/chat/newchat';
+import Checkbox                          from 'material-ui/Checkbox';
 
 const MAX_RECENT_TIME  = 1000*60*60*24*7;
 const SEARCH_SCORE_MAP = {
@@ -303,27 +304,82 @@ class ChatApp extends AppCore {
 
     /**
      * Create chat with with members
-     * @param  {...[Member]} members
+     * @param  {[Member]} members
      * @return {void}
      */
-    create(...members) {
+    create(members, options, callback) {
+        if(typeof options === 'function') {
+            callback = options;
+            options = {};
+        }
+        options = Object.assign({
+            onlyLocal: false,
+            notifyUIChange: true,
+            confirmGroupName: false
+        }, options);
+        if(!Array.isArray(members)) {
+            members = [members];
+        }
         if(!members.find(member => member.id === this.user.id)) {
             members.push(this.user);
         }
 
-        let chat = new Chat({
-            membersSet: members,
-            createdBy: this.user.account
-        });
-
-        let checkChat = this.dao.getChat(chat.gid);
-        if(checkChat) chat = checkChat;
-        else {
-            this.dao.updateChats(chat);
-            this.createChat(chat);
+        let chat = null;
+        if(members.length <= 2) {
+            const gid = [member.id, this.$app.user.id].sort().join('&');
+            chat = this.dao.chats[gid];
         }
-        
-        this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, activeChat: chat.gid});
+        if(!chat) {
+            chat = new Chat(Object.assign({
+                membersSet: members,
+                createdBy: this.user.account
+            }, options.data));
+        }
+
+        if(!options.onlyLocal && chat) {
+            let upsertRemote = () => {
+                this.dao.updateChats(chat);
+                this.createChat(chat, callback);
+                if(options.notifyUIChange) {
+                    this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, activeChat: chat.gid});
+                }
+            }
+            if(chat.isGroup && options.confirmGroupName) {
+                this.renamePrompt(chat, ct => {
+                    if(ct) {
+                        chat = ct;
+                        upsertRemote();
+                    }
+                }, {
+                    title: this.lang.chat.startGroupChat.format(members.length),
+                    label: this.lang.common.create
+                });
+            } else {
+                upsertRemote();
+            }
+        } else {
+            if(chat.isGroup && options.confirmGroupName) {
+                this.renamePrompt(chat, callback, {
+                    title: this.lang.chat.startGroupChat.format(members.length),
+                    label: this.lang.common.create
+                });
+            } else{
+                callback && callback(chat);
+            }
+        }
+        return chat;
+    }
+
+    /**
+     * create group
+     * @param  {members} members
+     * @param  {[type]} confirmName [description]
+     * @return {[type]}             [description]
+     */
+    createGroup(members, confirmName) {
+        if(!members.find(member => member.id === this.user.id)) {
+            members.push(this.user);
+        }
     }
 
     /**
@@ -599,10 +655,11 @@ class ChatApp extends AppCore {
     /**
      * Open a prompt window for user rename a chat
      */
-    renamePrompt(chat) {
+    renamePrompt(chat, callback, options) {
         let newName = null;
+        let isPublic = chat.public;
         let content = <div>
-            <p>{this.lang.chat.renameTheChat.format(chat.name)}</p>
+            <p>{(options && options.title) || (!chat.name ? this.lang.chat.setChatName : this.lang.chat.renameTheChat.format(chat.name))}</p>
             <TextField
               ref={(e) => setTimeout(() => {
                   if(e) e.focus();
@@ -612,17 +669,25 @@ class ChatApp extends AppCore {
               defaultValue={chat.name}
               fullWidth={true}
             />
+            {(options.setPublic && chat.isGroup) ? <Checkbox style={{marginTop: 8}} label={options.setPublicLabel || this.lang.chat.setPublic} onCheck={(e, isChecked) => {isPublic = isChecked;}}/> : null}
         </div>;
         Modal.show({
             modal: true,
             closeButton: false,
             content: content,
             width: 360,
-            actions: [{type: 'cancel'}, {type: 'submit', label: this.lang.common.rename}],
+            actions: [{type: 'cancel'}, {type: 'submit', label: (options && options.label) || this.lang.common.rename}],
             onSubmit: () => {
                 if(Helper.isNotEmptyString(newName) && newName !== chat.name) {
                     this.rename(chat, newName);
                 }
+                if(options.setPublic) {
+                    chat.public = isPublic;
+                }
+                callback && callback(chat, newName, isPublic);
+            },
+            onCancel: () => {
+                callback && callback(false, chat);
             }
         });
     }
@@ -828,10 +893,14 @@ class ChatApp extends AppCore {
      */
     rename(chat, newName) {
         if(chat && chat.canRename(this.user)) {
-            this.sendSocketMessageForChat({
-                'method': 'changeName',
-                'params': [chat.gid, newName]
-            }, chat);
+            if(chat.remoteId) {
+                this.sendSocketMessageForChat({
+                    'method': 'changeName',
+                    'params': [chat.gid, newName]
+                }, chat);
+            } else {
+                chat.name = newName;
+            }
         }
     }
 

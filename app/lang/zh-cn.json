@@ -65,6 +65,7 @@
     "admin": "管理员",
     "allMembers": "所有",
     "renameChat": "重命名会话",
+    "setChatName": "设置会话名称",
     "renameTheChat": "重命名会话 【{0}】",
     "inputChatNewName": "输入新的会话名称",
     "resend": "重新发送",
