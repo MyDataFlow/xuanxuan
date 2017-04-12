@@ -125,7 +125,7 @@ func walkFunc(path string, info os.FileInfo, err error) error {
 	}
 
 	if GetUnixTime()-info.ModTime().Unix() > saveLogTime {
-		err := os.Remove(path)
+		err := Rm(path)
 		if err != nil {
 			LogError().Printf("remove file [%s] error: %s\n", info.Name(), err)
 			return err

@@ -13,8 +13,10 @@ import (
 	"runtime"
 )
 
+const Version = "V0.1"
+
 var Run bool = true
-var IsDebug bool = true
+var IsTest bool = true
 var Token []byte
 
 func init() {

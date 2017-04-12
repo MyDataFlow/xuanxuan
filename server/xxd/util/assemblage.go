@@ -71,6 +71,15 @@ func IsDir(path string) bool {
 	return false
 }
 
+func Rm(path string) error {
+	err := os.Remove(path)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func String2Int(str string) (int, error) {
 	return strconv.Atoi(str)
 }

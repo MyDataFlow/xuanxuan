@@ -1,5 +1,5 @@
 /**
- * The httpserver file of http current module of xxd.
+ * The httpserver file of hyperttp current module of xxd.
  *
  * @copyright   Copyright 2009-2017 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
@@ -10,33 +10,45 @@
 package hyperttp
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"xxd/util"
 )
 
+type vtscInfo struct {
+	Version    string `json:"version"`
+	Token      string `json:"token"`
+	SiteType   string `json:"siteType"`
+	CommonPort int    `json:"commonPort"`
+}
+
 const (
 	download = "/download"
 	upload   = "/upload"
-	sType    = "/servertype"
-	token    = "/gettoken"
+	sInfo    = "/serverInfo"
 )
 
-func Initdd() {
+func InitHttp() {
+	crt, key, err := CreateSignedCertKey()
+	if err != nil {
+		util.LogError().Println("https server start error!")
+		return
+	}
+
 	http.HandleFunc(download, fileDownload)
 	http.HandleFunc(upload, fileUpload)
-	http.HandleFunc(token, getToken)
-	http.HandleFunc(sType, serverType)
+	http.HandleFunc(sInfo, serverInfo)
 
-	addr := util.Config.Ip + ":" + util.Config.UploadPort
+	addr := util.Config.Ip + ":" + util.Config.CommonPort
 	util.LogInfo().Println("http server start,listen addr:", addr, download)
-	err := http.ListenAndServe(addr, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe:", err)
+
+	if err := http.ListenAndServeTLS(addr, crt, key, nil); err != nil {
+		util.LogError().Println("ListenAndServe:", err)
 	}
+
 }
 
 func fileDownload(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +85,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
+
 	fmt.Fprintf(w, "%v", handler.Header)
 	f, err := os.OpenFile("./test/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
@@ -83,8 +96,21 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	io.Copy(f, file)
 }
 
-func getToken(w http.ResponseWriter, r *http.Request) {
-}
+func serverInfo(w http.ResponseWriter, r *http.Request) {
+	//该处需要做登录验证
 
-func serverType(w http.ResponseWriter, r *http.Request) {
+	info := vtscInfo{
+		Version:    util.Version,
+		Token:      string(util.Token),
+		SiteType:   util.Config.SiteType,
+		CommonPort: util.String2Int64(util.Config.CommonPort)}
+
+	jsonData, err := json.Marshal(info)
+	if err != nil {
+		util.LogError().Println("json unmarshal error:", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Fprintln(w, string(jsonData))
 }

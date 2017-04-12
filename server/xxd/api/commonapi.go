@@ -38,7 +38,7 @@ func ApiParse(message, token []byte) ParseData {
 }
 
 // 对通讯的api进行加密
-func apiUnparse(parseData ParseData, token []byte) []byte {
+func ApiUnparse(parseData ParseData, token []byte) []byte {
 	jsonData, err := json.Marshal(parseData)
 	if err != nil {
 		util.LogError().Println("json unmarshal error:", err)

@@ -21,10 +21,13 @@ type RanzhiServer struct {
 }
 
 type ConfigIni struct {
-	Ip           string
-	ChatPort     string
-	UploadPort   string
-	UploadPath   string
+	Ip         string
+	ChatPort   string
+	CommonPort string
+	UploadPath string
+
+	// multiSite or singleSite
+	SiteType     string
 	RanzhiServer map[string]RanzhiServer
 
 	LogPath string
@@ -33,7 +36,7 @@ type ConfigIni struct {
 
 const configPath = "config/xxd.conf"
 
-var Config = ConfigIni{RanzhiServer: make(map[string]RanzhiServer)}
+var Config = ConfigIni{SiteType: "singleSite", RanzhiServer: make(map[string]RanzhiServer)}
 
 func init() {
 	data, err := goconfig.LoadConfigFile(configPath)
@@ -41,7 +44,7 @@ func init() {
 
 		Config.Ip = "127.0.0.1"
 		Config.ChatPort = "1129"
-		Config.UploadPort = "11443"
+		Config.CommonPort = "11443"
 		Config.UploadPath = "tmpfile"
 		Config.RanzhiServer["ranzhiName"] = RanzhiServer{"serverInfo", []byte("serverInfo")}
 
@@ -54,7 +57,7 @@ func init() {
 
 	getIP(data)
 	getChatPort(data)
-	getUploadPort(data)
+	getCommonPort(data)
 	getUploadPath(data)
 	getRanzhi(data)
 	getLogPath(data)
@@ -79,8 +82,8 @@ func getChatPort(config *goconfig.ConfigFile) (err error) {
 	return
 }
 
-func getUploadPort(config *goconfig.ConfigFile) (err error) {
-	Config.UploadPort, err = config.GetValue("server", "uploadPort")
+func getCommonPort(config *goconfig.ConfigFile) (err error) {
+	Config.CommonPort, err = config.GetValue("server", "commonPort")
 	if err != nil {
 		log.Fatal("config: get server upload port error,", err)
 	}
@@ -99,6 +102,10 @@ func getUploadPath(config *goconfig.ConfigFile) (err error) {
 
 func getRanzhi(config *goconfig.ConfigFile) {
 	keyList := config.GetKeyList("ranzhi")
+
+	if len(keyList) > 1 {
+		Config.SiteType = "multiSite"
+	}
 
 	for _, ranzhiName := range keyList {
 		ranzhiServer, err := config.GetValue("ranzhi", ranzhiName)

@@ -72,7 +72,6 @@ func switchMethod(message []byte, client *Client) error {
 		return util.Errorf("recve client message error")
 	}
 
-	util.Println(parseData)
 	switch parseData.Module() + "." + parseData.Method() {
 	case "chat.login":
 		loginData, userID, ok := api.ChatLogin(parseData)
@@ -127,19 +126,20 @@ func switchMethod(message []byte, client *Client) error {
 		break
 
 	case "chat.message":
-		if util.IsDebug {
-			client.serverName = "easysoftTest"
-			client.userID = util.GetUnixTime()
+		break
+
+	case "chat.test":
+		if util.IsTest {
+			client.serverName = "ranzhiName1"
+			client.userID = util.Int642String(util.GetUnixTime())
 			client.hub.register <- client
 
-			util.Println("------------------")
 			parseData["result"] = "success"
 			parseData["data"] = parseData["params"]
 			delete(parseData, "params")
 
 			message := api.ApiUnparse(parseData, util.Token)
 			client.hub.broadcast <- SendMsg{serverName: client.serverName, message: message}
-			break
 		}
 
 		break
@@ -155,7 +155,6 @@ func switchMethod(message []byte, client *Client) error {
 // ensures that there is at most one reader on a connection by executing all
 // reads from this goroutine.
 func (c *Client) readPump() {
-	util.Println("-------------")
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
