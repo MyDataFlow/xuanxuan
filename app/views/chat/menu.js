@@ -24,7 +24,7 @@ import Modal               from 'Components/modal';
 import SearchBox           from 'Components/classic-searchbox';
 import TimeIcon            from 'material-ui/svg-icons/device/access-time';
 import ListIcon            from 'material-ui/svg-icons/action/view-list';
-import NewChatWindow       from './newchat';
+import IconButton          from 'material-ui/IconButton';
 
 let MENU_TYPES = {
     recent: 'recent',
@@ -80,6 +80,10 @@ const ChatMenu = React.createClass({
 
     _handleSearchChange(search, isEmpty) {
         this.setState({search});
+    },
+
+    _handleSearchFocusChange(focus) {
+        this.setState({searchFocus: focus});
     },
 
     _getData(type, search) {
@@ -295,9 +299,11 @@ const ChatMenu = React.createClass({
         }
 
         style = Object.assign({}, STYLE.menu, style);
+        let focusSearch = this.state.searchFocus || !Helper.isEmptyString(this.state.search);
         return <div className='dock-left' style={style} {...other}>
           <div className='dock-top' style={STYLE.header}>
-            <SearchBox onValueChange={this._handleSearchChange}/>
+            <SearchBox className="dock-left" style={{right: focusSearch ? 0 : 40, position: 'absolute', transition: Theme.transition.normal('right')}} onValueChange={this._handleSearchChange} onFocusChange={this._handleSearchFocusChange}/>
+            <IconButton onClick={e => {App.chat.openCreateNewChat();}} className="dock-right hint--bottom-left" data-hint={Lang.chat.newChat} style={{position: 'absolute', transform: focusSearch ? 'scale(0)' : 'scale(1)', opacity: focusSearch ? 0 : 1, transition: Theme.transition.normal('transform', 'opacity')}}><ChatPlusIcon style={{width: 20, height: 20}} color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>
           </div>
           <div className='scroll-y dock-full' style={STYLE.listContainer}>
             {listElements}

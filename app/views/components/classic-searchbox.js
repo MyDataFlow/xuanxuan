@@ -129,10 +129,22 @@ class ClassicSearchBox extends Component {
                 value={this.state.value}
                 style={inputStyle}
                 placeholder={hintText}
-                onMouseEnter={e => this.setState({hover: true})}
-                onMouseLeave={e => this.setState({hover: false})}
-                onFocus={e => this.setState({focus: true})}
-                onBlur={e => this.setState({focus: false})}
+                onMouseEnter={e => {
+                    this.setState({hover: true});
+                    this.props.onHoverChange && this.props.onHoverChange(true);
+                }}
+                onMouseLeave={e => {
+                    this.setState({hover: false});
+                    this.props.onHoverChange && this.props.onHoverChange(false);
+                }}
+                onFocus={e => {
+                    this.setState({focus: true});
+                    this.props.onFocusChange && this.props.onFocusChange(true);
+                }}
+                onBlur={e => {
+                    this.setState({focus: false});
+                    this.props.onFocusChange && this.props.onFocusChange(false);
+                }}
                 onInput={this._handleInputChange.bind(this)}
                 onChange={this._handleInputChange.bind(this)}
             />
