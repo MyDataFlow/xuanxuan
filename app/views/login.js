@@ -190,7 +190,8 @@ const Login = React.createClass({
             if(this.state.logining) {
                 this.setState({
                     logining: false, 
-                    message: Lang.login.loginTimeout, messageColor: Colors.red500
+                    message: Lang.login.loginTimeout,
+                    messageColor: Colors.red500
                 });
             }
         }, LOGIN_TIME_OUT);
@@ -203,7 +204,7 @@ const Login = React.createClass({
             account: this.state.account
         };
         if(user) {
-            this.user.address = user.address;
+            this.user.address = global.TEST ? user.server : user.address;
             this.user.account = user.account;
             this.user.password = user.password;
         }

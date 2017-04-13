@@ -9,6 +9,7 @@ import {
     ChatMessage
 }                          from './entities';
 import ReadyNotifier       from './ready-notifier';
+import WebSocket           from 'ws';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('Socket must run in renderer process.');
@@ -36,7 +37,7 @@ class Socket extends ReadyNotifier {
         this.port   = this.user.port;
         this.lastHandTime = 0;
         this.lastOkTime = 0;
-        this.client = new Net.Socket();
+        this.client = global.TEST ? new WebSocket(user.socketUrl) : new Net.Socket();
 
         this._initHandlers();
         this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {

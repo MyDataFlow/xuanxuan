@@ -15,4 +15,6 @@ if(global.DEBUG) {
     };
 }
 
+global.TEST = false;
+
 export default global.DEBUG;

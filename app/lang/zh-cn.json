@@ -215,8 +215,8 @@
 
   "login": {
     "login": "登  录",
-    "address": "服务器地址",
-    "addressHint": "demo.ranzhi.org",
+    "address": "服务器",
+    "addressHint": "https://xuanxuan.chat",
     "account": "账号",
     "accountHint": "用户名/邮箱",
     "password": "密码",

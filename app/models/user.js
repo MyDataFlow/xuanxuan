@@ -52,6 +52,7 @@ const DEFAULT = {
  * The user class
  */
 class User extends Member {
+
     constructor(user) {
         super(user);
 
@@ -84,6 +85,140 @@ class User extends Member {
                 }
             }
         };
+    }
+
+    /**
+     * Set server
+     * @param  {string} server like 'https://x.com:11443/ranzhi1'
+     * @return {void}
+     */
+    set server(server) {
+        // Server address must start with https
+        if(server.indexOf('https://') !== 0) {
+            server = 'https://' + server;
+        }
+        let url = new URL(server);
+        if(!url.port) {
+            url.port = 11443;
+        }
+        this._server = url.toString();
+        this.$.serverUrl = url;
+    }
+
+    /**
+     * Get server
+     * @return {string}
+     */
+    get server() {
+        return this._server;
+    }
+
+    /**
+     * Get server url
+     * @return {URL}
+     */
+    get serverUrl() {
+        if(!this._server) {
+            return null;
+        }
+        if(!this.$.serverUrl) {
+            this.$.serverUrl = new URL(this._server);
+        }
+        return this.$.serverUrl;
+    }
+
+    /**
+     * Get web server port
+     * @return {string}
+     */
+    get webServerPort() {
+        const url = this.serverUrl;
+        return url ? url.port : '';
+    }
+
+    /**
+     * Get remote server name from url
+     * @return {string}
+     */
+    get serverName() {
+        const url = this.serverUrl;
+        return (url && url.pathname) ? url.pathname.substr(1) : '';
+    }
+
+    /**
+     * Get web server info url
+     * @return {string}
+     */
+    get webServerInfoUrl() {
+        const url = this.serverUrl;
+        return url ? (url.origin + '/serverInfo') : '';
+    }
+
+    /**
+     * Get socket port
+     * @return {string}
+     */
+    get socketPort() {
+        return this._socketPort || '';
+    }
+
+    /**
+     * Set socket port
+     * @param  {string} port
+     * @return {void}
+     */
+    set socketPort(port) {
+        this._socketPort = port;
+    }
+
+    /**
+     * Get socket serverUrl
+     * @return {string}
+     */
+    get socketUrl() {
+        let url = this.serverUrl;
+        if(url) {
+            url = new URL(url.toString());
+            url.protocol = 'ws:';
+            url.pathname = '/ws';
+            url.port = this.socketPort;
+            return url.toString();
+        }
+        return '';
+    }
+
+    /**
+     * Get server version
+     * @return {string}
+     */
+    get serverVersion() {
+        return this._serverVersion;
+    }
+
+    /**
+     * Set server version
+     * @param  {string} version
+     * @return {void}
+     */
+    set serverVersion(version) {
+        this._serverVersion = version;
+    }
+
+    /**
+     * Get server token
+     * @return {string}
+     */
+    get token() {
+        return this._token;
+    }
+
+    /**
+     * Set server token
+     * @param  {string} token
+     * @return {void}
+     */
+    set token(token) {
+        this._token = token;
     }
 
     /**
@@ -279,6 +414,7 @@ class User extends Member {
      */
     set address(address) {
         this.zentao = address;
+        if(global.TEST) this.server = address;
     }
 
     /**
@@ -427,6 +563,13 @@ class User extends Member {
     }
 
     static STATUS = USER_STATUS;
+
+    static create = user => {
+        if(!(user instanceof User)) {
+            user = new User(user);
+        }
+        return user;
+    };
 }
 
 export {USER_STATUS};

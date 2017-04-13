@@ -203,10 +203,15 @@
     "request-progress": "^3.0.0",
     "source-map-support": "^0.4.8",
     "split.js": "^1.2.0",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "ws": "^2.2.3"
   },
   "devEngines": {
     "node": ">=6.x",
     "npm": ">=3.x"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^3.0.0",
+    "utf-8-validate": "^3.0.1"
   }
 }
