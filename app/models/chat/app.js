@@ -669,7 +669,7 @@ class ChatApp extends AppCore {
               defaultValue={chat.name}
               fullWidth={true}
             />
-            {(options.setPublic && chat.isGroup) ? <Checkbox style={{marginTop: 8}} label={options.setPublicLabel || this.lang.chat.setPublic} onCheck={(e, isChecked) => {isPublic = isChecked;}}/> : null}
+            {(options && options.setPublic && chat.isGroup) ? <Checkbox style={{marginTop: 8}} label={options.setPublicLabel || this.lang.chat.setPublic} onCheck={(e, isChecked) => {isPublic = isChecked;}}/> : null}
         </div>;
         Modal.show({
             modal: true,
@@ -681,7 +681,7 @@ class ChatApp extends AppCore {
                 if(Helper.isNotEmptyString(newName) && newName !== chat.name) {
                     this.rename(chat, newName);
                 }
-                if(options.setPublic) {
+                if(options && options.setPublic) {
                     chat.public = isPublic;
                 }
                 callback && callback(chat, newName, isPublic);
