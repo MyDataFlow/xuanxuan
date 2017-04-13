@@ -7,11 +7,13 @@ import {
     Entity,
     AtomicBlockUtils,
     convertToRaw,
+    CompositeDecorator,
     Modifier
 }                                    from 'draft-js';
 import Theme                         from 'Theme';
+import Emojione                      from 'Components/emojione';
 
-const ImageDraft = props => {
+const AtomicComponent = props => {
     const key = props.block.getEntityAt(0)
     if (!key) {
         return null
@@ -25,15 +27,85 @@ const ImageDraft = props => {
             src={data.src}
             alt={data.alt || ''}
         />;
+    } else if(type === 'emoji') {
+        let emoji = entity.getData().emoji;
+        let emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
+        return <span><img style={{maxWidth: 20, maxHeight: 20}} contentEditable='false' data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
     }
     return null;
 };
+
+
+const findWithRegex = (regex, contentBlock, callback) => {
+    const text = contentBlock.getText();
+    let matchArr, start;
+    while ((matchArr = regex.exec(text)) !== null) {
+        start = matchArr.index;
+        callback(start, start + matchArr[0].length);
+    }
+};
+const draftDecorator = new CompositeDecorator([/*{
+    strategy: (contentBlock, callback, contentState) => {
+        contentBlock.findEntityRanges(
+            character => {
+                 const entityKey = character.getEntity();
+                 return (
+                     entityKey !== null &&
+                     Entity.get(entityKey).getType() === 'emoji'
+                 );
+            },
+            callback
+        );
+    },
+    component: (props) => {
+        const {emoji} = Entity.get(props.entityKey).getData();
+        console.info('draftDecorator', emoji);
+        if(emoji) {
+            let emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
+            return <span data-offset-key={props.offsetKey} style={{fontSize: 0}}><img style={{maxWidth: 20, maxHeight: 20}} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
+        }
+        return <span data-offset-key={props.offsetKey}>{props.children}</span>;
+    }
+}, {
+    strategy: (contentBlock, callback, contentState) => {
+        findWithRegex(Emojione.regUnicode, contentBlock, callback);
+    },
+    component: (props) => {
+        let unicode = props.decoraßtedText;
+        return <span contentEditable="false" style={{maxHeight: 20, maxWidth: 20, display: 'inline-block'}} data-offset-key={props.offsetKey} dangerouslySetInnerHTML={{__html: Emojione.unicodeToImage(unicode)}}/>;
+    }
+},*/ {
+    strategy: (contentBlock, callback, contentState) => {
+        findWithRegex(/:[a-zA-Z0-9_]+: /g, contentBlock, callback);
+    },
+    component: (props) => {
+        let shortname = props.decoratedText.trim();
+        let emoji = Emojione.emojioneList[shortname];
+        if(emoji) {
+            let emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.png' + Emojione.cacheBustParam;
+            return <span data-offset-key={props.offsetKey} style={{}}><img style={{maxWidth: 20, maxHeight: 20}} src={emojionePngPath} alt={Emojione.shortnameToUnicode(shortname)} title={shortname} />&nbsp;</span>;
+        }
+        return <span data-offset-key={props.offsetKey}>{props.children}</span>;
+    }
+}, {
+    strategy: (contentBlock, callback, contentState) => {
+        findWithRegex(/@\w+ /g, contentBlock, callback);
+    },
+    component: (props) => {
+        let guess = props.decoratedText.trim().substr(1);
+        let member = App.dao.guessMember(guess);
+        if(member) {
+            return <a className="link-app" href={'#Member/' + member.id} title={'@' + member.displayName} style={{color: Theme.color.primary1}} data-offset-key={props.offsetKey} >{props.children}</a>;
+        }
+        return <span data-offset-key={props.offsetKey}>{props.children}</span>;
+    }
+}]);
 
 class DraftEditor extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
+        this.state = {editorState: EditorState.createEmpty(draftDecorator)};
     }
 
     getContent() {
@@ -41,7 +113,7 @@ class DraftEditor extends Component {
     }
 
     clearContent() {
-        this.onChange(EditorState.createEmpty());
+        this.onChange(EditorState.createEmpty(draftDecorator));
     }
 
     appendContent(content, asNewLine, callback) {
@@ -50,7 +122,42 @@ class DraftEditor extends Component {
         const contentState = editorState.getCurrentContent();
         const ncs = Modifier.insertText(contentState, selection, content);
         const newEditorState = EditorState.push(editorState, ncs, 'insert-fragment');
-        this.onChange(newEditorState);
+        this.onChange(newEditorState, callback);
+    }
+
+    appendEmojione(emoji, callback) {
+        this.appendContent(Emojione.shortnameToUnicode(emoji.shortname), callback);
+    }
+
+    appendEmojioneEntity(emoji, callback) {
+        let {editorState} = this.state;
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+            'emoji',
+            'Segmented',
+            {emoji: emoji, content: emoji.shortname}
+        );
+        const newEditorState = EditorState.set(
+            editorState,
+            {currentContent: contentStateWithEntity}
+        );
+        this.onChange(newEditorState, callback);
+    }
+
+    appendImage(image, callback) {
+        let {editorState} = this.state;
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+            'image',
+            'IMMUTABLE',
+            {src: image.path, alt: image.name || '', image: image}
+        );
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(
+            editorState,
+            {currentContent: contentStateWithEntity}
+        );
+        this.onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '), callback);
     }
 
     getContentList() {
@@ -88,22 +195,6 @@ class DraftEditor extends Component {
         }, delay);
     }
 
-    appendImage(image, callback) {
-        let {editorState} = this.state;
-        const contentState = editorState.getCurrentContent();
-        const contentStateWithEntity = contentState.createEntity(
-            'image',
-            'IMMUTABLE',
-            {src: image.path, alt: image.name || '', image: image}
-        );
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(
-            editorState,
-            {currentContent: contentStateWithEntity}
-        );
-        this.onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '), callback);
-    }
-
     onChange(editorState, callback) {
         const contentState = editorState.getCurrentContent();
         this.setState({editorState}, () => {
@@ -137,7 +228,7 @@ class DraftEditor extends Component {
 
         if (type === 'atomic') {
             result = {
-                component: ImageDraft,
+                component: AtomicComponent,
                 editable: true,
             }
         }
