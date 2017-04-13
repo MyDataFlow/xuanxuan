@@ -13,12 +13,6 @@ import (
 	"xxd/util"
 )
 
-/*
-func init() {
-	go cronTask()
-}
-*/
-
 func CronTask() {
 	go func() {
 		for util.Run {

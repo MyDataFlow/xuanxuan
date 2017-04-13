@@ -19,7 +19,7 @@ const (
 	webSocket = "/ws"
 )
 
-func WsInit() {
+func InitWs() {
 	hub := newHub()
 	go hub.run()
 

@@ -21,7 +21,7 @@ func ChatLogin(clientData ParseData) ([]byte, string, bool) {
 	ranzhiAddr := util.Config.RanzhiServer[clientData.ServerName()].RanzhiAddr
 
 	// 到http服务器请求，返回加密的结果
-	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, apiPartForm(apiUnparse(clientData, ranzhiToken)))
+	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, apiPartForm(ApiUnparse(clientData, ranzhiToken)))
 	if err != nil || retMessage == nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, "", false
@@ -46,7 +46,7 @@ func ChatLogin(clientData ParseData) ([]byte, string, bool) {
 	return retMessage, retData.userID(), retData.Result() == "success"
 }
 
-func ChatLogout() {
+func ChatLogout(clientData ParseData) {
 }
 
 func UserGetlist(serverName, userID string) ([]byte, error) {

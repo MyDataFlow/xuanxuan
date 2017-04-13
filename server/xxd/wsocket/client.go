@@ -72,79 +72,113 @@ func switchMethod(message []byte, client *Client) error {
 		return util.Errorf("recve client message error")
 	}
 
-	util.Println(parseData)
 	switch parseData.Module() + "." + parseData.Method() {
 	case "chat.login":
-		loginData, userID, ok := api.ChatLogin(parseData)
-		if userID == "" {
-			util.LogError().Println("chat login error")
-			return util.Errorf("%s\n", "chat login error")
-		}
-
-		if !ok {
-			//登录失败返回错误信息
-			client.send <- loginData
-
-			util.LogError().Println("chat login error")
-			return util.Errorf("%s\n", "chat login error")
-		}
-		// 成功后返回login数据给客户端
-		client.send <- loginData
-
-		client.serverName = parseData.ServerName()
-		client.userID = userID
-
-		// 获取所有用户列表
-		usergl, err := api.UserGetlist(client.serverName, client.userID)
-		if err != nil {
-			util.LogError().Println("chat user get list error")
-			//返回给客户端登录失败的错误信息
+		if err := chatLogin(parseData, client); err != nil {
 			return err
 		}
-		// 成功后返回usergl数据给客户端
-		client.send <- usergl
 
-		//获取当前登录用户所有会话数据,组合好的数据放入send发送队列
-		getlist, err := api.Getlist(client.serverName, client.userID)
-		if err != nil {
-			util.LogError().Println("chat get list error")
-			// 返回给客户端登录失败的错误信息
-			return err
-		}
-		// 成功后返回gl数据给客户端
-		client.send <- getlist
-
-		// 推送当前登录用户信息给其他在线用户
-		//因为是broadcast类型，所以不需要初始化userID
-		client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
-
-		// 以上成功后把socket加入到管理队列
-		client.hub.register <- client
 		break
 
 	case "chat.logout":
-		api.ChatLogout()
+		if err := chatLogout(parseData, client); err != nil {
+			return err
+		}
 		break
 
-	case "chat.message":
-		if util.IsDebug {
-			client.serverName = "easysoftTest"
-			client.userID = util.GetUnixTime()
-			client.hub.register <- client
-
-			util.Println("------------------")
-			parseData["result"] = "success"
-			parseData["data"] = parseData["params"]
-			delete(parseData, "params")
-
-			message := api.ApiUnparse(parseData, util.Token)
-			client.hub.broadcast <- SendMsg{serverName: client.serverName, message: message}
+	case "chat.testLogin":
+		if util.IsTest {
+			chatTestLogin(parseData, client)
 			break
 		}
 
+		return util.Errorf("%s\n", "server unopened test model")
+
+	case "chat.testMessage":
+		if util.IsTest {
+			chatTestMessage(parseData, client)
+			break
+		}
+
+		return util.Errorf("%s\n", "server unopened test model")
+
+	default:
 		break
 
 	}
+
+	return nil
+}
+
+func chatLogout(parseData api.ParseData, client *Client) error {
+	// 要不就这样数组，要不就分开在一级字段中
+	//parseData["params"] = []string(client.serverName, client.userID)
+
+	api.ChatLogout(parseData)
+	return nil
+}
+
+func chatLogin(parseData api.ParseData, client *Client) error {
+	loginData, userID, ok := api.ChatLogin(parseData)
+	if userID == "" {
+		util.LogError().Println("chat login error")
+		return util.Errorf("%s\n", "chat login error")
+	}
+
+	if !ok {
+		//登录失败返回错误信息
+		client.send <- loginData
+
+		util.LogError().Println("chat login error")
+		return util.Errorf("%s\n", "chat login error")
+	}
+	// 成功后返回login数据给客户端
+	client.send <- loginData
+
+	client.serverName = parseData.ServerName()
+	client.userID = userID
+
+	// 获取所有用户列表
+	usergl, err := api.UserGetlist(client.serverName, client.userID)
+	if err != nil {
+		util.LogError().Println("chat user get list error")
+		//返回给客户端登录失败的错误信息
+		return err
+	}
+	// 成功后返回usergl数据给客户端
+	client.send <- usergl
+
+	// 获取当前登录用户所有会话数据,组合好的数据放入send发送队列
+	getlist, err := api.Getlist(client.serverName, client.userID)
+	if err != nil {
+		util.LogError().Println("chat get list error")
+		// 返回给客户端登录失败的错误信息
+		return err
+	}
+	// 成功后返回gl数据给客户端
+	client.send <- getlist
+
+	// 推送当前登录用户信息给其他在线用户
+	// 因为是broadcast类型，所以不需要初始化userID
+	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
+
+	// 以上成功后把socket加入到管理队列
+	client.hub.register <- client
+
+	return nil
+}
+
+func chatTestLogin(parseData api.ParseData, client *Client) error {
+	client.serverName = parseData.ServerName()
+	client.userID = util.Int642String(util.GetUnixTime())
+	client.hub.register <- client
+
+	return nil
+}
+
+func chatTestMessage(parseData api.ParseData, client *Client) error {
+	message := api.ApiUnparse(parseData, util.Token)
+	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: message}
 
 	return nil
 }
@@ -155,7 +189,6 @@ func switchMethod(message []byte, client *Client) error {
 // ensures that there is at most one reader on a connection by executing all
 // reads from this goroutine.
 func (c *Client) readPump() {
-	util.Println("-------------")
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
@@ -180,6 +213,7 @@ func (c *Client) readPump() {
 
 		//返回user id 、登录响应的数据、ok
 		if switchMethod(message, c) != nil {
+			util.Println("error exit")
 			break
 		}
 	}

@@ -10,7 +10,6 @@
 package main
 
 import (
-	//"fmt"
 	"xxd/crontask"
 	"xxd/hyperttp"
 	"xxd/util"
@@ -18,10 +17,11 @@ import (
 )
 
 func main() {
+
 	crontask.CronTask()
 
-	go hyperttp.Initdd()
-	go wsocket.WsInit()
+	go hyperttp.InitHttp()
+	go wsocket.InitWs()
 
 	exitServer()
 }
@@ -29,7 +29,7 @@ func main() {
 func exitServer() {
 
 	for util.GetNumGoroutine() > 1 {
-		//fmt.Println("sleep ...")
+		//util.Println("sleep ...")
 		util.Sleep(3)
 	}
 }

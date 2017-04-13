@@ -1,5 +1,5 @@
 /**
- * The httpserver file of http current module of xxd.
+ * The httpserver file of hyperttp current module of xxd.
  *
  * @copyright   Copyright 2009-2017 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
@@ -39,34 +39,44 @@ var crtInfo = CertInformation{
 	Country:            []string{"CN"},
 	Organization:       []string{"cnezsoft"},
 	OrganizationalUnit: []string{"cnezsoft"},
-	EmailAddress:       []string{"chunsheng@cnezsoft.com"},
-	Province:           []string{"Shandong"},
-	Locality:           []string{"Qingdao"},
+	EmailAddress:       []string{"pengjiangxiu@cnezsoft.com"},
+	Province:           []string{"ShanDong"},
+	Locality:           []string{"QingDao"},
 	CommonName:         "cnezsoft",
 	CrtName:            util.GetProgramName() + ".crt",
 	KeyName:            util.GetProgramName() + ".key",
 	IsCA:               true}
 
-func CreateSignedCertKey() error {
+func CreateSignedCertKey() (string, string, error) {
+	crtPath := util.Config.CrtPath + util.GetProgramName() + ".crt"
+	keyPath := util.Config.CrtPath + util.GetProgramName() + ".key"
+
+	if !util.IsNotExist(crtPath) && !util.IsNotExist(keyPath) {
+		return crtPath, keyPath, nil
+	}
+
+	util.Rm(crtPath)
+	util.Rm(keyPath)
+
 	crt := newCertificate(crtInfo)
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 
 	var buf []byte
 	buf, err = x509.CreateCertificate(rand.Reader, crt, crt, &key.PublicKey, key)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 
 	err = write(crtInfo.CrtName, "CERTIFICATE", buf)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 
 	buf = x509.MarshalPKCS1PrivateKey(key)
-	return write(crtInfo.KeyName, "PRIVATE KEY", buf)
+	return crtPath, keyPath, write(crtInfo.KeyName, "PRIVATE KEY", buf)
 }
 
 func write(filename, crtType string, p []byte) error {

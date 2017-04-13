@@ -49,6 +49,11 @@ func (h *Hub) run() {
 		select {
 		case client := <-h.register:
 			// 根据传入的client对指定服务器的userid进行socket注册
+			if _, ok := h.clients[client.serverName]; !ok {
+				close(client.send)
+				continue
+			}
+
 			h.clients[client.serverName][client.userID] = client
 
 		case client := <-h.unregister:
