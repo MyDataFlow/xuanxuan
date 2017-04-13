@@ -301,5 +301,40 @@
     "openFile": "打开文件...",
     "filterImage": "图片",
     "filterAllFiles": "所有文件"
+  },
+
+  "emojioneCategories": {
+    "people": {
+        "title": "表情与人物",
+        "emoji": "smile"
+    },
+    "nature": {
+        "title": "动物与自然",
+        "emoji": "hamster"
+    },
+    "food": {
+        "title": "食物与饮料",
+        "emoji": "pizza"
+    },
+    "activity": {
+        "title": "活动",
+        "emoji": "soccer"
+    },
+    "travel": {
+        "title": "旅行与地点",
+        "emoji": "earth_americas"
+    },
+    "objects": {
+        "title": "物体",
+        "emoji": "bulb"
+    },
+    "symbols": {
+        "title": "符号",
+        "emoji": "clock9"
+    },
+    "flags": {
+        "title": "旗帜",
+        "emoji": "flag_gb"
+    }
   }
 }

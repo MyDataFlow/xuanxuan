@@ -23,6 +23,7 @@ import UUID                from 'uuid';
 import Helper              from 'Helper';
 import R                   from 'Resource';
 import ShortcutField       from '../components/shortcut-field';
+import EmojiPicker         from 'emojione-picker';
 
 /**
  * React component: MessageSendbox
@@ -54,31 +55,29 @@ const MessageSendbox = React.createClass({
         }
     },
 
-    _handleEmoticonSelect(shortname) {
+    _handleEmoticonSelect(emoji) {
         Popover.hide('ChatEmojiSelectorPopover');
 
-        if(App.user.config.ui.chat.HDEmoticon) {
-            return this.props.onSendButtonClick && this.props.onSendButtonClick(this, shortname);
-        } else {
-            this.editbox.appendContent(shortname + ' ');
-            this.editbox.focus();
-        }
+        this.editbox.appendContent(emoji.shortname + ' ');
+        this.editbox.focus();
     },
 
     _handleEmoticonClick(e) {
         Popover.toggle({
-            getLazyContent: () => <EmoticonList onEmojiClick={this._handleEmoticonSelect} />,
+            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} onChange={data => {
+                this._handleEmoticonSelect(data);
+                console.info("Emoji chosen", data);
+            }} />,
             contentId: 'chat-' + this.props.chatId,
             id: 'ChatEmojiSelectorPopover',
             removeAfterHide: true,
             trigger: this.emotionBtn,
             placement: 'top',
             style: {
-                width: 406,
+                width: 276,
                 height: 261
             },
-            float: 'start',
-            footer: <Checkbox onCheck={(e, checked) => {App.user.config.ui.chat.HDEmoticon = checked}} label={Lang.chat.sendHDEmoticon} defaultChecked={App.user.config.ui.chat.HDEmoticon}/>
+            float: 'start'
         });
     },
 
