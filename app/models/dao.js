@@ -290,15 +290,41 @@ class DAO {
     }
 
     /**
+     * Get member by id
+     * @param  {number} id
+     * @return {Member}
+     */
+    getMemberById(id) {
+        return this.$.members[id];
+    }
+
+    /**
      * Get member
      * @param  {String | Number} idOrAccount
      * @return {Member}
      */
-    getMember(idOrAccount, useAccount) {
+    getMember(idOrAccount) {
         let member = this.$.members[idOrAccount];
-        if(useAccount && !member) {
+        if(!member) {
             let findId = Object.keys(this.$.members).find(x => {
                 return this.$.members[x].account === idOrAccount;
+            });
+            if(findId) member = this.$.members[findId]
+        }
+        return member;
+    }
+
+    /**
+     * Guess member from id, account or realname
+     * @param  {any} guess
+     * @return {Member}
+     */
+    guessMember(guess) {
+        let member = this.getMemberById(guess);
+        if(!member) {
+            let findId = Object.keys(this.$.members).find(x => {
+                const xMember = this.$.members[x];
+                return xMember.account === guess || xMember.realname === guess;
             });
             if(findId) member = this.$.members[findId]
         }
