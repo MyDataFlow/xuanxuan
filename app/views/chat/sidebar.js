@@ -14,6 +14,8 @@ import UserStatus          from './user-status';
 import ListItem            from '../components/small-list-item';
 import UserAvatar          from '../user-avatar';
 import Member              from 'Models/member';
+import AppActionLink       from 'Utils/app-link';
+import R                   from 'Resource';
 
 const STYLE = {
     main: {
@@ -92,7 +94,7 @@ const ChatSidebar = React.createClass({
     },
 
     _handleMemberClick(member) {
-        App.openProfile({member, inModal: true});
+        App.emit(R.event.ui_link, new AppActionLink('@Member/' + member.account));
     },
 
     _handleExitChatButtonClick() {
