@@ -82,7 +82,7 @@ const draftDecorator = new CompositeDecorator([/*{
         let shortname = props.decoratedText.trim();
         let emoji = Emojione.emojioneList[shortname];
         if(emoji) {
-            let emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.png' + Emojione.cacheBustParam;
+            let emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.' + Emojione.imageType + Emojione.cacheBustParam;
             let backgroundImage = 'url(' + emojionePngPath + ') no-repeat left top';
             return <span title={shortname} data-offset-key={props.offsetKey} style={{width: 16, height: 16, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', background: backgroundImage, backgroundSize: 'contain', textAlign: 'left', verticalAlign: 'bottom'}}><span style={{color: 'transparent'}}>{props.children}</span> </span>;
         }
