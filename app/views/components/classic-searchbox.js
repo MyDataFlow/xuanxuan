@@ -148,7 +148,7 @@ class ClassicSearchBox extends Component {
                 onInput={this._handleInputChange.bind(this)}
                 onChange={this._handleInputChange.bind(this)}
             />
-            <SearchIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={searchIconStyle} />
+            <SearchIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={searchIconStyle} onClick={this.focus.bind(this)} />
             <CloseIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={closeIconStyle} onClick={this._handleCloseBtnClick.bind(this)}/>
         </div>
     }
