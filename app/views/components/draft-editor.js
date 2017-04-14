@@ -44,37 +44,7 @@ const findWithRegex = (regex, contentBlock, callback) => {
         callback(start, start + matchArr[0].length);
     }
 };
-const draftDecorator = new CompositeDecorator([/*{
-    strategy: (contentBlock, callback, contentState) => {
-        contentBlock.findEntityRanges(
-            character => {
-                 const entityKey = character.getEntity();
-                 return (
-                     entityKey !== null &&
-                     Entity.get(entityKey).getType() === 'emoji'
-                 );
-            },
-            callback
-        );
-    },
-    component: (props) => {
-        const {emoji} = Entity.get(props.entityKey).getData();
-        console.info('draftDecorator', emoji);
-        if(emoji) {
-            let emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
-            return <span data-offset-key={props.offsetKey} style={{fontSize: 0}}><img style={{maxWidth: 20, maxHeight: 20}} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
-        }
-        return <span data-offset-key={props.offsetKey}>{props.children}</span>;
-    }
-}, {
-    strategy: (contentBlock, callback, contentState) => {
-        findWithRegex(Emojione.regUnicode, contentBlock, callback);
-    },
-    component: (props) => {
-        let unicode = props.decoratedText;
-        return <span contentEditable="false" style={{maxHeight: 20, maxWidth: 20, display: 'inline-block'}} data-offset-key={props.offsetKey} dangerouslySetInnerHTML={{__html: Emojione.unicodeToImage(unicode)}}/>;
-    }
-},*/ {
+const draftDecorator = new CompositeDecorator([{
     strategy: (contentBlock, callback, contentState) => {
         findWithRegex(/:[a-zA-Z0-9_]+:/g, contentBlock, callback);
     },

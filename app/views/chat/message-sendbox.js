@@ -66,7 +66,6 @@ const MessageSendbox = React.createClass({
         Popover.toggle({
             getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} onChange={data => {
                 this._handleEmoticonSelect(data);
-                console.info("Emoji chosen", data);
             }} />,
             contentId: 'chat-' + this.props.chatId,
             id: 'ChatEmojiSelectorPopover',
