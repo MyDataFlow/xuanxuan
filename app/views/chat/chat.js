@@ -122,16 +122,14 @@ const ChatPage = React.createClass({
     },
 
     _sendMessage(messages) {
-        let chat = this.state.chat;
+        const chat = this.state.chat;
         App.chat.sendMessage(messages, chat);
     },
 
-    _handSendMessage(sendbox, emoticon) {
-        let chat = this.state.chat;
-
-        let message;
+    _sendEmojiMessage(emoticon) {
+        const chat = this.state.chat;
         if(emoticon) {
-            message = new Message({
+            const message = new Message({
                 contentType: 'image',
                 content: JSON.stringify({type: 'emoji', content: emoticon}),
                 sender: App.user,
@@ -139,17 +137,28 @@ const ChatPage = React.createClass({
                 date: new Date()
             });
             this._sendMessage(message);
+            return message;
+        }
+    },
+
+    _handSendMessage(sendbox, emoticon) {
+        let chat = this.state.chat;
+        if(emoticon) {
+            ths._sendEmojiMessage(emoticon);
         } else {
             sendbox.editbox.getContentList().forEach(content => {
                 if(content.type === 'text') {
-                    message = new Message({
-                        content: content.content,
-                        sender: App.user,
-                        cgid: chat.gid,
-                        date: new Date()
-                    });
-
-                    this._sendMessage(message);
+                    let trimContent = content.content.trim();
+                    if(trimContent && Emojione.emojioneList[trimContent]) {
+                        this._sendEmojiMessage(trimContent);
+                    } else {
+                        this._sendMessage(new Message({
+                            content: content.content,
+                            sender: App.user,
+                            cgid: chat.gid,
+                            date: new Date()
+                        }));
+                    }
                 } else if(content.type === 'image') {
                     this._handleSelectImageFile(content.image);
                 }
