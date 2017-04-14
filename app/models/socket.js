@@ -400,10 +400,10 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleConnect() {
-        if(DEBUG) console.log('%cSOCKET CONNECTED ' + this.host +':' + this.port, 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (global.TEST ? this.user.socketUrl : (this.host +':' + this.port)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
         this.login();
         this.ready();
-        this._emit(EVENT.socket_connected, {host: this.host, port: this.port});
+        this._emit(EVENT.socket_connected, global.TEST ? {url: this.user.socketUrl} : {host: this.host, port: this.port});
     }
 
     /**
@@ -483,7 +483,7 @@ class Socket extends ReadyNotifier {
     _handleClose(e) {
         if(this._markDestroy) return;
         if(DEBUG) {
-            console.groupCollapsed('%cSOCKET CLOSE ' + this.host +':' + this.port, 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+            console.groupCollapsed('%cSOCKET CLOSE ' + (global.TEST ? this.user.socketUrl : (this.host +':' + this.port)), 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
             console.log('error', e);
             console.groupEnd();
         }
