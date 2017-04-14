@@ -9,17 +9,13 @@
  */
 package api
 
-import (
-	"xxd/util"
-)
-
-func (pd ParseData) userID() string {
+func (pd ParseData) userID() int64 {
 	data, ok := pd["data"]
 	if !ok {
-		return ""
+		return -1
 	}
 
-	ret := data.(map[string]interface{})
-	retStr := util.Int642String(int64(ret["id"].(float64)))
-	return retStr
+	intfData := data.(map[string]interface{})
+	ret := int64(intfData["id"].(float64))
+	return ret
 }

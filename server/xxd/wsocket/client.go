@@ -56,12 +56,19 @@ type Client struct {
 	serverName string
 
 	// Send to user id
-	userID string
+	userID int64
+
+	repeatLogin bool
+}
+
+type ClientRegister struct {
+	client    *Client
+	retClient chan *Client
 }
 
 type SendMsg struct {
 	serverName string
-	usersID    []string
+	usersID    []int64
 	message    []byte
 }
 
@@ -120,7 +127,7 @@ func chatLogout(parseData api.ParseData, client *Client) error {
 
 func chatLogin(parseData api.ParseData, client *Client) error {
 	loginData, userID, ok := api.ChatLogin(parseData)
-	if userID == "" {
+	if userID == -1 {
 		util.LogError().Println("chat login error")
 		return util.Errorf("%s\n", "chat login error")
 	}
@@ -158,20 +165,39 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	// 成功后返回gl数据给客户端
 	client.send <- getlist
 
+	cRegister := &ClientRegister{client: client, retClient: make(chan *Client)}
+	defer close(cRegister.retClient)
+
+	// 以上成功后把socket加入到管理
+	client.hub.register <- cRegister
+	if retClient := <-cRegister.retClient; retClient.repeatLogin {
+		//客户端收到信息后需要关闭socket连接，否则连接不会断开
+		retClient.send <- api.RepeatLogin()
+
+		//是重复登录，不需要再发送给其他用户上线信息
+		return nil
+	}
+
 	// 推送当前登录用户信息给其他在线用户
 	// 因为是broadcast类型，所以不需要初始化userID
 	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
-
-	// 以上成功后把socket加入到管理队列
-	client.hub.register <- client
 
 	return nil
 }
 
 func chatTestLogin(parseData api.ParseData, client *Client) error {
 	client.serverName = parseData.ServerName()
-	client.userID = util.Int642String(util.GetUnixTime())
-	client.hub.register <- client
+	client.userID = util.GetUnixTime()
+
+	cRegister := &ClientRegister{client: client, retClient: make(chan *Client)}
+	defer close(cRegister.retClient)
+
+	client.hub.register <- cRegister
+	if retClient := <-cRegister.retClient; retClient.repeatLogin {
+		retClient.send <- api.RepeatLogin()
+
+		return nil
+	}
 
 	return nil
 }
@@ -274,7 +300,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false}
 
 	util.LogInfo().Println("client ip:", conn.RemoteAddr())
 	go client.writePump()
