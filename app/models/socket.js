@@ -241,7 +241,8 @@ class Socket extends ReadyNotifier {
             }
         } : null;
         if(global.TEST) {
-            if(ENCRYPT_ENABLE) {
+            const = encryptEnabled = ENCRYPT_ENABLE && !global.encryptDisabled;
+            if(encryptEnabled) {
                 data = this.encrypt(data);
                 if(DEBUG) {
                     console.groupCollapsed('%c ENCRYPT data [length: ' + data.length + ']', 'display: inline-block; font-size: 10px; color: #2196F3; background: #E3F2FD; border: 1px solid #E3F2FD; padding: 1px 5px; border-radius: 2px;');
@@ -252,7 +253,7 @@ class Socket extends ReadyNotifier {
                 } 
             }
             this.client.send(data, {
-                binary: ENCRYPT_ENABLE
+                binary: encryptEnabled
             }, afterSend);
             if(msg.test === true) {
                 let msgTest = Helper.plain(msg);
