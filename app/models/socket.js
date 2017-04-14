@@ -241,7 +241,7 @@ class Socket extends ReadyNotifier {
             }
         } : null;
         if(global.TEST) {
-            const = encryptEnabled = ENCRYPT_ENABLE && !global.encryptDisabled;
+            const encryptEnabled = ENCRYPT_ENABLE && !global.encryptDisabled;
             if(encryptEnabled) {
                 data = this.encrypt(data);
                 if(DEBUG) {
