@@ -518,7 +518,11 @@ class Socket extends ReadyNotifier {
         this.stopPing();
         this.app.off(this.userStatusChangeEvent);
         this._markDestroy = true;
-        this.client.destroy();
+        if(global.TEST) {
+            this.client.close();
+        } else {
+            this.client.destroy();
+        }
     }
 }
 
