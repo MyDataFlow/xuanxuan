@@ -2,7 +2,6 @@ import React               from 'react';
 import Theme               from '../theme';
 import {App, Lang, Config} from '../app';
 import ChatPage            from './chat/page';
-import AppsPage            from './apps/page';
 import ContactsPage        from './contacts/contacts';
 import CacheContents       from './mixins/cache-contents';
 import ContentNotReady     from './misc/content-not-ready';
