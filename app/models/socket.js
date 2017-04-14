@@ -432,7 +432,7 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleData(data, flags) {
-        if(flags.binary) {
+        if(flags && flags.binary) {
             if(ENCRYPT_ENABLE && !global.encryptDisabled) {
                 data = this.decrypt(data);
             } else {
