@@ -9,7 +9,7 @@
  */
 package api
 
-func (pd ParseData) userID() int64 {
+func (pd ParseData) UserID() int64 {
 	data, ok := pd["data"]
 	if !ok {
 		return -1

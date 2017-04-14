@@ -110,28 +110,28 @@ func (pd ParseData) Result() string {
 	return ret.(string)
 }
 
-func (pd ParseData) SendUsers() ([]string, string) {
+func (pd ParseData) SendUsers() []int64 {
 	// 判断users是否存在
 	ret, ok := pd["users"]
 	if !ok {
-		return nil, ""
-	}
-
-	// 判断类型
-	switch ret.(type) {
-	case string:
-		//all 表示发送给所有用户
-		if ret == "all" {
-			return nil, "broadcast"
-		}
+		return nil
 	}
 
 	// 对interface类型进行转换
-	strArray := make([]string, len(ret.([]interface{})))
+	array := make([]int64, len(ret.([]interface{})))
 	for i, v := range ret.([]interface{}) {
-		str := util.Int642String(int64(v.(float64)))
-		strArray[i] = str
+		array[i] = int64(v.(float64))
 	}
 
-	return strArray, "multicast"
+	delete(pd, "users")
+	return array
+}
+
+func (pd ParseData) Test() bool {
+	ret, ok := pd["test"]
+	if !ok {
+		return false
+	}
+
+	return ret.(bool)
 }

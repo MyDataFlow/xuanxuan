@@ -72,6 +72,30 @@ type SendMsg struct {
 	message    []byte
 }
 
+func apiParse(message []byte, client *Client) error {
+	parseData := api.ApiParse(message, util.Token)
+	if parseData == nil {
+		util.LogError().Println("recve client message error")
+		return util.Errorf("recve client message error")
+	}
+
+	if util.IsTest && parseData.Test() {
+		testSwitchMethod(message, parseData, client)
+		return nil
+	}
+
+	switchMethod(message, client)
+
+	return nil
+}
+
+func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) error {
+	switch parseData.Module() + "." + parseData.Method() {
+	}
+
+	return nil
+}
+
 func switchMethod(message []byte, client *Client) error {
 	parseData := api.ApiParse(message, util.Token)
 	if parseData == nil {
@@ -110,10 +134,37 @@ func switchMethod(message []byte, client *Client) error {
 		return util.Errorf("%s\n", "server unopened test model")
 
 	default:
+		err := transitData(message, parseData.ServerName(), parseData.UserID(), client)
+		if err != nil {
+			util.LogError().Println(err)
+			return err
+		}
+
 		break
 
 	}
 
+	return nil
+}
+
+func transitData(message []byte, serverName string, userID int64, client *Client) error {
+	if client.userID != userID {
+		return util.Errorf("xxx")
+	}
+
+	x2cMessage, sendUsers, err := api.TransitData(message, serverName)
+	if err != nil {
+		return err
+	}
+
+	if len(sendUsers) == 0 {
+		//send all
+		client.hub.broadcast <- SendMsg{serverName: client.serverName, message: x2cMessage}
+		return nil
+	}
+
+	//send users
+	client.hub.multicast <- SendMsg{serverName: client.serverName, usersID: sendUsers, message: x2cMessage}
 	return nil
 }
 
