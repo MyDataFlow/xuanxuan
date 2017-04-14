@@ -15,7 +15,7 @@ import (
 )
 
 // 从客户端发来的登录请求，通过该函数转发到后台服务器进行登录验证
-func ChatLogin(clientData ParseData) ([]byte, string, bool) {
+func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 	// 客户端到go服务器，和go服务器到后台服务器通讯使用了不一样的token
 	ranzhiToken := util.Config.RanzhiServer[clientData.ServerName()].RanzhiToken
 	ranzhiAddr := util.Config.RanzhiServer[clientData.ServerName()].RanzhiAddr
@@ -24,19 +24,19 @@ func ChatLogin(clientData ParseData) ([]byte, string, bool) {
 	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, apiPartForm(ApiUnparse(clientData, ranzhiToken)))
 	if err != nil || retMessage == nil {
 		util.LogError().Println("hyperttp request info error:", err)
-		return nil, "", false
+		return nil, -1, false
 	}
 
 	// 解析http服务器的数据,返回 ParseData 类型的数据
 	retData := ApiParse(retMessage, ranzhiToken)
 	if retData == nil {
 		util.LogError().Println("api parse error")
-		return nil, "", false
+		return nil, -1, false
 	}
 
 	retMessage, err = swapToken(retMessage, ranzhiToken, util.Token)
 	if err != nil {
-		return nil, "", false
+		return nil, -1, false
 	}
 
 	// 返回值：
@@ -49,12 +49,24 @@ func ChatLogin(clientData ParseData) ([]byte, string, bool) {
 func ChatLogout(clientData ParseData) {
 }
 
-func UserGetlist(serverName, userID string) ([]byte, error) {
+func RepeatLogin() []byte {
+	repeatLogin := `{module:  'null',method:  'null',message: 'This account logined in another place.'}`
+
+	message, err := aesEncrypt(repeatLogin, util.Token)
+	if err != nil {
+		util.LogError().Println("aes encrypt error:", err)
+		return nil
+	}
+
+	return message
+}
+
+func UserGetlist(serverName string, userID int64) ([]byte, error) {
 	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
 	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
 
 	// 固定的json格式
-	request := []byte(`{"module":"chat","method":"userGetlist",id:` + userID + `}`)
+	request := []byte(`{"module":"chat","method":"userGetlist",id:` + util.Int642String(userID) + `}`)
 	message, err := aesEncrypt(request, ranzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
@@ -77,12 +89,12 @@ func UserGetlist(serverName, userID string) ([]byte, error) {
 	return retData, nil
 }
 
-func Getlist(serverName, userID string) ([]byte, error) {
+func Getlist(serverName string, userID int64) ([]byte, error) {
 	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
 	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
 
 	// 固定的json格式
-	request := []byte(`{"module":"chat","method":"getlist",id:` + userID + `}`)
+	request := []byte(`{"module":"chat","method":"getlist",id:` + util.Int642String(userID) + `}`)
 	message, err := aesEncrypt(request, ranzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
