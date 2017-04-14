@@ -304,7 +304,7 @@ const Login = React.createClass({
             }
         });
         if(DEBUG) {
-            this.handleSubmitClick();
+            // this.handleSubmitClick();
         }
     },
 

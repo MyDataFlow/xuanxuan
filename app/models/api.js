@@ -79,8 +79,9 @@ function post(url, form) {
     return new Promise((resolve, reject) => {
         Request.post({
             url,
-            form
-        }, (error, httpResponse, body) => {
+            form,
+            rejectUnauthorized: false
+        }, (error, response, body) => {
             if(error) {
                 error.code = 'WRONG_CONNECT';
             } else if(response.statusCode === 200) {

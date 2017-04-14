@@ -10,10 +10,14 @@ import {
 }                          from './entities';
 import ReadyNotifier       from './ready-notifier';
 import WebSocket           from 'ws';
+import crypto              from 'crypto';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('Socket must run in renderer process.');
 }
+
+const ENCRYPT_ENABLE = true;
+if(global.TEST) global.crypto2 = crypto;
 
 /**
  * Socket
@@ -38,6 +42,10 @@ class Socket extends ReadyNotifier {
         this.lastHandTime = 0;
         this.lastOkTime = 0;
         this.client = global.TEST ? new WebSocket(user.socketUrl) : new Net.Socket();
+        console.log('>', {
+            token: user.token
+        });
+        if(global.TEST) this.cipher = crypto.createCipher('aes-256-cbc', user.token);
 
         this._initHandlers();
         this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {
@@ -48,19 +56,53 @@ class Socket extends ReadyNotifier {
             }
         });
 
-        return this.connect();
+        this.connect();
     }
+
+    /**
+     * Encrypt data with aes
+     * @param  {string} data
+     * @return {Buffer}
+     */
+    encrypt(data) {
+        let crypted = this.cipher.update(data, 'utf8', 'binary');
+        crypted += this.cipher.final('binary');
+        crypted = new Buffer(crypted, 'binary');
+        return crypted;
+    }
+
+    /**
+     * Decrypt data
+     * @param  {Buffer} data
+     * @return {string}
+     */
+    decrypt(data) {
+        if(!this.decipher) {
+            this.decipher = crypto.createDecipher('aes-256-cbc', this.user.token);
+        }
+        let decoded = this.decipher.update(data, 'binary', 'utf8');
+        decoded += this.decipher.final('utf8');
+        return decoded;
+    };
 
     /**
      * Connect to socket server
      * @return {Void}
      */
     connect() {
-        this.client.connect(this.port, this.host, this._handleConnect.bind(this));
-        this.client.on('data',    this._handleData.bind(this));
-        this.client.on('close',   this._handleClose.bind(this));
-        this.client.on('error',   this._handleError.bind(this));
-        this.client.on('timeout', this._handleTimeout.bind(this));
+        if(!global.TEST) {
+            this.client.connect(this.port, this.host, this._handleConnect.bind(this));
+            this.client.on('data',    this._handleData.bind(this));
+            this.client.on('close',   this._handleClose.bind(this));
+            this.client.on('error',   this._handleError.bind(this));
+            this.client.on('timeout', this._handleTimeout.bind(this));
+        } else {
+            this.client.on('open',    this._handleConnect.bind(this));
+            this.client.on('message', this._handleData.bind(this));
+            this.client.on('close',   this._handleClose.bind(this));
+            this.client.on('error',   this._handleError.bind(this));
+            this.client.on('unexpected-response', this._handleError.bind(this));
+        }
     }
 
     /**
@@ -104,7 +146,12 @@ class Socket extends ReadyNotifier {
         let msg = new SocketMessage({
             'module': 'chat',
             'method': 'login',
-            'params': [
+            'params': global.TEST ? [
+                this.user.serverName,
+                this.user.account,
+                this.user.passwordMD5,
+                'online'
+            ] : [
                 this.user.account,
                 this.user.passwordMD5,
                 'online'
@@ -187,13 +234,34 @@ class Socket extends ReadyNotifier {
      */
     send(msg) {
         if(!msg.sid && this.user.sid) msg.sid = this.user.sid;
-        this.client.write(msg.json, 'utf-8', e => {
+        if(!msg.userid && this.user.id) msg.userid = this.user.id;
+        if(global.TEST) msg.test = true;
+        let data = msg.json;
+        const afterSend = DEBUG ? e=> {
             if(DEBUG) {
                 console.groupCollapsed('%cSOCKET SEND ⬆%c' + msg.module + '/' + msg.method, 'display: inline-block; font-size: 10px; color: #0097A7; border: 1px solid #0097A7; padding: 1px 5px; border-radius: 2px 0 0 2px;', 'display: inline-block; font-size: 10px; color: #fff; background: #0097A7; border: 1px solid #0097A7; padding: 1px 5px; border-radius: 0 2px 2px 0;');
                 console.log('msg', msg);
                 console.groupEnd();
             }
-        });
+        } : null;
+        if(global.TEST) {
+            if(ENCRYPT_ENABLE) {
+                data = this.encrypt(data);
+                if(DEBUG) {
+                    console.groupCollapsed('%c ENCRYPT data [length: ' + data.length + ']', 'display: inline-block; font-size: 10px; color: #2196F3; background: #E3F2FD; border: 1px solid #E3F2FD; padding: 1px 5px; border-radius: 2px;');
+                    console.log('origin', msg.json);
+                    console.log('encrypted', data);
+                    console.log('decrypt', this.decrypt(data));
+                    console.groupEnd();
+                } 
+
+            }
+            this.client.send(data, {
+                binary: ENCRYPT_ENABLE
+            }, afterSend);
+        } else {
+            this.client.write(data, 'utf-8', afterSend);
+        }
     }
 
     /**
@@ -361,7 +429,7 @@ class Socket extends ReadyNotifier {
      * Handle socket connect event
      * @return {Void}
      */
-    _handleData(data) {
+    _handleData(data, flags) {
         this._emit(EVENT.socket_data, data);
 
         if(!data || !data.length) return;

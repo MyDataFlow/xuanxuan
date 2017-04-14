@@ -15,6 +15,11 @@ if(global.DEBUG) {
     };
 }
 
-global.TEST = false;
+global.TEST = true;
+
+global.test = (toggle) => {
+    global.TEST = toggle === undefined ? (!global.TEST) : !!toggle;
+    return 'TEST=' + global.TEST;
+};
 
 export default global.DEBUG;
