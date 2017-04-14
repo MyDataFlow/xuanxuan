@@ -432,6 +432,13 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleData(data, flags) {
+        if(flags.binary) {
+            if(ENCRYPT_ENABLE && !global.encryptDisabled) {
+                data = this.decrypt(data);
+            } else {
+                data = data.toString();
+            }
+        }
         this._emit(EVENT.socket_data, data);
 
         if(!data || !data.length) return;
