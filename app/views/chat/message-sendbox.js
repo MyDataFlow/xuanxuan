@@ -74,7 +74,7 @@ const MessageSendbox = React.createClass({
             trigger: this.emotionBtn,
             placement: 'top',
             style: {
-                width: 276,
+                width: 280,
                 height: 261
             },
             float: 'start'
