@@ -101,6 +101,11 @@ class ChangeFontSizeView extends Component {
         let config = this.configs[select];
         App.user.config.ui.chat.fontSize = config;
         App.delaySaveUser();
+
+        clearTimeout(this.saveUserTask);
+        this.saveUserTask = setTimeout(() => {
+            App.emit(R.event.user_config_change, App.user.config);
+        }, 2000);
     }
 
     _handleFontSizeChange(e, select) {

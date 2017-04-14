@@ -70,6 +70,75 @@ function getJSON(url) {
 }
 
 /**
+ * Post request
+ * @param  {string} url 
+ * @param  {data} form
+ * @return {Promise}     
+ */
+function post(url, form) {
+    return new Promise((resolve, reject) => {
+        Request.post({
+            url,
+            form,
+            rejectUnauthorized: false
+        }, (error, response, body) => {
+            if(error) {
+                error.code = 'WRONG_CONNECT';
+            } else if(response.statusCode === 200) {
+            } else {
+                error = new Error('Status code is not 200.');
+                error.response = response;
+                error.code = 'WRONG_CONNECT';
+            }
+            if(DEBUG) {
+                console.groupCollapsed('%cHTTP POST ' + url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
+                console.log('form', form);
+                console.log('response', response);
+                console.log('body', body);
+                if(error) console.error('error', error);
+                console.groupEnd();
+            }
+
+            if(error) {
+                reject(error);
+            } else {
+                resolve(body);
+            }
+        });
+    });
+}
+
+/**
+ * Post request and return json
+ * @param  {String}   url
+ * @return {Promise}
+ */
+function postJSON(url, form) {
+    return new Promise((resolve, reject) => {
+        post(url, form).then(text => {
+            let json, error;
+            try {
+                json = JSON.parse(text);
+            } catch(err) {
+                err.code = 'WRONG_DATA';
+                error = err;
+            }
+            if(DEBUG) {
+                console.groupCollapsed('%cHTTP POST JSON ' + url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
+                console.log('json', json);
+                if(error) console.log('error', error);
+                console.groupEnd();
+            }
+
+            if(json) resolve(json);
+            else reject(error);
+        }).catch(reject);
+    });
+}
+
+
+
+/**
  * Concat zentao url with params
  * @param  {Object} params
  * @param  {User} user
@@ -264,6 +333,48 @@ function getJSONData(url) {
 }
 
 /**
+ * Post data and return json result
+ * @return {Promise}
+ */
+function postJSONData(url, form) {
+    return new Promise((resolve, reject) => {
+        postJSON(url).then(json => {
+            if(json.status === 'success') {
+                resolve(json.data);
+            } else {
+                let error = new Error(json.message || json.reason || ('The server data status is ' + json.status));
+                error.code = 'WRONG_STATUS';
+                reject(error);
+            }
+        }).catch(reject);
+    });
+}
+
+/**
+ * Request sever info
+ * @param  {User} user
+ * @return {Promise}
+ */
+function requestServerInfo(user) {
+    return new Promise((resolve, reject) => {
+        postJSON(user.webServerInfoUrl, {
+            serverName: user.serverName,
+            account: user.account,
+            password: user.passwordMD5
+        }).then(data => {
+            if(data) {
+                user.socketPort    = data.chatPort;
+                user.token         = data.token;
+                user.serverVersion = data.version;
+                resolve(user);
+            } else {
+                reject({message: 'Empty serverInfo data', code: 'WRONG_DATA'});
+            }
+        }).catch(reject);
+    });
+}
+
+/**
  * Create file download link
  * @param  {Number} fileId
  * @param  {User}   user
@@ -440,7 +551,11 @@ function getMembers(user) {
 let Api = {
     getText,
     getJSON,
+    post,
+    postJSON,
+    postJSONData,
     getZentaoConfig,
+    requestServerInfo,
     login,
     logout,
     getMembers,
@@ -454,7 +569,11 @@ let Api = {
 export {
     getText,
     getJSON,
+    post,
+    postJSON,
+    postJSONData,
     getZentaoConfig,
+    requestServerInfo,
     login,
     logout,
     getMembers,

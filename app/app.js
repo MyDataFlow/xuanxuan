@@ -15,7 +15,7 @@ import Helper             from './utils/helper';
 import R, {EVENT}         from './resource';
 import User, {USER_STATUS}from './models/user';
 import ReadyNotifier      from './models/ready-notifier';
-import ZentaoAPI          from './models/api';
+import API          from './models/api';
 import Socket             from './models/socket';
 import DAO                from './models/dao';
 import {ChatApp}          from './models/apps';
@@ -358,6 +358,41 @@ class App extends ReadyNotifier {
      * Do user login action
      */
     login(user) {
+        if(global.TEST) {
+            if(!user) user = this.user;
+            user = User.create(user);
+            this.isUserLogining = true;
+            this.emit(EVENT.user_login_begin, user);
+
+            this.off(this._handleUserLoginFinishEvent);
+            this._handleUserLoginFinishEvent = this.once(EVENT.user_login_message, (serverUser, error) => {
+                this._handleUserLoginFinishEvent = false;
+                this._handleUserLoginFinish(user, serverUser, error);
+            });
+
+            API.requestServerInfo(user).then(user => {
+                if(this.socket) {
+                    this.socket.destroy();
+                }
+                this.socket = new Socket(app, user);
+                this.emit(EVENT.app_socket_change, this.socket);
+            }).catch((err) => {
+                err.oringeMessage = err.message;
+                err.message = Lang.errors[err && err.code ? err.code : 'WRONG_CONNECT'] || err.message;
+                if(DEBUG) console.error(err);
+                this.emit(EVENT.user_login_message, null, err);
+            });
+        } else {
+            return this.oldLogin(user);
+        }
+    }
+
+    /**
+     * Login with user for old version
+     * @param  {object} user
+     * @return {void}
+     */
+    oldLogin(user) {
         if(!user) user = this.user;
         else user = this.resetUser(user);
 
@@ -370,7 +405,7 @@ class App extends ReadyNotifier {
             this._handleUserLoginFinish(user, serverUser, error);
         });
 
-        ZentaoAPI.getZentaoConfig(user.zentao).then(zentaoConfig => {
+        API.getZentaoConfig(user.zentao).then(zentaoConfig => {
             user.zentaoConfig = zentaoConfig;
             if(this.socket) {
                 this.socket.destroy();
@@ -435,7 +470,7 @@ class App extends ReadyNotifier {
                     console.log('%cUSER DATA PATH ' + this.user.dataPath, 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
                 }
                 this.config.save(user);
-                // ZentaoAPI.tryLogin(user);
+                // API.tryLogin(user);
 
                 setTimeout(() => {
                     // set user status
@@ -909,7 +944,7 @@ class App extends ReadyNotifier {
      * @return {Promise}
      */
     uploadFile(file, params) {
-        return ZentaoAPI.uploadFile(file, this.user, params).catch(err => {
+        return API.uploadFile(file, this.user, params).catch(err => {
             console.error(err);
         });
     }
@@ -923,7 +958,7 @@ class App extends ReadyNotifier {
     downloadFile(file, onProgress) {
         if(!file.path) file.path = this.user.tempPath + file.name;
         if(!file.url) file.url = this.createFileDownloadLink(file.id, this.user);
-        return ZentaoAPI.downloadFile(file, this.user, onProgress);
+        return API.downloadFile(file, this.user, onProgress);
     }
 
     /**
@@ -932,7 +967,7 @@ class App extends ReadyNotifier {
      * @return {string}
      */
     createFileDownloadLink(fileId) {
-        return ZentaoAPI.createFileDownloadLink(fileId, this.user);
+        return API.createFileDownloadLink(fileId, this.user);
     }
 
     /**

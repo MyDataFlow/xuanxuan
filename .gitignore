@@ -51,3 +51,4 @@ main.js.map
 
 # backyard settings
 server/db/upgradebackyard.sql
+server/xxd/certificate
