@@ -110,7 +110,7 @@ const ChatMenu = React.createClass({
                     break;
                 case MENU_TYPES.groups:
                     var items = App.chat.getGroups();
-                    items = Chat.sort(items, ['name'], App);
+                    items = Chat.sort(items, ['star', 'name'], App);
                     data.push({name: MENU_TYPES.groups, items});
                     break;
             }
