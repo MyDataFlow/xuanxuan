@@ -24,7 +24,7 @@ const Arrow = React.createClass({
             width: 20,
             height: 10,
             borderColor: Theme.color.border,
-            color: Theme.color.accent2,
+            color: Theme.color.canvas,
             direction: 'down',
             inverseDirection: false
         };

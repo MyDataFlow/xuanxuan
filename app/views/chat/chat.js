@@ -229,6 +229,7 @@ const ChatPage = React.createClass({
             trigger: this.inviteBtnWrapper,
             placement: 'bottom',
             removeAfterHide: true,
+            arrowColor: Theme.color.accent2,
             style: {
                 width: 500,
                 height: 400

@@ -290,6 +290,7 @@ const Popover = React.createClass({
             style,
             arrow,
             clickAway,
+            arrowColor,
             ...other
         } = this.props;
 
@@ -321,7 +322,7 @@ const Popover = React.createClass({
             {children !== undefined ? <div>{children}</div> : null}
             {!hasContent ? <Spinner /> : null}
             {hasContent && footer !== undefined ? <div style={STYLE.footer}>{footer}</div> : null}
-            {arrow && this._placement !== undefined && this._placement !== 'cover' ? <Arrow borderColor={STYLE.arrow.borderColor} inverseDirection={true} direction={this._placement} width={STYLE.arrow.width} height={STYLE.arrow.height} style={arrowStyle} /> : null}
+            {arrow && this._placement !== undefined && this._placement !== 'cover' ? <Arrow color={arrowColor} borderColor={STYLE.arrow.borderColor} inverseDirection={true} direction={this._placement} width={STYLE.arrow.width} height={STYLE.arrow.height} style={arrowStyle} /> : null}
           </div>
         </ThemeProvider>
     }
