@@ -436,7 +436,7 @@ class Socket extends ReadyNotifier {
         this._emit(EVENT.socket_data, data, flags);
 
         if(!data || !data.length) return;
-        if(data.charCodeAt(data.length - 1) !== 10) {
+        if(((typeof data === 'string') ? data.charCodeAt(data.length - 1) : data[data.length - 1]) !== 10) {
             if(this._rawData) {
                 this._rawData.push(data);
             } else {
