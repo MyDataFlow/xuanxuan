@@ -52,6 +52,8 @@ func InitHttp() {
 
 	addr := util.Config.Ip + ":" + util.Config.CommonPort
 	util.LogInfo().Println("http server start,listen addr:", addr, download)
+	util.LogInfo().Println("http server start,listen addr:", addr, upload)
+	util.LogInfo().Println("http server start,listen addr:", addr, sInfo)
 
 	if err := http.ListenAndServeTLS(addr, crt, key, nil); err != nil {
 		util.LogError().Println("ListenAndServe:", err)
@@ -60,7 +62,7 @@ func InitHttp() {
 }
 
 func fileDownload(w http.ResponseWriter, r *http.Request) {
-	/*	token := r.Header.Get("Token")
+	/*	token := r.Header.Get("Authorization")
 		if token != util.Token {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -79,12 +81,17 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 }
 
 func fileUpload(w http.ResponseWriter, r *http.Request) {
-	/*	token := r.Header.Get("Token")
+	/*	token := r.Header.Get("Authorization")
 		if token != util.Token {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 	*/
+
+	if r.Method != "POST" {
+		fmt.Fprintln(w, "Not Supported")
+		return
+	}
 
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("uploadfile")
@@ -94,14 +101,22 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	fmt.Fprintf(w, "%v", handler.Header)
-	f, err := os.OpenFile("./test/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0644)
+	if err := util.Mkdir(util.Config.UploadPath); err != nil {
+		fmt.Printf("mkdir error %s\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	f, err := os.OpenFile(util.Config.UploadPath+handler.Filename, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer f.Close()
 	io.Copy(f, file)
+
+	fmt.Fprintf(w, "%v", handler.Header)
 }
 
 func serverInfo(w http.ResponseWriter, r *http.Request) {

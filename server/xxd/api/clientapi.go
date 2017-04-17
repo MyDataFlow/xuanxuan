@@ -43,7 +43,7 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 	// 1、返回给客户端加密后的数据
 	// 2、返回用户的ID
 	// 3、返回登录的结果
-	return retMessage, retData.userID(), retData.Result() == "success"
+	return retMessage, retData.UserID(), retData.Result() == "success"
 }
 
 func ChatLogout(clientData ParseData) {
@@ -52,7 +52,7 @@ func ChatLogout(clientData ParseData) {
 func RepeatLogin() []byte {
 	repeatLogin := `{module:  'null',method:  'null',message: 'This account logined in another place.'}`
 
-	message, err := aesEncrypt(repeatLogin, util.Token)
+	message, err := aesEncrypt([]byte(repeatLogin), util.Token)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
 		return nil
@@ -61,12 +61,40 @@ func RepeatLogin() []byte {
 	return message
 }
 
+func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) {
+	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
+	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
+
+	message, err := swapToken(clientData, util.Token, ranzhiToken)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// ranzhi to xxd message
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiAddr, message)
+	if err != nil {
+		util.LogError().Println("hyperttp request info error:", err)
+		return nil, nil, err
+	}
+
+	parseData := ApiParse(r2xMessage, ranzhiToken)
+	sendUsers := parseData.SendUsers()
+
+	// xxd to client message
+	x2cMessage := ApiUnparse(parseData, util.Token)
+	if x2cMessage == nil {
+		return nil, nil, err
+	}
+
+	return x2cMessage, sendUsers, nil
+}
+
 func UserGetlist(serverName string, userID int64) ([]byte, error) {
 	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
 	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
 
 	// 固定的json格式
-	request := []byte(`{"module":"chat","method":"userGetlist",id:` + util.Int642String(userID) + `}`)
+	request := []byte(`{"module":"chat","method":"userGetlist",userID:` + util.Int642String(userID) + `}`)
 	message, err := aesEncrypt(request, ranzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
@@ -94,7 +122,7 @@ func Getlist(serverName string, userID int64) ([]byte, error) {
 	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
 
 	// 固定的json格式
-	request := []byte(`{"module":"chat","method":"getlist",id:` + util.Int642String(userID) + `}`)
+	request := []byte(`{"module":"chat","method":"getlist",userID:` + util.Int642String(userID) + `}`)
 	message, err := aesEncrypt(request, ranzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
