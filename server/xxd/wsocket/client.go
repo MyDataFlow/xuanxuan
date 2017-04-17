@@ -72,25 +72,39 @@ type SendMsg struct {
 	message    []byte
 }
 
-func apiParse(message []byte, client *Client) error {
+func dataProcessing(message []byte, client *Client) error {
 	parseData := api.ApiParse(message, util.Token)
 	if parseData == nil {
 		util.LogError().Println("recve client message error")
 		return util.Errorf("recve client message error")
 	}
 
-	if util.IsTest && parseData.Test() {
-		testSwitchMethod(message, parseData, client)
+	if parseData.Method() == "testLogin" {
 		return nil
 	}
 
-	switchMethod(message, client)
+	if util.IsTest && parseData.Test() {
+		return testSwitchMethod(message, parseData, client)
+	}
 
-	return nil
+	return switchMethod(message, client)
 }
 
 func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) error {
 	switch parseData.Module() + "." + parseData.Method() {
+	case "chat.login":
+		chatTestLogin(parseData, client)
+		break
+
+	case "chat.logout":
+		if err := chatLogout(parseData, client); err != nil {
+			return err
+		}
+		break
+
+	default:
+		//chatTestMessage(parseData, client)
+		break
 	}
 
 	return nil
@@ -117,22 +131,6 @@ func switchMethod(message []byte, client *Client) error {
 			return err
 		}
 		break
-
-	case "chat.testLogin":
-		if util.IsTest {
-			chatTestLogin(parseData, client)
-			break
-		}
-
-		return util.Errorf("%s\n", "server unopened test model")
-
-	case "chat.testMessage":
-		if util.IsTest {
-			chatTestMessage(parseData, client)
-			break
-		}
-
-		return util.Errorf("%s\n", "server unopened test model")
 
 	default:
 		err := transitData(message, parseData.ServerName(), parseData.UserID(), client)
@@ -252,8 +250,7 @@ func chatTestLogin(parseData api.ParseData, client *Client) error {
 		return util.Errorf("%s\n", "chat test login error")
 	}
 
-	loginData := api.ApiUnparse(parseData, util.Token)
-	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
+	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: api.TestLogin()}
 
 	return nil
 }
@@ -296,7 +293,7 @@ func (c *Client) readPump() {
 		}
 
 		//返回user id 、登录响应的数据、ok
-		if switchMethod(message, c) != nil {
+		if dataProcessing(message, c) != nil {
 			util.Println("error exit")
 			break
 		}
