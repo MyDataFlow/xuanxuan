@@ -31,7 +31,7 @@ class SocketMessage {
         try {
             if(Array.isArray(json)) {
                 if(DEBUG) {
-                    console.groupCollapsed('%cBuild socket message from buffer array', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+                    console.groupCollapsed('%cBuild socket message from buffer array.', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
                     console.log('buffer', json);
                     console.groupEnd();
                 }
@@ -42,7 +42,11 @@ class SocketMessage {
             let firstEOF = json.indexOf('\n');
             if(firstEOF > 0 && firstEOF < json.length) {
                 json = '[' + json.split('\n').join(',') + ']';
-                if(DEBUG) console.log('Socket message contains "\\n", make it as json array.', json);
+                if(DEBUG) {
+                    console.groupCollapsed('%cSocket message contains "\\n", make it as json array.', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+                    console.log('json', json);
+                    console.groupEnd();
+                }
             }
             let data = JSON.parse(json);
             if(Array.isArray(data)) {

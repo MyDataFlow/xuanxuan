@@ -255,12 +255,6 @@ class Socket extends ReadyNotifier {
             this.client.send(data, {
                 binary: encryptEnabled
             }, afterSend);
-            if(msg.test === true) {
-                let msgTest = Helper.plain(msg);
-                msgTest.test = 1;
-                msgTest.method = 'test' + msgTest.method[0].toUpperCase() + msgTest.method.substr(1);
-                this.send(new SocketMessage(msgTest));
-            }
         } else {
             this.client.write(data, 'utf-8', afterSend);
         }
@@ -439,10 +433,10 @@ class Socket extends ReadyNotifier {
                 data = data.toString();
             }
         }
-        this._emit(EVENT.socket_data, data);
+        this._emit(EVENT.socket_data, data, flags);
 
         if(!data || !data.length) return;
-        if(data[data.length - 1] !== 10) {
+        if(data.charCodeAt(data.length - 1) !== 10) {
             if(this._rawData) {
                 this._rawData.push(data);
             } else {
