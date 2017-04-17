@@ -62,7 +62,7 @@ class Socket extends ReadyNotifier {
      * @return {Buffer}
      */
     encrypt(data) {
-        let cipher = crypto.createCipher('aes-256-cbc', this.user.token);
+        let cipher = crypto.createCipheriv('aes-256-cbc', this.user.token, this.user.cipherIV);
         let crypted = cipher.update(data, 'utf8', 'binary');
         crypted += cipher.final('binary');
         crypted = new Buffer(crypted, 'binary');
@@ -75,7 +75,7 @@ class Socket extends ReadyNotifier {
      * @return {string}
      */
     decrypt(data) {
-        let decipher = crypto.createDecipher('aes-256-cbc', this.user.token);
+        let decipher = crypto.createDecipheriv('aes-256-cbc', this.user.token, this.user.cipherIV);
         let decoded = decipher.update(data, 'binary', 'utf8');
         decoded += decipher.final('utf8');
         return decoded;

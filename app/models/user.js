@@ -213,6 +213,14 @@ class User extends Member {
     }
 
     /**
+     * Get 
+     * @return {string}
+     */
+    get cipherIV() {
+        return this._token.substr(0, 16);
+    }
+
+    /**
      * Set server token
      * @param  {string} token
      * @return {void}
