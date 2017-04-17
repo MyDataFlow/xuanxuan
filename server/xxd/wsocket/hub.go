@@ -51,6 +51,7 @@ func (h *Hub) run() {
 
 			// 根据传入的client对指定服务器的userid进行socket注册
 			if _, ok := h.clients[cRegister.client.serverName]; !ok {
+				cRegister.retClient <- cRegister.client
 				close(cRegister.client.send)
 				continue
 			}
@@ -101,6 +102,7 @@ func (h *Hub) run() {
 		case sendMsg := <-h.broadcast:
 			// 对所有的在线用户发送消息
 			for userID := range h.clients[sendMsg.serverName] {
+
 				client := h.clients[sendMsg.serverName][userID]
 				select {
 				case client.send <- sendMsg.message:

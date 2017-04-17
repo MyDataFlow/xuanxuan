@@ -105,6 +105,7 @@ func switchMethod(message []byte, client *Client) error {
 
 	switch parseData.Module() + "." + parseData.Method() {
 	case "chat.login":
+		break
 		if err := chatLogin(parseData, client); err != nil {
 			return err
 		}
@@ -247,8 +248,12 @@ func chatTestLogin(parseData api.ParseData, client *Client) error {
 	if retClient := <-cRegister.retClient; retClient.repeatLogin {
 		retClient.send <- api.RepeatLogin()
 
-		return nil
+		util.Println("chat test login error")
+		return util.Errorf("%s\n", "chat test login error")
 	}
+
+	loginData := api.ApiUnparse(parseData, util.Token)
+	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
 
 	return nil
 }
@@ -296,6 +301,7 @@ func (c *Client) readPump() {
 			break
 		}
 	}
+
 }
 
 // writePump pumps messages from the hub to the websocket connection.

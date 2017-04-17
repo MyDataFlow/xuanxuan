@@ -32,6 +32,7 @@ func aesEncrypt(origData, key []byte) ([]byte, error) {
 }
 
 func aesDecrypt(crypted, key []byte) ([]byte, error) {
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -47,6 +48,10 @@ func aesDecrypt(crypted, key []byte) ([]byte, error) {
 	// origData := crypted
 	blockMode.CryptBlocks(origData, crypted)
 	origData = pkcs5UnPadding(origData)
+	if origData == nil {
+		return nil, util.Errorf("%s\n", "pkcs5 UnPadding error")
+	}
+
 	return origData, nil
 }
 
@@ -60,5 +65,10 @@ func pkcs5UnPadding(origData []byte) []byte {
 	length := len(origData)
 	// 去掉最后一个字节 unpadding 次
 	unpadding := int(origData[length-1])
+	if unpadding > length {
+		util.LogError().Println("aes unpadding len > data length")
+		return nil
+	}
+
 	return origData[:(length - unpadding)]
 }
