@@ -69,6 +69,9 @@ export default validate(merge(baseConfig, {
   },
 
   plugins: [
+    // for bindings package, see https://github.com/rwaldron/johnny-five/issues/1101#issuecomment-213581938
+    new webpack.ContextReplacementPlugin(/bindings$/, /^$/),
+
     // https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
     new webpack.HotModuleReplacementPlugin(),
 
@@ -82,6 +85,8 @@ export default validate(merge(baseConfig, {
       'process.env.NODE_ENV': JSON.stringify('development')
     })
   ],
+
+  externals: ['bindings'],
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
