@@ -58,6 +58,18 @@ class Dao {
     }
 
     /**
+     * Call function for each chat
+     * @param  {Function} callback
+     * @return {void}
+     */
+    forEachChat(callback) {
+        Object.keys(this.chats).forEach(x => {
+            let chat = this.chats[x];
+            callback(chat);
+        });
+    }
+
+    /**
      * Get chat by gid
      * @param  {String} gid
      * @return {Chat}

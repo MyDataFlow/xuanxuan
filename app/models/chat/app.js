@@ -219,10 +219,14 @@ class ChatApp extends AppCore {
         });
 
         app.on(R.event.chats_notice, (data) => {
-            let totalNoticeCount = 0;
+            let totalNoticeCount = 0,
+                contactsCount = 0,
+                groupsCount = 0;
             let chats = this.dao.getChats(x => {
                 if(x.noticeCount && (!this.$app.isWindowOpen || !this.$app.isWindowsFocus || x.gid !== this.activeChatWindow)) {
                     totalNoticeCount += x.noticeCount;
+                    if(x.isOne2One) contactsCount += x.noticeCount;
+                    if(x.isGroup || x.isSystem) groupsCount += x.noticeCount;
                     this.lastNoticeChatGid = x.gid;
                 } else {
                     x.noticeCount = 0;
@@ -240,8 +244,8 @@ class ChatApp extends AppCore {
                     }
                     if(!this.$app.isWindowOpen) this.$app.playSound('message');
                 }
-                this.$app.emit(R.event.chats_notice_change, totalNoticeCount);
             }
+            this.$app.emit(R.event.chats_notice_change, {total: totalNoticeCount, contact: contactsCount, group: groupsCount});
         });
 
         app.on(R.event.ui_show_main_window, () => {
@@ -401,7 +405,7 @@ class ChatApp extends AppCore {
 
         var now = new Date().getTime();
         return all.filter(chat => {
-            return (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
+            return chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
         });
     }
 

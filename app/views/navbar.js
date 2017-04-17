@@ -147,7 +147,7 @@ const Navbar = React.createClass({
             active: App.user.config.ui.navbar.page,
             user: {name: 'Guest', status: 'online'},
             menu: false,
-            chatNoticeCount: 0
+            notice: 0
         };
     },
 
@@ -181,8 +181,8 @@ const Navbar = React.createClass({
                 this.setState({active: e.navbar});
             }
         });
-        this._handleChatNoticeEvent = App.on(R.event.chats_notice_change, chatNoticeCount => {
-            this.setState({chatNoticeCount});
+        this._handleChatNoticeEvent = App.on(R.event.chats_notice_change, notice => {
+            this.setState({notice});
         });
 
         this.handleItemClick(this.state.active);
@@ -209,7 +209,22 @@ const Navbar = React.createClass({
                 base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
                 dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
             },
-            noticeBadge: {position: 'absolute', top: 8, left: 5, width: 40, height: 20, color: Theme.color.primary1, textAlign: 'center', lineHeight: '20px', zIndex: 1, fontSize: '12px'}
+            noticeBadge: {
+                position: 'absolute',
+                top: 3,
+                right: 14,
+                backgroundColor: Theme.colors.red500,
+                color: 'white',
+                lineHeight: '16px',
+                display: 'inline-block',
+                fontSize: '12px',
+                padding: '0 4px',
+                borderRadius: 8,
+                minWidth: 8,
+                textAlign: 'center',
+                width: 'auto',
+                zIndex: 10
+            }
         };
 
         let listItems = [
@@ -239,8 +254,25 @@ const Navbar = React.createClass({
                     let className = 'item hint--right';
                     if(item.name === that.state.active) className += ' active';
                     let noticeCountText = null;
-                    if(item.name === R.ui.navbar_chat && this.state.chatNoticeCount) {
-                        noticeCountText = <div style={STYLE.noticeBadge}>{this.state.chatNoticeCount > 99 ? '99' : this.state.chatNoticeCount}</div>;
+                    if(this.state.notice && this.state.notice.total) {
+                        let noticeCount = 0;
+                        switch(item.name) {
+                            case R.ui.navbar_chat:
+                                noticeCount = this.state.notice.total || 0;
+                                break;
+                            case R.ui.navbar_groups:
+                                noticeCount = this.state.notice.group || 0;
+                                break;
+                            case R.ui.navbar_contacts:
+                                noticeCount = this.state.notice.contact || 0;
+                                break;
+                        }
+                        if(noticeCount) {
+                            if(noticeCount > 999) {
+                                noticeCount = '+999';
+                            }
+                            noticeCountText = <div style={STYLE.noticeBadge}>{noticeCount}</div>;
+                        }
                     }
                     return  <ListItem leftIcon={item.icon} data-hint={item.text} className={className} key={item.name} primaryText='&nbsp;' onClick={that.handleItemClick.bind(null, item.name)} style={STYLE.navItem}>{noticeCountText}</ListItem>;
                 })
