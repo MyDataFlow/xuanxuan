@@ -53,7 +53,7 @@ func InitHttp() {
 	addr := util.Config.Ip + ":" + util.Config.CommonPort
 	util.LogInfo().Println("http server start,listen addr:", addr, download)
 	util.LogInfo().Println("http server start,listen addr:", addr, upload)
-	util.LogInfo().Println("http server start,listen addr:", addr, serverInfo)
+	util.LogInfo().Println("http server start,listen addr:", addr, sInfo)
 
 	if err := http.ListenAndServeTLS(addr, crt, key, nil); err != nil {
 		util.LogError().Println("ListenAndServe:", err)

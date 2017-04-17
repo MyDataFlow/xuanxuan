@@ -281,10 +281,12 @@ func (c *Client) readPump() {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				util.LogError().Printf("error: %v", err)
 			}
+
+			util.LogError().Printf("error: %v", err)
 			break
 		}
 
-		if msgType != websocket.TextMessage {
+		if msgType != websocket.BinaryMessage {
 			continue
 		}
 
