@@ -284,6 +284,11 @@ func (c *Client) readPump() {
 			continue
 		}
 
+		/*
+			messageLen := len(message)
+			message = message[:messageLen-len(newline)]
+		*/
+
 		//返回user id 、登录响应的数据、ok
 		if dataProcessing(message, c) != nil {
 			util.Println("error exit")
@@ -320,7 +325,7 @@ func (c *Client) writePump() {
 				return
 			}
 
-			message = append(message, newline...)
+			//message = append(newline, message...)
 			w.Write(message)
 
 			// Add queued chat messages to the current websocket message.

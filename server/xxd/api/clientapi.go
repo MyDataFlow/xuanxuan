@@ -62,10 +62,10 @@ func RepeatLogin() []byte {
 }
 
 func TestLogin() []byte {
-	loginData := `{"result":"success","data":{"id":12,"account":"demo8","realname":"\u6210\u7a0b\u7a0b","avatar":"","role":"hr","dept":0,"status":"online","admin":"no","gender":"f","email":"ccc@demo.com"
-,"mobile":"","site":"","phone":""},"sid":"18025976a786ec78194e491e7b790731","module":"chat","method":"login"}`
+	loginData := []byte(`{"result":"success","data":{"id":12,"account":"demo8","realname":"\u6210\u7a0b\u7a0b","avatar":"","role":"hr","dept":0,"status":"online","admin":"no","gender":"f","email":"ccc@demo.com","mobile":"","site":"","phone":""},"sid":"18025976a786ec78194e491e7b790731","module":"chat","method":"login"}`)
 
-	message, err := aesEncrypt([]byte(loginData), util.Token)
+	loginData = append(loginData, []byte{'\n'}...)
+	message, err := aesEncrypt(loginData, util.Token)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
 		return nil
