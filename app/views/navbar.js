@@ -11,9 +11,12 @@ import MenuItem        from 'material-ui/MenuItem';
 import MenuDivider     from 'material-ui/Divider';
 import IconButton      from 'material-ui/IconButton';
 import ChatIcon        from './icons/comment-outline';
+import ActiveChatIcon  from './icons/comment';
 import GroupIcon       from './icons/comments-outline';
 import PoundIcon       from './icons/pound';
+import PoundBoxIcon    from './icons/pound-box';
 import PeopleIcon      from 'material-ui/svg-icons/social/people-outline';
+import ActivePeopleIcon from 'material-ui/svg-icons/social/people';
 import TimeIcon        from 'material-ui/svg-icons/device/access-time';
 import AppsIcon        from 'material-ui/svg-icons/action/dashboard';
 import MoreIcon        from 'material-ui/svg-icons/navigation/more-vert';
@@ -228,9 +231,9 @@ const Navbar = React.createClass({
         };
 
         let listItems = [
-            {name: R.ui.navbar_chat,   text: "最近聊天", icon: <ChatIcon className='icon' style={STYLE.icon}/>},
-            {name: R.ui.navbar_contacts,   text: "联系人", icon: <PeopleIcon className='icon' style={STYLE.icon}/>},
-            {name: R.ui.navbar_groups,   text: "讨论组", icon: <PoundIcon className='icon' style={STYLE.icon}/>}
+            {name: R.ui.navbar_chat, text: "最近聊天", icon: this.state.active === R.ui.navbar_chat ? <ActiveChatIcon className='icon' style={STYLE.icon}/> : <ChatIcon className='icon' style={STYLE.icon}/>},
+            {name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>},
+            {name: R.ui.navbar_groups, text: "讨论组", icon: this.state.active === R.ui.navbar_groups ? <PoundBoxIcon className='icon' style={STYLE.icon}/> : <PoundIcon className='icon' style={STYLE.icon}/>}
         ];
 
         let that = this;
@@ -251,8 +254,6 @@ const Navbar = React.createClass({
             <List className='list navbar-nav' style={STYLE.list}>
             {
                 listItems.map(item => {
-                    let className = 'item hint--right';
-                    if(item.name === that.state.active) className += ' active';
                     let noticeCountText = null;
                     if(this.state.notice && this.state.notice.total) {
                         let noticeCount = 0;
@@ -274,7 +275,18 @@ const Navbar = React.createClass({
                             noticeCountText = <div style={STYLE.noticeBadge}>{noticeCount}</div>;
                         }
                     }
-                    return  <ListItem leftIcon={item.icon} data-hint={item.text} className={className} key={item.name} primaryText='&nbsp;' onClick={that.handleItemClick.bind(null, item.name)} style={STYLE.navItem}>{noticeCountText}</ListItem>;
+                    return  <ListItem
+                        actived={item.name === that.state.active}
+                        activeColor="rgba(255,255,255,.15)"
+                        leftIcon={item.icon}
+                        data-hint={item.text}
+                        className={'item hint--right' + (item.name === that.state.active ? ' active' : '')}
+                        key={item.name}
+                        primaryText='&nbsp;'
+                        onClick={that.handleItemClick.bind(null, item.name)}
+                        style={STYLE.navItem}>
+                        {noticeCountText}
+                    </ListItem>;
                 })
             }
             </List>
