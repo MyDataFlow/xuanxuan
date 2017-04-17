@@ -87,19 +87,18 @@ func dataProcessing(message []byte, client *Client) error {
 		return testSwitchMethod(message, parseData, client)
 	}
 
-	return switchMethod(message, client)
+	return switchMethod(message, parseData, client)
 }
 
 func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) error {
 	switch parseData.Module() + "." + parseData.Method() {
 	case "chat.login":
-		chatTestLogin(parseData, client)
+		if err := chatTestLogin(parseData, client); err != nil {
+			return err
+		}
 		break
 
 	case "chat.logout":
-		if err := chatLogout(parseData, client); err != nil {
-			return err
-		}
 		break
 
 	default:
@@ -110,12 +109,7 @@ func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) e
 	return nil
 }
 
-func switchMethod(message []byte, client *Client) error {
-	parseData := api.ApiParse(message, util.Token)
-	if parseData == nil {
-		util.LogError().Println("recve client message error")
-		return util.Errorf("recve client message error")
-	}
+func switchMethod(message []byte, parseData api.ParseData, client *Client) error {
 
 	switch parseData.Module() + "." + parseData.Method() {
 	case "chat.login":
@@ -138,40 +132,9 @@ func switchMethod(message []byte, client *Client) error {
 			util.LogError().Println(err)
 			return err
 		}
-
 		break
-
 	}
 
-	return nil
-}
-
-func transitData(message []byte, serverName string, userID int64, client *Client) error {
-	if client.userID != userID {
-		return util.Errorf("xxx")
-	}
-
-	x2cMessage, sendUsers, err := api.TransitData(message, serverName)
-	if err != nil {
-		return err
-	}
-
-	if len(sendUsers) == 0 {
-		//send all
-		client.hub.broadcast <- SendMsg{serverName: client.serverName, message: x2cMessage}
-		return nil
-	}
-
-	//send users
-	client.hub.multicast <- SendMsg{serverName: client.serverName, usersID: sendUsers, message: x2cMessage}
-	return nil
-}
-
-func chatLogout(parseData api.ParseData, client *Client) error {
-	// 要不就这样数组，要不就分开在一级字段中
-	//parseData["params"] = []string(client.serverName, client.userID)
-
-	api.ChatLogout(parseData)
 	return nil
 }
 
@@ -232,6 +195,35 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	// 因为是broadcast类型，所以不需要初始化userID
 	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
 
+	return nil
+}
+
+func chatLogout(parseData api.ParseData, client *Client) error {
+	// 要不就这样数组，要不就分开在一级字段中
+	//parseData["params"] = []string(client.serverName, client.userID)
+
+	api.ChatLogout(parseData)
+	return nil
+}
+
+func transitData(message []byte, serverName string, userID int64, client *Client) error {
+	if client.userID != userID {
+		return util.Errorf("xxx")
+	}
+
+	x2cMessage, sendUsers, err := api.TransitData(message, serverName)
+	if err != nil {
+		return err
+	}
+
+	if len(sendUsers) == 0 {
+		//send all
+		client.hub.broadcast <- SendMsg{serverName: client.serverName, message: x2cMessage}
+		return nil
+	}
+
+	//send users
+	client.hub.multicast <- SendMsg{serverName: client.serverName, usersID: sendUsers, message: x2cMessage}
 	return nil
 }
 
@@ -327,12 +319,14 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
+
+			message = append(message, newline...)
 			w.Write(message)
 
 			// Add queued chat messages to the current websocket message.
 			n := len(c.send)
 			for i := 0; i < n; i++ {
-				w.Write(newline)
+				//w.Write(newline)
 				w.Write(<-c.send)
 			}
 

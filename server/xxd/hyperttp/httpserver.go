@@ -101,13 +101,15 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	if err := util.Mkdir(util.Config.UploadPath); err != nil {
+	savePath := util.Config.UploadPath + util.GetYmdPath()
+	if err := util.Mkdir(savePath); err != nil {
 		fmt.Printf("mkdir error %s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	f, err := os.OpenFile(util.Config.UploadPath+handler.Filename, os.O_WRONLY|os.O_CREATE, 0644)
+	saveFile := savePath + util.GetMD5(handler.Filename)
+	f, err := os.OpenFile(saveFile, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
