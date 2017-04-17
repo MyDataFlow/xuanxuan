@@ -316,6 +316,8 @@ class App extends ReadyNotifier {
         this._user = user;
 
         if(oldIdentify !== user.identify) {
+            this.badgeLabel = false;
+            this.trayTooltip = false;
             this.emit(R.event.user_swap, user);
         }
         this.emit(EVENT.user_change, user);
