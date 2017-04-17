@@ -11,6 +11,7 @@ import {
 import ReadyNotifier       from './ready-notifier';
 import WebSocket           from 'ws';
 import crypto              from 'crypto';
+import Helper              from 'Helper';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('Socket must run in renderer process.');
@@ -42,10 +43,6 @@ class Socket extends ReadyNotifier {
         this.lastHandTime = 0;
         this.lastOkTime = 0;
         this.client = global.TEST ? new WebSocket(user.socketUrl) : new Net.Socket();
-        console.log('>', {
-            token: user.token
-        });
-        if(global.TEST) this.cipher = crypto.createCipher('aes-256-cbc', user.token);
 
         this._initHandlers();
         this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {
@@ -65,8 +62,9 @@ class Socket extends ReadyNotifier {
      * @return {Buffer}
      */
     encrypt(data) {
-        let crypted = this.cipher.update(data, 'utf8', 'binary');
-        crypted += this.cipher.final('binary');
+        let cipher = crypto.createCipher('aes-256-cbc', this.user.token);
+        let crypted = cipher.update(data, 'utf8', 'binary');
+        crypted += cipher.final('binary');
         crypted = new Buffer(crypted, 'binary');
         return crypted;
     }
@@ -77,11 +75,9 @@ class Socket extends ReadyNotifier {
      * @return {string}
      */
     decrypt(data) {
-        if(!this.decipher) {
-            this.decipher = crypto.createDecipher('aes-256-cbc', this.user.token);
-        }
-        let decoded = this.decipher.update(data, 'binary', 'utf8');
-        decoded += this.decipher.final('utf8');
+        let decipher = crypto.createDecipher('aes-256-cbc', this.user.token);
+        let decoded = decipher.update(data, 'binary', 'utf8');
+        decoded += decipher.final('utf8');
         return decoded;
     };
 
@@ -235,7 +231,7 @@ class Socket extends ReadyNotifier {
     send(msg) {
         if(!msg.sid && this.user.sid) msg.sid = this.user.sid;
         if(!msg.userid && this.user.id) msg.userid = this.user.id;
-        if(global.TEST) msg.test = true;
+        if(global.TEST && !msg.test) msg.test = true;
         let data = msg.json;
         const afterSend = DEBUG ? e=> {
             if(DEBUG) {
@@ -245,7 +241,8 @@ class Socket extends ReadyNotifier {
             }
         } : null;
         if(global.TEST) {
-            if(ENCRYPT_ENABLE) {
+            const encryptEnabled = ENCRYPT_ENABLE && !global.encryptDisabled;
+            if(encryptEnabled) {
                 data = this.encrypt(data);
                 if(DEBUG) {
                     console.groupCollapsed('%c ENCRYPT data [length: ' + data.length + ']', 'display: inline-block; font-size: 10px; color: #2196F3; background: #E3F2FD; border: 1px solid #E3F2FD; padding: 1px 5px; border-radius: 2px;');
@@ -254,11 +251,16 @@ class Socket extends ReadyNotifier {
                     console.log('decrypt', this.decrypt(data));
                     console.groupEnd();
                 } 
-
             }
             this.client.send(data, {
-                binary: ENCRYPT_ENABLE
+                binary: encryptEnabled
             }, afterSend);
+            if(msg.test === true) {
+                let msgTest = Helper.plain(msg);
+                msgTest.test = 1;
+                msgTest.method = 'test' + msgTest.method[0].toUpperCase() + msgTest.method.substr(1);
+                this.send(new SocketMessage(msgTest));
+            }
         } else {
             this.client.write(data, 'utf-8', afterSend);
         }
@@ -430,6 +432,13 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleData(data, flags) {
+        if(flags && flags.binary) {
+            if(ENCRYPT_ENABLE && !global.encryptDisabled) {
+                data = this.decrypt(data);
+            } else {
+                data = data.toString();
+            }
+        }
         this._emit(EVENT.socket_data, data);
 
         if(!data || !data.length) return;
