@@ -101,7 +101,7 @@ class Chat extends Entity {
      */
     getPinYin(app) {
         if(!this.$.pinyin) {
-            let str = app ? this.name : this.getDisplayName(app, false);
+            let str = app ? this.getDisplayName(app, false) : this.name;
             this.$.pinyin = Helper.pinyin(str);
         }
         return this.$.pinyin;
