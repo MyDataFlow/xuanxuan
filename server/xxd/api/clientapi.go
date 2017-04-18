@@ -14,6 +14,8 @@ import (
 	"xxd/util"
 )
 
+var newline = []byte{'\n'}
+
 // 从客户端发来的登录请求，通过该函数转发到后台服务器进行登录验证
 func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 	// 客户端到go服务器，和go服务器到后台服务器通讯使用了不一样的token
@@ -21,7 +23,7 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 	ranzhiAddr := util.Config.RanzhiServer[clientData.ServerName()].RanzhiAddr
 
 	// 到http服务器请求，返回加密的结果
-	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, apiPartForm(ApiUnparse(clientData, ranzhiToken)))
+	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, ApiUnparse(clientData, ranzhiToken))
 	if err != nil || retMessage == nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, -1, false
@@ -46,13 +48,47 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 	return retMessage, retData.UserID(), retData.Result() == "success"
 }
 
-func ChatLogout(clientData ParseData) {
+func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
+	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
+	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
+
+	request := []byte(`{"module":"chat","method":"logout",userID:` + util.Int642String(userID) + `}`)
+	message, err := aesEncrypt(request, ranzhiToken)
+	if err != nil {
+		util.LogError().Println("aes encrypt error:", err)
+		return nil, nil, err
+	}
+
+	// 到http服务器请求user get list数据
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiAddr, message)
+	if err != nil {
+		util.LogError().Println("hyperttp request info error:", err)
+		return nil, nil, err
+	}
+
+	// 解析http服务器的数据,返回 ParseData 类型的数据
+	parseData := ApiParse(r2xMessage, ranzhiToken)
+	if parseData == nil {
+		util.LogError().Println("api parse error")
+		return nil, nil, util.Errorf("%s\n", "api parse error")
+	}
+
+	sendUsers := parseData.SendUsers()
+
+	x2cMessage := ApiUnparse(parseData, util.Token)
+	if x2cMessage == nil {
+		return nil, nil, err
+	}
+
+	return x2cMessage, sendUsers, nil
+
 }
 
 func RepeatLogin() []byte {
-	repeatLogin := `{module:  'null',method:  'null',message: 'This account logined in another place.'}`
+	repeatLogin := []byte(`{module:  'null',method:  'null',message: 'This account logined in another place.'}`)
+	repeatLogin = append(repeatLogin, newline...)
 
-	message, err := aesEncrypt([]byte(repeatLogin), util.Token)
+	message, err := aesEncrypt(repeatLogin, util.Token)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
 		return nil
@@ -64,7 +100,7 @@ func RepeatLogin() []byte {
 func TestLogin() []byte {
 	loginData := []byte(`{"result":"success","data":{"id":12,"account":"demo8","realname":"\u6210\u7a0b\u7a0b","avatar":"","role":"hr","dept":0,"status":"online","admin":"no","gender":"f","email":"ccc@demo.com","mobile":"","site":"","phone":""},"sid":"18025976a786ec78194e491e7b790731","module":"chat","method":"login"}`)
 
-	loginData = append(loginData, []byte{'\n'}...)
+	loginData = append(loginData, newline...)
 	message, err := aesEncrypt(loginData, util.Token)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
@@ -91,6 +127,11 @@ func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) 
 	}
 
 	parseData := ApiParse(r2xMessage, ranzhiToken)
+	if parseData == nil {
+		util.LogError().Println("api parse error")
+		return nil, nil, util.Errorf("%s\n", "api parse error")
+	}
+
 	sendUsers := parseData.SendUsers()
 
 	// xxd to client message
@@ -157,10 +198,6 @@ func Getlist(serverName string, userID int64) ([]byte, error) {
 
 	return retData, nil
 
-}
-
-func BroadcastLogin(data ParseData) {
-	// 直接响应登录请求返回的数据
 }
 
 func (pd ParseData) ServerName() string {

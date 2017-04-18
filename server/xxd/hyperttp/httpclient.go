@@ -20,8 +20,8 @@ import (
 const https = "https:"
 
 func RequestInfo(addr string, postData []byte) ([]byte, error) {
-	if postData == nil {
-		return nil, util.Errorf("%s", "post data is null\n")
+	if postData == nil || addr == "" {
+		return nil, util.Errorf("%s", "post data or addr is null\n")
 	}
 
 	var client *http.Client
@@ -32,9 +32,9 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	}
 
 	req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
-	req.Header.Add("Content-type", "application/json")
-	req.Header.Add("User-Agent", "easysoft-client/0.1")
-	//req.Header.Add("Authorization", "easysoft")
+	req.Header.Set("Content-type", "application/x-www-form-urlencoded")
+	req.Header.Set("User-Agent", "easysoft-client/0.1")
+	req.Header.Add("Authorization", "easysoft")
 	//req.Header.Add("User-Agent", "easysoft")
 	resp, err := client.Do(req)
 	if err != nil {

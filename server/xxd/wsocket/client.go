@@ -79,10 +79,6 @@ func dataProcessing(message []byte, client *Client) error {
 		return util.Errorf("recve client message error")
 	}
 
-	if parseData.Method() == "testLogin" {
-		return nil
-	}
-
 	if util.IsTest && parseData.Test() {
 		return testSwitchMethod(message, parseData, client)
 	}
@@ -121,13 +117,13 @@ func switchMethod(message []byte, parseData api.ParseData, client *Client) error
 		break
 
 	case "chat.logout":
-		if err := chatLogout(parseData, client); err != nil {
+		if err := chatLogout(parseData.UserID(), client); err != nil {
 			return err
 		}
 		break
 
 	default:
-		err := transitData(message, parseData.ServerName(), parseData.UserID(), client)
+		err := transitData(message, parseData.UserID(), client)
 		if err != nil {
 			util.LogError().Println(err)
 			return err
@@ -198,32 +194,41 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	return nil
 }
 
-func chatLogout(parseData api.ParseData, client *Client) error {
-	// 要不就这样数组，要不就分开在一级字段中
-	//parseData["params"] = []string(client.serverName, client.userID)
-
-	api.ChatLogout(parseData)
-	return nil
-}
-
-func transitData(message []byte, serverName string, userID int64, client *Client) error {
+func chatLogout(userID int64, client *Client) error {
 	if client.userID != userID {
-		return util.Errorf("xxx")
+		return util.Errorf("%s\n", "user id error.")
 	}
 
-	x2cMessage, sendUsers, err := api.TransitData(message, serverName)
+	x2cMessage, sendUsers, err := api.ChatLogout(client.serverName, client.userID)
 	if err != nil {
 		return err
 	}
 
+	return X2cSend(client.serverName, sendUsers, x2cMessage, client)
+}
+
+func transitData(message []byte, userID int64, client *Client) error {
+	if client.userID != userID {
+		return util.Errorf("xxx")
+	}
+
+	x2cMessage, sendUsers, err := api.TransitData(message, client.serverName)
+	if err != nil {
+		return err
+	}
+
+	return X2cSend(client.serverName, sendUsers, x2cMessage, client)
+}
+
+func X2cSend(serverName string, sendUsers []int64, message []byte, client *Client) error {
 	if len(sendUsers) == 0 {
 		//send all
-		client.hub.broadcast <- SendMsg{serverName: client.serverName, message: x2cMessage}
+		client.hub.broadcast <- SendMsg{serverName: serverName, message: message}
 		return nil
 	}
 
 	//send users
-	client.hub.multicast <- SendMsg{serverName: client.serverName, usersID: sendUsers, message: x2cMessage}
+	client.hub.multicast <- SendMsg{serverName: serverName, usersID: sendUsers, message: message}
 	return nil
 }
 
@@ -283,11 +288,6 @@ func (c *Client) readPump() {
 		if msgType != websocket.BinaryMessage {
 			continue
 		}
-
-		/*
-			messageLen := len(message)
-			message = message[:messageLen-len(newline)]
-		*/
 
 		//返回user id 、登录响应的数据、ok
 		if dataProcessing(message, c) != nil {
