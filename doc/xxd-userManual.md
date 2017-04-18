@@ -31,12 +31,20 @@ Centos通过yum，Ubuntu通过apt-get进行安装，Mac通过[官方网站](http
 根据需要[下载](http://www.golangtc.com/download)对应的软件包，以64位系统为例，下载 go1.8.windows-amd64.zip。
 
 * 把解压缩后的文件夹go放到到指定目录，如*c:/*
+
 * 创建golang的工作目录，如目录在 *c:/gowork/* 并在目录中建立src目录
+
 * 设置GOPATH环境变量
    ![gopath|550x400](http://img.sinkiot.com/xxdUserManual/20170418144924_gopath.png)
+
 * 设置Path环境变量
    ![path|550x400](http://img.sinkiot.com/xxdUserManual/20170418145032_path.png)
-   完成以上配置后，Windows的golang环境就配置完成了。
+
+* 在命令行模式下输入 go,如果输出以下字符，go语言就安装成功了。
+
+   ![test_go|550x400](http://img.sinkiot.com/xxdUserManual/20170418160649_go.png)
+
+完成以上配置后，Windows的golang环境就配置完成了。
 
 ## 3 代码下载
 * 下载喧喧代码：git clone https://github.com/easysoft/xuanxuan.git 
