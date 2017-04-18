@@ -39,8 +39,10 @@ const MessageList = React.createClass({
     },
 
     componentDidMount() {
-        this._handleUserConfigChangeEvent = App.on(R.event.user_config_change, () => {
-            this.setState({fontSize: App.user.getConfig('ui.chat.fontSize')});
+        this._handleUserConfigChangeEvent = App.on(R.event.user_config_change, (user, key, config) => {
+            if(key === 'ui.chat.fontSize') {
+                this.setState({fontSize: config});
+            }
         });
     },
 
