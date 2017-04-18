@@ -81,15 +81,14 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 }
 
 func fileUpload(w http.ResponseWriter, r *http.Request) {
-	/*	token := r.Header.Get("Authorization")
-		if token != util.Token {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-	*/
-
 	if r.Method != "POST" {
 		fmt.Fprintln(w, "Not Supported")
+		return
+	}
+
+	token := r.Header.Get("Authorization")
+	if token != string(util.Token) {
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
@@ -101,14 +100,15 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	savePath := util.Config.UploadPath + util.GetYmdPath()
+	nowTime := util.GetUnixTime()
+	savePath := util.Config.UploadPath + util.GetYmdPath(nowTime)
 	if err := util.Mkdir(savePath); err != nil {
 		fmt.Printf("mkdir error %s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	saveFile := savePath + util.GetMD5(handler.Filename)
+	saveFile := savePath + util.GetMD5(handler.Filename+util.Int642String(nowTime))
 	f, err := os.OpenFile(saveFile, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)

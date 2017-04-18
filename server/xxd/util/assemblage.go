@@ -22,8 +22,12 @@ func GetYmd() string {
 	return time.Now().Format("20060102")
 }
 
-func GetYmdPath() string {
-	return time.Now().Format("2006/01/02/")
+func GetYmdPath(timeStamp int64) string {
+	if timeStamp == 0 {
+		return time.Now().Format("2006/01/02/")
+	}
+
+	return time.Unix(timeStamp, 0).Format("2006/01/02/")
 }
 
 func GetUnixTime() int64 {

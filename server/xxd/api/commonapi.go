@@ -54,18 +54,6 @@ func ApiUnparse(parseData ParseData, token []byte) []byte {
 	return message
 }
 
-func apiPartForm(cryptData []byte) []byte {
-	partFromData := partForm{Message: cryptData}
-
-	jsonData, err := json.Marshal(partFromData)
-	if err != nil {
-		util.LogError().Println("json unmarshal error:", err)
-		return nil
-	}
-
-	return jsonData
-}
-
 //交换token加密
 func swapToken(message, fromToken, toToken []byte) ([]byte, error) {
 	jsonData, err := aesDecrypt(message, fromToken)
