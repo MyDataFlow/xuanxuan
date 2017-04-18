@@ -142,8 +142,6 @@ class App extends ReadyNotifier {
             });
         });
 
-        let onSocketChange = 
-
         this.on(R.event.socket_close, e => {
             this.user.changeStatus(this.user.isOnline ? USER_STATUS.disconnect : USER_STATUS.unverified, Lang.errors.SOCKET_CLOSE, 'socket_error');
         });
@@ -197,7 +195,7 @@ class App extends ReadyNotifier {
         });
 
         this.event.ipc.on(R.event.app_main_window_close, () => {
-            let userCloseOption = this.user.config.ui.onClose;
+            let userCloseOption = this.user.getConfig('ui.app.onClose', 'ask');
             const handleCloseOption = option => {
                 if(!option) option = userCloseOption;
                 if(option === 'minimize') {
@@ -225,8 +223,7 @@ class App extends ReadyNotifier {
                     onSubmit: () => {
                         if(userCloseOption) {
                             if(userCloseOption.remember) {
-                                this.user.config.ui.onClose = userCloseOption.option;
-                                this.saveUser();
+                                this.user.setConfig('ui.app.onClose', userCloseOption.option);
                             }
                             handleCloseOption(userCloseOption.option);
                         }
@@ -235,6 +232,12 @@ class App extends ReadyNotifier {
                 this.requestAttention(1);
             } else {
                 handleCloseOption(userCloseOption);
+            }
+        });
+
+        this.on(R.event.user_config_change, (user) => {
+            if(user.identify === this.user.identify) {
+                this.delaySaveUser();
             }
         });
     }

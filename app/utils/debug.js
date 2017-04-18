@@ -15,7 +15,7 @@ if(global.DEBUG) {
     };
 }
 
-global.TEST = true;
+global.TEST = 0;
 
 global.test = (toggle) => {
     global.TEST = toggle === undefined ? (!global.TEST) : !!toggle;

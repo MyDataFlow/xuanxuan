@@ -45,10 +45,11 @@ const ChatMenu = React.createClass({
     },
 
     getInitialState() {
+        let configType = App.user.getConfig('ui.chat.menu.type', 'contacts');
         return {
             data: {},
-            type: MENU_TYPES[App.user.config.ui.chat.menu.type] ? MENU_TYPES[App.user.config.ui.chat.menu.type] : MENU_TYPES.contacts,
-            activeChat: App.user.config.ui.activeChat,
+            type: MENU_TYPES[configType] || MENU_TYPES.contacts,
+            activeChat: App.user.getConfig('ui.chat.activeChat'),
             search: ''
         };
     },
@@ -164,15 +165,14 @@ const ChatMenu = React.createClass({
     },
 
     componentDidUpdate(prevProps, prevState) {
-        if(App.user.config.ui.chat.menu.type != this.state.type) {
-            App.user.config.ui.chat.menu.type = this.state.type;
-            App.delaySaveUser();
+        if(App.user.getConfig('ui.chat.menu.type', 'recents') != this.state.type) {
+            App.user.setConfig('ui.chat.menu.type', this.state.type);
         }
     },
 
     render() {
         const STYLE = {
-            menu: {width: App.user.config.ui.chat.menu.width, backgroundColor: Theme.color.pale1, paddingBottom: 48},
+            menu: {width: App.user.getConfig('ui.chat.menu.width', 200), backgroundColor: Theme.color.pale1, paddingBottom: 48},
             list: {
                 backgroundColor: 'transparent', 
                 paddingTop: 0, 

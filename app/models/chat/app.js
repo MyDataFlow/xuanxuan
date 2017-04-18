@@ -277,7 +277,7 @@ class ChatApp extends AppCore {
      * Register global hotkey
      */
     registerGlobalHotKey() {
-        this.$app.registerGlobalShortcut('captureScreen', App.user.config.shortcut.captureScreen || 'ctrl+alt+z', () => {
+        this.$app.registerGlobalShortcut('captureScreen', App.user.getConfig('shortcut.captureScreen', 'ctrl+alt+z'), () => {
             this.captureAndSendScreen()
         });
     }

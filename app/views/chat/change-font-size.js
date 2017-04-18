@@ -65,7 +65,7 @@ class ChangeFontSizeView extends Component {
     };
 
     componentWillMount() {
-        let selectConfig = App.user.config.ui.chat.fontSize || CONFIGS[1];
+        let selectConfig = App.user.getConfig('ui.chat.fontSize', CONFIGS[1]);
         let configs = CONFIGS.slice();
         let selectIndex = configs.findIndex(cfg => {
             return selectConfig.size === cfg.size;
@@ -99,8 +99,7 @@ class ChangeFontSizeView extends Component {
             select = this.state.select;
         }
         let config = this.configs[select];
-        App.user.config.ui.chat.fontSize = config;
-        App.delaySaveUser();
+        App.user.setConfig('ui.chat.fontSize', config);
 
         clearTimeout(this.saveUserTask);
         this.saveUserTask = setTimeout(() => {

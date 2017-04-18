@@ -164,7 +164,7 @@ const MessageSendbox = React.createClass({
             label: Lang.chat.setCaptureScreenShotcut,
             click: () => {
                 let shortcut = null;
-                let defaultShortcut = App.user.config.shortcut.captureScreen || 'Ctrl+Alt+Z';
+                let defaultShortcut = App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z');
                 Modal.show({
                     modal: true,
                     header: Lang.chat.setCaptureScreenShotcut,
@@ -174,9 +174,8 @@ const MessageSendbox = React.createClass({
                     width: 360,
                     actions: [{type: 'cancel'}, {type: 'submit', label: Lang.common.confirm}],
                     onSubmit: () => {
-                        if(Helper.isNotEmptyString(shortcut) && App.user.config.shortcut.captureScreen !== shortcut) {
-                            App.user.config.shortcut.captureScreen = shortcut;
-                            App.saveUser();
+                        if(Helper.isNotEmptyString(shortcut) && App.user.getConfig('shortcut.captureScreen', 'ctrl+alt+z') !== shortcut) {
+                            App.user.setConfig('shortcut.captureScreen', shortcut)
                             App.chat.registerGlobalHotKey();
                             this.forceUpdate();
                         }
@@ -221,7 +220,7 @@ const MessageSendbox = React.createClass({
         const STYLE = {
             main: {
                 backgroundColor: Theme.color.canvas,
-                height: App.user.config.ui.chat.sendbox.height,
+                height: App.user.getConfig('ui.chat.sendbox.height', 125),
                 zIndex: 10
             },
             editbox: {
@@ -296,12 +295,12 @@ const MessageSendbox = React.createClass({
                     <FileIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
-              <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.config.shortcut.captureScreen + ')'}>
+              <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z') + ')'}>
                 <IconButton onClick={this._handleCaptureScreen} onContextMenu={this._openCaptureScreenContextMenu}>
                     <CutIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
-              {App.user.config.ui.chat.hideMessageTip ? null : <div ref={e => this.messageTipBtn = e} style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.messageTip}>
+              {App.user.getConfig('ui.chat.hideMessageTip') ? null : <div ref={e => this.messageTipBtn = e} style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.messageTip}>
                 <IconButton onClick={this._handleMessageTip}>
                     <HelpIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>

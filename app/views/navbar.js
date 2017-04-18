@@ -102,7 +102,7 @@ const UserMenu = React.createClass({
                 boxShadow: 'inset 3px 0 0 ' + Theme.color.positive,
                 fontWeight: '500',
             },
-            navbar:    {width: App.user.config.ui.navbar.width, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
+            navbar:    {width: App.user.getConfig('ui.navbar.width', 50), transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
             status:    {
                 base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
                 dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
@@ -149,7 +149,7 @@ const UserMenu = React.createClass({
 const Navbar = React.createClass({
     getInitialState() {
         return {
-            active: App.user.config.ui.navbar.page,
+            active: App.user.getConfig('ui.navbar.active', 'chat'),
             user: {name: 'Guest', status: 'online'},
             menu: false,
             notice: 0
@@ -199,9 +199,8 @@ const Navbar = React.createClass({
 
     render() {
         const that = this;
-        const isAvatarOnTop = App.user.config.ui.navbarAvatarPosition === 'top';
+        const isAvatarOnTop = App.user.getConfig('ui.navbar.avatarPosition', 'bottom') === 'top';
         const STYLE = {
-            compactWidth: App.user.config.ui.navbar.compactWidth,
             navbar:     {width: 50, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
             icon:       {left: 5},
             rightIcon:  {right: 6, top: 14},

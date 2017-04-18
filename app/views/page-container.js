@@ -7,21 +7,23 @@ import CacheContents       from './mixins/cache-contents';
 import ContentNotReady     from './misc/content-not-ready';
 import R                   from '../resource';
 
+const PAGES = {
+    [R.ui.navbar_chat]     : {component: ChatPage, page: R.ui.navbar_chat, online: true},
+    [R.ui.navbar_contacts] : {page: R.ui.navbar_chat},
+    [R.ui.navbar_groups]   : {page: R.ui.navbar_chat}
+};
+
 /*
  * Page container react component class
  */
 const PageContianer = React.createClass({
 
     mixins: [CacheContents],
-    pages: {
-        [R.ui.navbar_chat]     : {component: ChatPage, page: R.ui.navbar_chat, online: true},
-        [R.ui.navbar_contacts] : {page: R.ui.navbar_chat},
-        [R.ui.navbar_groups]   : {page: R.ui.navbar_chat}
-    },
 
     getInitialState() {
+        let pageConfig = App.user.getConfig('ui.navbar.active', R.ui.navbar_chat);
         return {
-            page: this.pages[App.user.config.ui.navbar.page].page ? this.pages[App.user.config.ui.navbar.page].page : R.ui.navbar_chat
+            page: PAGES[pageConfig].page ? PAGES[pageConfig].page : R.ui.navbar_chat
         };
     },
 
@@ -29,8 +31,7 @@ const PageContianer = React.createClass({
         this._handleUIChangeEvent = App.on(R.event.ui_change, e => {
             if(e.navbar !== this.state.page) {
                 this.setState({page: e.navbar});
-                App.user.config.ui.navbar.page = e.navbar;
-                App.delaySaveUser();
+                App.user.setConfig('ui.navbar.active', e.navbar);
             }
         });
     },
@@ -40,12 +41,12 @@ const PageContianer = React.createClass({
     },
 
     getDisplayCacheContentId(cacheName) {
-        let pageConfig = this.pages[this.state.page];
+        let pageConfig = PAGES[this.state.page];
         return pageConfig.page ? pageConfig.page : this.state.page;
     },
 
     renderCacheContent(contentId, cacheName) {
-        let pageConfig = this.pages[contentId];
+        let pageConfig = PAGES[contentId];
         if(pageConfig) {
             if(pageConfig.component) {
                 if(pageConfig.online && App.user.isUnverified) {

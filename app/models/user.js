@@ -1,52 +1,17 @@
-import Md5    from 'md5';
-import UUID   from 'uuid';
-import Url    from 'url';
-import Path   from 'path';
-import Events from '../event-center';
-import Member, {USER_STATUS} from './member';
-import R      from 'Resource';
+import Md5      from 'md5';
+import UUID     from 'uuid';
+import Url      from 'url';
+import Path     from 'path';
+import Events   from '../event-center';
+import Member, {
+    USER_STATUS
+}               from './member';
+import R        from 'Resource';
+import DEFAULT  from './user-default-config';
+
 
 const PASSWORD_WITH_MD5_FLAG = '%%%PWD_FLAG%%% ';
 const PASSWORD_WITH_MD5_FLAG_LENGTH = 15;
-const DEFAULT = {
-    version: 2,
-    ui: {
-        navbar: {
-            compactWidth: 50,
-            width: 200,
-            expand: false,
-            dock: 'left',
-            page: 'chat'
-        },
-
-        chat: {
-            menu: {
-                width: 200,
-                type: 'recents'
-            },
-            sendbox: {
-                height: 125,
-                HDEmoticon: true
-            },
-            sidebar: {
-                width: 300
-            },
-            fontSize: {
-                name: '1em',
-                time: '0.9230769231em',
-                lineHeight: 1.53846153846,
-                size: 13
-            }
-        },
-
-        onClose: 'ask'
-    },
-
-    shortcut: {
-        captureScreen: 'Ctrl+Alt+Z',
-        sendMessage: 'Enter'
-    }
-};
 
 /**
  * The user class

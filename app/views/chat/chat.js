@@ -52,14 +52,14 @@ const ChatPage = React.createClass({
 
     componentDidMount() {
         let chat = App.chat.dao.getChat(this.props.chatGid);
-        let sidebarConfig = Object.assign({expand: !chat.isOne2One}, App.user.config.ui.chat.sidebar[chat.gid]);
+        let sidebarConfig = App.user.getConfig(`ui.chat.sidebar.${chat.gid}`, {expand: !chat.isOne2One});
         this.setState({
             chat,
             sidebar: sidebarConfig.expand
         }, () => {
             let chatMessageBox = this.chatMessageBox;
             if(this.messageSendbox) {
-                let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
+                let messageSendboxHeight = Math.ceil(100 * App.user.getConfig('ui.chat.sendbox.height', 125) / chatMessageBox.clientHeight);
                 SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
                     direction: 'vertical',
                     gutterSize: 4,
@@ -81,8 +81,7 @@ const ChatPage = React.createClass({
                         width: this.colSpliter.getSizes()[1],
                         expand: true
                     };
-                    App.user.config.ui.chat.sidebar[chat.gid] = this.sidebarConfig;
-                    App.delaySaveUser();
+                    App.user.setConfig(`ui.chat.sidebar.${chat.gid}`, this.sidebarConfig);
                     this.setState({sidebar: true});
                 }
             });

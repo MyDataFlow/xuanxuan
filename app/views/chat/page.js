@@ -17,7 +17,7 @@ const Page = React.createClass({
     
     getInitialState() {
         return {
-            chatGid: App.user.config.ui.activeChat
+            chatGid: App.user.getConfig('ui.chat.activeChat')
         };
     },
 
@@ -52,9 +52,8 @@ const Page = React.createClass({
     renderCacheContent(contentId, cacheName) {
         if(contentId) {
             App.chat.activeChatWindow = contentId;
-            App.user.config.ui.activeChat = contentId;
-            App.delaySaveUser();
-            return <ChatWindow chatGid={contentId} className="dock-full" style={{left: App.user.config.ui.chat.menu.width}}/>
+            App.user.setConfig('ui.chat.activeChat', contentId);
+            return <ChatWindow chatGid={contentId} className="dock-full" style={{left: App.user.getConfig('ui.chat.menu.width', 200)}}/>
         }
     },
 
