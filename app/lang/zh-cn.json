@@ -32,7 +32,8 @@
     "nextTime": "下次提醒我",
     "more": "更多",
     "restoreDefault": "恢复默认",
-    "close": "关闭"
+    "close": "关闭",
+    "settings": "设置"
   },
 
   "debug": {

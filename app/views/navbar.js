@@ -115,29 +115,31 @@ const UserMenu = React.createClass({
 
         let that = this;
         let thisStatus = this.props.user.statusValue;
-        return <div className='menu-wrapper' style={{position: 'relative', left: 0, minWidth: 200}}>
-          <Paper style={{position: 'absolute', top: -15, zIndex: 2}}>
-            <Menu key='user-menu' desktop={true} autoWidth={false} width={STYLE.navbar.width} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
-                {
-                    userStatus.map(function(statusValue) {
-                        let statusName = USER_STATUS[statusValue];
-                        let iconStyle = Object.assign({}, STYLE.status.base, STYLE.status[statusName], STYLE.status.inmenu);
-                        let icon = <span className={'user-status user-status-' + statusName} style={iconStyle}></span>;
-                        let rightIcon = null;
-                        if(statusValue === thisStatus) {
-                            rightIcon = <CheckIcon style={{margin: 0}} />
-                        }
-                        return <MenuItem key={statusName} primaryText={<UserStatus textStyle={STYLE.status.inmenu.text} text={statusValue === USER_STATUS.offline ? Lang.user.status.offline : Lang.user.status[statusName]} dotStyle={STYLE.status.inmenu.dot} type='dot-text' status={statusName} />} rightIcon={rightIcon} onClick={that.handleStatusItemClick.bind(null, statusName)}/>
-                    })
-                }
-                <MenuDivider />
-                <MenuItem style={STYLE.menuItem} key='profile' primaryText={Lang.user.profile} onClick={this.handleProfileClick} />
-                <MenuDivider />
-                <MenuItem style={STYLE.menuItem} key='about' primaryText={Lang.common.about} onClick={this.handleAboutClick} />
-                <MenuItem style={STYLE.menuItem} key='exit' primaryText={Lang.common.exit} onClick={this.handleExitClick} />
-            </Menu>
-          </Paper>
-        </div>
+        let style = this.props.style;
+        return <Paper style={Object.assign({position: 'absolute', top: 0, zIndex: 2, width: 160, left: 50}, style)}>
+          <Menu key='user-menu' desktop={true} autoWidth={false} width={STYLE.navbar.width} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
+              {
+                  userStatus.map(function(statusValue) {
+                      let statusName = USER_STATUS[statusValue];
+                      let iconStyle = Object.assign({}, STYLE.status.base, STYLE.status[statusName], STYLE.status.inmenu);
+                      let icon = <span className={'user-status user-status-' + statusName} style={iconStyle}></span>;
+                      let rightIcon = null;
+                      if(statusValue === thisStatus) {
+                          rightIcon = <CheckIcon style={{margin: 0}} />
+                      }
+                      return <MenuItem key={statusName} primaryText={<UserStatus textStyle={STYLE.status.inmenu.text} text={statusValue === USER_STATUS.offline ? Lang.user.status.offline : Lang.user.status[statusName]} dotStyle={STYLE.status.inmenu.dot} type='dot-text' status={statusName} />} rightIcon={rightIcon} onClick={that.handleStatusItemClick.bind(null, statusName)}/>
+                  })
+              }
+              <MenuDivider />
+              <MenuItem style={STYLE.menuItem} key='profile' primaryText={Lang.user.profile} onClick={this.handleProfileClick} />
+              <MenuDivider />
+              <MenuItem style={STYLE.menuItem} key='about' primaryText={Lang.common.about} onClick={this.handleAboutClick} />
+              <MenuItem style={STYLE.menuItem} key='settings' primaryText={Lang.common.settings} onClick={() => {
+                  App.openSettingDialog();
+              }} />
+              <MenuItem style={STYLE.menuItem} key='exit' primaryText={Lang.common.exit} onClick={this.handleExitClick} />
+          </Menu>
+        </Paper>;
     }
 });
 
@@ -169,7 +171,7 @@ const Navbar = React.createClass({
     },
 
     handleSettingBtnClick() {
-
+        App.openSettingDialog();
     },
 
     componentDidMount() {
@@ -196,20 +198,19 @@ const Navbar = React.createClass({
     },
 
     render() {
+        const that = this;
+        const isAvatarOnTop = App.user.config.ui.navbarAvatarPosition === 'top';
         const STYLE = {
             compactWidth: App.user.config.ui.navbar.compactWidth,
             navbar:     {width: 50, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
             icon:       {left: 5},
             rightIcon:  {right: 6, top: 14},
-            list:       {backgroundColor: 'transparent'},
-            navItem:    {paddingTop: 6, paddingBottom: 6, maxHeight: 60},
-            avatar:     {left: 7},
-            footer:     {backgroundColor: 'transparent', position: 'absolute', left: 0, right: 0, bottom: 0, padding: 0},
-            footerItem: {maxHeight: 48},
+            navItem:    {paddingTop: 5, paddingBottom: 5, height: 50},
+            list:       {paddingTop: isAvatarOnTop ? 8 : 0, paddingBottom: isAvatarOnTop ? 8 : 0},
+            avatar:     {position: 'static'},
             iconButton: {position: 'absolute', left: 1, top: -4},
-            tooltip:    {pointerEvents: 'none', fontSize: '12px', zIndex: 100},
             status:     {
-                base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
+                base:   {position: 'absolute', bottom: 3, left: 32, transition: Theme.transition.normal('left', 'top'), zIndex: 10, },
                 dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
             },
             noticeBadge: {
@@ -236,21 +237,25 @@ const Navbar = React.createClass({
             {name: R.ui.navbar_groups, text: "讨论组", icon: this.state.active === R.ui.navbar_groups ? <PoundBoxIcon className='icon' style={STYLE.icon}/> : <PoundIcon className='icon' style={STYLE.icon}/>}
         ];
 
-        let that = this;
         let statusStyle = Object.assign({}, STYLE.status.base);
         let userDisplayName = this.state.user.displayName || this.state.user.realName || this.state.user.account;
         let userAvatar = <UserAvatar user={this.state.user} style={STYLE.avatar} size={36}/>;
-        let userInfo =  <div style={{position: 'relative'}}><UserStatus style={statusStyle} dotStyle={STYLE.status.dot} status={this.state.user.status} />&nbsp;</div>;
         let navbarStyle = Object.assign({}, STYLE.navbar);
-        let menu = this.state.menu ? <UserMenu user={this.state.user} onClickAway={this.hideMenu}/> : null;
+        let menu = this.state.menu ? <UserMenu user={this.state.user} onClickAway={this.hideMenu} style={!isAvatarOnTop ? {top: 'auto', bottom: 0} : null}/> : null;
+        let userAvatarItem = <ListItem 
+            className='item hint--right'
+            key='user-info'
+            data-hint={userDisplayName + ' [' + Lang.user.status[USER_STATUS.getName(this.state.user.status)] + ']'}
+            leftAvatar={userAvatar}
+            onClick={that.handleUserAvatarClick}
+            style={STYLE.navItem}
+            innerDivStyle={{padding: 2, height: 36, textAlign: 'center'}}
+        ><UserStatus style={statusStyle} dotStyle={STYLE.status.dot} status={this.state.user.status} /></ListItem>;
 
         return (
           <div {...this.props} className="navbar dock-left" style={navbarStyle}>
-            <List className='list navbar-header' style={STYLE.list}>
-              <ListItem className='item hint--right' key='user-info' data-hint={userDisplayName + ' [' + Lang.user.status[USER_STATUS.getName(this.state.user.status)] + ']'} primaryText={userInfo} leftAvatar={userAvatar} onClick={that.handleUserAvatarClick} style={{fontSize: '14px'}}/>
-            </List>
+            {isAvatarOnTop ? <List className='list navbar-header' style={STYLE.list}>{userAvatarItem}</List> : null}
             {menu}
-            <ListDivider style={STYLE.list} />
             <List className='list navbar-nav' style={STYLE.list}>
             {
                 listItems.map(item => {
@@ -284,14 +289,16 @@ const Navbar = React.createClass({
                         key={item.name}
                         primaryText='&nbsp;'
                         onClick={that.handleItemClick.bind(null, item.name)}
-                        style={STYLE.navItem}>
+                        style={STYLE.navItem}
+                    >
                         {noticeCountText}
                     </ListItem>;
                 })
             }
             </List>
-            <List className='list navbar-footer' style={STYLE.footer}>
-              <ListItem data-hint="设置" className="item hint--right" key='setting' leftIcon={<SettingIcon className='icon' style={STYLE.icon}/>} primaryText='&nbsp;' onClick={that.handleSettingBtnClick} style={STYLE.footerItem}/>
+            <List className='list navbar-footer dock-bottom' style={STYLE.list}>
+              {isAvatarOnTop ? <ListItem data-hint={Lang.common.settings} className="item hint--right" key='setting' leftIcon={<SettingIcon className='icon' style={STYLE.icon}/>} primaryText='&nbsp;' onClick={that.handleSettingBtnClick} style={STYLE.navItem}/> : null} 
+              {!isAvatarOnTop ? userAvatarItem : null}
             </List>
           </div>
         );
