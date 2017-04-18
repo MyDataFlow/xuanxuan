@@ -7,10 +7,15 @@ Centos通过yum，Ubuntu通过apt-get进行安装，Mac通过[官方网站](http
 >Git for Windows. 国内直接从官网http://git-scm.com/download/win 下载比较困难，需要翻墙。这里提供一个国内的下载站，方便大家下载 https://github.com/waylau/git-for-win 该站与官网同步更新
 
 根据需要下载对应版本，如*Git-2.12.0-64-bit.exe*。
-下载后进行安装，之前的可以选中默认，到该步骤时请选择***Use Git Bash only***
+
+下载后进行安装，之前的步骤可以选择默认，到下图步骤时请选择 ***Use Git Bash only***
+
 ![Adjusting your PATH environment](http://img.sinkiot.com/xxdUserManual/25806493_1345448675558S.jpg)
+
 **next** 进入到一下界面，选择 ***Checkout as-is, commit Unix-style line endings***
+
 ![Configuring the line ending conversions](http://img.sinkiot.com/xxdUserManual/25806493_134544868979mf.jpg)
+
 之后的步骤都可以选择默认 **next** 直到安装完成。这个时候已经可以使用git了， 打开Git Bash可以进入linux shell，可以使用git命令进行各种操作。
 
 ## 2 golang环境配置
