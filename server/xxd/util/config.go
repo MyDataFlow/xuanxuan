@@ -114,7 +114,8 @@ func getRanzhi(config *goconfig.ConfigFile) {
 		}
 
 		serverInfo := strings.Split(ranzhiServer, ",")
-		if len(serverInfo) != 2 {
+		//逗号前面是地址，后面是token，token长度固定为32
+		if len(serverInfo) != 2 || len(serverInfo[1]) != 32 {
 			log.Fatal("config: ranzhi server config error,", err)
 		}
 

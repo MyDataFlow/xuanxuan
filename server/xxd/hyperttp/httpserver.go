@@ -86,7 +86,14 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 	reqFileTime := r.Form["time"][0]
 
 	// new file name = md5(old filename + nowTime + username)
-	fileName := util.Config.UploadPath + util.GetYmdPath(util.String2Int64(reqFileTime)) + util.GetMD5(reqFileName+reqFileTime+authInfo[0])
+	fileTime, err := util.String2Int64(reqFileTime)
+	if err != nil {
+		util.LogError().Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	fileName := util.Config.UploadPath + util.GetYmdPath(fileTime) + util.GetMD5(reqFileName+reqFileTime+authInfo[0])
 	if util.IsNotExist(fileName) || util.IsDir(fileName) {
 		w.WriteHeader(http.StatusNotFound)
 		return
