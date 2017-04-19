@@ -41,6 +41,10 @@ class ShortcutField extends Component {
         return this.state.value || this.props.defaultValue;
     }
 
+    setValue(value) {
+        this.setState({value});
+    }
+
     componentDidMount() {
         if(this.props.focus) {
             this.focusTask = setTimeout(() => {
@@ -59,6 +63,7 @@ class ShortcutField extends Component {
         let {
             onChange,
             focus,
+            value,
             checkGlobal,
             ...other
         } = this.props;
@@ -66,7 +71,7 @@ class ShortcutField extends Component {
         return <TextField ref={e => {
             this.textbox = e;
         }} {...other}
-            value={this.state.value}
+            value={this.state.value || value}
             onKeyPress={this._onKeyUp}
         />
     }
