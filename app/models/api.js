@@ -417,7 +417,7 @@ function uploadFile(files, user, data = {}) {
                     chunked: false,
                     data: [
                         {
-                            'Content-Disposition': 'form-data; name="files[]"; filename="' + filename + '"',
+                            'Content-Disposition': 'form-data; name="' + (global.TEST ? 'file' : 'files[]') + '"; filename="' + filename + '"',
                             body: e.target.result
                         }, {
                             'Content-Disposition': 'form-data; name="gid"',
