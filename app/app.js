@@ -1,6 +1,7 @@
 import 'ion-sound';
 import {
     shell,
+    clipboard,
     remote as Remote,
     screen as Screen,
     nativeImage as NativeImage
@@ -946,7 +947,12 @@ class App extends ReadyNotifier {
                 }
                 if(image) {
                     let filePath = this.user.makeFilePath(UUID.v4() + '.png');
-                    Helper.saveImage(image.data, filePath).then(resolve).catch(reject);
+                    Helper.saveImage(image.data, filePath).then(image => {
+                        if(image && image.path) {
+                            clipboard.writeImage(NativeImage.createFromPath(image.path));
+                        }
+                        resolve(image);
+                    }).catch(reject);
                 } else {
                     if(DEBUG) console.log('No capture image.');
                 }

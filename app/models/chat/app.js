@@ -16,10 +16,6 @@ import AppActionLink                     from 'Utils/app-link';
 import Helper                            from 'Helper';
 import NewChatWindow                     from 'Views/chat/newchat';
 import Checkbox                          from 'material-ui/Checkbox';
-import {
-    clipboard,
-    nativeImage
-}                                        from 'electron';
 
 const MAX_RECENT_TIME  = 1000*60*60*24*7;
 const SEARCH_SCORE_MAP = {
@@ -967,8 +963,6 @@ class ChatApp extends AppCore {
         if(!chat) return console.error('Select an chat before send screenshot.');
         App.openCaptureScreen('all').then(image => {
             if(image && image.path) {
-                let theNativeImage = nativeImage.createFromPath(image.path);
-                clipboard.writeImage(theNativeImage);
                 this.$app.emit(R.event.capture_screen_global, image, chat);
                 this.$app.showAndFocusWindow();
             }
