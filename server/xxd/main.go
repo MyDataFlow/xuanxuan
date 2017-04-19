@@ -11,7 +11,7 @@ package main
 
 import (
 	"xxd/crontask"
-	"xxd/hyperttp"
+	"xxd/hyperttp/server"
 	"xxd/util"
 	"xxd/wsocket"
 )
@@ -20,7 +20,7 @@ func main() {
 
 	crontask.CronTask()
 
-	go hyperttp.InitHttp()
+	go server.InitHttp()
 	go wsocket.InitWs()
 
 	exitServer()

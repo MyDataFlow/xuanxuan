@@ -7,7 +7,7 @@
  * @package     util
  * @link        http://www.zentao.net
  */
-package hyperttp
+package server
 
 import (
 	"encoding/json"
@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"xxd/api"
 	"xxd/util"
 )
 
@@ -159,6 +160,8 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//该处需要做登录验证
+
+	api.RepeatLogin()
 
 	chatPort, err := util.String2Int(util.Config.ChatPort)
 	if err != nil {
