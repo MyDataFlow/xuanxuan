@@ -37,6 +37,11 @@ class ChatApp extends AppCore {
 
         // Handle application events
         app.on(R.event.app_socket_change, () => {
+            clearTimeout(this.fetchChatListTask);
+            this.fetchChatListTask = setTimeout(() => {
+                this.fetchChatList();
+            }, 10000);
+
             this.socket.setHandler({
                 chat: {
                     changename: msg => {
@@ -90,6 +95,7 @@ class ChatApp extends AppCore {
                         }
                     },
                     getlist: msg => {
+                        clearTimeout(this.fetchChatListTask);
                         if(msg.isSuccess) {
                             let chats = Object.keys(msg.data).map(key => {
                                 let chat = new Chat(msg.data[key]);
@@ -330,6 +336,16 @@ class ChatApp extends AppCore {
      */
     initDao() {
         return new ChatDao(this);
+    }
+
+    /**
+     * Fetch chat list from server
+     * @return {void}
+     */
+    fetchChatList() {
+        this.socket.send({
+            'method': 'getList'
+        });
     }
 
     /**

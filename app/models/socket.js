@@ -225,13 +225,20 @@ class Socket extends ReadyNotifier {
 
     /**
      * Send socket message
-     * @param  {ChatMessage} msg
+     * @param  {SocketMessage} msg
      * @return {Void}
      */
     send(msg) {
-        if(!msg.sid && this.user.sid) msg.sid = this.user.sid;
-        if(!msg.userid && this.user.id) msg.userid = this.user.id;
-        if(global.TEST && !msg.test) msg.test = true;
+        msg = this.createSocketMessage(msg);
+        if(!msg.sid && this.user.sid) {
+            msg.sid = this.user.sid;
+        }
+        if(!msg.userid && this.user.id) {
+            msg.userid = this.user.id;
+        }
+        if(global.TEST && !msg.test) {
+            msg.test = true;
+        }
         let data = msg.json;
         const afterSend = DEBUG ? e=> {
             if(DEBUG) {
@@ -258,6 +265,16 @@ class Socket extends ReadyNotifier {
         } else {
             this.client.write(data, 'utf-8', afterSend);
         }
+    }
+
+    /**
+     * Fetch user list
+     * @return {void}
+     */
+    fetchUserList() {
+        this.send({
+            'method': 'userGetlist'
+        });
     }
 
     /**
@@ -311,6 +328,11 @@ class Socket extends ReadyNotifier {
                             this.sid = msg.sid;
                             let user = Object.assign({sid: msg.sid}, msg.data);
                             this._emit(R.event.user_login_message, user);
+
+                            clearTimeout(this.fetchUserListTask);
+                            this.fetchUserListTask = setTimeout(() => {
+                                this.fetchUserList();
+                            }, 5000);
                         } else {
                             let member = this.app.dao.getMember(msg.data.id);
                             if(member) {
@@ -347,6 +369,7 @@ class Socket extends ReadyNotifier {
                     }
                 },
                 usergetlist: msg => {
+                    clearTimeout(this.fetchUserListTask);
                     if(msg.isSuccess) {
                         let members = Object.keys(msg.data).map(key => {
                             let member = new Member(msg.data[key]);
