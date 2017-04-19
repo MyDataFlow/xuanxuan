@@ -13,10 +13,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 	"xxd/api"
+	"xxd/hyperttp"
 	"xxd/util"
 )
 
@@ -69,10 +71,22 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	serverName := r.Header.Get("ServerName")
+	_, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// fromat "username,token"
 	auth := r.Header.Get("Authorization")
+	if auth == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	authInfo := strings.Split(auth, ",")
-	if len(authInfo) != 2 {
+	if len(authInfo) != 2 || len(authInfo[1]) != 32 {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -94,7 +108,7 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fileName := util.Config.UploadPath + util.GetYmdPath(fileTime) + util.GetMD5(reqFileName+reqFileTime+authInfo[0])
+	fileName := util.Config.UploadPath + serverName + "/" + util.GetYmdPath(fileTime) + util.GetMD5(reqFileName+reqFileTime+authInfo[0])
 	if util.IsNotExist(fileName) || util.IsDir(fileName) {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -109,10 +123,23 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fromat "username,token"
+	util.Println(r.Header)
+	// fromat "userID,token"
+	serverName := r.Header.Get("ServerName")
+	_, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	auth := r.Header.Get("Authorization")
+	if auth == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	authInfo := strings.Split(auth, ",")
-	if len(authInfo) != 2 {
+	if len(authInfo) != 2 || len(authInfo[1]) != 32 {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -123,17 +150,17 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseMultipartForm(32 << 20)
-	file, handler, err := r.FormFile("uploadfile")
+	file, handler, err := r.FormFile("file")
 	if err != nil {
-		fmt.Println(err)
+		util.LogError().Println("form file error:", err)
 		return
 	}
 	defer file.Close()
 
 	nowTime := util.GetUnixTime()
-	savePath := util.Config.UploadPath + util.GetYmdPath(nowTime)
+	savePath := util.Config.UploadPath + serverName + "/" + util.GetYmdPath(nowTime)
 	if err := util.Mkdir(savePath); err != nil {
-		fmt.Printf("mkdir error %s\n", err)
+		util.LogError().Println("mkdir error:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -142,7 +169,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	saveFile := savePath + util.GetMD5(handler.Filename+util.Int642String(nowTime)+authInfo[0])
 	f, err := os.OpenFile(saveFile, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
-		fmt.Println(err)
+		util.LogError().Println("open file error:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -160,8 +187,24 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//该处需要做登录验证
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
 
-	api.RepeatLogin()
+	ok, err := verifyLogin(body)
+	if err != nil {
+		util.LogError().Println("verify login error:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	chatPort, err := util.String2Int(util.Config.ChatPort)
 	if err != nil {
@@ -185,4 +228,33 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, string(jsonData))
+}
+
+func verifyLogin(body []byte) (bool, error) {
+	parseData, err := api.ApiParse(body, util.Token)
+	if err != nil {
+		return false, err
+	}
+
+	ranzhiServer, ok := util.Config.RanzhiServer[parseData.ServerName()]
+	if !ok {
+		return false, util.Errorf("no ranzhi server name")
+	}
+
+	retMessage, err := api.SwapToken(body, util.Token, ranzhiServer.RanzhiToken)
+	if err != nil {
+		return false, err
+	}
+
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, retMessage)
+	if err != nil {
+		return false, err
+	}
+
+	parseData, err = api.ApiParse(r2xMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		return false, err
+	}
+
+	return parseData.Result() == "success", nil
 }

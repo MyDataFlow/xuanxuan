@@ -73,10 +73,10 @@ type SendMsg struct {
 }
 
 func dataProcessing(message []byte, client *Client) error {
-	parseData := api.ApiParse(message, util.Token)
-	if parseData == nil {
+	parseData, err := api.ApiParse(message, util.Token)
+	if err != nil {
 		util.LogError().Println("recve client message error")
-		return util.Errorf("recve client message error")
+		return err
 	}
 
 	if util.IsTest && parseData.Test() {

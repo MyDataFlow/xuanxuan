@@ -21,20 +21,20 @@ type partForm struct {
 }
 
 // 对通讯的api进行解析
-func ApiParse(message, token []byte) ParseData {
+func ApiParse(message, token []byte) (ParseData, error) {
 	jsonData, err := aesDecrypt(message, token)
 	if err != nil {
 		util.LogError().Println("aes decrypt error:", err)
-		return nil
+		return nil, err
 	}
 
 	parseData := make(ParseData)
 	if err := json.Unmarshal([]byte(jsonData), &parseData); err != nil {
 		util.LogError().Println("json unmarshal error:", err)
-		return nil
+		return nil, err
 	}
 
-	return parseData
+	return parseData, nil
 }
 
 // 对通讯的api进行加密
@@ -55,7 +55,7 @@ func ApiUnparse(parseData ParseData, token []byte) []byte {
 }
 
 //交换token加密
-func swapToken(message, fromToken, toToken []byte) ([]byte, error) {
+func SwapToken(message, fromToken, toToken []byte) ([]byte, error) {
 	jsonData, err := aesDecrypt(message, fromToken)
 	if err != nil {
 		util.LogError().Println("aes decrypt error:", err)

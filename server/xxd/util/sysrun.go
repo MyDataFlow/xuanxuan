@@ -31,7 +31,7 @@ func init() {
 	Token = []byte("12345678888888888888888888888888")
 
 	LogInfo().Println()
-	LogInfo().Println("sys start, server test model is", IsTest)
+	LogInfo().Printf("sys start,version:%s, server test model is %v\n", Version, IsTest)
 	LogInfo().Printf("ProgramName:%s,System:%s-%s", GetProgramName(), runtime.GOOS, runtime.GOARCH)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())

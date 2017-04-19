@@ -18,25 +18,27 @@ var newline = []byte{'\n'}
 
 // 从客户端发来的登录请求，通过该函数转发到后台服务器进行登录验证
 func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
-	// 客户端到go服务器，和go服务器到后台服务器通讯使用了不一样的token
-	ranzhiToken := util.Config.RanzhiServer[clientData.ServerName()].RanzhiToken
-	ranzhiAddr := util.Config.RanzhiServer[clientData.ServerName()].RanzhiAddr
+	ranzhiServer, ok := util.Config.RanzhiServer[clientData.ServerName()]
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, -1, false
+	}
 
 	// 到http服务器请求，返回加密的结果
-	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, ApiUnparse(clientData, ranzhiToken))
+	retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, ApiUnparse(clientData, ranzhiServer.RanzhiToken))
 	if err != nil || retMessage == nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, -1, false
 	}
 
 	// 解析http服务器的数据,返回 ParseData 类型的数据
-	retData := ApiParse(retMessage, ranzhiToken)
-	if retData == nil {
-		util.LogError().Println("api parse error")
+	retData, err := ApiParse(retMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		util.LogError().Println("api parse error:", err)
 		return nil, -1, false
 	}
 
-	retMessage, err = swapToken(retMessage, ranzhiToken, util.Token)
+	retMessage, err = SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
 		return nil, -1, false
 	}
@@ -49,28 +51,31 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 }
 
 func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
-	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
-	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
+	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
+	}
 
 	request := []byte(`{"module":"chat","method":"logout",userID:` + util.Int642String(userID) + `}`)
-	message, err := aesEncrypt(request, ranzhiToken)
+	message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
 		return nil, nil, err
 	}
 
 	// 到http服务器请求user get list数据
-	r2xMessage, err := hyperttp.RequestInfo(ranzhiAddr, message)
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
 	if err != nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, nil, err
 	}
 
 	// 解析http服务器的数据,返回 ParseData 类型的数据
-	parseData := ApiParse(r2xMessage, ranzhiToken)
-	if parseData == nil {
-		util.LogError().Println("api parse error")
-		return nil, nil, util.Errorf("%s\n", "api parse error")
+	parseData, err := ApiParse(r2xMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		util.LogError().Println("api parse error", err)
+		return nil, nil, err
 	}
 
 	sendUsers := parseData.SendUsers()
@@ -111,25 +116,28 @@ func TestLogin() []byte {
 }
 
 func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) {
-	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
-	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
+	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
+	}
 
-	message, err := swapToken(clientData, util.Token, ranzhiToken)
+	message, err := SwapToken(clientData, util.Token, ranzhiServer.RanzhiToken)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	// ranzhi to xxd message
-	r2xMessage, err := hyperttp.RequestInfo(ranzhiAddr, message)
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
 	if err != nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, nil, err
 	}
 
-	parseData := ApiParse(r2xMessage, ranzhiToken)
-	if parseData == nil {
-		util.LogError().Println("api parse error")
-		return nil, nil, util.Errorf("%s\n", "api parse error")
+	parseData, err := ApiParse(r2xMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		util.LogError().Println("api parse error:", err)
+		return nil, nil, err
 	}
 
 	sendUsers := parseData.SendUsers()
@@ -144,26 +152,29 @@ func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) 
 }
 
 func UserGetlist(serverName string, userID int64) ([]byte, error) {
-	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
-	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
+	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, util.Errorf("%s\n", "no ranzhi server name")
+	}
 
 	// 固定的json格式
 	request := []byte(`{"module":"chat","method":"userGetlist",userID:` + util.Int642String(userID) + `}`)
-	message, err := aesEncrypt(request, ranzhiToken)
+	message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
 		return nil, err
 	}
 
 	// 到http服务器请求user get list数据
-	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, message)
+	retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
 	if err != nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, err
 	}
 
 	//由于http服务器和客户端的token不一致，所以需要进行交换
-	retData, err := swapToken(retMessage, ranzhiToken, util.Token)
+	retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -172,26 +183,29 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
 }
 
 func Getlist(serverName string, userID int64) ([]byte, error) {
-	ranzhiToken := util.Config.RanzhiServer[serverName].RanzhiToken
-	ranzhiAddr := util.Config.RanzhiServer[serverName].RanzhiAddr
+	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, util.Errorf("%s\n", "no ranzhi server name")
+	}
 
 	// 固定的json格式
 	request := []byte(`{"module":"chat","method":"getlist",userID:` + util.Int642String(userID) + `}`)
-	message, err := aesEncrypt(request, ranzhiToken)
+	message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
 		return nil, err
 	}
 
 	// 到http服务器请求get list数据
-	retMessage, err := hyperttp.RequestInfo(ranzhiAddr, message)
+	retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
 	if err != nil {
 		util.LogError().Println("hyperttp request info error:", err)
 		return nil, err
 	}
 
 	//由于http服务器和客户端的token不一致，所以需要进行交换
-	retData, err := swapToken(retMessage, ranzhiToken, util.Token)
+	retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
 		return nil, err
 	}
