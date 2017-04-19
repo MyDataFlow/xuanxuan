@@ -734,6 +734,7 @@ class App extends ReadyNotifier {
 
     openSettingDialog(options) {
         let userSettingView = null;
+        let oldGlobalHotKey = this.user.getConfig('shortcut.captureScreen');
         Modal.show({
             header: this.lang.common.settings,
             content: () => {
@@ -756,6 +757,9 @@ class App extends ReadyNotifier {
                 if(userSettingView.configChanged) {
                     this.user.config = Object.assign(this.user.config, userSettingView.getConfig());
                     this.emit(R.event.user_config_reset, this.user.config, this.user);
+                    if(oldGlobalHotKey !== this.user.getConfig('shortcut.captureScreen')) {
+                        this.chat.registerGlobalHotKey();
+                    }
                 }
             },
             modal: true
