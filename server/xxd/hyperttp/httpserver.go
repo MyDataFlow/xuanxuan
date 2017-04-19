@@ -15,6 +15,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"xxd/util"
 )
 
@@ -62,32 +63,53 @@ func InitHttp() {
 }
 
 func fileDownload(w http.ResponseWriter, r *http.Request) {
-	/*	token := r.Header.Get("Authorization")
-		if token != util.Token {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-	*/
+	if r.Method != "GET" {
+		fmt.Fprintln(w, "not supported request")
+		return
+	}
+
+	// fromat "username,token"
+	auth := r.Header.Get("Authorization")
+	authInfo := strings.Split(auth, ",")
+	if len(authInfo) != 2 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	if authInfo[1] != string(util.Token) {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	r.ParseForm()
-	fileName := util.Config.UploadPath + (r.Form["filepath"][0])
+	reqFileName := r.Form["fileName"][0]
+	reqFileTime := r.Form["time"][0]
+
+	// new file name = md5(old filename + nowTime + username)
+	fileName := util.Config.UploadPath + util.GetYmdPath(util.String2Int64(reqFileTime)) + util.GetMD5(reqFileName+reqFileTime+authInfo[0])
 	if util.IsNotExist(fileName) || util.IsDir(fileName) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	http.ServeFile(w, r, util.Config.UploadPath+(r.Form["filepath"][0]))
-
-	return
+	http.ServeFile(w, r, fileName)
 }
 
 func fileUpload(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		fmt.Fprintln(w, "Not Supported")
+		fmt.Fprintln(w, "not supported request")
 		return
 	}
 
-	token := r.Header.Get("Authorization")
-	if token != string(util.Token) {
+	// fromat "username,token"
+	auth := r.Header.Get("Authorization")
+	authInfo := strings.Split(auth, ",")
+	if len(authInfo) != 2 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	if authInfo[1] != string(util.Token) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -108,7 +130,8 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	saveFile := savePath + util.GetMD5(handler.Filename+util.Int642String(nowTime))
+	// new file name = md5(old filename + nowTime + username)
+	saveFile := savePath + util.GetMD5(handler.Filename+util.Int642String(nowTime)+authInfo[0])
 	f, err := os.OpenFile(saveFile, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Println(err)
@@ -119,9 +142,15 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	io.Copy(f, file)
 
 	fmt.Fprintf(w, "%v", handler.Header)
+
+	//发送数据到然之服务器，文件名和nowTime
 }
 
 func serverInfo(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		fmt.Fprintln(w, "not supported request")
+		return
+	}
 	//该处需要做登录验证
 
 	chatPort, err := util.String2Int(util.Config.ChatPort)

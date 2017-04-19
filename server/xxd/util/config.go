@@ -114,6 +114,10 @@ func getRanzhi(config *goconfig.ConfigFile) {
 		}
 
 		serverInfo := strings.Split(ranzhiServer, ",")
+		if len(serverInfo) != 2 {
+			log.Fatal("config: ranzhi server config error,", err)
+		}
+
 		Config.RanzhiServer[ranzhiName] = RanzhiServer{serverInfo[0], []byte(serverInfo[1])}
 	}
 }
