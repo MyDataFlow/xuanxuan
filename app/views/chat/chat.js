@@ -147,7 +147,7 @@ const ChatPage = React.createClass({
         } else {
             sendbox.editbox.getContentList().forEach(content => {
                 if(content.type === 'text') {
-                    let trimContent = content.content.trim();
+                    let trimContent = App.user.getConfig('ui.chat.sendHDEmoticon') ? content.content.trim() : false;
                     if(trimContent && Emojione.emojioneList[trimContent]) {
                         this._sendEmojiMessage(trimContent);
                     } else {

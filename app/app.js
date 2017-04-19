@@ -27,6 +27,7 @@ import ImageView          from 'Components/image-view';
 import Lang               from 'Lang';
 import Theme              from 'Theme';
 import takeScreenshot     from 'Utils/screenshot';
+import UserSettingView    from './views/user-settings';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('App must run in renderer process.');
@@ -184,13 +185,21 @@ class App extends ReadyNotifier {
             this.emit(R.event.ui_focus_main_window);
         });
 
+        this.browserWindow.on('blur', () => {
+            if(this.user.getConfig('ui.app.hideWindowOnBlur')) {
+                this.browserWindow.minimize();
+            }
+        });
+
         this.browserWindow.on('restore', () => {
             this.browserWindow.setSkipTaskbar(false);
             this.emit(R.event.ui_show_main_window);
         });
 
         this.browserWindow.on('minimize', () => {
-            this.browserWindow.setSkipTaskbar(true);
+            if(this.user.getConfig('ui.app.removeFromTaskbarOnHide')) {
+                this.browserWindow.setSkipTaskbar(true);
+            }
             this.emit(R.event.ui_show_main_window);
         });
 
@@ -728,6 +737,40 @@ class App extends ReadyNotifier {
             },
             width: 500,
             actions: false
+        });
+    }
+
+    openSettingDialog(options) {
+        let userSettingView = null;
+        let oldGlobalHotKey = this.user.getConfig('shortcut.captureScreen');
+        Modal.show({
+            header: this.lang.common.settings,
+            content: () => {
+                return <UserSettingView config={this.user.config} ref={e => userSettingView = e}/>;
+            },
+            width: 650,
+            actions: [
+                {type: 'submit'},
+                {type: 'cancel'},
+                {
+                    type: 'secondary',
+                    label: this.lang.common.restoreDefault, 
+                    click: () => {
+                        userSettingView.resetConfig();
+                    },
+                    style: {float: 'left'}
+                },
+            ],
+            onSubmit: () => {
+                if(userSettingView.configChanged) {
+                    this.user.config = Object.assign(this.user.config, userSettingView.getConfig());
+                    this.emit(R.event.user_config_reset, this.user.config, this.user);
+                    if(oldGlobalHotKey !== this.user.getConfig('shortcut.captureScreen')) {
+                        this.chat.registerGlobalHotKey();
+                    }
+                }
+            },
+            modal: true
         });
     }
 

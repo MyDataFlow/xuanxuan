@@ -60,10 +60,14 @@ const AppContainer = React.createClass({
                 Messager.hide();
             }
         });
+
+        this._handleUserConfigReset = App.on(R.event.user_config_reset, e => {
+            this.forceUpdate();
+        });
     },
 
     componentWillUnmount() {
-        App.off(this._handleUserChangeEvent, this._handleUserStatusChangeEvent);
+        App.off(this._handleUserChangeEvent, this._handleUserStatusChangeEvent, this._handleUserConfigReset);
     },
 
     render() {

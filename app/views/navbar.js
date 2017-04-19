@@ -94,7 +94,7 @@ const UserMenu = React.createClass({
 
     render() {
         const STYLE = {
-            menu: {paddingTop: 8, paddingBottom: 8},
+            menu: {paddingTop: 8, paddingBottom: 8, display: 'block'},
             menuItem: {fontSize: '13px'},
             focusMenuItem: {
                 fontSize: '13px',
@@ -117,7 +117,7 @@ const UserMenu = React.createClass({
         let thisStatus = this.props.user.statusValue;
         let style = this.props.style;
         return <Paper style={Object.assign({position: 'absolute', top: 0, zIndex: 2, width: 160, left: 50}, style)}>
-          <Menu key='user-menu' desktop={true} autoWidth={false} width={STYLE.navbar.width} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
+          <Menu key='user-menu' desktop={true} autoWidth={false} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
               {
                   userStatus.map(function(statusValue) {
                       let statusName = USER_STATUS[statusValue];
@@ -230,11 +230,14 @@ const Navbar = React.createClass({
             }
         };
 
-        let listItems = [
-            {name: R.ui.navbar_chat, text: "最近聊天", icon: this.state.active === R.ui.navbar_chat ? <ActiveChatIcon className='icon' style={STYLE.icon}/> : <ChatIcon className='icon' style={STYLE.icon}/>},
-            {name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>},
-            {name: R.ui.navbar_groups, text: "讨论组", icon: this.state.active === R.ui.navbar_groups ? <PoundBoxIcon className='icon' style={STYLE.icon}/> : <PoundIcon className='icon' style={STYLE.icon}/>}
-        ];
+        const showRecentsOnNavbar = App.user.getConfig('ui.navbar.showRecents');
+        const showNoticeCountOnOthers = showRecentsOnNavbar && App.user.getConfig('ui.navbar.onlyShowNoticeCountOnRecents');
+        let listItems = [];
+        if(showRecentsOnNavbar) {
+            listItems.push({name: R.ui.navbar_chat, text: "最近聊天", icon: this.state.active === R.ui.navbar_chat ? <ActiveChatIcon className='icon' style={STYLE.icon}/> : <ChatIcon className='icon' style={STYLE.icon}/>});
+        }
+        listItems.push({name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>});
+        listItems.push({name: R.ui.navbar_groups, text: "讨论组", icon: this.state.active === R.ui.navbar_groups ? <PoundBoxIcon className='icon' style={STYLE.icon}/> : <PoundIcon className='icon' style={STYLE.icon}/>});
 
         let statusStyle = Object.assign({}, STYLE.status.base);
         let userDisplayName = this.state.user.displayName || this.state.user.realName || this.state.user.account;
@@ -266,10 +269,14 @@ const Navbar = React.createClass({
                                 noticeCount = this.state.notice.total || 0;
                                 break;
                             case R.ui.navbar_groups:
-                                noticeCount = this.state.notice.group || 0;
+                                if(showNoticeCountOnOthers) {
+                                    noticeCount = this.state.notice.group || 0;
+                                }
                                 break;
                             case R.ui.navbar_contacts:
-                                noticeCount = this.state.notice.contact || 0;
+                                if(showNoticeCountOnOthers) {
+                                    noticeCount = this.state.notice.contact || 0;
+                                }
                                 break;
                         }
                         if(noticeCount) {

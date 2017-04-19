@@ -33,10 +33,6 @@ const ImageCutter = React.createClass({
         }
     },
 
-    componentDidMount() {
-
-    },
-
     _handleOkButtonClick() {
         if(this.select) {
             Helper.cutImage(this.props.sourceImage, this.select).then(image => {
