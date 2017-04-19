@@ -72,6 +72,7 @@ class ShortcutField extends Component {
             this.textbox = e;
         }} {...other}
             value={this.state.value || value}
+            readOnly="true"
             onKeyPress={this._onKeyUp}
         />
     }
