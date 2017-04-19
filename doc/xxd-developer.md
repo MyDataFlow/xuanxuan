@@ -30,7 +30,7 @@ Centos通过yum，Ubuntu通过apt-get进行安装，Mac通过[官方网站](http
 ### 2.2 Windows
 根据需要[下载](http://www.golangtc.com/download)对应的软件包，以64位系统为例，下载 go1.8.windows-amd64.zip。
 
-* 把解压缩后的文件夹go放到到指定目录，如*c:/*
+* 把解压缩后的文件夹go放到到指定目录，如*c:/*（自定义目录请设置GOROOT环境变量）
 
 * 创建golang的工作目录，如目录在 *c:/gowork/* 并在目录中建立src目录
 
@@ -61,9 +61,12 @@ go get github.com/gorilla/websocket
 
 ## 4 服务器配置与运行
 golang支持编译运行和源码运行两种方式。
+
 从golang的工作目录gowork进入到xxd目录
-源码运行 `go run main.go`
-编译运行 `go build -o xxd main.go`后会生成一个二进制文件，运行二进制文件。
+
+* 源码运行 `go run main.go`
+
+* 编译运行 `go build -o xxd main.go`后会生成一个二进制文件，运行二进制文件。
 
 若对配置有其它要求，可以进入到config目录对xxd.conf进行修改
 
