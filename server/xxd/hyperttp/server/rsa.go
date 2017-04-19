@@ -7,7 +7,7 @@
  * @package     util
  * @link        http://www.zentao.net
  */
-package hyperttp
+package server
 
 import (
 	"crypto/rand"
