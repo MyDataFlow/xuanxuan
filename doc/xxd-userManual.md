@@ -1,4 +1,4 @@
-# Xxd服务器使用流程
+# Xxd服务器开发者配置流程
 ## 1 Git安装
 ### 1.1 Linux、Mac
 Centos通过yum，Ubuntu通过apt-get进行安装，Mac通过[官方网站](https://git-scm.com/downloads)、brew或者源代码自己编译安装，为了管理和升级建议使用Homebrew
@@ -63,10 +63,7 @@ go get github.com/gorilla/websocket
 golang支持编译运行和源码运行两种方式。
 从golang的工作目录gowork进入到xxd目录
 源码运行 `go run main.go`
-编译运行 `go build main.go`后会生成一个二进制文件，运行二进制文件。
+编译运行 `go build -o xxd main.go`后会生成一个二进制文件，运行二进制文件。
 
 若对配置有其它要求，可以进入到config目录对xxd.conf进行修改
 
-* **Server test模式**
-  源码运行 `go run main.go -test true`
-  编译运行 `./main -test true`
