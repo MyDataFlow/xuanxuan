@@ -63,8 +63,9 @@ const MessageSendbox = React.createClass({
     },
 
     _handleEmoticonClick(e) {
+        const enableSearchInEmojionePicker = App.user.getConfig('ui.chat.enableSearchInEmojionePicker');
         Popover.toggle({
-            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} search={App.user.getConfig('ui.chat.enableSearchInEmojionePicker', false)} searchPlaceholder={Lang.common.search} onChange={data => {
+            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} search={enableSearchInEmojionePicker ? true : undefined} searchPlaceholder={enableSearchInEmojionePicker ? Lang.common.search : undefined} onChange={data => {
                 this._handleEmoticonSelect(data);
             }} />,
             contentId: 'chat-' + this.props.chatId,
