@@ -186,17 +186,26 @@ class App extends ReadyNotifier {
         });
 
         this.browserWindow.on('blur', () => {
+            if(this.user.isUnverified) {
+                return;
+            }
             if(this.user.getConfig('ui.app.hideWindowOnBlur')) {
                 this.browserWindow.minimize();
             }
         });
 
         this.browserWindow.on('restore', () => {
+            if(this.user.isUnverified) {
+                return;
+            }
             this.browserWindow.setSkipTaskbar(false);
             this.emit(R.event.ui_show_main_window);
         });
 
         this.browserWindow.on('minimize', () => {
+            if(this.user.isUnverified) {
+                return;
+            }
             if(this.user.getConfig('ui.app.removeFromTaskbarOnHide')) {
                 this.browserWindow.setSkipTaskbar(true);
             }
@@ -204,6 +213,9 @@ class App extends ReadyNotifier {
         });
 
         this.event.ipc.on(R.event.app_main_window_close, () => {
+            if(this.user.isUnverified) {
+                return;
+            }
             let userCloseOption = this.user.getConfig('ui.app.onClose', 'ask');
             const handleCloseOption = option => {
                 if(!option) option = userCloseOption;
