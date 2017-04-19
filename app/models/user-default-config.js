@@ -4,6 +4,7 @@ export default {
     'ui.navbar.active': 'chat',
     'ui.navbar.avatarPosition': 'bottom',
     'ui.navbar.showRecents': true,
+    'ui.navbar.onlyShowNoticeCountOnRecents': true,
     'ui.chat.menu.with': 200,
     'ui.chat.menu.type': 'recents',
     'ui.chat.sendbox.height': 125,

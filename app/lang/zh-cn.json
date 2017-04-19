@@ -321,6 +321,7 @@
     "flashTrayIconCondition": "闪烁通知栏图标：",
     "navbar": "导航",
     "navbarShowRecents": "在导航上显示最近会话",
+    "onlyShowNoticeCountOnRecents": "仅仅在最近会话标签上显示未读消息数目",
     "showAvatarOnBottom": "将用户头像显示在导航底部",
     "windows": "窗口",
     "hideWindowOnBlur": "窗口失去焦点时自动最小化窗口",

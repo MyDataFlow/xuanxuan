@@ -131,6 +131,12 @@ class UserSettingView extends Component {
                 checked={this.state.config['ui.navbar.showRecents']}
                 onCheck={(e, isChecked) => this.changeConfig('ui.navbar.showRecents', isChecked)}
               />
+              {this.state.config['ui.navbar.showRecents'] ? <Checkbox
+                label={Lang.settings.onlyShowNoticeCountOnRecents}
+                style={STYLE.checkbox}
+                checked={this.state.config['ui.navbar.onlyShowNoticeCountOnRecents']}
+                onCheck={(e, isChecked) => this.changeConfig('ui.navbar.onlyShowNoticeCountOnRecents', isChecked)}
+              /> : null}
               <Checkbox
                 label={Lang.settings.showAvatarOnBottom}
                 style={STYLE.checkbox}
