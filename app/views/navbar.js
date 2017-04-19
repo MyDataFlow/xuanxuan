@@ -94,7 +94,7 @@ const UserMenu = React.createClass({
 
     render() {
         const STYLE = {
-            menu: {paddingTop: 8, paddingBottom: 8},
+            menu: {paddingTop: 8, paddingBottom: 8, display: 'block'},
             menuItem: {fontSize: '13px'},
             focusMenuItem: {
                 fontSize: '13px',
@@ -117,7 +117,7 @@ const UserMenu = React.createClass({
         let thisStatus = this.props.user.statusValue;
         let style = this.props.style;
         return <Paper style={Object.assign({position: 'absolute', top: 0, zIndex: 2, width: 160, left: 50}, style)}>
-          <Menu key='user-menu' desktop={true} autoWidth={false} width={STYLE.navbar.width} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
+          <Menu key='user-menu' desktop={true} autoWidth={false} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
               {
                   userStatus.map(function(statusValue) {
                       let statusName = USER_STATUS[statusValue];
