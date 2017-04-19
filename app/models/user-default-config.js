@@ -18,10 +18,10 @@ export default {
     'ui.chat.showMessageTip': true,
     'ui.chat.enableSearchInEmojionePicker': false,
     'ui.notify.enableSound': true,
-    'ui.notify.playSoundCondition': 'onWindowHide', // or 'onWindowBlur', 'default'
+    'ui.notify.playSoundCondition': 'onWindowHide', // or 'onWindowBlur', ''
     'ui.notify.muteOnUserIsBusy': true,
     'ui.notify.flashTrayIcon': true,
-    'ui.notify.flashTrayIconCondition': '', // or 'onWindowBlur', 'default'
+    'ui.notify.flashTrayIconCondition': '', // or 'onWindowBlur', ''
     'ui.app.hideWindowOnBlur': false,
     'ui.app.removeFromTaskbarOnHide': true,
     'ui.app.onClose': 'ask', // or 'close', 'minimize'
