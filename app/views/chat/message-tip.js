@@ -10,7 +10,7 @@ const MessageTip = React.createClass({
     mixins: [PureRenderMixin],
 
     _handleCloseButtonClick() {
-        App.user.setConfig('ui.chat.hideMessageTip', true);
+        App.user.setConfig('ui.chat.showMessageTip', false);
         this.props.requestClose && this.props.requestClose();
     },
 

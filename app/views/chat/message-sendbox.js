@@ -300,11 +300,11 @@ const MessageSendbox = React.createClass({
                     <CutIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
-              {App.user.getConfig('ui.chat.hideMessageTip') ? null : <div ref={e => this.messageTipBtn = e} style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.messageTip}>
+              {App.user.getConfig('ui.chat.showMessageTip') ? <div ref={e => this.messageTipBtn = e} style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.messageTip}>
                 <IconButton onClick={this._handleMessageTip}>
                     <HelpIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
-              </div>}
+              </div> : null}
               <div className="dock-right">
                 <IconButton disabled={this.state.sendButtonDisabled} className="hint--top-left" onClick={this._handleSendButtonClick} data-hint={Lang.chat.sendMessageTooltip}>
                   <SendIcon color={this.state.sendButtonDisabled ? Theme.color.disabled : Theme.color.primary1} hoverColor={this.state.sendButtonDisabled ? Theme.color.disabled : ColorManipulator.fade(Theme.color.primary1, 0.9)}/>
