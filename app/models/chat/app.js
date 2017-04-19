@@ -241,12 +241,13 @@ class ChatApp extends AppCore {
                 this.totalNoticeCount = totalNoticeCount || false;
                 this.$app.badgeLabel = this.totalNoticeCount;
                 this.$app.trayTooltip = this.totalNoticeCount ? (this.$app.lang.chat.someNewMessages || '{0} 条新消息').format(this.totalNoticeCount) : false;
+
                 if(this.totalNoticeCount && !this.$app.isWindowOpenAndFocus) {
                     if(Helper.isWindowsOS) {
-                        if(!this.$app.isWindowOpen) this.$app.flashTrayIcon(this.totalNoticeCount);
+                        this.flashTrayIcon();
                         this.$app.requestAttention();
                     }
-                    if(!this.$app.isWindowOpen) this.$app.playSound('message');
+                    this.playMessageSound();
                 }
             }
             this.$app.emit(R.event.chats_notice_change, {total: totalNoticeCount, contact: contactsCount, group: groupsCount});
@@ -275,6 +276,47 @@ class ChatApp extends AppCore {
                 this.registerGlobalHotKey();
             }
         });
+    }
+
+    flashTrayIcon() {
+        if(this.user.getConfig('ui.notify.flashTrayIcon')) {
+            const flashTrayIconCondition = this.user.getConfig('ui.notify.flashTrayIconCondition');
+            let canFlashTrayIcon = true;
+            switch(flashTrayIconCondition) {
+                case 'onWindowHide':
+                    canFlashTrayIcon = !this.$app.isWindowOpen;
+                    break;
+                case 'onWindowBlur':
+                    canFlashTrayIcon = !this.$app.isWindowsFocus;
+                    break;
+            }
+            if(canFlashTrayIcon) {
+                this.$app.flashTrayIcon(this.totalNoticeCount);
+            }
+            return canFlashTrayIcon;
+        }
+        return false;
+    }
+
+    playMessageSound() {
+        if(this.user.getConfig('ui.notify.enableSound')) {
+            const muteOnUserIsBusy = this.user.getConfig('ui.notify.muteOnUserIsBusy');
+            if(!(this.user.isBusy && muteOnUserIsBusy)) {
+                const playSoundCondition = this.user.getConfig('ui.notify.playSoundCondition');
+                let canPlaySound = true;
+                switch(playSoundCondition) {
+                    case 'onWindowHide':
+                        canPlaySound = !this.$app.isWindowOpen;
+                        break;
+                    case 'onWindowBlur':
+                        canPlaySound = !this.$app.isWindowsFocus;
+                        break;
+                }
+                if(canPlaySound) this.$app.playSound('message');
+                return canPlaySound;
+            }
+        }
+        return false;
     }
 
     /**

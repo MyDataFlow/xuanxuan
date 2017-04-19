@@ -121,6 +121,14 @@ class Member extends Entity {
     }
 
     /**
+     * Check user status is busy
+     * @return {Boolean}
+     */
+    get isBusy() {
+        return this.statusValue === USER_STATUS.busy;
+    }
+
+    /**
      * Check user status is unverified
      */
     get isUnverified() {

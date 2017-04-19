@@ -219,6 +219,9 @@ class User extends Member {
             let val = this.config[key];
             if(val !== undefined) return val;
         }
+        if(defaultValue === undefined) {
+            defaultValue = DEFAULT[key];
+        }
         return defaultValue;
     }
 
