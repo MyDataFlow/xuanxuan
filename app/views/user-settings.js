@@ -102,22 +102,24 @@ class UserSettingView extends Component {
                   onCheck={(e, isChecked) => this.changeConfig('ui.notify.muteOnUserIsBusy', isChecked)}
                 />
               </div>
-              <Checkbox
-                label={Lang.settings.flashTrayIcon}
-                style={STYLE.checkbox}
-                checked={this.state.config['ui.notify.flashTrayIcon']}
-                onCheck={(e, isChecked) => this.changeConfig('ui.notify.flashTrayIcon', isChecked)}
-              />
-              <div style={STYLE.insetBody} className={this.state.config['ui.notify.flashTrayIcon'] ? '' : 'hide'}>
-                <div className="clearfix" style={{marginTop: -10, marginBottom: 10}}>
-                  <div className="pull-left" style={{marginTop: 18}}>{Lang.settings.flashTrayIconCondition}</div>
-                  <DropDownMenu className="pull-left" value={this.state.config['ui.notify.flashTrayIconCondition'] || ''} onChange={(e, idx, value) => this.changeConfig('ui.notify.flashTrayIconCondition', value)} labelStyle={{fontSize: '14px', color: Theme.color.primary1}}>
-                    <MenuItem value={''} primaryText={Lang.settings.playSountOnNeed} />
-                    <MenuItem value={'onWindowBlur'} primaryText={Lang.settings.playSountOnWindowBlur} />
-                    <MenuItem value={'onWindowHide'} primaryText={Lang.settings.playSountOnWindowHide} />
-                  </DropDownMenu>
+              {Helper.isWindowsOS ? <div>
+                <Checkbox
+                  label={Lang.settings.flashTrayIcon}
+                  style={STYLE.checkbox}
+                  checked={this.state.config['ui.notify.flashTrayIcon']}
+                  onCheck={(e, isChecked) => this.changeConfig('ui.notify.flashTrayIcon', isChecked)}
+                />
+                <div style={STYLE.insetBody} className={this.state.config['ui.notify.flashTrayIcon'] ? '' : 'hide'}>
+                  <div className="clearfix" style={{marginTop: -10, marginBottom: 10}}>
+                    <div className="pull-left" style={{marginTop: 18}}>{Lang.settings.flashTrayIconCondition}</div>
+                    <DropDownMenu className="pull-left" value={this.state.config['ui.notify.flashTrayIconCondition'] || ''} onChange={(e, idx, value) => this.changeConfig('ui.notify.flashTrayIconCondition', value)} labelStyle={{fontSize: '14px', color: Theme.color.primary1}}>
+                      <MenuItem value={''} primaryText={Lang.settings.playSountOnNeed} />
+                      <MenuItem value={'onWindowBlur'} primaryText={Lang.settings.playSountOnWindowBlur} />
+                      <MenuItem value={'onWindowHide'} primaryText={Lang.settings.playSountOnWindowHide} />
+                    </DropDownMenu>
+                  </div>
                 </div>
-              </div>
+              </div> : null}
             </div>
           </section>
           <section>
