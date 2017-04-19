@@ -27,6 +27,7 @@ import ImageView          from 'Components/image-view';
 import Lang               from 'Lang';
 import Theme              from 'Theme';
 import takeScreenshot     from 'Utils/screenshot';
+import UserSettingView    from './views/user-settings';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('App must run in renderer process.');
@@ -728,6 +729,36 @@ class App extends ReadyNotifier {
             },
             width: 500,
             actions: false
+        });
+    }
+
+    openSettingDialog(options) {
+        let userSettingView = null;
+        Modal.show({
+            header: this.lang.common.settings,
+            content: () => {
+                return <UserSettingView config={this.user.config} ref={e => userSettingView = e}/>;
+            },
+            width: 650,
+            actions: [
+                {type: 'submit'},
+                {type: 'cancel'},
+                {
+                    type: 'secondary',
+                    label: this.lang.common.restoreDefault, 
+                    click: () => {
+                        userSettingView.resetConfig();
+                    },
+                    style: {float: 'left'}
+                },
+            ],
+            onSubmit: () => {
+                if(userSettingView.configChanged) {
+                    this.user.config = Object.assign(this.user.config, userSettingView.getConfig());
+                    this.emit(R.event.user_config_reset, this.user.config, this.user);
+                }
+            },
+            modal: true
         });
     }
 

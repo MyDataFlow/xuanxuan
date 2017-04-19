@@ -33,7 +33,7 @@
     "more": "更多",
     "restoreDefault": "恢复默认",
     "close": "关闭",
-    "settings": "设置"
+    "settings": "设置",
     "search": "搜索"
   },
 
@@ -303,6 +303,35 @@
     "openFile": "打开文件...",
     "filterImage": "图片",
     "filterAllFiles": "所有文件"
+  },
+
+  "settings": {
+    "chat": "聊天",
+    "sendHDEmoticon": "当消息只包含一个表情符时直接发送高清表情",
+    "showMessageTip": "在消息发送框工具栏显示消息框小技巧按钮",
+    "enableSearchInEmojionePicker": "表情面板启用搜索",
+    "notification": "通知",
+    "enableSoundNotification": "启用声音提醒",
+    "muteOnUserIsBusy": "当用户状态为忙碌时不使用声音提醒",
+    "playSountOnNeed": "收到新消息时",
+    "playSountOnWindowBlur": "收到新消息且窗口失去焦点时",
+    "playSountOnWindowHide": "收到新消息且窗口隐藏时",
+    "playSoundCondition": "播放声音时机：",
+    "flashTrayIcon": "启用通知栏图标提醒",
+    "flashTrayIconCondition": "闪烁通知栏图标：",
+    "navbar": "导航",
+    "navbarShowRecents": "在导航上显示最近会话",
+    "showAvatarOnBottom": "将用户头像显示在导航底部",
+    "windows": "窗口",
+    "hideWindowOnBlur": "窗口失去焦点时自动最小化窗口",
+    "removeFromTaskbarOnHide": "最小化窗口时不在任务栏显示",
+    "onClickCloseButton": "当点击窗口关闭按钮时",
+    "askEveryTime": "每次询问我操作",
+    "minimizeMainWindow": "最小化窗口到通知栏",
+    "quitApp": "关闭窗口并退出应用",
+    "shortcuts": "快捷键",
+    "globalCaptureScreen": "全局截图快捷键",
+    "reset": "重置为默认设置"
   },
 
   "emojioneCategories": {

@@ -3,6 +3,7 @@ const event = {
     user_swap: "user.swap",
     user_status_change: "user.status.change",
     user_config_change: "user.config.change",
+    user_config_reset: "user.config.reset",
 
     user_login_begin: 'user.login.begin',
     user_login_finish: 'user.login.finish',
