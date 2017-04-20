@@ -360,7 +360,7 @@ const ChatPage = React.createClass({
         let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.isSystem ? <ComtentTextIcon color={Colors.indigo500} style={STYLE.headerIcon}/> : chat.public ? <PoundIcon color={Colors.lightGreen700} style={STYLE.headerIcon}/> : <ChatsIcon color={Colors.lightBlue500} style={STYLE.headerIcon}/>;
         
         let theOtherOne = chat.getTheOtherOne(App.user);
-        let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
+        let chatTitle = theOtherOne ? <a className="link-app" href={'#Member/' + theOtherOne.id} title={'@' + theOtherOne.displayName} ><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</a> : chat.getDisplayName(App);
 
         let canMakePublic = chat.canMakePublic(App.user);
         let canSetCommitters = chat.canSetCommitters(App.user);
