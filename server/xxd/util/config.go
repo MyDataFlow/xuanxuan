@@ -18,6 +18,7 @@ import (
 type RanzhiServer struct {
 	RanzhiAddr  string
 	RanzhiToken []byte
+	//RanzhiEncrypt bool
 }
 
 type ConfigIni struct {
