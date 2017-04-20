@@ -49,10 +49,21 @@ const Page = React.createClass({
         return this.state.chatGid;
     },
 
+    componentDidUpdate() {
+        const {chatGid} = this.state;
+        let chat = App.chat.dao.getChat(chatGid);
+        if(chat) {
+            if(chat.noticeCount) {
+                chat.noticeCount = 0;
+                App.emit(R.event.chats_notice, {muteChats: [chat]});
+            }
+            App.chat.activeChatWindow = chatGid;
+            App.user.setConfig('ui.chat.activeChat', chatGid);
+        }
+    },
+
     renderCacheContent(contentId, cacheName) {
         if(contentId) {
-            App.chat.activeChatWindow = contentId;
-            App.user.setConfig('ui.chat.activeChat', contentId);
             return <ChatWindow chatGid={contentId} className="dock-full" style={{left: App.user.getConfig('ui.chat.menu.width', 200)}}/>
         }
     },

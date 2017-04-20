@@ -8,7 +8,6 @@ import UploadIcon          from 'material-ui/svg-icons/file/file-upload';
 import Theme               from 'Theme';
 import {App, Lang}         from 'App';
 import UserAvatar          from '../user-avatar';
-import Emojione            from '../components/emojione';
 import ImageBrokenIcon     from '../icons/image-broken';
 import ImageMessage        from './message-image';
 import FileListItem        from './file-list-item';

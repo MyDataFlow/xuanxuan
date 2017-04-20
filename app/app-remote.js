@@ -138,7 +138,7 @@ class AppRemote extends ReadyNotifier {
         Helper.tryMkdirp(this.dataPath);
 
         Event.ipc.on(EVENT.app_quit, e => {
-            electron.app.quit();
+            this.quit();
         });
 
         Event.ipc.on(EVENT.app_remote, (e, method, callBackEventName, ...args) => {
@@ -178,7 +178,7 @@ class AppRemote extends ReadyNotifier {
             }, {
                 label: Lang.common.exit,
                 click: () => {
-                    this.quit();
+                    this.mainWindow.webContents.send(R.event.app_quit);
                 }
             }
         ]);

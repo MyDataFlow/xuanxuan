@@ -12,6 +12,7 @@ import {
 }                                    from 'draft-js';
 import Theme                         from 'Theme';
 import Emojione                      from 'Components/emojione';
+import Helper                        from 'Helper';
 
 const AtomicComponent = props => {
     const key = props.block.getEntityAt(0)
@@ -30,7 +31,7 @@ const AtomicComponent = props => {
     } else if(type === 'emoji') {
         let emoji = entity.getData().emoji;
         let emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
-        return <span><img style={{maxWidth: 20, maxHeight: 20}} contentEditable='false' data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
+        return <span><img className='emojione' style={{maxWidth: 20, maxHeight: 20}} contentEditable='false' data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
     }
     return null;
 };
@@ -193,6 +194,11 @@ class DraftEditor extends Component {
         return 'not-handled';
     }
 
+    handlePastedText(text, html) {
+        this.appendContent(text);
+        return 'handled';
+    }
+
     blockRendererFn(contentBlock) {
         const type = contentBlock.getType();
         let result = null;
@@ -222,6 +228,7 @@ class DraftEditor extends Component {
                 handleKeyCommand={this.handleKeyCommand.bind(this)}
                 handleReturn={this.handleReturn.bind(this)}
                 blockRendererFn={this.blockRendererFn.bind(this)}
+                handlePastedText={this.handlePastedText.bind(this)}
             />
         </div>;
     }

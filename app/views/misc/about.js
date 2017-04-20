@@ -41,16 +41,16 @@ const About = React.createClass({
             <BuildInfo style={{fontSize: '12px'}}/>
             <br/><br/>
             <FlatButton onClick={e => {
+                shell.openExternal(xuanxuanWebsite);
+            }} label={xuanxuanWebsite} primary={true} labelStyle={{textTransform: 'none'}} />
+            <br/>
+            <FlatButton onClick={e => {
                 shell.openExternal('https://github.com/easysoft/xuanxuan/blob/master/LICENSE');
             }} label='License ZPL' labelStyle={STYLE.btnLabel} />
             <br/>
             <FlatButton onClick={e => {
                 shell.openExternal('http://cnezsoft.com/');
             }} label='Copyright (c) 2017 cnezsoft.com' labelStyle={STYLE.btnLabel} />
-            <br/>
-            <FlatButton onClick={e => {
-                shell.openExternal(xuanxuanWebsite);
-            }} label={xuanxuanWebsite} primary={true} labelStyle={{textTransform: 'none'}} />
             <br/>
             <FlatButton onClick={e => {
                 shell.openExternal('http://emojione.com/');

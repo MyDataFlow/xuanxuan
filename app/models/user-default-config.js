@@ -1,5 +1,6 @@
 export default {
     version: 2,
+    'ui.animate.enable': false,
     'ui.navbar.width': 50,
     'ui.navbar.active': 'chat',
     'ui.navbar.avatarPosition': 'bottom',

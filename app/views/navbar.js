@@ -136,6 +136,7 @@ const UserMenu = React.createClass({
               <MenuItem style={STYLE.menuItem} key='about' primaryText={Lang.common.about} onClick={this.handleAboutClick} />
               <MenuItem style={STYLE.menuItem} key='settings' primaryText={Lang.common.settings} onClick={() => {
                   App.openSettingDialog();
+                  this.componentClickAway();
               }} />
               <MenuItem style={STYLE.menuItem} key='exit' primaryText={Lang.common.exit} onClick={this.handleExitClick} />
           </Menu>
@@ -231,7 +232,7 @@ const Navbar = React.createClass({
         };
 
         const showRecentsOnNavbar = App.user.getConfig('ui.navbar.showRecents');
-        const showNoticeCountOnOthers = showRecentsOnNavbar && App.user.getConfig('ui.navbar.onlyShowNoticeCountOnRecents');
+        const showNoticeCountOnOthers = !(showRecentsOnNavbar && App.user.getConfig('ui.navbar.onlyShowNoticeCountOnRecents'));
         let listItems = [];
         if(showRecentsOnNavbar) {
             listItems.push({name: R.ui.navbar_chat, text: "最近聊天", icon: this.state.active === R.ui.navbar_chat ? <ActiveChatIcon className='icon' style={STYLE.icon}/> : <ChatIcon className='icon' style={STYLE.icon}/>});
