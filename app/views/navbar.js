@@ -136,6 +136,7 @@ const UserMenu = React.createClass({
               <MenuItem style={STYLE.menuItem} key='about' primaryText={Lang.common.about} onClick={this.handleAboutClick} />
               <MenuItem style={STYLE.menuItem} key='settings' primaryText={Lang.common.settings} onClick={() => {
                   App.openSettingDialog();
+                  this.componentClickAway();
               }} />
               <MenuItem style={STYLE.menuItem} key='exit' primaryText={Lang.common.exit} onClick={this.handleExitClick} />
           </Menu>
