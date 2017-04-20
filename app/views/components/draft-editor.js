@@ -12,6 +12,7 @@ import {
 }                                    from 'draft-js';
 import Theme                         from 'Theme';
 import Emojione                      from 'Components/emojione';
+import Helper                        from 'Helper';
 
 const AtomicComponent = props => {
     const key = props.block.getEntityAt(0)
@@ -193,6 +194,15 @@ class DraftEditor extends Component {
         return 'not-handled';
     }
 
+    handlePastedText(text, html) {
+        console.log('handlePastedText', text, html);
+        if(Helper.isWindowsOS) {
+            this.appendContent(text);
+            return 'handled';
+        }
+        return 'not-handled';
+    }
+
     blockRendererFn(contentBlock) {
         const type = contentBlock.getType();
         let result = null;
@@ -222,6 +232,7 @@ class DraftEditor extends Component {
                 handleKeyCommand={this.handleKeyCommand.bind(this)}
                 handleReturn={this.handleReturn.bind(this)}
                 blockRendererFn={this.blockRendererFn.bind(this)}
+                handlePastedText={this.handlePastedText.bind(this)}
             />
         </div>;
     }
