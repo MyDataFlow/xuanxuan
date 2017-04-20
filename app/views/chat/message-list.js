@@ -83,7 +83,7 @@ const MessageList = React.createClass({
                     lastMessage = null;
                 }
 
-                const isNewMessage = date.isAfter(Moment().add(-10, 'seconds'));
+                const isNewMessage = date.isAfter(Moment().add(-5, 'seconds'));
 
                 list.push(<MessageListItem className={'message message-t-' + message.type + (isNewMessage ? ' message-new' : '')} key={message.gid} lastMessage={lastMessage} message={message} hideAvatar={lastMessage && !lastMessage.isBroadcast && isSameUser && !isDiffDate} hideTime={isSameUser && isAMomentTime} fontSize={this.state.fontSize} />);
 
