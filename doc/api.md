@@ -8,7 +8,7 @@ rzs：后台然之服务器
 常见的请求对象格式
 ```json
 {
-	userID，// 用户id，xxd -> rzs 非登录时必须
+    userID，// 用户id，xxd -> rzs 非登录时必须
     module, // 模块名称,必须
     method, // 方法名称,必须
     test,   // 可选参数，bool,默认为false。

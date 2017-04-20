@@ -23,16 +23,18 @@ class chatModel extends model
     /**
      * Get user list. 
      * 
-     * @param  array  $idList 
+     * @param  string $status
+     * @param  array  $idList
      * @access public
      * @return array
      */
-    public function getUserList($idList = array())
+    public function getUserList($status = '', $idList = array())
     {
         $userList = $this->dao->select('id, realname, avatar, status, admin, account, role, dept, gender, email, mobile, phone, site')
             ->from(TABLE_USER)->where('deleted')->eq('0')
+            ->beginIF($status)->andWhere('status')->eq($status)->fi()
             ->beginIF($idList)->andWhere('id')->in($idList)->fi()
-            ->fetchAll();
+            ->fetchAll('id');
 
         foreach($userList as $user) 
         {
@@ -56,7 +58,7 @@ class chatModel extends model
         $userList = $this->dao->select('id, status')
             ->from(TABLE_USER)->where('deleted')->eq('0')
             ->andWhere('id')->in($idList)
-            ->fetchAll();
+            ->fetchAll('id');
 
         return $userList;
     }
@@ -70,7 +72,7 @@ class chatModel extends model
      */
     public function editUser($user = null)
     {
-        if(!isset($user->id)) $user->id = $this->session->user->id;
+        if(empty($user->id)) return null;
         $this->dao->update(TABLE_USER)->data($user)->where('id')->eq($user->id)->exec();
         return $this->getUserByUserID($user->id);
     }
@@ -185,15 +187,13 @@ class chatModel extends model
     /**
      * Get chat list by userID.  
      * 
-     * $param  int    $userID
-     * $param  bool   $star
+     * @param  int    $userID
+     * @param  bool   $star
      * @access public
      * @return array
      */
     public function getListByUserID($userID = 0, $star = false)
     {
-        if(!$userID) $userID = $this->session->user->id;
-
         $systemChat = $this->dao->select('*, 0 as star, 0 as hide, 0 as mute')
             ->from(TABLE_IM_CHAT)
             ->where('type')->eq('system')
@@ -229,7 +229,7 @@ class chatModel extends model
      * Get a chat by gid.  
      * 
      * @param  string $gid 
-     * $param  bool   $members
+     * @param  bool   $members
      * @access public
      * @return object 
      */
@@ -260,7 +260,7 @@ class chatModel extends model
      * @param  string $type 
      * @param  array  $members 
      * @param  int    $subjectID 
-     * $param  bool   $public
+     * @param  bool   $public
      * @access public
      * @return object 
      */
@@ -343,13 +343,12 @@ class chatModel extends model
      * 
      * @param  string $gid 
      * @param  bool   $star 
+     * @param  int    $userID
      * @access public
      * @return object 
      */
-    public function starChat($gid = '', $star = true)
+    public function starChat($gid = '', $star = true, $userID = 0)
     {
-        $userID = $this->session->user->id;
-
         $this->dao->update(TABLE_IM_CHATUSER)
             ->set('star')->eq($star)
             ->where('cgid')->eq($gid)
