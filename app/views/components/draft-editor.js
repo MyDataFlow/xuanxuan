@@ -195,12 +195,8 @@ class DraftEditor extends Component {
     }
 
     handlePastedText(text, html) {
-        console.log('handlePastedText', text, html);
-        if(Helper.isWindowsOS) {
-            this.appendContent(text);
-            return 'handled';
-        }
-        return 'not-handled';
+        this.appendContent(text);
+        return 'handled';
     }
 
     blockRendererFn(contentBlock) {
