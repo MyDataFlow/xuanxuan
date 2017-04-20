@@ -162,9 +162,9 @@ class Socket extends ReadyNotifier {
      * @return {void}
      */
     logout() {
-        return this.send(this.createSocketMessage({
+        return this.send({
             'method': 'logout'
-        }));
+        });
     }
 
     /**
@@ -366,6 +366,7 @@ class Socket extends ReadyNotifier {
                             member.status = 'offline';
                             this._emit(R.event.data_change, {members: [member]});
                         }
+                        this.destroy();
                     }
                 },
                 usergetlist: msg => {
@@ -419,6 +420,7 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleConnect() {
+        this.isConnected = true;
         if(DEBUG) console.log('%cSOCKET CONNECTED ' + (global.TEST ? this.user.socketUrl : (this.host +':' + this.port)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
         this.login();
         this.ready();
@@ -507,6 +509,7 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleClose(e) {
+        this.isConnected = false;
         if(this._markDestroy) return;
         if(DEBUG) {
             console.groupCollapsed('%cSOCKET CLOSE ' + (global.TEST ? this.user.socketUrl : (this.host +':' + this.port)), 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
@@ -549,6 +552,7 @@ class Socket extends ReadyNotifier {
         } else {
             this.client.destroy();
         }
+        this.isConnected = false;
     }
 }
 
