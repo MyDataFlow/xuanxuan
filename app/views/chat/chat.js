@@ -12,7 +12,6 @@ import SidebarIcon         from 'material-ui/svg-icons/action/chrome-reader-mode
 import ComtentTextIcon     from '../icons/comment-text';
 import PoundIcon           from '../icons/pound-box';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
-import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import HistoryIcon         from 'material-ui/svg-icons/action/history';
 import IconButton          from 'material-ui/IconButton';
 import SplitJS             from 'split.js';
@@ -358,7 +357,7 @@ const ChatPage = React.createClass({
         }
 
         let ChatStarIcon = chat.star ? StarIcon : StarBorderIcon;
-        let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.isSystem ? <ComtentTextIcon color={Colors.indigo500} style={STYLE.headerIcon}/> : chat.public ? <PoundIcon color={Colors.lightGreen700} style={STYLE.headerIcon}/> : <PersonOutlineIcon color={Colors.lightBlue500} style={STYLE.headerIcon}/>;
+        let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.isSystem ? <ComtentTextIcon color={Colors.indigo500} style={STYLE.headerIcon}/> : chat.public ? <PoundIcon color={Colors.lightGreen700} style={STYLE.headerIcon}/> : <ChatsIcon color={Colors.lightBlue500} style={STYLE.headerIcon}/>;
         
         let theOtherOne = chat.getTheOtherOne(App.user);
         let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
