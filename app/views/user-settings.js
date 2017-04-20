@@ -163,8 +163,8 @@ class UserSettingView extends Component {
               <Checkbox
                 label={Lang.settings.hideWindowOnBlur}
                 style={STYLE.checkbox}
-                checked={this.state.config['ui.app.hideWindowOnBlur'] !== 'top'}
-                onCheck={(e, isChecked) => this.changeConfig('ui.app.hideWindowOnBlur', isChecked ? 'bottom' : 'top')}
+                checked={this.state.config['ui.app.hideWindowOnBlur']}
+                onCheck={(e, isChecked) => this.changeConfig('ui.app.hideWindowOnBlur', isChecked)}
               />
               <div className="clearfix" style={{marginTop: -10, marginBottom: 10}}>
                 <div className="pull-left" style={{marginTop: 18}}>{Lang.settings.onClickCloseButton}</div>
