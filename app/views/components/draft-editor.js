@@ -30,7 +30,7 @@ const AtomicComponent = props => {
     } else if(type === 'emoji') {
         let emoji = entity.getData().emoji;
         let emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
-        return <span><img style={{maxWidth: 20, maxHeight: 20}} contentEditable='false' data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
+        return <span><img className='emojione' style={{maxWidth: 20, maxHeight: 20}} contentEditable='false' data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
     }
     return null;
 };

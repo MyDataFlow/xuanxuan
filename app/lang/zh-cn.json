@@ -310,6 +310,7 @@
     "sendHDEmoticon": "当消息只包含一个表情符时直接发送高清表情",
     "showMessageTip": "在消息发送框工具栏显示消息框小技巧按钮",
     "enableSearchInEmojionePicker": "表情面板启用搜索",
+    "enableAnimate": "启用动画效果",
     "notification": "通知",
     "enableSoundNotification": "启用声音提醒",
     "muteOnUserIsBusy": "当用户状态为忙碌时不使用声音提醒",

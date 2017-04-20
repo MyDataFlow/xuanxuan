@@ -75,6 +75,12 @@ class UserSettingView extends Component {
                 checked={this.state.config['ui.chat.enableSearchInEmojionePicker']}
                 onCheck={(e, isChecked) => this.changeConfig('ui.chat.enableSearchInEmojionePicker', isChecked)}
               />
+              <Checkbox
+                label={Lang.settings.enableAnimate}
+                style={STYLE.checkbox}
+                checked={this.state.config['ui.animate.enable']}
+                onCheck={(e, isChecked) => this.changeConfig('ui.animate.enable', isChecked)}
+              />
             </div>
           </section>
           <section>
