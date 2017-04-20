@@ -256,7 +256,9 @@ class App extends ReadyNotifier {
             }
         });
 
-        this.event.ipc.on(R.event.app_quit, this.quit);
+        this.event.ipc.on(R.event.app_quit, () => {
+            this.quit();
+        });
 
         this.on(R.event.user_config_change, (user) => {
             if(user.identify === this.user.identify) {
