@@ -389,9 +389,9 @@ class App extends ReadyNotifier {
      * Do user login action
      */
     login(user) {
-        if(global.TEST) {
-            if(!user) user = this.user;
-            user = User.create(user);
+        if(!user) user = this.user;
+        user = User.create(user);
+        if(user.isNewApi) {
             this.isUserLogining = true;
             this.emit(EVENT.user_login_begin, user);
 
@@ -436,7 +436,7 @@ class App extends ReadyNotifier {
             this._handleUserLoginFinish(user, serverUser, error);
         });
 
-        API.getZentaoConfig(user.zentao).then(zentaoConfig => {
+        API.getZentaoConfig(user.serverUrlRoot).then(zentaoConfig => {
             user.zentaoConfig = zentaoConfig;
             if(this.socket) {
                 this.socket.destroy();
@@ -535,9 +535,13 @@ class App extends ReadyNotifier {
      */
     logout() {
         if(this.user) {
-            if(this.user.isOnline) this.config.save(this.user, true);
+            if(this.user.isOnline) {
+                this.config.save(this.user, true);
+                if(this.socket) {
+                    this.socket.logout(this.user);
+                }
+            }
             this.user.changeStatus(USER_STATUS.unverified);
-            this.socket.logout(this.user);
         }
     }
 
@@ -1027,7 +1031,7 @@ class App extends ReadyNotifier {
      */
     downloadFile(file, onProgress) {
         if(!file.path) file.path = this.user.tempPath + file.name;
-        if(!file.url) file.url = this.createFileDownloadLink(file.id, this.user);
+        if(!file.url) file.url = this.createFileDownloadLink(file, this.user);
         return API.downloadFile(file, this.user, onProgress);
     }
 
@@ -1036,8 +1040,8 @@ class App extends ReadyNotifier {
      * @param  {string} fileId
      * @return {string}
      */
-    createFileDownloadLink(fileId) {
-        return API.createFileDownloadLink(fileId, this.user);
+    createFileDownloadLink(file) {
+        return API.createFileDownloadLink(file, this.user);
     }
 
     /**

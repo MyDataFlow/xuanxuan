@@ -12,13 +12,28 @@
     }
 }
 
-.message .emojione {max-width: 20px; max-height: 20px; vertical-align: bottom}
+.message-time-span:before {
+  content: attr(data-time);
+}
+
+.message .emojione {
+  max-width: 20px;
+  max-height: 20px;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  margin: 0 2px;
+}
 .message .emojione-hd .emojione {max-width: 64px; max-height: 64px;}
 
 @media (max-width: 800px) {
   .message {padding-left: 0!important;}
   .message-avatar, .message-time-dot, .message-time-side {display: none!important}
-  .message-title {color: @primary1Color!important}
+  .message-title {
+    color: @primary1Color!important;
+    margin-right: 5px;
+    display: inline-block;
+  }
 }
 
 .animate-enable .message-new {

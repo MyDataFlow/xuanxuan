@@ -63,7 +63,7 @@ const ImageMessage = React.createClass({
                         if(filePath) {
                             Messager.show({clickAway: true, autoHide: false, content: Lang.chat.imageSaveAs.format(filePath), color: Theme.color.positive});
                         } else {
-                            if(DEBUG) console.error('SAVE FILE FAILED in', filePath, err);
+                            if(DEBUG) console.error('SAVE FILE FAILED', filePath);
                             Messager.show({clickAway: true, autoHide: false, content: Lang.chat.cannotSaveAs.format(filePath), color: Theme.color.negative});
                         }
                     });

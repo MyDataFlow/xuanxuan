@@ -10,7 +10,6 @@
 package wsocket
 
 import (
-	"log"
 	"net/http"
 	"xxd/util"
 )
@@ -32,6 +31,7 @@ func InitWs() {
 
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		util.LogError().Println("websocket server listen err:", err)
+		util.Exit("websocket server listen err")
 	}
 }

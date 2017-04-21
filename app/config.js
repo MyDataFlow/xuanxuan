@@ -8,7 +8,7 @@ import User          from './models/user';
  * @type {object}
  */
 const DEFAULT = {
-    version: 3,
+    version: 4,
     lang: 'zh-cn',
     users: {}
 };

@@ -123,3 +123,7 @@ func (pd ParseData) Test() bool {
 
 	return ret.(bool)
 }
+
+func Testfunc(jsonData string) []byte {
+	return nil
+}

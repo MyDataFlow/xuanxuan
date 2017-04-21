@@ -136,13 +136,13 @@ const SwapUser = React.createClass({
         return <List>
         {
             users.map(user => {
-                let key = user.identify;
+                let key = user.account + '@' + user.server;
                 let actived = key === selectedUser;
                 let primaryText = <span>{(user.realname ? (user.realname + ' ') : '')}<small className='text-muted'>@{user.account}</small></span>;
                 let forHoverDelete = key === this.state.forHoverDelete;
                 let rightIcon = null;
                 if(forHoverDelete) {
-                    rightIcon = <DeleteIcon onClick={this._handleDeleteBtnClick.bind(this, key)} color={Theme.color.icon} hoverColor={Theme.color.negative}/>;
+                    rightIcon = <DeleteIcon onClick={this._handleDeleteBtnClick.bind(this, user.identify)} color={Theme.color.icon} hoverColor={Theme.color.negative}/>;
                 } else if(actived) {
                     rightIcon = <CheckIcon color={Theme.color.positive}/>;
                 }
@@ -154,7 +154,7 @@ const SwapUser = React.createClass({
                     key={key} 
                     actived={actived} 
                     primaryText={primaryText} 
-                    secondaryText={user.address} 
+                    secondaryText={user.server} 
                     leftAvatar={<UserAvatar user={user} />} 
                     rightIcon={rightIcon}/>
             })
@@ -174,7 +174,7 @@ const Login = React.createClass({
             message: '',
             messageColor: Colors.red500,
             account: '',
-            address: '',
+            server: '',
             password: ''
         };
     },
@@ -199,21 +199,21 @@ const Login = React.createClass({
 
     _setUser(user) {
         if(!this.user) this.user = {
-            address: this.state.address,
+            server: this.state.server,
             password: this.state.password,
             account: this.state.account
         };
         if(user) {
-            this.user.address = global.TEST ? user.server : user.address;
+            this.user.server = user.server;
             this.user.account = user.account;
             this.user.password = user.password;
         }
-        let submitable = Helper.isNotEmptyString(this.user.address) 
+        let submitable = Helper.isNotEmptyString(this.user.server) 
             && Helper.isNotEmptyString(this.user.account) 
             && Helper.isNotEmptyString(this.user.password);
         this.setState({
             submitable,
-            address: this.user.address,
+            server: this.user.server,
             password: this.user.password,
             account: this.user.account
         });
@@ -231,7 +231,7 @@ const Login = React.createClass({
             actions: null,
             width: 400,
             content: () => {
-                return <SwapUser selectedUser={'address::' + this.state.account + '@' + this.state.address} onUserSelect={this._handleUserSelect} />
+                return <SwapUser selectedUser={this.state.account + '@' + this.state.server} onUserSelect={this._handleUserSelect} />
             }
         });
     },
@@ -249,7 +249,7 @@ const Login = React.createClass({
             displayed: false
         });
         this._setUser({
-            address:  appUser.address, 
+            server:  appUser.server, 
             account:  appUser.account, 
             password: appUser.password
         });
@@ -283,7 +283,10 @@ const Login = React.createClass({
         this._handleSocketCloseEvent = App.on(R.event.socket_close, () => {
             clearTimeout(this.loginTimeoutCheck);
             if(this.state.logining) {
-                this.setState({logining: false, message: Lang.errors.SOCKET_CLOSE});
+                this.setState({
+                    logining: false,
+                    message: Lang.errors.SOCKET_CLOSE
+                });
             }
         });
 
@@ -294,7 +297,7 @@ const Login = React.createClass({
             opacity: [1, 1],
             isPausedWhenNotInView: true,
             states : {
-                "default-state": {
+                'default-state': {
                     gradients: [
                         ['#2196F3', '#3F51B5'],
                         ['#673AB7', '#9C27B0'],
@@ -333,13 +336,13 @@ const Login = React.createClass({
                 <form id="loginForm">
                   <div className="relative">
                     <TextField
-                      name="address"
-                      ref="address"
+                      name="server"
+                      ref="server"
                       fullWidth={true}
                       hintText={Lang.login.addressHint}
                       floatingLabelText={Lang.login.address}
-                      onChange={this.handleFieldChange.bind(this, 'address')}
-                      value={this.user.address}
+                      onChange={this.handleFieldChange.bind(this, 'server')}
+                      value={this.user.server}
                     />
                     {switchUserBtn}
                   </div>
