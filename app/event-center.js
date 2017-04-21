@@ -82,7 +82,7 @@ class EventCenter extends EventEmitter {
                     this.removeListener(event.name, event.listener);
                     delete this._eventsMap[name];
                     if(DEBUG) {
-                        console.groupCollapsed('%cOFF EVENT%c' + name, 'color: #FF9800; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px 0 0 2px; border: 1px dotted #ff9800; border-right: 0;', 'background: #FF9800; color: #fff; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 0 2px 2px 0; border: 1px dotted #ff9800; border-left: 0; font-weight: bold;');
+                        console.groupCollapsed('%cOFF EVENT%c' + event.name, 'color: #FF9800; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 2px 0 0 2px; border: 1px dotted #ff9800; border-right: 0;', 'background: #FF9800; color: #fff; display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 0 2px 2px 0; border: 1px dotted #ff9800; border-left: 0; font-weight: bold;');
                         console.trace('event', event);
                         console.groupEnd();
                     }
