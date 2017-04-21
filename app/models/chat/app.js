@@ -37,11 +37,6 @@ class ChatApp extends AppCore {
 
         // Handle application events
         app.on(R.event.app_socket_change, () => {
-            clearTimeout(this.fetchChatListTask);
-            this.fetchChatListTask = setTimeout(() => {
-                this.fetchChatList();
-            }, 10000);
-
             this.socket.setHandler({
                 chat: {
                     changename: msg => {
@@ -222,6 +217,15 @@ class ChatApp extends AppCore {
                     },
                 }
             });
+        });
+
+        app.on(R.event.user_login_finish, (e) => {
+            if(e.result) {
+                clearTimeout(this.fetchChatListTask);
+                this.fetchChatListTask = setTimeout(() => {
+                    this.fetchChatList();
+                }, 10000);
+            }
         });
 
         app.on(R.event.chats_notice, (data) => {
