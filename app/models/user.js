@@ -33,8 +33,6 @@ class User extends Member {
             this.config = null;
         }
         this.config = Object.assign({}, DEFAULT, this.config);
-
-        if(this._zentao) this.zentao = this._zentao;
     }
 
     /**
@@ -43,12 +41,7 @@ class User extends Member {
      */
     _initValuesConverter() {
         return {
-            lastLoginTime: "timestamp",
-            _zentao: zentao => {
-                if(typeof zentao === 'string') {
-                    this.zentao = zentao;
-                }
-            }
+            lastLoginTime: "timestamp"
         };
     }
 
@@ -58,16 +51,36 @@ class User extends Member {
      * @return {void}
      */
     set server(server) {
-        // Server address must start with https
-        if(server.indexOf('https://') !== 0) {
-            server = 'https://' + server;
+        if(server.indexOf('#v') > -1) {
+            this.serverVersion = server.split('#')[1].substr(1);
+        } else {
+            this.serverVersion = '';
+        }
+        if(server.indexOf('https://') !== 0 && server.indexOf('http://') !== 0) {
+            server = (this.isClassicApi ? 'http://' : 'https://') + server;
         }
         let url = new URL(server);
-        if(!url.port) {
+        if(!url.port && this.isNewApi) {
             url.port = 11443;
         }
         this._server = url.toString();
         this.$.serverUrl = url;
+    }
+
+    /**
+     * Check is old version
+     * @return {Boolean}
+     */
+    get isClassicApi() {
+        return this.serverVersion === '1.0';
+    }
+
+    /**
+     * Check is new api
+     * @return {Boolean}
+     */
+    get isNewApi() {
+        return !this.isClassicApi;
     }
 
     /**
@@ -107,7 +120,10 @@ class User extends Member {
      */
     get serverName() {
         const url = this.serverUrl;
-        return (url && url.pathname) ? url.pathname.substr(1) : '';
+        if(url) {
+            return url.username ? url.username : (url.pathname ? url.pathname.substr(1) : '');
+        }
+        return '';
     }
 
     /**
@@ -166,7 +182,91 @@ class User extends Member {
      * @return {void}
      */
     set serverVersion(version) {
+        if(version[0] === 'v') {
+            version = version.substr(1);
+        }
         this._serverVersion = version;
+    }
+
+    /**
+     * Get server address root
+     * @return {string}
+     */
+    get serverUrlRoot() {
+        let url = this.serverUrl;
+        let urlStr = '';
+        if(url) {
+            url = new URL(url.toString());
+            url.hash = '';
+            url.search = '';
+            if(this.isNewApi) {
+                url.pathname = '/';
+            }
+            urlStr = url.toString();
+        }
+        if(urlStr && urlStr[urlStr.length - 1] !== '/') {
+            urlStr += '/';
+        }
+        return urlStr;
+    }
+
+    /**
+     * Make server url
+     * @param  {string} path
+     * @return {string}
+     */
+    makeServerUrl(path) {
+        if(path && path[path.length - 1] === '/') {
+            path = path.substr(0, path.length - 1);
+        }
+        return serverUrlRoot + path;
+    }
+
+    /**
+     * Get port
+     * @return {number}
+     */
+    get classicApiPort() {
+        return this._port || '8080';
+    }
+
+    /**
+     * Get host
+     * @return {string}
+     */
+    get classicApiHost() {
+        return this._host || '127.0.0.1';
+    }
+
+    /**
+     * Set classic API host
+     * @param  {String} host
+     * @return {Void}
+     */
+    set classicApiHost(host) {
+        this._host = host;
+    }
+
+    /**
+     * Set classic API port
+     * @param  {String} port
+     * @return {Void}
+     */
+    set classicApiPort(port) {
+        this._port = port;
+    }
+
+    /**
+     * Get user identify string
+     * @return {string}
+     */
+    get identify() {
+        const url = this.serverUrl;
+        if(!url) return '';
+        let pathname = url.pathname;
+        if(pathname === '/') pathname = '';
+        if(pathname && pathname.length) pathname = pathname.replace(/\//g, '_');
+        return this.account + '@' + url.host.replace(':', '__') + pathname;
     }
 
     /**
@@ -312,105 +412,6 @@ class User extends Member {
      */
     makeFilePath(filename, type = 'temp') {
         return Path.join(this.dataPath, type, this.makeFileName(filename));
-    }
-
-    /**
-     * Get user profile
-     * @return {UserProfile}
-     */
-    get profile() {
-        return this.$.profile;
-    }
-
-    /**
-     * Set user profile
-     * @param  {UserProfile} profile
-     * @return {void}
-     */
-    set profile(profile) {
-        this.$.profile = profile;
-    }
-
-    /**
-     * Get zentao address
-     * @return {string}
-     */
-    get zentao() {
-        if(!this.$.zentao || !this.$.zentao.host) return '';
-        let zentao = this.$.zentao.protocol + '//' + this.$.zentao.host + this.$.zentao.pathname;
-        return zentao.endsWith('/') ? zentao : (zentao + '/');
-    }
-
-    /**
-     * Get server address root
-     * @return {string}
-     */
-    get addressRoot() {
-        if(!this.$.zentao || !this.$.zentao.host) return '';
-        let addr = this.$.zentao.protocol + '//' + this.$.zentao.hostname + (this.$.zentao.port ? (':' + this.$.zentao.port) : '');
-        return addr.endsWith('/') ? addr : (addr + '/');
-    }
-
-    /**
-     * Get port
-     * @return {number}
-     */
-    get port() {
-        return this._port || ((this.$.zentao && this.$.zentao.port) ? this.$.zentao.port : 8080);
-    }
-
-    /**
-     * Get host
-     * @return {string}
-     */
-    get host() {
-        return this._host ? this._host : (this.$.zentao.host || '127.0.0.1');
-    }
-
-    /**
-     * Set zentao address
-     * @param  {string} zentaoAddress
-     * @return {void}
-     */
-    set zentao(zentaoAddress) {
-        zentaoAddress = zentaoAddress.trim();
-        let zentaoAddressLowerCase = zentaoAddress.toLowerCase();
-
-        if(!zentaoAddressLowerCase.startsWith('http://') && !zentaoAddressLowerCase.startsWith('https://')) {
-            zentaoAddress = 'http://' + zentaoAddress;
-        }
-
-        this._zentao = zentaoAddress;
-        this.$.zentao = Url.parse(zentaoAddress);
-    }
-
-    /**
-     * Set user address
-     * @param {string} address
-     */
-    set address(address) {
-        this.zentao = address;
-        if(global.TEST) this.server = address;
-    }
-
-    /**
-     * Get user address
-     * @return {string}
-     */
-    get address() {
-        return this.zentao;
-    }
-
-    /**
-     * Get user identify string
-     * @return {string}
-     */
-    get identify() {
-        if(!this.$.zentao) return '';
-        let pathname = this.$.zentao.pathname;
-        if(pathname === '/') pathname = '';
-        if(pathname && pathname.length) pathname = pathname.replace(/\//g, '_');
-        return this.account + '@' + this.$.zentao.host.replace(':', '__') + pathname;
     }
 
     /**

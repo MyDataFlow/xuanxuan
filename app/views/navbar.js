@@ -107,8 +107,8 @@ const UserMenu = React.createClass({
                 base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
                 dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
                 inmenu: {
-                  dot: {position: 'relative', top: 1, marginRight: 10},
-                  text: {fontSize: '14px'}
+                    dot:  {position: 'relative', top: 1, marginRight: 10},
+                    text: {fontSize: '14px'}
                 }
             }
         };

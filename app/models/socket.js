@@ -18,7 +18,6 @@ if(DEBUG && process.type !== 'renderer') {
 }
 
 const ENCRYPT_ENABLE = true;
-if(global.TEST) global.crypto2 = crypto;
 
 /**
  * Socket
@@ -38,11 +37,11 @@ class Socket extends ReadyNotifier {
         this.app    = app;
         this.user   = user;
         this.emiter = app;
-        this.host   = this.user.host || '127.0.0.1';
-        this.port   = this.user.port;
+        this.host   = this.user.classicApiHost;
+        this.port   = this.user.classicApiPort;
         this.lastHandTime = 0;
         this.lastOkTime = 0;
-        this.client = global.TEST ? new WebSocket(user.socketUrl) : new Net.Socket();
+        this.client = user.isNewApi ? new WebSocket(user.socketUrl) : new Net.Socket();
 
         this._initHandlers();
         this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {
@@ -86,7 +85,7 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     connect() {
-        if(!global.TEST) {
+        if(!this.user.isNewApi) {
             this.client.connect(this.port, this.host, this._handleConnect.bind(this));
             this.client.on('data',    this._handleData.bind(this));
             this.client.on('close',   this._handleClose.bind(this));
@@ -142,7 +141,7 @@ class Socket extends ReadyNotifier {
         let msg = new SocketMessage({
             'module': 'chat',
             'method': 'login',
-            'params': global.TEST ? [
+            'params': this.user.isNewApi ? [
                 this.user.serverName,
                 this.user.account,
                 this.user.passwordMD5,
@@ -247,7 +246,7 @@ class Socket extends ReadyNotifier {
                 console.groupEnd();
             }
         } : null;
-        if(global.TEST) {
+        if(this.user.isNewApi) {
             const encryptEnabled = ENCRYPT_ENABLE && !global.encryptDisabled;
             if(encryptEnabled) {
                 data = this.encrypt(data);
@@ -421,10 +420,10 @@ class Socket extends ReadyNotifier {
      */
     _handleConnect() {
         this.isConnected = true;
-        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (global.TEST ? this.user.socketUrl : (this.host +':' + this.port)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (this.isNewApi ? this.user.socketUrl : (this.user.classicApiHost +':' + this.user.classicApiPort)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
         this.login();
         this.ready();
-        this._emit(EVENT.socket_connected, global.TEST ? {url: this.user.socketUrl} : {host: this.host, port: this.port});
+        this._emit(EVENT.socket_connected, this.user.isNewApi ? {url: this.user.socketUrl} : {host: this.user.classicApiHost, port: this.user.classicApiPort});
     }
 
     /**
@@ -512,7 +511,7 @@ class Socket extends ReadyNotifier {
         this.isConnected = false;
         if(this._markDestroy) return;
         if(DEBUG) {
-            console.groupCollapsed('%cSOCKET CLOSE ' + (global.TEST ? this.user.socketUrl : (this.host +':' + this.port)), 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+            console.groupCollapsed('%cSOCKET CLOSE ' + (this.user.isNewApi ? this.user.socketUrl : (this.user.classicApiHost +':' + this.user.classicApiPort)), 'display: inline-block; font-size: 10px; color: #fff; background: #F44336; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
             console.log('error', e);
             console.groupEnd();
         }
@@ -547,7 +546,7 @@ class Socket extends ReadyNotifier {
         this.stopPing();
         this.app.off(this.userStatusChangeEvent);
         this._markDestroy = true;
-        if(global.TEST) {
+        if(this.user.isNewApi) {
             this.client.close();
         } else {
             this.client.destroy();

@@ -139,7 +139,7 @@ function postJSON(url, form) {
 
 
 /**
- * Concat zentao url with params
+ * Concat server url with params
  * @param  {Object} params
  * @param  {User} user
  * @return {String}
@@ -150,13 +150,12 @@ function concalUrl(params, user) {
     let moduleNameIdentifier = moduleName.toLowerCase();
     let methodNameIdentifier = methodName.toLowerCase();
     let viewType = params.viewType || 'json';
-    let url = user.zentao;
-    if(user.zentaoConfig.name && user.zentaoConfig.name === 'ranzhi') {
+    let url = user.serverUrlRoot;
+    if(user.zentaoConfig.name === 'ranzhi') {
         url += 'sys/';
     }
     let sessionName = user.zentaoConfig.sessionName || user.zentaoConfig.sessionVar || 'sid';
     let sessionID = user.sid || user.zentaoConfig.sessionID;
-    // let sessionID = user.zentaoConfig.sessionID || user.sid;
 
     if(user.zentaoConfig.isPathInfoRequestType) {
         if(moduleNameIdentifier === 'user' && methodNameIdentifier === 'login') {
@@ -266,7 +265,7 @@ function tryGetZentaoConfig(user) {
     if(user.zentaoConfig && !user.zentaoConfig.isExpired) {
         return Promise.resolve(user.zentaoConfig);
     }
-    return getZentaoConfig(user.zentao);
+    return getZentaoConfig(user.serverUrlRoot);
 }
 
 /**
@@ -360,7 +359,8 @@ function requestServerInfo(user) {
         postJSON(user.webServerInfoUrl, {
             serverName: user.serverName,
             account: user.account,
-            password: user.passwordMD5
+            password: user.passwordMD5,
+            status: ''
         }).then(data => {
             if(data) {
                 user.socketPort    = data.chatPort;
@@ -417,7 +417,7 @@ function uploadFile(files, user, data = {}) {
                     chunked: false,
                     data: [
                         {
-                            'Content-Disposition': 'form-data; name="' + (global.TEST ? 'file' : 'files[]') + '"; filename="' + filename + '"',
+                            'Content-Disposition': 'form-data; name="' + (user.isNewApi ? 'file' : 'files[]') + '"; filename="' + filename + '"',
                             body: e.target.result
                         }, {
                             'Content-Disposition': 'form-data; name="gid"',
@@ -483,7 +483,6 @@ function downloadFile(file, user, onProgress) {
     return new Promise((resolve, reject) => {
         let jar = Request.jar();
         let cookie = Request.cookie('sid=' + user.sid);
-        // jar.setCookie(cookie, url);
         Request.defaults({jar});
 
         RequestProgress(Request(file.url, {jar, rejectUnauthorized: false}), {
@@ -500,7 +499,7 @@ function downloadFile(file, user, onProgress) {
             resolve(e);
         })
           .on('progress', onProgress)
-          .on('error', reject)
+          .on('error',    reject)
           .pipe(FS.createWriteStream(file.path));
     });
 }
@@ -516,21 +515,6 @@ function tryUploadFile(file, user, params) {
     return tryLogin(user).then(() => {
         return uploadFile(file, user, params);
     });
-}
-
-/**
- * Logout zentao with http method
- * @param  {User} user
- * @return {Promise}
- */
-function logout(user) {
-    let url = user.zentao.endsWith('/') ? user.zentao : (user.zentao + '/');
-    if(user.zentaoConfig.isPathInfoRequestType) {
-        url += 'user-logout.html';
-    } else {
-        url += '/index.php?m=user&f=logout';
-    }
-    return getText(url);
 }
 
 /**
@@ -557,7 +541,6 @@ let Api = {
     getZentaoConfig,
     requestServerInfo,
     login,
-    logout,
     getMembers,
     uploadFile,
     tryUploadFile,
@@ -575,7 +558,6 @@ export {
     getZentaoConfig,
     requestServerInfo,
     login,
-    logout,
     getMembers,
     uploadFile,
     tryUploadFile,

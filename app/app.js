@@ -389,9 +389,9 @@ class App extends ReadyNotifier {
      * Do user login action
      */
     login(user) {
-        if(global.TEST) {
-            if(!user) user = this.user;
-            user = User.create(user);
+        if(!user) user = this.user;
+        user = User.create(user);
+        if(user.isNewApi) {
             this.isUserLogining = true;
             this.emit(EVENT.user_login_begin, user);
 
@@ -436,7 +436,7 @@ class App extends ReadyNotifier {
             this._handleUserLoginFinish(user, serverUser, error);
         });
 
-        API.getZentaoConfig(user.zentao).then(zentaoConfig => {
+        API.getZentaoConfig(user.serverUrlRoot).then(zentaoConfig => {
             user.zentaoConfig = zentaoConfig;
             if(this.socket) {
                 this.socket.destroy();
