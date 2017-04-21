@@ -932,3 +932,48 @@ xxd把client发送的数据转发给rzs。
 ```
 #### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+
+## 上传文件
+### 请求
+#### 方向：client --> xxd
+```json
+{
+    userID,
+    module: 'chat',
+    method: 'uploadFile',
+    params: 
+    {
+    }
+}
+```
+#### 方向： xxd --> rzs
+```json
+{
+    userID,
+    module: 'chat',
+    method: 'uploadFile',
+    params: 
+    {
+        fileName, // 文件名(带扩展名)
+        path,     // 文件在xxd的路径
+        size,     // 文件大小
+        time,     // 时间戳
+        gid,      // 会话ID
+    }
+}
+```
+xxd把client发送的数据转发给rzs。
+
+### 响应
+#### 方向：rzs --> xxd
+```json
+{
+    module: 'chat',
+    method: 'uploadFile',
+    users[],
+    result, 
+    data: fileID
+}
+```
+#### 方向：xxd --> client
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。

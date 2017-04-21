@@ -5,9 +5,9 @@ class chat extends control
     {
         parent::__construct();
 
-        $this->response = new stdclass();
-        $this->response->module = $this->moduleName;
-        $this->response->method = $this->methodName;
+        $this->output = new stdclass();
+        $this->output->module = $this->moduleName;
+        $this->output->method = $this->methodName;
     }
 
     /**
@@ -26,23 +26,25 @@ class chat extends control
 
         if($user) 
         {
-            $user->status = $status;
-            $user = $this->chat->editUser($user);
+            $data = new stdclass();
+            $data->id     = $user->id;
+            $data->status = $status;
+            $user = $this->chat->editUser($data);
 
             $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
             
             $userList = $this->chat->getUserList($status = 'online');
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($userList);
-            $this->response->data   = $user;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($userList);
+            $this->output->data   = $user;
         }
         else
         {
-            $this->response->result = 'fail';
-            $this->response->data   = $this->lang->user->loginFailed;
+            $this->output->result = 'fail';
+            $this->output->data   = $this->lang->user->loginFailed;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -63,15 +65,15 @@ class chat extends control
 
         $this->loadModel('action')->create('user', $userID, 'logoutXuanxuan', '', 'xuanxuan', $user->account);
 
-        $this->response->result = 'success';
-        $this->response->users  = array_keys($userList);
-        $this->response->data   = $user;
+        $this->output->result = 'success';
+        $this->output->users  = array_keys($userList);
+        $this->output->data   = $user;
 
         session_destroy();
         setcookie('za', false);
         setcookie('zp', false);
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -87,17 +89,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Get userlist failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get userlist failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $userList;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $userList;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -132,17 +134,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Change name failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Change name failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $user;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $user;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -154,10 +156,10 @@ class chat extends control
      */
     public function ping($userID = 0)
     {
-        $this->response->result = 'success';
-        $this->response->users  = array($userID);
+        $this->output->result = 'success';
+        $this->output->users  = array($userID);
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -178,17 +180,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Get public chat list failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get public chat list failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $chatList;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $chatList;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -207,16 +209,16 @@ class chat extends control
         }
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Get chat list failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get chat list failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $chatList;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $chatList;
         }
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -232,8 +234,8 @@ class chat extends control
         $memberList = $this->chat->getMemberListByGID($gid);
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Get member list failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get member list failed.';
         }
         else
         {
@@ -241,11 +243,11 @@ class chat extends control
             $data->gid     = $gid;
             $data->members = $memberList;
 
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $data;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $data;
         }
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -273,17 +275,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Create chat fail.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Create chat fail.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -301,26 +303,29 @@ class chat extends control
         $user = $this->chat->getUserByUserID($userID);
         if($user->admin != 'super')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notAdmin;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notAdmin;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notExist;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         if($chat->type != 'system')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notSystemChat;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notSystemChat;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         $chat  = $this->chat->setAdmin($gid, $admins, $isAdmin);
@@ -328,17 +333,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Set admin failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Set admin failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -355,25 +360,28 @@ class chat extends control
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notExist;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         if($chat->type != 'group')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notGroupChat;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         if($join && $chat->public == '0')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notPublic;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notPublic;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         $this->chat->joinChat($gid, $userID, $join);
@@ -392,17 +400,17 @@ class chat extends control
                 $message = 'Quit chat failed.';
             }
 
-            $this->response->result  = 'fail';
-            $this->response->message = $message;
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -419,17 +427,19 @@ class chat extends control
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notExist;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         if($chat->type != 'group' && $chat->type != 'system')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notGroupChat;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         $chat->name = $name;
@@ -438,35 +448,19 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Change name failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Change name failed.';
         }
         else
         {
 
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
 
-            //$user = zget($users, $userID, '');
-            //if($user)
-            //{
-            //    $broadcast = new stdclass();
-            //    $broadcast->module            = 'chat';
-            //    $broadcast->method            = 'message';
-            //    $broadcast->data              = new stdclass();
-            //    $broadcast->data->cgid        = $gid;
-            //    $broadcast->data->gid         = md5(uniqid() . microtime() . mt_rand());
-            //    $broadcast->data->date        = helper::now();
-            //    $broadcast->data->contentType = 'text';
-            //    $broadcast->data->user        = $userID;
-            //    $broadcast->data->type        = 'broadcast';
-            //    $broadcast->data->content     = (empty($user->realname) ? ('@' . $user->account) : $user->realname) . $this->lang->chat->changeRenameTo . $name;
-            //    $this->chat->send($userList, $broadcast, true, true);
-            //}
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -483,17 +477,19 @@ class chat extends control
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notExist;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         if($chat->type != 'group' && $chat->type != 'system')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notGroupChat;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         $chat->committers = $committers;
@@ -502,17 +498,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Set committers failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Set committers failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
     
     /**
@@ -529,17 +525,19 @@ class chat extends control
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notExist;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         if($chat->type != 'group')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notGroupChat;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         $chat->public = $public ? 1 : 0;
@@ -548,17 +546,17 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Change public failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Change public failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $data;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $data;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
     
     /**
@@ -584,16 +582,16 @@ class chat extends control
                 $message = 'Cancel star chat failed';
             }
 
-            $this->response->result  = 'fail';
-            $this->response->message = $message;
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $chat;
         }
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -619,8 +617,8 @@ class chat extends control
                 $message = 'Display chat failed.';
             }
 
-            $this->response->result  = 'fail';
-            $this->response->message = $message;
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
         }
         else
         {
@@ -628,11 +626,11 @@ class chat extends control
             $data->gid  = $gid;
             $data->hide = $hide;
 
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $data;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $data;
         }
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -650,17 +648,19 @@ class chat extends control
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notExist;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         if($chat->type != 'group')
         {
-            $this->response->result  = 'fail';
-            $this->response->message = $this->lang->chat->notGroupChat;
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         foreach($members as $member) $this->chat->joinChat($gid, $member, $join);
@@ -679,16 +679,16 @@ class chat extends control
                 $message = 'Kick member failed.';
             }
 
-            $this->response->result  = 'fail';
-            $this->response->message = $message;
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $chat;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
         }
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -709,10 +709,11 @@ class chat extends control
         }
         if(count($chats) > 1)
         {
-            $this->response->result = 'fail';
-            $this->response->data   = $this->lang->chat->multiChats;
+            $this->output->result = 'fail';
+            $this->output->data   = $this->lang->chat->multiChats;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
         /* Check whether the logon user can send message in chat. */
         $errors  = array();
@@ -741,10 +742,11 @@ class chat extends control
 
         if($errors)
         {
-            $this->response->result = 'fail';
-            $this->response->data   = $errors;
+            $this->output->result = 'fail';
+            $this->output->data   = $errors;
 
-            die(helper::jsonEncode($this->response));
+            die(extcommonModel::encrypt($this->output));
+            return;
         }
 
         /* Create messages. */
@@ -752,17 +754,17 @@ class chat extends control
         $users       = $this->chat->getUserList($status = 'online', array_values($chat->members));
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Send message failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Send message failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array_keys($users);
-            $this->response->data   = $messageList;
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $messageList;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -793,14 +795,14 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Get history failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get history failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $messageList;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $messageList;
 
             $pagerData = new stdclass();
             $pagerData->recPerPage = $pager->recPerPage;
@@ -809,10 +811,10 @@ class chat extends control
             $pagerData->gid        = $gid;
             $pagerData->continued  = $continued;
 
-            $this->response->pager = $pagerData;
+            $this->output->pager = $pagerData;
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -833,20 +835,20 @@ class chat extends control
 
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Save settings failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Save settings failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->userID = array($userID);
+            $this->output->result = 'success';
+            $this->output->userID = array($userID);
             if(!$settings)
             {
-                $this->response->data = $this->config->chat->settings->$account;
+                $this->output->data = $this->config->chat->settings->$account;
             }
         }
 
-        die(helper::jsonEncode($this->response));
+        die(extcommonModel::encrypt($this->output));
     }
 
     /**
@@ -878,19 +880,20 @@ class chat extends control
         $file->createdDate = date(DT_DATETIME1, $time); 
         
         $this->dao->insert(TABLE_FILE)->data($file)->exec();
+        $fileID = $this->dao->lastInsertID();
         
         if(dao::isError())
         {
-            $this->response->result  = 'fail';
-            $this->response->message = 'Upload file failed.';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Upload file failed.';
         }
         else
         {
-            $this->response->result = 'success';
-            $this->response->users  = array($userID);
-            $this->response->data   = $file;
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $fileID;
         }
 
-        die(json_encode($this->response));
+        die(json_encode($this->output));
     }
 }
