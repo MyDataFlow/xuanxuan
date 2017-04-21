@@ -535,9 +535,13 @@ class App extends ReadyNotifier {
      */
     logout() {
         if(this.user) {
-            if(this.user.isOnline) this.config.save(this.user, true);
+            if(this.user.isOnline) {
+                this.config.save(this.user, true);
+                if(this.socket) {
+                    this.socket.logout(this.user);
+                }
+            }
             this.user.changeStatus(USER_STATUS.unverified);
-            this.socket.logout(this.user);
         }
     }
 
