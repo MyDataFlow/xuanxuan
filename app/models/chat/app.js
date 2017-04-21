@@ -397,7 +397,7 @@ class ChatApp extends AppCore {
 
         let chat = null;
         if(members.length <= 2) {
-            const gid = [member.id, this.$app.user.id].sort().join('&');
+            const gid = [members[0].id, this.$app.user.id].sort().join('&');
             chat = this.dao.chats[gid];
         }
         if(!chat) {
@@ -409,8 +409,10 @@ class ChatApp extends AppCore {
 
         if(!options.onlyLocal && chat) {
             let upsertRemote = () => {
-                this.dao.updateChats(chat);
-                this.createChat(chat, callback);
+                if(!chat.remoteId) {
+                    this.dao.updateChats(chat);
+                    this.createChat(chat, callback);
+                }
                 if(options.notifyUIChange) {
                     this.$app.emit(R.event.ui_change, {navbar: R.ui.navbar_chat, activeChat: chat.gid});
                 }
