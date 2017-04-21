@@ -546,11 +546,12 @@ class ChatApp extends AppCore {
             let chatGid = chat.gid.toLowerCase();
             let chatName = chat.getDisplayName(this.$app, false).toLowerCase();
             let pinYin = chat.getPinYin(chatName);
-            let theOtherOneName = '';
             let theOtherOneAccount = '';
+            let theOtherOneContactInfo = '';
             if(chat.isOne2One) {
                 let theOtherOne = chat.getTheOtherOne(this.user);
                 theOtherOneAccount = theOtherOne.account;
+                theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');
             }
             search.forEach(s => {
                 if(!s.length) return;
@@ -573,6 +574,9 @@ class ChatApp extends AppCore {
                 }
                 score += caculateScore(s, chatName);
                 score += caculateScore(s, pinYin);
+                if(theOtherOneContactInfo) {
+                    score += caculateScore(s, theOtherOneContactInfo);
+                }
             });
             chat.$.score = score;
             if(score > 0) {
