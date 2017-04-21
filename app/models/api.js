@@ -380,11 +380,11 @@ function requestServerInfo(user) {
  * @param  {User}   user
  * @return {String}
  */
-function createFileDownloadLink(fileId, user) {
-    return concalUrl({
+function createFileDownloadLink(file, user) {
+    return user.isNewApi ? user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}`) : concalUrl({
         'module': 'attach',
         'method': 'download',
-        _params: {fileID: fileId}
+        _params: {fileID: file.id}
     }, user);
 }
 
@@ -397,7 +397,7 @@ function createFileDownloadLink(fileId, user) {
  */
 function uploadFile(files, user, data = {}) {
     return new Promise((resolve, reject) => {
-        let url = concalUrl({
+        let url = user.isNewApi ? user.makeServerUrl('upload') : concalUrl({
             'module': 'attach',
             'method': 'upload',
         }, user);
@@ -406,12 +406,17 @@ function uploadFile(files, user, data = {}) {
             const filename = files.filename || files.name;
             let jar = Request.jar();
             let cookie = Request.cookie('sid=' + user.sid);
+            let headers = {'Content-Type': 'multipart/form-data'};
+            if(user.isNewApi) {
+                headers['ServerName'] = user.serverName;
+                headers['Authorization'] = [user.id, user.token].join(',');
+            }
             jar.setCookie(cookie, url);
             Request.defaults({jar});
             Request({
                 method: 'POST',
                 uri: url,
-                headers: { 'Content-Type': 'multipart/form-data'},
+                headers,
                 rejectUnauthorized: false,
                 multipart: {
                     chunked: false,
@@ -484,8 +489,17 @@ function downloadFile(file, user, onProgress) {
         let jar = Request.jar();
         let cookie = Request.cookie('sid=' + user.sid);
         Request.defaults({jar});
-
-        RequestProgress(Request(file.url, {jar, rejectUnauthorized: false}), {
+        let headers = {};
+        if(user.isNewApi) {
+            headers['ServerName'] = user.serverName;
+            headers['Authorization'] = [user.id, user.token].join(',');
+        }
+        RequestProgress(Request.get({
+            url: file.url,
+            jar,
+            rejectUnauthorized: false,
+            headers,
+        }), {
             // throttle: 2000,
             // delay: 0,
             // lengthHeader: 'x-transfer-length'

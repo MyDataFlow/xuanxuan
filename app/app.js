@@ -1027,7 +1027,7 @@ class App extends ReadyNotifier {
      */
     downloadFile(file, onProgress) {
         if(!file.path) file.path = this.user.tempPath + file.name;
-        if(!file.url) file.url = this.createFileDownloadLink(file.id, this.user);
+        if(!file.url) file.url = this.createFileDownloadLink(file, this.user);
         return API.downloadFile(file, this.user, onProgress);
     }
 
@@ -1036,8 +1036,8 @@ class App extends ReadyNotifier {
      * @param  {string} fileId
      * @return {string}
      */
-    createFileDownloadLink(fileId) {
-        return API.createFileDownloadLink(fileId, this.user);
+    createFileDownloadLink(file) {
+        return API.createFileDownloadLink(file, this.user);
     }
 
     /**
