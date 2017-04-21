@@ -142,7 +142,7 @@ const SwapUser = React.createClass({
                 let forHoverDelete = key === this.state.forHoverDelete;
                 let rightIcon = null;
                 if(forHoverDelete) {
-                    rightIcon = <DeleteIcon onClick={this._handleDeleteBtnClick.bind(this, key)} color={Theme.color.icon} hoverColor={Theme.color.negative}/>;
+                    rightIcon = <DeleteIcon onClick={this._handleDeleteBtnClick.bind(this, user.identify)} color={Theme.color.icon} hoverColor={Theme.color.negative}/>;
                 } else if(actived) {
                     rightIcon = <CheckIcon color={Theme.color.positive}/>;
                 }
