@@ -28,7 +28,23 @@ http://xuanxuan.chat
 
 ### 服务器端
 
-当前已提供的服务器端（在 `/server` 目录下）是基于 [然之协同](http://git.oschina.net/wwccss/ranzhi) 使用 [php socket](http://php.net/manual/en/book.sockets.php) 方案实现。
+客户端主要通过 `WebSocket` 协议与服务器端进行实时通信，另外还用到了 `https` 协议来从服务器获取配置及上传下载文件。
+
+```
++------------+                 +------------+            +----------------+
+|  Xuanxuan  |---------------->|  Xuanxuan  |----------->|   Rangerteam   |
+|   Client   | WebSocket/Https |   Ser^er   | Http/Https |     Server     |
+|  (PC/Mac)  |<----------------|   (xxd)    |<-----------| (Your Website) |
++------------+                 +------------+            +----------------+
+```
+
+客户端与服务器端 API 参考：[API 文档](http://xuanxuan.chat/page/3.html)。服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
+
+官方默认的服务器使用 `go` 语言实现（简称为 `xxd` 服务），你可以在 [`/server/xxd/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/xxd) 目录下找到源代码。xxd 服务提供了 `WebSocket` 和 `https` 接口供客户端使用。
+
+`xxd` 服务本身并不存储和管理用户资料和消息数据，而是使用应用更为广泛的 http 协议与另一个服务器（简称 `http` 服务）通信。这样你只需要在你自己的网站上开发一系列 `http` 接口即可为你的网站用户启用喧喧。
+
+官方默认提供的 `http` 服务是机遇开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuanxuan.chat/page/2.html)。
 
 这里有一个公开的测试服务器供使用：
 
@@ -40,13 +56,8 @@ http://xuanxuan.chat
 或用户：demo1, demo2, ... demo10
 密码：123456
 ```
+
 注意：测试服务器不能使用传送文件功能。
-
-然之协同服务器端部署参见：http://xuanxuan.chat/page/2.html
-
-服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
-
-服务器端 API 参见：[API 文档](http://xuanxuan.chat/page/2.html)。
 
 ## 开发
 
