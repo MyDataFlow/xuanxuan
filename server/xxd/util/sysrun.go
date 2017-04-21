@@ -11,6 +11,7 @@ package util
 
 import (
 	"flag"
+	"os"
 	"runtime"
 )
 
@@ -39,4 +40,9 @@ func init() {
 
 func GetNumGoroutine() int {
 	return runtime.NumGoroutine()
+}
+
+func Exit(extStr string) {
+	Println(extStr)
+	os.Exit(1)
 }

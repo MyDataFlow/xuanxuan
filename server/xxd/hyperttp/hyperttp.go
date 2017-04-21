@@ -44,6 +44,10 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+		return nil, util.Errorf("request status code:%v", resp.StatusCode)
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError().Println("request body read error:", err)
@@ -52,7 +56,7 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 
 	if len(body) == 0 {
 		util.LogError().Println("request body len is zero")
-		return nil, util.Errorf("request body len is zero")
+		return nil, util.Errorf("%s", "request body len is zero\n")
 	}
 
 	return body, nil

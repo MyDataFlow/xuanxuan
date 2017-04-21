@@ -79,6 +79,10 @@ func IsDir(path string) bool {
 	return false
 }
 
+func FileBaseName(path string) string {
+	return filepath.Base(path)
+}
+
 func Rm(path string) error {
 	err := os.Remove(path)
 	if err != nil {

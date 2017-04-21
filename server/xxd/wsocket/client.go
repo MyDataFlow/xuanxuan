@@ -66,7 +66,9 @@ type ClientRegister struct {
 	retClient chan *Client
 }
 
+// send message struct
 type SendMsg struct {
+	// send ranzhi server name
 	serverName string
 	usersID    []int64
 	message    []byte
@@ -98,7 +100,7 @@ func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) e
 		break
 
 	default:
-		//chatTestMessage(parseData, client)
+		chatTestMessage(parseData, client)
 		break
 	}
 
@@ -209,7 +211,7 @@ func chatLogout(userID int64, client *Client) error {
 
 func transitData(message []byte, userID int64, client *Client) error {
 	if client.userID != userID {
-		return util.Errorf("xxx")
+		return util.Errorf("%s", "user id err")
 	}
 
 	x2cMessage, sendUsers, err := api.TransitData(message, client.serverName)
@@ -268,6 +270,8 @@ func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
+		// 要区分是断线退出还是正常退出
+		//chatLogout(c.userID, c)
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
