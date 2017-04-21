@@ -8,3 +8,4 @@ $lang->chat->cantChat       = '没有发言权限。';
 $lang->chat->needLogin      = '用户没有登录。';
 $lang->chat->notExist       = '会话不存在。';
 $lang->chat->changeRenameTo = '将会话名称更改为';
+$lang->chat->multiChats     = '消息不属于同一个会话。';

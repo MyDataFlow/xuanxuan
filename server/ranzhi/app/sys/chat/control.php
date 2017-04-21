@@ -50,7 +50,7 @@ class chat extends control
      * 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function logout($userID = 0)
     {
@@ -79,7 +79,7 @@ class chat extends control
      * 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function userGetList($userID = 0)
     {
@@ -147,12 +147,15 @@ class chat extends control
 
     /**
      * Keep session active
-     * @return object
+     *
+     * @param  int    $userID 
+     * @access public
+     * @return void
      */
-    public function ping()
+    public function ping($userID = 0)
     {
         $this->response->result = 'success';
-        $this->response->users  = array($this->app->user->id);
+        $this->response->users  = array($userID);
 
         die(helper::jsonEncode($this->response));
     }
@@ -193,7 +196,7 @@ class chat extends control
      * 
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function getList($userID = 0)
     {
@@ -222,7 +225,7 @@ class chat extends control
      * @param  string $gid 
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function members($gid = '', $userID = 0)
     {
@@ -256,7 +259,7 @@ class chat extends control
      * @param  bool   $public    true: the chat is public | false: the chat isn't public.
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function create($gid = '', $name = '', $type = 'group', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
@@ -264,7 +267,7 @@ class chat extends control
 
         if(!$chat)
         { 
-            $chat = $this->chat->create($gid, $name, $type, $members, $subjectID, $public);
+            $chat = $this->chat->create($gid, $name, $type, $members, $subjectID, $public, $userID);
         }
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
@@ -291,7 +294,7 @@ class chat extends control
      * @param  bool   $isAdmin 
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function setAdmin($gid = '', $admins = array(), $isAdmin = true, $userID = 0)
     {
@@ -409,7 +412,7 @@ class chat extends control
      * @param  string $name 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function changeName($gid = '', $name ='', $userID = 0)
     {
@@ -430,7 +433,7 @@ class chat extends control
         }
 
         $chat->name = $name;
-        $chat  = $this->chat->update($chat);
+        $chat  = $this->chat->update($chat, $userID);
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
@@ -445,22 +448,22 @@ class chat extends control
             $this->response->users  = array_keys($users);
             $this->response->data   = $chat;
 
-            $user = zget($users, $userID, '');
-            if($user)
-            {
-                $broadcast = new stdclass();
-                $broadcast->module            = 'chat';
-                $broadcast->method            = 'message';
-                $broadcast->data              = new stdclass();
-                $broadcast->data->cgid        = $gid;
-                $broadcast->data->gid         = md5(uniqid() . microtime() . mt_rand());
-                $broadcast->data->date        = helper::now();
-                $broadcast->data->contentType = 'text';
-                $broadcast->data->user        = $userID;
-                $broadcast->data->type        = 'broadcast';
-                $broadcast->data->content     = (empty($user->realname) ? ('@' . $user->account) : $user->realname) . $this->lang->chat->changeRenameTo . $name;
-                $this->chat->send($userList, $broadcast, true, true);
-            }
+            //$user = zget($users, $userID, '');
+            //if($user)
+            //{
+            //    $broadcast = new stdclass();
+            //    $broadcast->module            = 'chat';
+            //    $broadcast->method            = 'message';
+            //    $broadcast->data              = new stdclass();
+            //    $broadcast->data->cgid        = $gid;
+            //    $broadcast->data->gid         = md5(uniqid() . microtime() . mt_rand());
+            //    $broadcast->data->date        = helper::now();
+            //    $broadcast->data->contentType = 'text';
+            //    $broadcast->data->user        = $userID;
+            //    $broadcast->data->type        = 'broadcast';
+            //    $broadcast->data->content     = (empty($user->realname) ? ('@' . $user->account) : $user->realname) . $this->lang->chat->changeRenameTo . $name;
+            //    $this->chat->send($userList, $broadcast, true, true);
+            //}
         }
 
         die(helper::jsonEncode($this->response));
@@ -473,7 +476,7 @@ class chat extends control
      * @param  string $committers
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function setCommitters($gid = '', $committers = '', $userID = 0)
     {
@@ -494,7 +497,7 @@ class chat extends control
         }
 
         $chat->committers = $committers;
-        $chat  = $this->chat->update($chat);
+        $chat  = $this->chat->update($chat, $userID);
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
@@ -519,7 +522,7 @@ class chat extends control
      * @param  bool   $public true: change a chat to be public | false: change a chat to be not public. 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function changePublic($gid = '', $public = true, $userID = 0)
     {
@@ -540,7 +543,7 @@ class chat extends control
         }
 
         $chat->public = $public ? 1 : 0;
-        $chat  = $this->chat->update($chat);
+        $chat  = $this->chat->update($chat, $userID);
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
@@ -565,7 +568,7 @@ class chat extends control
      * @param  bool   $star true: star a chat | false: cancel star a chat. 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function star($gid = '', $star = true, $userID = 0)
     {
@@ -600,11 +603,11 @@ class chat extends control
      * @param  bool   $hide true: hide a chat | false: display a chat. 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function hide($gid = '', $hide = true, $userID = 0)
     {
-        $chatList = $this->chat->hideChat($gid, $hide);
+        $chatList = $this->chat->hideChat($gid, $hide, $userID);
         if(dao::isError())
         {
             if($hide)
@@ -640,7 +643,7 @@ class chat extends control
      * @param  bool   $join     true: add members to a chat | false: kick members from a chat.
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function addMember($gid = '', $members = array(), $join = true, $userID = 0)
     {
@@ -694,30 +697,37 @@ class chat extends control
      * @param  array  $messages
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function message($messages = array(), $userID = 0)
     {
-        /* Check whether the logon user can send message in chat. */
-        $errors = array();
+        /* Check if the messages belong to the same chat. */
+        $chats = array();
         foreach($messages as $key => $message)
         {
-            $chat = $this->chat->getByGID($message->cgid);
-            
-            if(!$chat)
-            {
-                $error = new stdclass();
-                $error->gid      = $message->cgid;
-                $error->messages = $this->lang->chat->notExist;
+            $chats[$message->cgid] = $message->cgid;
+        }
+        if(count($chats) > 1)
+        {
+            $this->response->result = 'fail';
+            $this->response->data   = $this->lang->chat->multiChats;
 
-                $errors[] = $error;
-                unset($messages[$key]);
+            die(helper::jsonEncode($this->response));
+        }
+        /* Check whether the logon user can send message in chat. */
+        $errors  = array();
+        $message = current($messages);
+        $chat    = $this->chat->getByGID($message->cgid);
+        if(!$chat)
+        {
+            $error = new stdclass();
+            $error->gid      = $message->cgid;
+            $error->messages = $this->lang->chat->notExist;
 
-                continue;
-            }
-
-            if($chat && !$chat->admins) continue;
-            
+            $errors[] = $error;
+        }
+        elseif(!empty($chat->admins))
+        {
             $admins = explode(',', $chat->admins);
             if(!in_array($userID, $admins))
             {
@@ -726,24 +736,7 @@ class chat extends control
                 $error->messages = $this->lang->chat->cantChat;
 
                 $errors[] = $error;
-                unset($messages[$key]);
             }
-        }
-
-        $messageList = $this->chat->createMessage($messages);
-
-        foreach($messageList as $message)
-        {
-            $memberList = $this->chat->getMemberListByGID($message->cgid);
-            $userList   = $this->chat->getUsersToNotify(array_values($memberList));
-
-            $data = new stdclass();
-            $data->module = $this->moduleName;
-            $data->method = $this->methodName;
-            $data->data   = $message;
-
-            /* Add to message queue. */
-            $this->chat->send($userList, $data, false);
         }
 
         if($errors)
@@ -754,6 +747,9 @@ class chat extends control
             die(helper::jsonEncode($this->response));
         }
 
+        /* Create messages. */
+        $messageList = $this->chat->createMessage($messages, $userID);
+        $users       = $this->chat->getUserList($status = 'online', array_values($chat->members));
         if(dao::isError())
         {
             $this->response->result  = 'fail';
@@ -762,6 +758,7 @@ class chat extends control
         else
         {
             $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
             $this->response->data   = $messageList;
         }
 
@@ -778,7 +775,7 @@ class chat extends control
      * @param  bool   $continued
      * @param  int    userID
      * @access public
-     * @return object
+     * @return void
      */
     public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false, $userID = 0)
     {
@@ -825,7 +822,7 @@ class chat extends control
      * @param  string $settings 
      * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
     public function settings($account = '', $settings = '', $userID = 0)
     {
@@ -850,5 +847,50 @@ class chat extends control
         }
 
         die(helper::jsonEncode($this->response));
+    }
+
+    /**
+     * Upload file.
+     * 
+     * @param  string $fileName 
+     * @param  string $path 
+     * @param  int    $size 
+     * @param  int    $time 
+     * @param  string $gid 
+     * @param  int    $userID 
+     * @access public
+     * @return void
+     */
+    public function uploadFile($fileName = '', $path = '', $size = 0, $time = 0, $gid = '', $userID = 0)
+    {
+        $chatID = $this->dao->select('id')->from(TABLE_IM_CHAT)->where('gid')->eq($gid)->fetch('id');
+        
+        $extension = $this->loadModel('file', 'sys')->getExtension($fileName);
+
+        $file = new stdclass(); 
+        $file->pathname    = $path;
+        $file->title       = rtrim($fileName, $extension);
+        $file->extension   = $extension;
+        $file->size        = $size;
+        $file->objectType  = 'chat';
+        $file->objectID    = $chatID;
+        $file->createdBy   = !empty($user->account) ? $user->account : '';
+        $file->createdDate = date(DT_DATETIME1, $time); 
+        
+        $this->dao->insert(TABLE_FILE)->data($file)->exec();
+        
+        if(dao::isError())
+        {
+            $this->response->result  = 'fail';
+            $this->response->message = 'Upload file failed.';
+        }
+        else
+        {
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $file;
+        }
+
+        die(json_encode($this->response));
     }
 }

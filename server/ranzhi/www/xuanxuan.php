@@ -16,11 +16,11 @@ $appName = 'sys';
 $app     = router::createApp($appName);
 $common  = $app->loadCommon();
 
-$key  = '12345678888888888888888888888888';
+$key  = $config->xuanxuan->key;
 $iv   = substr($key, 0, 16);
 $data = file_get_contents("php://input");
 $data = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $data, MCRYPT_MODE_CBC, $iv);
-$data = '{"module":"chat","method":"login","params":["ranzhi", "admin","e10adc3949ba59abbe56e057f20f883e","online"]}';
+//$data = '{"module":"chat","method":"login","params":["ranzhi", "admin","e10adc3949ba59abbe56e057f20f883e","online"]}';
 $data = json_decode($data);
 $userID = !empty($data->userID) ? $data->userID : '';
 $module = !empty($data->module) ? $data->module : '';
