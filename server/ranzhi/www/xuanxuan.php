@@ -2,6 +2,9 @@
 /* Set the error reporting. */
 error_reporting(E_ALL);
 
+/* Start output buffer. */
+//ob_start();
+
 /* Define the run mode as front. */
 define('RUN_MODE', 'front');
 
@@ -15,17 +18,12 @@ include '../framework/helper.class.php';
 $appName = 'sys';
 $app     = router::createApp($appName);
 $common  = $app->loadCommon();
-
-$key  = $config->xuanxuan->key;
-$iv   = substr($key, 0, 16);
-$data = file_get_contents("php://input");
-$data = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $data, MCRYPT_MODE_CBC, $iv);
-//$data = '{"module":"chat","method":"login","params":["ranzhi", "admin","e10adc3949ba59abbe56e057f20f883e","online"]}';
-$data = json_decode($data);
-$userID = !empty($data->userID) ? $data->userID : '';
-$module = !empty($data->module) ? $data->module : '';
-$method = !empty($data->method) ? $data->method : '';
-$params = !empty($data->params) ? $data->params : '';
+$input   = file_get_contents("php://input");
+$input   = $common->decrypt($input);
+$userID  = !empty($input->userID) ? $input->userID : '';
+$module  = !empty($input->module) ? $input->module : '';
+$method  = !empty($input->method) ? $input->method : '';
+$params  = !empty($input->params) ? $input->params : '';
 
 if($module == 'chat' && $method == 'login' && is_array($params))
 {
@@ -39,6 +37,5 @@ if($userID && is_array($params))
 
 if(!$module or !$method) die('Invalid module or method.');
 
-$link = helper::createLink($module, $method, $params);
-
-header("location: $link");
+$link = helper::createLink($module, $method, $params); 
+header("location:$link");
