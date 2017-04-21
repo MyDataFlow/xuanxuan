@@ -219,8 +219,8 @@ class ChatApp extends AppCore {
             });
         });
 
-        app.on(R.event.user_login_finish, (e) => {
-            if(e.result) {
+        app.on(R.event.user_login_message, user => {
+            if(user) {
                 clearTimeout(this.fetchChatListTask);
                 this.fetchChatListTask = setTimeout(() => {
                     this.fetchChatList();
