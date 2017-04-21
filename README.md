@@ -33,7 +33,7 @@ http://xuanxuan.chat
 ```
 +------------+                 +------------+            +----------------+
 |  Xuanxuan  |---------------->|  Xuanxuan  |----------->|   Rangerteam   |
-|   Client   | WebSocket/Https |   Ser^er   | Http/Https |     Server     |
+|   Client   | WebSocket/Https |   Server   | Http/Https |     Server     |
 |  (PC/Mac)  |<----------------|   (xxd)    |<-----------| (Your Website) |
 +------------+                 +------------+            +----------------+
 ```
