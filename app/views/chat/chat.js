@@ -49,6 +49,23 @@ const ChatPage = React.createClass({
         };
     },
 
+    toggleSidebar(expand, width, ignoreState) {
+        let chat = App.chat.dao.getChat(this.props.chatGid);
+        let sidebarConfig = this.sidebarConfig;
+        if(!sidebarConfig) {
+            sidebarConfig = App.user.getConfig(`ui.chat.sidebar.${chat.gid}`, {expand: !chat.isOne2One});
+        }
+        sidebarConfig.expand = expand;
+        if(typeof width === 'number') {
+            sidebarConfig.width = width;
+        }
+        this.sidebarConfig = sidebarConfig;
+        App.user.setConfig(`ui.chat.sidebar.${chat.gid}`, sidebarConfig);
+        if(!ignoreState) {
+            this.setState({sidebar: expand});
+        }
+    },
+
     componentDidMount() {
         let chat = App.chat.dao.getChat(this.props.chatGid);
         let sidebarConfig = App.user.getConfig(`ui.chat.sidebar.${chat.gid}`, {expand: !chat.isOne2One});
@@ -81,7 +98,6 @@ const ChatPage = React.createClass({
                         expand: true
                     };
                     App.user.setConfig(`ui.chat.sidebar.${chat.gid}`, this.sidebarConfig);
-                    this.setState({sidebar: true});
                 }
             });
             if(!sidebarConfig.expand || this.state.smallWindow) {
@@ -347,7 +363,7 @@ const ChatPage = React.createClass({
 
         let sidebarIconButton = null, sidebarStyle = STYLE.sidebar;
         if(!this.state.sidebar || this.state.smallWindow) {
-            if(!this.state.smallWindow) sidebarIconButton = <IconButton className="hint--bottom" data-hint={Lang.chat.openSidebar} onClick={() => this.setState({sidebar: true})}><SidebarIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>;
+            if(!this.state.smallWindow) sidebarIconButton = <IconButton className="hint--bottom" data-hint={Lang.chat.openSidebar} onClick={() => this.toggleSidebar(true)}><SidebarIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>;
             sidebarStyle = Object.assign({}, sidebarStyle, STYLE.sidebarHide);
             if(this.colSpliter) {
                 this.colSpliter.collapse(1);
@@ -413,7 +429,7 @@ const ChatPage = React.createClass({
               <div className='dock-full' style={messageListStyle} ref={e => {this.chatMessageBox = e;}}>{messagesView}</div>
             </div>
             <div className='relative split split-horizontal' ref={(e) => this.sidebarCol = e}>
-              {this.state.sidebar ? <Sidebar style={sidebarStyle} chat={chat} className='dock-full' onCloseButtonClick={() => this.setState({sidebar: false})}/> : null}
+              {this.state.sidebar ? <Sidebar style={sidebarStyle} chat={chat} className='dock-full' onCloseButtonClick={() => {this.toggleSidebar(false);}}/> : null}
             </div>
           </div>
         </div>
