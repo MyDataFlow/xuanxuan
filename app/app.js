@@ -250,6 +250,7 @@ class App extends ReadyNotifier {
                         }
                     }
                 });
+                this.showAndFocusWindow();
                 this.requestAttention(1);
             } else {
                 handleCloseOption(userCloseOption);
