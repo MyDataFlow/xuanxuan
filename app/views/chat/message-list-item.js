@@ -190,15 +190,15 @@ const MessageListItem = React.createClass({
         if(hideAvatar) {
             Object.assign(style, STYLE.noAvatar);
             if(hideTime) {
-                avatarElement = <div className='message-time-dot' style={STYLE.dot} title={dateStr}><small style={{fontSize: '12px'}}>{timeStr}</small></div>;
+                avatarElement = <div className='message-time-dot' style={STYLE.dot} title={dateStr}><small className="message-time-span" data-time={timeStr} style={{fontSize: '12px'}}></small></div>;
             } else {
-                avatarElement = <div className='message-time-side' style={Object.assign({}, STYLE.time, STYLE.leftTime)} title={dateStr}><small>{timeStr}</small></div>;
+                avatarElement = <div className='message-time-side' style={Object.assign({}, STYLE.time, STYLE.leftTime)} title={dateStr}><small className="message-time-span" data-time={timeStr}></small></div>;
             }
         } else {
             if(!message.sender) message.findSender(App.dao);
             let target = message.sender ? 'Member/' + message.sender.id : '#';
             avatarElement = <UserAvatar onContextMenu={this._handleMemberItemContextMenu} size={30} className='link-app message-avatar' data-target={target} user={message.sender} style={STYLE.avatar}/>;
-            headerElement = <div style={STYLE.title}><strong onContextMenu={this._handleMemberItemContextMenu} title={message.sender ? ('@' + message.sender.account) : ''} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
+            headerElement = <div style={STYLE.title}><strong onContextMenu={this._handleMemberItemContextMenu} title={message.sender ? ('@' + message.sender.account) : ''} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
         }
 
         let messageContent = null;
