@@ -264,8 +264,7 @@ const ChatMenu = React.createClass({
                             let theOtherOne = item.getTheOtherOne(App.user);
                             let primaryText = item.getDisplayName(App);
                             if(theOtherOne.isOffline) {
-                                primaryText = <div>{primaryText} <small>{' [离线]'}</small></div>;
-                                itemStyle.opacity = 0.6;
+                                primaryText = <div className="muted">{primaryText} <small>{' [离线]'}</small></div>;
                             }
                             return <ListItem
                                 key={itemKey}
@@ -274,7 +273,7 @@ const ChatMenu = React.createClass({
                                 onContextMenu={this._handleItemContextMenu.bind(this, item)} 
                                 onClick={this._handleItemClick.bind(null, item.gid, item)} 
                                 primaryText={primaryText} 
-                                leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale' : ''}/>}
+                                leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale muted' : ''}/>}
                                 rightIcon={rightIcon}
                             >{starItem}</ListItem>;
                         } else {
