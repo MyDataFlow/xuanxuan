@@ -3,7 +3,6 @@ import Theme               from 'Theme';
 import List                from 'material-ui/List/List';
 import ListDivider         from 'material-ui/Divider';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
-import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import VisibilityOffIcon   from 'material-ui/svg-icons/action/visibility-off';
 import ChevronRightIcon    from 'material-ui/svg-icons/navigation/chevron-right';
 import CloudDownloadIcon   from 'material-ui/svg-icons/file/cloud-download';
@@ -175,8 +174,6 @@ const ChatsManager = React.createClass({
                 zIndex: 9
             },
             headerIcon: {
-              color: Theme.color.icon,
-              fill: Theme.color.icon,
               position: 'absolute',
               left: 15,
               top: 12
@@ -234,7 +231,7 @@ const ChatsManager = React.createClass({
                         let theOtherOne = item.getTheOtherOne(App.user);
                         return <ListItem key={item.gid} actived={actived} onClick={this._handleChatItemClick.bind(null, item)} primaryText={item.getDisplayName(App)} leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar}/>}/>;
                     } else {
-                        return <ListItem key={item.gid} actived={actived} onClick={this._handleChatItemClick.bind(null, item)} primaryText={item.getDisplayName(App)} leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <PersonOutlineIcon color={Colors.lightBlue500}/>}/>;
+                        return <ListItem key={item.gid} actived={actived} onClick={this._handleChatItemClick.bind(null, item)} primaryText={item.getDisplayName(App)} leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <ChatsIcon color={Colors.lightBlue500}/>}/>;
                     }
                 })
             }
@@ -272,7 +269,7 @@ const ChatsManager = React.createClass({
         let headerView = null;
         if(this.state.chat) {
             let chat = this.state.chat;
-            let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.public ? <ChatsIcon style={STYLE.headerIcon}/> : <PersonOutlineIcon style={STYLE.headerIcon}/>;
+            let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.isSystem ? <ComtentTextIcon color={Colors.indigo500} style={STYLE.headerIcon}/> : chat.public ? <PoundIcon color={Colors.lightGreen700} style={STYLE.headerIcon}/> : <ChatsIcon color={Colors.lightBlue500} style={STYLE.headerIcon}/>;
             let theOtherOne = chat.getTheOtherOne(App.user);
             let chatTitle = chat.getDisplayName(App);
 

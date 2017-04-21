@@ -20,3 +20,13 @@
   .message-avatar, .message-time-dot, .message-time-side {display: none!important}
   .message-title {color: @primary1Color!important}
 }
+
+.animate-enable .message-new {
+  .emojione-hd .emojione {
+    .animate-floating-up();
+  }
+
+  > .text-content {
+    .animate-slide-up();
+  }
+}

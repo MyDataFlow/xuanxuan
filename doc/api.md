@@ -8,7 +8,7 @@ rzs：后台然之服务器
 常见的请求对象格式
 ```json
 {
-	userID，// 用户id，xxd -> rzs 非登录时必须
+    userID, // 用户id，xxd -> rzs 非登录时必须
     module, // 模块名称,必须
     method, // 方法名称,必须
     test,   // 可选参数，bool,默认为false。
@@ -75,7 +75,7 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
 #### 方向：client --> xxd
 ```json
 {
-    userID,              //登出用户的id号
+    userID, //登出用户的id号
     module: 'chat',
     method: 'logout',
 }
@@ -124,7 +124,7 @@ xxd把client发送的数据转发给rzs。
 #### 方向： client --> xxd
 ```json
 {
-    userID,                     //用户的id号
+    userID, //用户的id号
     module: 'chat',
     method: 'userGetlist'
 }
@@ -164,7 +164,7 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID,
+    userID,
     module: 'chat',
     method: 'getList',
 }
@@ -217,7 +217,7 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID,
+    userID,
     module: 'chat',
     method: 'userChange',
     params:
@@ -264,8 +264,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'create',
     params:
     {
@@ -319,8 +319,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'joinchat',
     params: 
     {
@@ -368,8 +368,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'changename',
     params:
     {
@@ -417,8 +417,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'star',
     params: 
     {
@@ -454,8 +454,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'addmember',
     params: 
     {
@@ -506,8 +506,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'message',
     params: 
     [        // 一个包含一条或多条新消息的数组
@@ -561,8 +561,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'history',
     params: 
     {
@@ -598,8 +598,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'members',
     params:
     {
@@ -643,8 +643,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'hide',
     params: 
     {
@@ -680,8 +680,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'changepublic',
     params: 
     {
@@ -727,8 +727,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'getPublicList'
 }
 ```
@@ -771,8 +771,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'attach',
+    userID,
+    module: 'attach',
     method: 'getList',
     params: 
     {
@@ -811,8 +811,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'setAdmin',
     params: 
     {
@@ -860,8 +860,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'setCommitters',
     params: 
     {
@@ -906,8 +906,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：client --> xxd
 ```json
 {
-	userID，
-	module: 'chat',
+    userID,
+    module: 'chat',
     method: 'settings',
     params: 
     {

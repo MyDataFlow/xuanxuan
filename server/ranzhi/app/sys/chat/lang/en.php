@@ -8,3 +8,4 @@ $lang->chat->cantChat       = 'No rights to chat.';
 $lang->chat->needLogin      = 'You need login first.';
 $lang->chat->notExist       = 'Chat do not exist.';
 $lang->chat->changeRenameTo = 'Rename chat to ';
+$lang->chat->multiChats     = 'Messages belong to different chats.';

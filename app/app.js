@@ -215,6 +215,7 @@ class App extends ReadyNotifier {
 
         this.event.ipc.on(R.event.app_main_window_close, () => {
             if(this.user.isUnverified) {
+                this.quit();
                 return;
             }
             let userCloseOption = this.user.getConfig('ui.app.onClose', 'ask');
@@ -225,9 +226,7 @@ class App extends ReadyNotifier {
                 } else {
                     this.browserWindow.hide();
                     if(DEBUG) console.error('WINDOW CLOSE...');
-                    setTimeout(() => {
-                        this.quit();
-                    }, 2000);
+                    this.quit();
                 }
             };
             if(userCloseOption !== 'close' && userCloseOption !== 'minimize') {
@@ -251,10 +250,15 @@ class App extends ReadyNotifier {
                         }
                     }
                 });
+                this.showAndFocusWindow();
                 this.requestAttention(1);
             } else {
                 handleCloseOption(userCloseOption);
             }
+        });
+
+        this.event.ipc.on(R.event.app_quit, () => {
+            this.quit();
         });
 
         this.on(R.event.user_config_change, (user) => {
@@ -1078,10 +1082,13 @@ class App extends ReadyNotifier {
      * Quit application
      */
     quit() {
+        this.logout();
         if(this.saveUserTimerTask) {
             this.saveUser();
         }
-        this.remote('quit');
+        setTimeout(() => {
+            this.remote('quit');
+        }, 1500);
     }
 }
 

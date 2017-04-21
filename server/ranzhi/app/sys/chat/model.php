@@ -23,16 +23,18 @@ class chatModel extends model
     /**
      * Get user list. 
      * 
-     * @param  array  $idList 
+     * @param  string $status
+     * @param  array  $idList
      * @access public
      * @return array
      */
-    public function getUserList($idList = array())
+    public function getUserList($status = '', $idList = array())
     {
         $userList = $this->dao->select('id, realname, avatar, status, admin, account, role, dept, gender, email, mobile, phone, site')
             ->from(TABLE_USER)->where('deleted')->eq('0')
+            ->beginIF($status)->andWhere('status')->eq($status)->fi()
             ->beginIF($idList)->andWhere('id')->in($idList)->fi()
-            ->fetchAll();
+            ->fetchAll('id');
 
         foreach($userList as $user) 
         {
@@ -56,7 +58,7 @@ class chatModel extends model
         $userList = $this->dao->select('id, status')
             ->from(TABLE_USER)->where('deleted')->eq('0')
             ->andWhere('id')->in($idList)
-            ->fetchAll();
+            ->fetchAll('id');
 
         return $userList;
     }
@@ -70,7 +72,7 @@ class chatModel extends model
      */
     public function editUser($user = null)
     {
-        if(!isset($user->id)) $user->id = $this->session->user->id;
+        if(empty($user->id)) return null;
         $this->dao->update(TABLE_USER)->data($user)->where('id')->eq($user->id)->exec();
         return $this->getUserByUserID($user->id);
     }
@@ -185,15 +187,13 @@ class chatModel extends model
     /**
      * Get chat list by userID.  
      * 
-     * $param  int    $userID
-     * $param  bool   $star
+     * @param  int    $userID
+     * @param  bool   $star
      * @access public
      * @return array
      */
     public function getListByUserID($userID = 0, $star = false)
     {
-        if(!$userID) $userID = $this->session->user->id;
-
         $systemChat = $this->dao->select('*, 0 as star, 0 as hide, 0 as mute')
             ->from(TABLE_IM_CHAT)
             ->where('type')->eq('system')
@@ -229,7 +229,7 @@ class chatModel extends model
      * Get a chat by gid.  
      * 
      * @param  string $gid 
-     * $param  bool   $members
+     * @param  bool   $members
      * @access public
      * @return object 
      */
@@ -260,18 +260,21 @@ class chatModel extends model
      * @param  string $type 
      * @param  array  $members 
      * @param  int    $subjectID 
-     * $param  bool   $public
+     * @param  bool   $public
+     * @param  int    $userID
      * @access public
      * @return object 
      */
-    public function create($gid = '', $name = '', $type = '', $members = array(), $subjectID = 0, $public = false)
+    public function create($gid = '', $name = '', $type = '', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
+        $user = $this->getUserByUserID($userID);
+
         $chat = new stdclass();
         $chat->gid         = $gid;
         $chat->name        = $name;
         $chat->type        = $type;
         $chat->subject     = $subjectID;
-        $chat->createdBy   = $this->session->user->account;
+        $chat->createdBy   = $user->account;
         $chat->createdDate = helper::now();
 
         if($public) $chat->public = 1;
@@ -291,14 +294,16 @@ class chatModel extends model
      * Update a chat. 
      * 
      * @param  object $chat
+     * @param  int    $userID
      * @access public
      * @return object
      */
-    public function update($chat = null)
+    public function update($chat = null, $userID = 0)
     {
         if($chat)
         {
-            $chat->editedBy   = $this->session->user->account;
+            $user = $this->getUserByUserID($userID);
+            $chat->editedBy   = $user->account;
             $chat->editedDate = helper::now();
             $this->dao->update(TABLE_IM_CHAT)->data($chat)->where('gid')->eq($chat->gid)->batchCheck($this->config->chat->require->edit, 'notempty')->exec();
         }
@@ -343,13 +348,12 @@ class chatModel extends model
      * 
      * @param  string $gid 
      * @param  bool   $star 
+     * @param  int    $userID
      * @access public
      * @return object 
      */
-    public function starChat($gid = '', $star = true)
+    public function starChat($gid = '', $star = true, $userID = 0)
     {
-        $userID = $this->session->user->id;
-
         $this->dao->update(TABLE_IM_CHATUSER)
             ->set('star')->eq($star)
             ->where('cgid')->eq($gid)
@@ -364,15 +368,16 @@ class chatModel extends model
      * 
      * @param  string $gid 
      * @param  bool   $hide 
+     * @param  int    $userID
      * @access public
      * @return bool 
      */
-    public function hideChat($gid = '', $hide = true)
+    public function hideChat($gid = '', $hide = true, $userID = 0)
     {
         $this->dao->update(TABLE_IM_CHATUSER)
             ->set('hide')->eq($hide)
             ->where('cgid')->eq($gid)
-            ->andWhere('user')->eq($this->session->user->id)
+            ->andWhere('user')->eq($userID)
             ->exec();
 
         return !dao::isError();
@@ -389,8 +394,6 @@ class chatModel extends model
      */
     public function joinChat($gid = '', $userID = 0, $join = true)
     {
-        if(!$userID) $userID = $this->session->user->id;
-
         if($join)
         {
             /* Join chat. */
@@ -433,10 +436,11 @@ class chatModel extends model
      * Create messages.  
      * 
      * @param  array  $messageList 
+     * @param  int    $userID
      * @access public
      * @return array 
      */
-    public function createMessage($messageList = array())
+    public function createMessage($messageList = array(), $userID = 0)
     {
         $idList   = array();
         $chatList = array();
@@ -450,7 +454,7 @@ class chatModel extends model
             }
             elseif(!$msg)
             {
-                if(!(isset($message->user) && $message->user)) $message->user = $this->session->user->id;
+                if(!(isset($message->user) && $message->user)) $message->user = $userID;
                 if(!(isset($message->date) && $message->date)) $message->date = helper::now();
                 
                 $this->dao->insert(TABLE_IM_MESSAGE)->data($message)->exec();

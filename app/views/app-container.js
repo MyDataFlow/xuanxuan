@@ -74,7 +74,7 @@ const AppContainer = React.createClass({
         let appStyle = Object.assign({left: this.state.login ? '100%' : 0}, STYLE.app);
 
         return (
-          <div id="app" className="dock-full" style={appStyle}>
+          <div id="app" className={"dock-full" + (App.user.getConfig('ui.animate.enable') ? ' animate-enable' : '')} style={appStyle}>
             <Navbar id='navbar'/>
             <PageContianer />
             <Login id="login"/>

@@ -1,6 +1,15 @@
 <?php
 class chat extends control
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->response = new stdclass();
+        $this->response->module = $this->moduleName;
+        $this->response->method = $this->methodName;
+    }
+
     /**
      * Login.  
      * 
@@ -15,298 +24,216 @@ class chat extends control
         $password = md5($password . $account);
         $user     = $this->loadModel('user')->identify($account, $password);
 
-        $response = new stdclass();
         if($user) 
         {
-            $data = new stdclass();
-            $data->id     = $user->id;
-            $data->status = $status;
+            $user->status = $status;
+            $user = $this->chat->editUser($user);
 
-            $loginUser = $this->chat->editUser($data);
-
-            $user->rights = $this->user->authorize($user);
-            /* Save to session. */
-            $this->session->set('user', $user);
-            $this->loadModel('action')->create('user', $user->id, 'login', '', 'xuanxuan', $user->account);
+            $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
             
-            /* Push the logined user to all online users. */
-            $data = new stdclass();
-            $data->module = $this->moduleName;
-            $data->method = $this->methodName;
-            $data->data   = $loginUser;
-
-            $userList = $this->chat->getUserList();
-            
-            $this->chat->send($userList, $data);
-
-            /* Push all users to the logined user. */
-            $data->level  = 0;
-            $data->method = 'userGetlist';
-            $data->data   = $userList;
-            $this->chat->send(array($loginUser), $data, true, true);
-
-            /* Push chat list to the logined user. */
-            $chatList = $this->chat->getListByUserID($user->id);
-            if($chatList)
-            {
-                foreach($chatList as $chat)
-                {
-                    $chat->members = $this->chat->getMemberListByGID($chat->gid);
-                }
-
-                $data->level  = 1;
-                $data->method = 'getList';
-                $data->data   = $chatList;
-                $this->chat->send(array($loginUser), $data, true, true);
-            }
-
-            $response->result = 'success';
-            $response->data   = $loginUser;
+            $userList = $this->chat->getUserList($status = 'online');
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($userList);
+            $this->response->data   = $user;
         }
         else
         {
-            $response->result = 'fail';
-            $response->data   = $this->lang->user->loginFailed;
+            $this->response->result = 'fail';
+            $this->response->data   = $this->lang->user->loginFailed;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Logout. 
      * 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function logout()
+    public function logout($userID = 0)
     {
         $user = new stdclass();
+        $user->id     = $userID;
         $user->status = 'offline';
 
         $user     = $this->chat->editUser($user);
-        $userList = $this->chat->getUserList();
-            
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $user;
+        $userList = $this->chat->getUserList($status = 'online');
 
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $this->loadModel('action')->create('user', $userID, 'logoutXuanxuan', '', 'xuanxuan', $user->account);
 
-        $response = new stdclass();
-        $response->result = 'success';
-        $response->data   = $user;
+        $this->response->result = 'success';
+        $this->response->users  = array_keys($userList);
+        $this->response->data   = $user;
 
-        if(isset($this->session->user->id)) $this->loadModel('action')->create('user', $this->session->user->id, 'logout', '', 'xuanxuan', $user->account);
         session_destroy();
         setcookie('za', false);
         setcookie('zp', false);
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Get user list.  
      * 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function userGetList()
+    public function userGetList($userID = 0)
     {
         $userList = $this->chat->getUserList();
 
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Get userlist failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Get userlist failed.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $userList;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $userList;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
-     * Change name of a user. 
+     * Change a user. 
      * 
      * @param  string $name 
+     * @param  string $name 
+     * @param  string $account 
+     * @param  string $realname 
+     * @param  string $avatar 
+     * @param  string $role 
+     * @param  string $dept 
+     * @param  string $status 
+     * @param  int    $userID 
      * @access public
-     * @return object
+     * @return void
      */
-    public function userChangeName($name = '')
+    public function userChange($name = '', $account = '', $realname = '', $avatar = '', $role = '', $dept = '', $status = '', $userID = 0)
     {
         $user = new stdclass();
-        $user->realname = $name;
+        $user->id       = $userID;
+        $user->name     = $name;
+        $user->account  = $account;
+        $user->realname = $realname;
+        $user->avatar   = $avatar;
+        $user->role     = $role;
+        $user->dept     = $dept;
+        $user->status   = $status;
 
-        $user = $this->chat->editUser($user);
+        $user  = $this->chat->editUser($user);
+        $users = $this->chat->getUserList($status = 'online');
 
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $user;
-
-        $userList = $this->chat->getUserList();
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
-
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Change name failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Change name failed.';
         }
         else
         {
-            $data = new stdclass();
-            $data->id   = $user->id;
-            $data->name = $name;
-
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $user;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Keep session active
-     * @return object
-     */
-    public function ping()
-    {
-        $response = new stdclass();
-        $response->result = 'success';
-
-        return $response;
-    }
-
-    /**
-     * Change status of a user. 
-     * 
-     * @param  string $status   online | away | busy | offline
+     *
+     * @param  int    $userID 
      * @access public
-     * @return object
+     * @return void
      */
-    public function userChangeStatus($status = 'online')
+    public function ping($userID = 0)
     {
-        $user = new stdclass();
-        $user->status = $status;
+        $this->response->result = 'success';
+        $this->response->users  = array($userID);
 
-        $user = $this->chat->editUser($user);
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $user;
-
-        $userList = $this->chat->getUserList();
-        
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
-
-        $response = new stdclass();
-        if(dao::isError())
-        {
-            $response->result  = 'fail';
-            $response->message = 'Change status failed.';
-        }
-        else
-        {
-            $data = new stdclass();
-            $data->id     = (int) $user->id;
-            $data->status = $status;
-
-            $response->result = 'success';
-            $response->data   = $data;
-        }
-
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Get public chat list. 
      * 
      * @param  bool   $public 
+     * @param  int    $userID
      * @access public
      * @return void
      */
-    public function getPublicList($public = true)
+    public function getPublicList($public = true, $userID = 0)
     {
         $chatList = $this->chat->getList($public);
-
         foreach($chatList as $chat) 
         {
             $chat->members = $this->chat->getMemberListByGID($chat->gid);
         }
 
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Get public chat list failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Get public chat list failed.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $chatList;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $chatList;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Get chat list of a user.  
      * 
-     * $param  int    $userID
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
     public function getList($userID = 0)
     {
         $chatList = $this->chat->getListByUserID($userID);
-
         foreach($chatList as $chat) 
         {
             $chat->members = $this->chat->getMemberListByGID($chat->gid);
         }
-
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Get chat list failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Get chat list failed.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $chatList;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $chatList;
         }
-
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Get members of a chat. 
      * 
      * @param  string $gid 
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
-    public function members($gid = '')
+    public function members($gid = '', $userID = 0)
     {
         $memberList = $this->chat->getMemberListByGID($gid);
-
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Get member list failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Get member list failed.';
         }
         else
         {
@@ -314,11 +241,11 @@ class chat extends control
             $data->gid     = $gid;
             $data->members = $memberList;
 
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $data;
         }
-
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -329,42 +256,34 @@ class chat extends control
      * @param  string $type 
      * @param  array  $members 
      * @param  int    $subjectID 
-     * $param  bool   $public    true: the chat is public | false: the chat isn't public.
+     * @param  bool   $public    true: the chat is public | false: the chat isn't public.
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
-    public function create($gid = '', $name = '', $type = 'group', $members = array(), $subjectID = 0, $public = false)
+    public function create($gid = '', $name = '', $type = 'group', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
         $chat = $this->chat->getByGID($gid, true);
 
         if(!$chat)
         { 
-            $chat = $this->chat->create($gid, $name, $type, $members, $subjectID, $public);
-
-            $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-    
-            $data = new stdclass();
-            $data->module = $this->moduleName;
-            $data->method = $this->methodName;
-            $data->data   = $chat;
-    
-            /* Add to message queue. */
-            $this->chat->send($userList, $data);
+            $chat = $this->chat->create($gid, $name, $type, $members, $subjectID, $public, $userID);
         }
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Create chat fail.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Create chat fail.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $chat;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $chat;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -373,109 +292,94 @@ class chat extends control
      * @param  string $gid 
      * @param  array  $admins 
      * @param  bool   $isAdmin 
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
-    public function setAdmin($gid = '', $admins = array(), $isAdmin = true)
+    public function setAdmin($gid = '', $admins = array(), $isAdmin = true, $userID = 0)
     {
-        $response = new stdclass();
-        if($this->session->user->admin != 'super')
+        $user = $this->chat->getUserByUserID($userID);
+        if($user->admin != 'super')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notAdmin;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notAdmin;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notExist;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notExist;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
         if($chat->type != 'system')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notSystemChat;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notSystemChat;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
-        $chat = $this->chat->setAdmin($gid, $admins, $isAdmin);
-
-        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $chat;
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $chat  = $this->chat->setAdmin($gid, $admins, $isAdmin);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Set admin failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Set admin failed.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $chat;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $chat;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Join or quit a chat. 
      * 
      * @param  string $gid 
-     * $param  bool   $join   true: join a chat | false: quit a chat.
+     * @param  bool   $join   true: join a chat | false: quit a chat.
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void 
      */
-    public function joinChat($gid = '', $join = true)
+    public function joinChat($gid = '', $join = true, $userID = 0)
     {
-        $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notExist;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notExist;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
         if($chat->type != 'group')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notGroupChat;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notGroupChat;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
         if($join && $chat->public == '0')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notPublic;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notPublic;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
-        $this->chat->joinChat($gid, $this->session->user->id, $join);
+        $this->chat->joinChat($gid, $userID, $join);
 
-        $chat = $this->chat->getByGID($gid, true);
-        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $chat;
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $chat  = $this->chat->getByGID($gid, true);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
@@ -488,21 +392,17 @@ class chat extends control
                 $message = 'Quit chat failed.';
             }
 
-            $response->result  = 'fail';
-            $response->message = $message;
+            $this->response->result  = 'fail';
+            $this->response->message = $message;
         }
         else
         {
-            $data = new stdclass();
-            $data->gid  = $gid;
-            $data->join = $join;
-            $data->chat = $chat;
-
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $chat;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -510,70 +410,63 @@ class chat extends control
      * 
      * @param  string $gid 
      * @param  string $name 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function changeName($gid = '', $name ='')
+    public function changeName($gid = '', $name ='', $userID = 0)
     {
-        $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notExist;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notExist;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
         if($chat->type != 'group' && $chat->type != 'system')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notGroupChat;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notGroupChat;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
         $chat->name = $name;
-        $chat = $this->chat->update($chat);
-
-        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $chat;
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $chat  = $this->chat->update($chat, $userID);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Change name failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Change name failed.';
         }
         else
         {
-            $data = new stdclass();
-            $data->gid  = $gid;
-            $data->name = $name;
 
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $chat;
 
-            $broadcast = new stdclass();
-            $broadcast->module              = 'chat';
-            $broadcast->method              = 'message';
-            $broadcast->data                = new stdclass();
-            $broadcast->data->cgid          = $gid;
-            $broadcast->data->gid           = md5(uniqid() . microtime() . mt_rand());
-            $broadcast->data->date          = helper::now();
-            $broadcast->data->contentType   = 'text';
-            $broadcast->data->user          = $this->session->user->id;
-            $broadcast->data->type          = 'broadcast';
-            $broadcast->data->content       = (empty($this->session->user->realname) ? ('@' . $this->session->user->account) : $this->session->user->realname) . $this->lang->chat->changeRenameTo . $name;
-            $this->chat->send($userList, $broadcast, true, true);
+            //$user = zget($users, $userID, '');
+            //if($user)
+            //{
+            //    $broadcast = new stdclass();
+            //    $broadcast->module            = 'chat';
+            //    $broadcast->method            = 'message';
+            //    $broadcast->data              = new stdclass();
+            //    $broadcast->data->cgid        = $gid;
+            //    $broadcast->data->gid         = md5(uniqid() . microtime() . mt_rand());
+            //    $broadcast->data->date        = helper::now();
+            //    $broadcast->data->contentType = 'text';
+            //    $broadcast->data->user        = $userID;
+            //    $broadcast->data->type        = 'broadcast';
+            //    $broadcast->data->content     = (empty($user->realname) ? ('@' . $user->account) : $user->realname) . $this->lang->chat->changeRenameTo . $name;
+            //    $this->chat->send($userList, $broadcast, true, true);
+            //}
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -581,57 +474,45 @@ class chat extends control
      * 
      * @param  string $gid 
      * @param  string $committers
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function setCommitters($gid = '', $committers = '')
+    public function setCommitters($gid = '', $committers = '', $userID = 0)
     {
-        $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notExist;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notExist;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
         if($chat->type != 'group' && $chat->type != 'system')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notGroupChat;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notGroupChat;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
         $chat->committers = $committers;
-        $chat = $this->chat->update($chat);
-
-        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $chat;
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $chat  = $this->chat->update($chat, $userID);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Set committers failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Set committers failed.';
         }
         else
         {
-            $data = new stdclass();
-            $data->gid       = $gid;
-            $data->committers = $committers;
-
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $chat;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
     
     /**
@@ -639,57 +520,45 @@ class chat extends control
      * 
      * @param  string $gid 
      * @param  bool   $public true: change a chat to be public | false: change a chat to be not public. 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function changePublic($gid = '', $public = true)
+    public function changePublic($gid = '', $public = true, $userID = 0)
     {
-        $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notExist;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notExist;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
         if($chat->type != 'group')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notGroupChat;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notGroupChat;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
         $chat->public = $public ? 1 : 0;
-        $chat = $this->chat->update($chat);
-
-        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $chat;
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $chat  = $this->chat->update($chat, $userID);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Change public failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Change public failed.';
         }
         else
         {
-            $data = new stdclass();
-            $data->gid    = $gid;
-            $data->public = $public;
-
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $data;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
     
     /**
@@ -697,14 +566,13 @@ class chat extends control
      * 
      * @param  string $gid 
      * @param  bool   $star true: star a chat | false: cancel star a chat. 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function star($gid = '', $star = true)
+    public function star($gid = '', $star = true, $userID = 0)
     {
-        $chatList = $this->chat->starChat($gid, $star);
-
-        $response = new stdclass();
+        $chat = $this->chat->starChat($gid, $star, $userID);
         if(dao::isError())
         {
             if($star)
@@ -716,20 +584,16 @@ class chat extends control
                 $message = 'Cancel star chat failed';
             }
 
-            $response->result  = 'fail';
-            $response->message = $message;
+            $this->response->result  = 'fail';
+            $this->response->message = $message;
         }
         else
         {
-            $data = new stdclass();
-            $data->gid = $gid;
-            $data->star = $star;
-
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $chat;
         }
-
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -737,14 +601,13 @@ class chat extends control
      * 
      * @param  string $gid 
      * @param  bool   $hide true: hide a chat | false: display a chat. 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function hide($gid = '', $hide = true)
+    public function hide($gid = '', $hide = true, $userID = 0)
     {
-        $chatList = $this->chat->hideChat($gid, $hide);
-
-        $response = new stdclass();
+        $chatList = $this->chat->hideChat($gid, $hide, $userID);
         if(dao::isError())
         {
             if($hide)
@@ -756,8 +619,8 @@ class chat extends control
                 $message = 'Display chat failed.';
             }
 
-            $response->result  = 'fail';
-            $response->message = $message;
+            $this->response->result  = 'fail';
+            $this->response->message = $message;
         }
         else
         {
@@ -765,11 +628,11 @@ class chat extends control
             $data->gid  = $gid;
             $data->hide = $hide;
 
-            $response->result = 'success';
-            $response->data   = $data;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $data;
         }
-
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -777,41 +640,33 @@ class chat extends control
      * 
      * @param  string $gid 
      * @param  array  $members  
-     * $param  bool   $join     true: add members to a chat | false: kick members from a chat.
+     * @param  bool   $join     true: add members to a chat | false: kick members from a chat.
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
-    public function addMember($gid = '', $members = array(), $join = true)
+    public function addMember($gid = '', $members = array(), $join = true, $userID = 0)
     {
-        $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
         if(!$chat)
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notExist;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notExist;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
         if($chat->type != 'group')
         {
-            $response->result  = 'fail';
-            $response->message = $this->lang->chat->notGroupChat;
+            $this->response->result  = 'fail';
+            $this->response->message = $this->lang->chat->notGroupChat;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
         foreach($members as $member) $this->chat->joinChat($gid, $member, $join);
 
         $chat->members = $this->chat->getMemberListByGID($gid);
-        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
-
-        $data = new stdclass();
-        $data->module = $this->moduleName;
-        $data->method = $this->methodName;
-        $data->data   = $chat;
-
-        /* Add to message queue. */
-        $this->chat->send($userList, $data);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
@@ -824,96 +679,90 @@ class chat extends control
                 $message = 'Kick member failed.';
             }
 
-            $response->result  = 'fail';
-            $response->message = $message;
+            $this->response->result  = 'fail';
+            $this->response->message = $message;
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $chat;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $chat;
         }
-
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
      * Send message to a chat.
      * 
      * @param  array  $messages
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return void 
      */
-    public function message($messages = array())
+    public function message($messages = array(), $userID = 0)
     {
-        /* Check whether the logon user can send message in chat. */
-        $errors = array();
+        /* Check if the messages belong to the same chat. */
+        $chats = array();
         foreach($messages as $key => $message)
         {
-            $chat = $this->chat->getByGID($message->cgid);
-            
-            if(!$chat)
-            {
-                $error = new stdclass();
-                $error->gid      = $message->cgid;
-                $error->messages = $this->lang->chat->notExist;
+            $chats[$message->cgid] = $message->cgid;
+        }
+        if(count($chats) > 1)
+        {
+            $this->response->result = 'fail';
+            $this->response->data   = $this->lang->chat->multiChats;
 
-                $errors[] = $error;
-                unset($messages[$key]);
+            die(helper::jsonEncode($this->response));
+        }
+        /* Check whether the logon user can send message in chat. */
+        $errors  = array();
+        $message = current($messages);
+        $chat    = $this->chat->getByGID($message->cgid);
+        if(!$chat)
+        {
+            $error = new stdclass();
+            $error->gid      = $message->cgid;
+            $error->messages = $this->lang->chat->notExist;
 
-                continue;
-            }
-
-            if($chat && !$chat->admins) continue;
-            
+            $errors[] = $error;
+        }
+        elseif(!empty($chat->admins))
+        {
             $admins = explode(',', $chat->admins);
-            if(!in_array($this->session->user->id, $admins))
+            if(!in_array($userID, $admins))
             {
                 $error = new stdclass();
                 $error->gid      = $message->cgid;
                 $error->messages = $this->lang->chat->cantChat;
 
                 $errors[] = $error;
-                unset($messages[$key]);
             }
         }
 
-        $messageList = $this->chat->createMessage($messages);
-
-        foreach($messageList as $message)
-        {
-            $memberList = $this->chat->getMemberListByGID($message->cgid);
-            $userList   = $this->chat->getUsersToNotify(array_values($memberList));
-
-            $data = new stdclass();
-            $data->module = $this->moduleName;
-            $data->method = $this->methodName;
-            $data->data   = $message;
-
-            /* Add to message queue. */
-            $this->chat->send($userList, $data, false);
-        }
-
-        $response = new stdclass();
         if($errors)
         {
-            $response->result = 'fail';
-            $response->data   = $errors;
+            $this->response->result = 'fail';
+            $this->response->data   = $errors;
 
-            return $response;
+            die(helper::jsonEncode($this->response));
         }
 
+        /* Create messages. */
+        $messageList = $this->chat->createMessage($messages, $userID);
+        $users       = $this->chat->getUserList($status = 'online', array_values($chat->members));
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Send message failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Send message failed.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $messageList;
+            $this->response->result = 'success';
+            $this->response->users  = array_keys($users);
+            $this->response->data   = $messageList;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -923,10 +772,12 @@ class chat extends control
      * @param  int    $recPerPage 
      * @param  int    $pageID 
      * @param  int    $recTotal 
+     * @param  bool   $continued
+     * @param  int    userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false)
+    public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false, $userID = 0)
     {
         $this->app->loadClass('pager', $static = true);
         $pager = new pager($recTotal, $recPerPage, $pageID);
@@ -940,16 +791,16 @@ class chat extends control
             $messageList = $this->chat->getMessageList($idList = array(), $pager);
         }
 
-        $response = new stdclass();
         if(dao::isError())
         {
-            $response->result  = 'fail';
-            $response->message = 'Get history failed.';
+            $this->response->result  = 'fail';
+            $this->response->message = 'Get history failed.';
         }
         else
         {
-            $response->result = 'success';
-            $response->data   = $messageList;
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $messageList;
 
             $pagerData = new stdclass();
             $pagerData->recPerPage = $pager->recPerPage;
@@ -958,10 +809,10 @@ class chat extends control
             $pagerData->gid        = $gid;
             $pagerData->continued  = $continued;
 
-            $response->pager = $pagerData;
+            $this->response->pager = $pagerData;
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
     }
 
     /**
@@ -969,31 +820,77 @@ class chat extends control
      * 
      * @param  string $account 
      * @param  string $settings 
+     * @param  int    $userID
      * @access public
-     * @return object
+     * @return void
      */
-    public function settings($account = '', $settings = '')
+    public function settings($account = '', $settings = '', $userID = 0)
     {
         if($settings)
         {
             $this->loadModel('setting')->setItem("system.sys.chat.settings.$account", $settings);
         }
 
-        $response = new stdclass();
-        if(!dao::isError())
+        if(dao::isError())
         {
-            $response->result = 'success';
-            if(!$settings)
-            {
-                $response->data = $this->config->chat->settings->$account;
-            }
+            $this->response->result  = 'fail';
+            $this->response->message = 'Save settings failed.';
         }
         else
         {
-            $response->result  = 'fail';
-            $response->message = 'Save settings failed.';
+            $this->response->result = 'success';
+            $this->response->userID = array($userID);
+            if(!$settings)
+            {
+                $this->response->data = $this->config->chat->settings->$account;
+            }
         }
 
-        return $response;
+        die(helper::jsonEncode($this->response));
+    }
+
+    /**
+     * Upload file.
+     * 
+     * @param  string $fileName 
+     * @param  string $path 
+     * @param  int    $size 
+     * @param  int    $time 
+     * @param  string $gid 
+     * @param  int    $userID 
+     * @access public
+     * @return void
+     */
+    public function uploadFile($fileName = '', $path = '', $size = 0, $time = 0, $gid = '', $userID = 0)
+    {
+        $chatID = $this->dao->select('id')->from(TABLE_IM_CHAT)->where('gid')->eq($gid)->fetch('id');
+        
+        $extension = $this->loadModel('file', 'sys')->getExtension($fileName);
+
+        $file = new stdclass(); 
+        $file->pathname    = $path;
+        $file->title       = rtrim($fileName, $extension);
+        $file->extension   = $extension;
+        $file->size        = $size;
+        $file->objectType  = 'chat';
+        $file->objectID    = $chatID;
+        $file->createdBy   = !empty($user->account) ? $user->account : '';
+        $file->createdDate = date(DT_DATETIME1, $time); 
+        
+        $this->dao->insert(TABLE_FILE)->data($file)->exec();
+        
+        if(dao::isError())
+        {
+            $this->response->result  = 'fail';
+            $this->response->message = 'Upload file failed.';
+        }
+        else
+        {
+            $this->response->result = 'success';
+            $this->response->users  = array($userID);
+            $this->response->data   = $file;
+        }
+
+        die(json_encode($this->response));
     }
 }

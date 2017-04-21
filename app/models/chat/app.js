@@ -275,9 +275,14 @@ class ChatApp extends AppCore {
 
         app.on(R.event.user_login_finish, e => {
             if(e.result) {
+                this.activeChatWindow = App.user.getConfig('ui.chat.activeChat');
                 this.registerGlobalHotKey();
             }
         });
+    }
+
+    get activeChat() {
+        return this.activeChatWindow ? this.dao.getChat(this.activeChatWindow, true, true) : null;
     }
 
     flashTrayIcon() {

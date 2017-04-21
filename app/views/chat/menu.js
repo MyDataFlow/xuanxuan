@@ -7,7 +7,6 @@ import ChatsIcon           from '../icons/comments-outline';
 import ComtentTextIcon     from '../icons/comment-text';
 import PoundIcon           from '../icons/pound-box';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
-import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import VisibilityOffIcon   from 'material-ui/svg-icons/action/visibility-off';
 import StarIcon            from 'material-ui/svg-icons/toggle/star';
 import List                from 'material-ui/List/List';
@@ -288,7 +287,7 @@ const ChatMenu = React.createClass({
                                 onClick={this._handleItemClick.bind(null, item.gid, item)}
                                 primaryText={primaryText}
                                 rightIcon={rightIcon}
-                                leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <PersonOutlineIcon color={Colors.lightBlue500}/>}
+                                leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <ChatsIcon color={Colors.lightBlue500}/>}
                             >{starItem}</ListItem>;
                         }
                     })
