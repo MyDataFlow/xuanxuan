@@ -44,7 +44,7 @@ const ChatMenu = React.createClass({
     },
 
     getInitialState() {
-        let configType = App.user.getConfig('ui.chat.menu.type', 'contacts');
+        let configType = App.user.getConfig('ui.navbar.active', R.ui.navbar_chat);
         return {
             data: {},
             type: MENU_TYPES[configType] || MENU_TYPES.contacts,
@@ -161,12 +161,6 @@ const ChatMenu = React.createClass({
     componentWillUnmount() {
         clearTimeout(this.checkActiveItemTask);
         App.off(this._handleUIChangeEvent, this._handleDataChangeEvent);
-    },
-
-    componentDidUpdate(prevProps, prevState) {
-        if(App.user.getConfig('ui.chat.menu.type', 'recents') != this.state.type) {
-            App.user.setConfig('ui.chat.menu.type', this.state.type);
-        }
     },
 
     render() {
@@ -301,7 +295,7 @@ const ChatMenu = React.createClass({
         return <div className='dock-left' style={style} {...other}>
           <div className='dock-top' style={STYLE.header}>
             <SearchBox className="dock-left" style={{right: focusSearch ? 0 : 40, position: 'absolute', transition: Theme.transition.normal('right')}} onValueChange={this._handleSearchChange} onFocusChange={this._handleSearchFocusChange}/>
-            <IconButton onClick={e => {App.chat.openCreateNewChat();}} className="dock-right hint--bottom-left" data-hint={Lang.chat.newChat} style={{position: 'absolute', transform: focusSearch ? 'scale(0)' : 'scale(1)', opacity: focusSearch ? 0 : 1, transition: Theme.transition.normal('transform', 'opacity')}}><ChatPlusIcon style={{width: 20, height: 20}} color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>
+            <IconButton onClick={e => {App.chat.openCreateNewChat();}} className="dock-right hint--left" data-hint={Lang.chat.newChat} style={{position: 'absolute', transform: focusSearch ? 'scale(0)' : 'scale(1)', opacity: focusSearch ? 0 : 1, transition: Theme.transition.normal('transform', 'opacity')}}><ChatPlusIcon style={{width: 20, height: 20}} color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>
           </div>
           <div className='scroll-y dock-full' style={STYLE.listContainer}>
             {listElements}

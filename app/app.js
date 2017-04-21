@@ -390,7 +390,9 @@ class App extends ReadyNotifier {
      */
     login(user) {
         if(!user) user = this.user;
-        user = User.create(user);
+        if(!(user instanceof User)) {
+            user = this.config.getUser(user);
+        }
         if(user.isNewApi) {
             this.isUserLogining = true;
             this.emit(EVENT.user_login_begin, user);
@@ -424,9 +426,6 @@ class App extends ReadyNotifier {
      * @return {void}
      */
     oldLogin(user) {
-        if(!user) user = this.user;
-        else user = this.resetUser(user);
-
         this.isUserLogining = true;
         this.emit(EVENT.user_login_begin, user);
 

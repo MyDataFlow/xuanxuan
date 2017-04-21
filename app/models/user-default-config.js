@@ -7,7 +7,6 @@ export default {
     'ui.navbar.showRecents': true,
     'ui.navbar.onlyShowNoticeCountOnRecents': true,
     'ui.chat.menu.with': 200,
-    'ui.chat.menu.type': 'recents',
     'ui.chat.sendbox.height': 125,
     'ui.chat.sidebar.width': 300,
     'ui.chat.fontSize': {

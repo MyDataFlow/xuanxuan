@@ -150,7 +150,7 @@ const UserMenu = React.createClass({
 const Navbar = React.createClass({
     getInitialState() {
         return {
-            active: App.user.getConfig('ui.navbar.active', 'chat'),
+            active: App.user.getConfig('ui.navbar.active', R.ui.navbar_chat),
             user: {name: 'Guest', status: 'online'},
             menu: false,
             notice: 0
