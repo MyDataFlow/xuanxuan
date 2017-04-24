@@ -447,9 +447,12 @@ class chatModel extends model
         foreach($messageList as $message)
         {
             $msg = $this->dao->select('*')->from(TABLE_IM_MESSAGE)->where('gid')->eq($message->gid)->fetch();
-            if($msg && ($msg->contentType == 'image' || $msg->contentType == 'file'))
+            if($msg)
             {
-                $this->dao->update(TABLE_IM_MESSAGE)->set('content')->eq($message->content)->where('id')->eq($msg->id)->exec();
+                if($msg->contentType == 'image' || $msg->contentType == 'file')
+                {
+                    $this->dao->update(TABLE_IM_MESSAGE)->set('content')->eq($message->content)->where('id')->eq($msg->id)->exec();
+                }
                 $idList[] = $msg->id;
             }
             elseif(!$msg)

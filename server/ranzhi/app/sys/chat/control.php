@@ -703,7 +703,7 @@ class chat extends control
         /* Check whether the logon user can send message in chat. */
         $errors  = array();
         $message = current($messages);
-        $chat    = $this->chat->getByGID($message->cgid);
+        $chat    = $this->chat->getByGID($message->cgid, $members = true);
         if(!$chat)
         {
             $error = new stdclass();
