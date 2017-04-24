@@ -460,17 +460,20 @@ class Socket extends ReadyNotifier {
         this._emit(EVENT.socket_data, data, flags);
 
         if(!data || !data.length) return;
-        if(((typeof data === 'string') ? data.charCodeAt(data.length - 1) : data[data.length - 1]) !== 10) {
-            if(this._rawData) {
+
+        if(!this.user.isNewApi) {
+            if(((typeof data === 'string') ? data.charCodeAt(data.length - 1) : data[data.length - 1]) !== 10) {
+                if(this._rawData) {
+                    this._rawData.push(data);
+                } else {
+                    this._rawData = [data];
+                }
+                return;
+            } else if(this._rawData) {
                 this._rawData.push(data);
-            } else {
-                this._rawData = [data];
+                data = this._rawData;
+                this._rawData = null;
             }
-            return;
-        } else if(this._rawData) {
-            this._rawData.push(data);
-            data = this._rawData;
-            this._rawData = null;
         }
 
         let msg = SocketMessage.fromJSON(data);
