@@ -301,7 +301,7 @@ class chat extends control
     public function setAdmin($gid = '', $admins = array(), $isAdmin = true, $userID = 0)
     {
         $user = $this->chat->getUserByUserID($userID);
-        if($user->admin != 'super')
+        if(!empty($user->admin) && $user->admin != 'super')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notAdmin;

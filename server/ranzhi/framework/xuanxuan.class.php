@@ -209,6 +209,45 @@ class xuanxuan extends router
     }
 
     /**
+     * 合并请求的参数和默认参数，这样就可以省略已经有默认值的参数了。
+     * Merge the params passed in and the default params. Thus the params which have default values needn't pass value, just like a function.
+     *
+     * @param   array $defaultParams     the default params defined by the method.
+     * @param   array $passedParams      the params passed in through url.
+     * @access  public
+     * @return  array the merged params.
+     */
+    public function mergeParams($defaultParams, $passedParams)
+    {
+        /* Remove these two params. */
+        unset($passedParams['onlybody']);
+        unset($passedParams['HTTP_X_REQUESTED_WITH']);
+
+        /* Check params from URL. */
+        foreach($passedParams as $param => $value)
+        {
+            if(preg_match('/[^a-zA-Z0-9_\.]/', $param)) die('Bad Request!');
+        }
+
+        $passedParams = array_values($passedParams);
+        $i = 0;
+        foreach($defaultParams as $key => $defaultValue)
+        {
+            if(isset($passedParams[$i]))
+            {
+                $defaultParams[$key] = $passedParams[$i];
+            }
+            else
+            {
+                if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
+            }
+            $i ++;
+        }
+
+        return $defaultParams;
+    }
+
+    /**
      * Decrypt an input string. 
      * 
      * @param  string $input 
