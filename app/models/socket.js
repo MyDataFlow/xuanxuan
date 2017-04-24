@@ -420,7 +420,7 @@ class Socket extends ReadyNotifier {
      */
     _handleConnect() {
         this.isConnected = true;
-        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (this.isNewApi ? this.user.socketUrl : (this.user.classicApiHost +':' + this.user.classicApiPort)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (this.user.isNewApi ? this.user.socketUrl : (this.user.classicApiHost +':' + this.user.classicApiPort)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
         this.login();
         this.ready();
         this._emit(EVENT.socket_connected, this.user.isNewApi ? {url: this.user.socketUrl} : {host: this.user.classicApiHost, port: this.user.classicApiPort});
