@@ -328,10 +328,10 @@ class Socket extends ReadyNotifier {
                             let user = Object.assign({sid: msg.sid}, msg.data);
                             this._emit(R.event.user_login_message, user);
 
-                            clearTimeout(this.fetchUserListTask);
-                            this.fetchUserListTask = setTimeout(() => {
-                                this.fetchUserList();
-                            }, 5000);
+                            // clearTimeout(this.fetchUserListTask);
+                            // this.fetchUserListTask = setTimeout(() => {
+                            //     this.fetchUserList();
+                            // }, 10000);
                         } else {
                             let member = this.app.dao.getMember(msg.data.id);
                             if(member) {
@@ -369,7 +369,7 @@ class Socket extends ReadyNotifier {
                     }
                 },
                 usergetlist: msg => {
-                    clearTimeout(this.fetchUserListTask);
+                    // clearTimeout(this.fetchUserListTask);
                     if(msg.isSuccess) {
                         let members = Object.keys(msg.data).map(key => {
                             let member = new Member(msg.data[key]);
