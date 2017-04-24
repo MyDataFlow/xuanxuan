@@ -274,7 +274,7 @@ class chatModel extends model
         $chat->name        = $name;
         $chat->type        = $type;
         $chat->subject     = $subjectID;
-        $chat->createdBy   = $user->account;
+        $chat->createdBy   = !empty($user->account) ? $user->account : '';
         $chat->createdDate = helper::now();
 
         if($public) $chat->public = 1;
@@ -303,7 +303,7 @@ class chatModel extends model
         if($chat)
         {
             $user = $this->getUserByUserID($userID);
-            $chat->editedBy   = $user->account;
+            $chat->editedBy   = !empty($user->account) ? $user->account : '';
             $chat->editedDate = helper::now();
             $this->dao->update(TABLE_IM_CHAT)->data($chat)->where('gid')->eq($chat->gid)->batchCheck($this->config->chat->require->edit, 'notempty')->exec();
         }
