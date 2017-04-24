@@ -18,7 +18,7 @@ const UserAvatar = React.createClass({
 
     downloadLocalPath() {
         let {user} = this.props;
-        if(!App.user || !App.user.dataPath) {
+        if(!user || !App.user || !App.user.dataPath) {
             return;
         }
         let localPath = user.getLocalAvatar(App.user.imagesPath);
@@ -29,6 +29,9 @@ const UserAvatar = React.createClass({
                 path: localPath,
                 url: user.avatar
             }).then(() => {
+                if(this.unmounted) {
+                    return;
+                }
                 this.downloadFileTask = setTimeout(() => {
                     this.setState({src: localPath});
                 }, 500);
@@ -38,6 +41,7 @@ const UserAvatar = React.createClass({
 
     componentWillUnmount() {
         clearTimeout(this.downloadFileTask);
+        this.unmounted = true;
     },
 
     componentDidMount() {
