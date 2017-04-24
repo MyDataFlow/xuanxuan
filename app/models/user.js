@@ -486,13 +486,13 @@ class User extends Member {
             let member = avatar;
             avatar = member.avatar;
             if(avatar && avatar.indexOf('http://') !== 0 && avatar.indexOf('https://') !== 0) {
-                member.avatar = this.addressRoot + avatar;
+                member.avatar = this.serverUrlRoot + avatar;
             }
             return member.avatar;
         } else {
             avatar = avatar || this.avatar;
             if(avatar && avatar.indexOf('http://') !== 0 && avatar.indexOf('https://') !== 0) {
-                avatar = this.addressRoot + avatar;
+                avatar = this.serverUrlRoot + avatar;
             }
             this.avatar = avatar;
             return this.avatar;
