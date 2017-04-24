@@ -268,6 +268,7 @@ const ChatMenu = React.createClass({
                                 onClick={this._handleItemClick.bind(null, item.gid, item)} 
                                 primaryText={primaryText} 
                                 leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale muted' : ''}/>}
+                                innerDivStyle={{paddingRight: rightIcon ? 30 : 10}}
                                 rightIcon={rightIcon}
                             >{starItem}</ListItem>;
                         } else {
@@ -281,6 +282,7 @@ const ChatMenu = React.createClass({
                                 primaryText={primaryText}
                                 rightIcon={rightIcon}
                                 leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <ChatsIcon color={Colors.lightBlue500}/>}
+                                innerDivStyle={{paddingRight: rightIcon ? 30 : 10}}
                             >{starItem}</ListItem>;
                         }
                     })
