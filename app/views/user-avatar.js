@@ -77,7 +77,7 @@ const UserAvatar = React.createClass({
             }
             if(src) {
                 if(Helper.isOSX) src += '?v=' + Helper.guid;
-                return <Avatar className='user-avatar' size={size} src={src} {...other} style={style}/>;
+                return <Avatar className='user-avatar' size={size} src={src} {...other} style={Object.assign({backgroundColor: '#eee'}, style)}/>;
             } else {
                 let displayName = user.displayName || user.account || user.realname;
                 if(displayName) {
