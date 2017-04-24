@@ -44,7 +44,7 @@ class chat extends control
             $this->output->data   = $this->lang->user->loginFailed;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -73,7 +73,7 @@ class chat extends control
         setcookie('za', false);
         setcookie('zp', false);
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -99,7 +99,7 @@ class chat extends control
             $this->output->data   = $userList;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -144,7 +144,7 @@ class chat extends control
             $this->output->data   = $user;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -159,7 +159,7 @@ class chat extends control
         $this->output->result = 'success';
         $this->output->users  = array($userID);
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -190,7 +190,7 @@ class chat extends control
             $this->output->data   = $chatList;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -218,7 +218,7 @@ class chat extends control
             $this->output->users  = array($userID);
             $this->output->data   = $chatList;
         }
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -247,7 +247,7 @@ class chat extends control
             $this->output->users  = array($userID);
             $this->output->data   = $data;
         }
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -285,7 +285,7 @@ class chat extends control
             $this->output->data   = $chat;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -306,8 +306,7 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notAdmin;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         $chat = $this->chat->getByGID($gid);
@@ -316,16 +315,14 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notExist;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         if($chat->type != 'system')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notSystemChat;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         $chat  = $this->chat->setAdmin($gid, $admins, $isAdmin);
@@ -343,7 +340,7 @@ class chat extends control
             $this->output->data   = $chat;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -363,16 +360,14 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notExist;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         if($chat->type != 'group')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         if($join && $chat->public == '0')
@@ -380,8 +375,7 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notPublic;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         $this->chat->joinChat($gid, $userID, $join);
@@ -410,7 +404,7 @@ class chat extends control
             $this->output->data   = $chat;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -430,16 +424,14 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notExist;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         if($chat->type != 'group' && $chat->type != 'system')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         $chat->name = $name;
@@ -460,7 +452,7 @@ class chat extends control
 
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -480,16 +472,14 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notExist;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         if($chat->type != 'group' && $chat->type != 'system')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         $chat->committers = $committers;
@@ -508,7 +498,7 @@ class chat extends control
             $this->output->data   = $chat;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
     
     /**
@@ -528,16 +518,14 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notExist;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         if($chat->type != 'group')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         $chat->public = $public ? 1 : 0;
@@ -556,7 +544,7 @@ class chat extends control
             $this->output->data   = $data;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
     
     /**
@@ -591,7 +579,7 @@ class chat extends control
             $this->output->users  = array($userID);
             $this->output->data   = $chat;
         }
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -630,7 +618,7 @@ class chat extends control
             $this->output->users  = array($userID);
             $this->output->data   = $data;
         }
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -651,16 +639,14 @@ class chat extends control
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notExist;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         if($chat->type != 'group')
         {
             $this->output->result  = 'fail';
             $this->output->message = $this->lang->chat->notGroupChat;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         foreach($members as $member) $this->chat->joinChat($gid, $member, $join);
@@ -688,7 +674,7 @@ class chat extends control
             $this->output->users  = array_keys($users);
             $this->output->data   = $chat;
         }
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -712,8 +698,7 @@ class chat extends control
             $this->output->result = 'fail';
             $this->output->data   = $this->lang->chat->multiChats;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
         /* Check whether the logon user can send message in chat. */
         $errors  = array();
@@ -745,8 +730,7 @@ class chat extends control
             $this->output->result = 'fail';
             $this->output->data   = $errors;
 
-            die(extcommonModel::encrypt($this->output));
-            return;
+            die($this->app->encrypt($this->output));
         }
 
         /* Create messages. */
@@ -764,7 +748,7 @@ class chat extends control
             $this->output->data   = $messageList;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -814,7 +798,7 @@ class chat extends control
             $this->output->pager = $pagerData;
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -848,7 +832,7 @@ class chat extends control
             }
         }
 
-        die(extcommonModel::encrypt($this->output));
+        die($this->app->encrypt($this->output));
     }
 
     /**
@@ -894,6 +878,6 @@ class chat extends control
             $this->output->data   = $fileID;
         }
 
-        die(json_encode($this->output));
+        die($this->app->encrypt($this->output));
     }
 }
