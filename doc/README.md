@@ -44,7 +44,7 @@
 
 #### 会话列表
 
-会话列表包含当前用户所有参与会话。默认按照会话最后活动时间排列。点击会话列表顶部标签按钮可以切换会话列表排序形式。
+会话列表包含当前用户所有参与会话。你可以通过导航上的 “最近会话”、“联系人”和“讨论组”切换不同的会话列表。
 
 ![喧喧会话菜单](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/chats-menu.png)
 
@@ -132,6 +132,6 @@
 
 ## 通讯录
 
-查看当前服务器上的所有用户信息及联系方式。
+在聊天联系人列表上点击右键，选择查看资料，即可查看当前联系人资料信息。
 
 ![喧喧通讯录](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/contacts.png)

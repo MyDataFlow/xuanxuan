@@ -68,6 +68,9 @@ const ChatPage = React.createClass({
 
     componentDidMount() {
         let chat = App.chat.dao.getChat(this.props.chatGid);
+        if(!chat) {
+            return;
+        }
         let sidebarConfig = App.user.getConfig(`ui.chat.sidebar.${chat.gid}`, {expand: !chat.isOne2One});
         this.setState({
             chat,

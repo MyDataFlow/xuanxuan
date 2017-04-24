@@ -328,10 +328,10 @@ class Socket extends ReadyNotifier {
                             let user = Object.assign({sid: msg.sid}, msg.data);
                             this._emit(R.event.user_login_message, user);
 
-                            clearTimeout(this.fetchUserListTask);
-                            this.fetchUserListTask = setTimeout(() => {
-                                this.fetchUserList();
-                            }, 5000);
+                            // clearTimeout(this.fetchUserListTask);
+                            // this.fetchUserListTask = setTimeout(() => {
+                            //     this.fetchUserList();
+                            // }, 10000);
                         } else {
                             let member = this.app.dao.getMember(msg.data.id);
                             if(member) {
@@ -369,7 +369,7 @@ class Socket extends ReadyNotifier {
                     }
                 },
                 usergetlist: msg => {
-                    clearTimeout(this.fetchUserListTask);
+                    // clearTimeout(this.fetchUserListTask);
                     if(msg.isSuccess) {
                         let members = Object.keys(msg.data).map(key => {
                             let member = new Member(msg.data[key]);
@@ -420,7 +420,7 @@ class Socket extends ReadyNotifier {
      */
     _handleConnect() {
         this.isConnected = true;
-        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (this.isNewApi ? this.user.socketUrl : (this.user.classicApiHost +':' + this.user.classicApiPort)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
+        if(DEBUG) console.log('%cSOCKET CONNECTED ' + (this.user.isNewApi ? this.user.socketUrl : (this.user.classicApiHost +':' + this.user.classicApiPort)), 'display: inline-block; font-size: 10px; color: #fff; background: #673AB7; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
         this.login();
         this.ready();
         this._emit(EVENT.socket_connected, this.user.isNewApi ? {url: this.user.socketUrl} : {host: this.user.classicApiHost, port: this.user.classicApiPort});
@@ -460,17 +460,20 @@ class Socket extends ReadyNotifier {
         this._emit(EVENT.socket_data, data, flags);
 
         if(!data || !data.length) return;
-        if(((typeof data === 'string') ? data.charCodeAt(data.length - 1) : data[data.length - 1]) !== 10) {
-            if(this._rawData) {
+
+        if(!this.user.isNewApi) {
+            if(((typeof data === 'string') ? data.charCodeAt(data.length - 1) : data[data.length - 1]) !== 10) {
+                if(this._rawData) {
+                    this._rawData.push(data);
+                } else {
+                    this._rawData = [data];
+                }
+                return;
+            } else if(this._rawData) {
                 this._rawData.push(data);
-            } else {
-                this._rawData = [data];
+                data = this._rawData;
+                this._rawData = null;
             }
-            return;
-        } else if(this._rawData) {
-            this._rawData.push(data);
-            data = this._rawData;
-            this._rawData = null;
         }
 
         let msg = SocketMessage.fromJSON(data);

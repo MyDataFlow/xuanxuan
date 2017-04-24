@@ -497,7 +497,7 @@ class App extends ReadyNotifier {
             // init user data path
             this._makeUserDataPath(user).then(() => {
                 if(DEBUG) {
-                    console.log('%cUSER DATA PATH ' + this.user.dataPath, 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
+                    console.log('%cUSER DATA PATH ' + user.dataPath, 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
                 }
                 this.config.save(user);
                 // API.tryLogin(user);
@@ -542,6 +542,7 @@ class App extends ReadyNotifier {
             }
             this.user.changeStatus(USER_STATUS.unverified);
         }
+        this.dao = null;
     }
 
     /**
