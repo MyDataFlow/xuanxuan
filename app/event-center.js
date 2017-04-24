@@ -11,6 +11,7 @@ class EventCenter extends EventEmitter {
         super();
         this.isMainProcess = process.type !== 'renderer';
         this.ipc = (this.isMainProcess && electron.ipcMain) ? electron.ipcMain : electron.ipcRenderer;
+        this.setMaxListeners(0);
     }
 
     /*
