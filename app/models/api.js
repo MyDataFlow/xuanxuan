@@ -357,10 +357,16 @@ function postJSONData(url, form) {
 function requestServerInfo(user) {
     return new Promise((resolve, reject) => {
         postJSON(user.webServerInfoUrl, {
-            serverName: user.serverName,
-            account: user.account,
-            password: user.passwordMD5,
-            status: ''
+            data: JSON.stringify({
+                'module': 'chat',
+                'method': 'login',
+                params: [
+                    user.serverName,
+                    user.account,
+                    user.passwordMD5,
+                    'online'
+                ]
+            })
         }).then(data => {
             if(data) {
                 user.socketPort    = data.chatPort;
