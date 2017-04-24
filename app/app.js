@@ -542,6 +542,7 @@ class App extends ReadyNotifier {
             }
             this.user.changeStatus(USER_STATUS.unverified);
         }
+        this.dao = null;
     }
 
     /**
