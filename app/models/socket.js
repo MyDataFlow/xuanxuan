@@ -247,7 +247,7 @@ class Socket extends ReadyNotifier {
             }
         } : null;
         if(this.user.isNewApi) {
-            const encryptEnabled = ENCRYPT_ENABLE && !global.encryptDisabled;
+            const encryptEnabled = this.user.token && ENCRYPT_ENABLE && !global.encryptDisabled;
             if(encryptEnabled) {
                 data = this.encrypt(data);
                 if(DEBUG) {
@@ -451,7 +451,7 @@ class Socket extends ReadyNotifier {
      */
     _handleData(data, flags) {
         if(flags && flags.binary) {
-            if(ENCRYPT_ENABLE && !global.encryptDisabled) {
+            if(ENCRYPT_ENABLE && !global.encryptDisabled && this.user.token) {
                 data = this.decrypt(data);
             } else {
                 data = data.toString();
