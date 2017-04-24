@@ -157,6 +157,9 @@ class User extends Member {
      * @return {string}
      */
     get socketUrl() {
+        if(this._socketUrl) {
+            return this._socketUrl;
+        }
         let url = this.serverUrl;
         if(url) {
             url = new URL(url.toString());
@@ -166,6 +169,15 @@ class User extends Member {
             return url.toString();
         }
         return '';
+    }
+
+    /**
+     * Set socket url
+     * @param  {string} url
+     * @return {void}
+     */
+    set socketUrl(url) {
+        this._socketUrl = url;
     }
 
     /**

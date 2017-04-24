@@ -372,6 +372,7 @@ function requestServerInfo(user) {
                 user.socketPort    = data.chatPort;
                 user.token         = data.token;
                 user.serverVersion = data.version;
+                user.socketUrl     = data.socketUrl;
                 resolve(user);
             } else {
                 reject({message: 'Empty serverInfo data', code: 'WRONG_DATA'});
