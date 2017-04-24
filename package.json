@@ -77,11 +77,11 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
     }
-  },
-  "directories": {
-    "buildResources": "resources",
-    "output": "release"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
