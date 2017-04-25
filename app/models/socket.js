@@ -232,8 +232,8 @@ class Socket extends ReadyNotifier {
         if(!msg.sid && this.user.sid) {
             msg.sid = this.user.sid;
         }
-        if(!msg.userid && this.user.id) {
-            msg.userid = this.user.id;
+        if(!msg.userID && this.user.id) {
+            msg.userID = this.user.id;
         }
         if(global.TEST && !msg.test) {
             msg.test = true;
