@@ -416,7 +416,7 @@ function uploadFile(files, user, data = {}) {
             let headers = {'Content-Type': 'multipart/form-data'};
             if(user.isNewApi) {
                 headers['ServerName'] = user.serverName;
-                headers['Authorization'] = [user.id, user.token].join(',');
+                headers['Authorization'] = user.token;
             }
             jar.setCookie(cookie, url);
             Request.defaults({jar});
@@ -499,7 +499,7 @@ function downloadFile(file, user, onProgress) {
         let headers = {};
         if(user.isNewApi) {
             headers['ServerName'] = user.serverName;
-            headers['Authorization'] = [user.id, user.token].join(',');
+            headers['Authorization'] = user.token;
         }
         RequestProgress(Request.get({
             url: file.url,
