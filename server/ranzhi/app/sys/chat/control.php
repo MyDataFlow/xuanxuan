@@ -33,9 +33,9 @@ class chat extends control
 
             $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
             
-            $userList = $this->chat->getUserList($status = 'online');
+            $users = $this->chat->getUserList($status = 'online');
             $this->output->result = 'success';
-            $this->output->users  = array_keys($userList);
+            $this->output->users  = array_keys($users);
             $this->output->data   = $user;
         }
         else
@@ -60,13 +60,13 @@ class chat extends control
         $user->id     = $userID;
         $user->status = 'offline';
 
-        $user     = $this->chat->editUser($user);
-        $userList = $this->chat->getUserList($status = 'online');
+        $user  = $this->chat->editUser($user);
+        $users = $this->chat->getUserList($status = 'online');
 
         $this->loadModel('action')->create('user', $userID, 'logoutXuanxuan', '', 'xuanxuan', $user->account);
 
         $this->output->result = 'success';
-        $this->output->users  = array_keys($userList);
+        $this->output->users  = array_keys($users);
         $this->output->data   = $user;
 
         session_destroy();
@@ -85,7 +85,7 @@ class chat extends control
      */
     public function userGetList($userID = 0)
     {
-        $userList = $this->chat->getUserList();
+        $users = $this->chat->getUserList($status = '', $idList = '', $idAsKey = false);
 
         if(dao::isError())
         {
@@ -96,7 +96,7 @@ class chat extends control
         {
             $this->output->result = 'success';
             $this->output->users  = array($userID);
-            $this->output->data   = $userList;
+            $this->output->data   = $users;
         }
 
         die($this->app->encrypt($this->output));
@@ -251,6 +251,31 @@ class chat extends control
     }
 
     /**
+     * Get offline messages. 
+     * 
+     * @param  int    $userID 
+     * @access public
+     * @return void
+     */
+    public function getOfflineMessages($userID = 0)
+    {
+        $messages = $this->chat->getOfflineMessages($userID);
+        if(dao::isError())
+        {
+            $this->output->method  = 'message';
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get offline messages fail.';
+        }
+        else
+        {
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $messages;
+        }
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
      * Create a chat. 
      * 
      * @param  string $gid 
@@ -265,7 +290,7 @@ class chat extends control
      */
     public function create($gid = '', $name = '', $type = 'group', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
-        $chat = $this->chat->getByGID($gid, true);
+        $chat = $this->chat->getByGID($gid, $members = true);
 
         if(!$chat)
         { 
@@ -380,7 +405,7 @@ class chat extends control
 
         $this->chat->joinChat($gid, $userID, $join);
 
-        $chat  = $this->chat->getByGID($gid, true);
+        $chat  = $this->chat->getByGID($gid, $members = true);
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
@@ -651,8 +676,8 @@ class chat extends control
 
         foreach($members as $member) $this->chat->joinChat($gid, $member, $join);
 
-        $chat->members = $this->chat->getMemberListByGID($gid);
-        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
+        $members = $this->chat->getMemberListByGID($gid);
+        $users   = $this->chat->getUserList($status = 'online', array_values($members));
 
         if(dao::isError())
         {
@@ -733,9 +758,25 @@ class chat extends control
             die($this->app->encrypt($this->output));
         }
 
+        $onlineUsers  = array();
+        $offlineUsers = array();
+        $users = $this->chat->getUserList($status = '', array_values($chat->members));
+        foreach($users as $id => $user)
+        {
+            if($user->status == 'offline')
+            {
+                $offlineUsers[] = $id;
+            }
+            else
+            {
+                $onlineUsers[] = $id;
+            }
+        }
+
         /* Create messages. */
-        $messageList = $this->chat->createMessage($messages, $userID);
-        $users       = $this->chat->getUserList($status = 'online', array_values($chat->members));
+        $messages = $this->chat->createMessage($messages, $userID);
+        $this->chat->saveOfflineMessages($messages, $offlineUsers);
+
         if(dao::isError())
         {
             $this->output->result  = 'fail';
@@ -744,8 +785,8 @@ class chat extends control
         else
         {
             $this->output->result = 'success';
-            $this->output->users  = array_keys($users);
-            $this->output->data   = $messageList;
+            $this->output->users  = $onlineUsers; 
+            $this->output->data   = $messages;
         }
 
         die($this->app->encrypt($this->output));
@@ -849,8 +890,17 @@ class chat extends control
      */
     public function uploadFile($fileName = '', $path = '', $size = 0, $time = 0, $gid = '', $userID = 0)
     {
-        $chatID = $this->dao->select('id')->from(TABLE_IM_CHAT)->where('gid')->eq($gid)->fetch('id');
+        $chat = $this->chat->getByGID($gid, $members = true);
+        if(!$chat)
+        {
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
+
+            die($this->app->encrypt($this->output));
+        }
         
+        $user      = $this->chat->getUserByUserID($userID);
+        $users     = $this->chat->getUserList($status = 'online', array_values($chat->members));
         $extension = $this->loadModel('file', 'sys')->getExtension($fileName);
 
         $file = new stdclass(); 
@@ -859,12 +909,15 @@ class chat extends control
         $file->extension   = $extension;
         $file->size        = $size;
         $file->objectType  = 'chat';
-        $file->objectID    = $chatID;
+        $file->objectID    = $chat->id;
         $file->createdBy   = !empty($user->account) ? $user->account : '';
         $file->createdDate = date(DT_DATETIME1, $time); 
         
         $this->dao->insert(TABLE_FILE)->data($file)->exec();
+
         $fileID = $this->dao->lastInsertID();
+        $path  .= md5($fileName . $fileID . $time);
+        $this->dao->update(TABLE_FILE)->set('pathname')->eq($path)->where('id')->eq($fileID)->exec();
         
         if(dao::isError())
         {
@@ -874,7 +927,7 @@ class chat extends control
         else
         {
             $this->output->result = 'success';
-            $this->output->users  = array($userID);
+            $this->output->users  = array_keys($users);
             $this->output->data   = $fileID;
         }
 

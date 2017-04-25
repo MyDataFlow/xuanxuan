@@ -64,21 +64,10 @@ CREATE TABLE IF NOT EXISTS `im_usermessage`(
   `id` mediumint(8) NOT NULL AUTO_INCREMENT,
   `level` smallint(5) NOT NULL DEFAULT 3,
   `user` mediumint(8) NOT NULL DEFAULT 0,
-  `module` varchar(30) NOT NULL DEFAULT '',
-  `method` varchar(30) NOT NULL DEFAULT '',
-  `data` text NOT NULL DEFAULT '',
+  `messages` text NOT NULL DEFAULT '',
   PRIMARY KEY `id` (`id`),
   KEY `muser` (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `im_chatfile`;
-CREATE TABLE IF NOT EXISTS `im_chatfile`(
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `gid` char(40) NOT NULL DEFAULT '',
-  `file` mediumint(8) NOT NULL DEFAULT 0,
-  `title` char(90) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `chatfile` (`gid`, `file`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline'; 
+INSERT INTO `sys_config` (`owner`, `app`, `module`, `section`, `key`, `value`) VALUES ('system', 'sys', 'xuanxuan', '', 'version', '1.1.0');

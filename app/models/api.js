@@ -434,9 +434,6 @@ function uploadFile(files, user, data = {}) {
                         }, {
                             'Content-Disposition': 'form-data; name="gid"',
                             body: data.gid
-                        }, {
-                            'Content-Disposition': 'form-data; name="userid"',
-                            body: user.id
                         }
                     ]
                 }

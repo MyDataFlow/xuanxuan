@@ -67,9 +67,6 @@ export default validate(merge(baseConfig, {
   },
 
   plugins: [
-    // for bindings package, see https://github.com/rwaldron/johnny-five/issues/1101#issuecomment-213581938
-    new webpack.ContextReplacementPlugin(/bindings$/, /^$/),
-
     // NODE_ENV should be production so that modules do not perform certain development checks
     new webpack.DefinePlugin({
       DEBUG: true,
@@ -84,8 +81,6 @@ export default validate(merge(baseConfig, {
       inject: false
     })
   ],
-
-  externals: ['bindings'],
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
