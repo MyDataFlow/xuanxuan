@@ -262,7 +262,7 @@ class Socket extends ReadyNotifier {
                 binary: encryptEnabled
             }, afterSend);
         } else {
-            this.client.write(data, 'utf-8', afterSend);
+            this.client.write(data + '\n', 'utf-8', afterSend);
         }
     }
 

@@ -22,7 +22,7 @@ const UserAvatar = React.createClass({
             return;
         }
         let localPath = user.getLocalAvatar(App.user.imagesPath);
-        if(Helper.isFileExist(localPath)) {
+        if(Helper.isFileExist(localPath) && !this.unmounted) {
             this.setState({src: localPath});
         } else if(localPath) {
             App.downloadFile({
