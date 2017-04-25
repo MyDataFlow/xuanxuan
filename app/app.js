@@ -187,7 +187,7 @@ class App extends ReadyNotifier {
         });
 
         this.browserWindow.on('blur', () => {
-            if(this.user.isUnverified) {
+            if(!this.user || this.user.isUnverified) {
                 return;
             }
             if(this.user.getConfig('ui.app.hideWindowOnBlur')) {
@@ -196,7 +196,7 @@ class App extends ReadyNotifier {
         });
 
         this.browserWindow.on('restore', () => {
-            if(this.user.isUnverified) {
+            if(!this.user || this.user.isUnverified) {
                 return;
             }
             this.browserWindow.setSkipTaskbar(false);
@@ -204,7 +204,7 @@ class App extends ReadyNotifier {
         });
 
         this.browserWindow.on('minimize', () => {
-            if(this.user.isUnverified) {
+            if(!this.user || this.user.isUnverified) {
                 return;
             }
             if(this.user.getConfig('ui.app.removeFromTaskbarOnHide')) {
@@ -214,7 +214,7 @@ class App extends ReadyNotifier {
         });
 
         this.event.ipc.on(R.event.app_main_window_close, () => {
-            if(this.user.isUnverified) {
+            if(!this.user || this.user.isUnverified) {
                 this.quit();
                 return;
             }
