@@ -229,7 +229,7 @@ class Socket extends ReadyNotifier {
      */
     send(msg) {
         msg = this.createSocketMessage(msg);
-        if(!msg.sid && this.user.sid) {
+        if(!msg.sid && this.user.sid && !this.user.isNewApi) {
             msg.sid = this.user.sid;
         }
         if(!msg.userID && this.user.id) {
