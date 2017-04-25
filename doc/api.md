@@ -444,7 +444,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 #### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户（包括退出会话的当前用户）。
 
 ## 更改会话名称
 >用户可以更改类型为group的会话的名称。
@@ -524,20 +524,9 @@ xxd把client发送的数据转发给rzs。
     result,
     users[],
     data:
-    {                   // 会话的完整信息
-        id,             // 会话在服务器数据保存的id
-        gid,            // 会话的全局id,
-        name,           // 会话的名称
-        type,           // 会话的类型
-        admins,         // 会话允许发言的用户列表
-        subject,        // 主题会话的关联主题ID
-        public,         // 是否公共会话
-        createdBy,      // 创建者用户名
-        createdDate,    // 创建时间
-        editedBy,       // 编辑者用户名
-        editedDate,     // 编辑时间
-        lastActiveTime, // 会话最后一次发送消息的时间
-        members: [{id}, {id}...] // 会话的成员列表         
+    {        // 会话的完整信息
+        gid, // 会话的全局id,   
+        star // true收藏会话, false取消收藏会话, 默认为true
     }
 }
 ```
