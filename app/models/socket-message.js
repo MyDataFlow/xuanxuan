@@ -11,7 +11,7 @@ class SocketMessage {
      * @return {string}
      */
     get json() {
-        return JSON.stringify(this) + '\n';
+        return JSON.stringify(this);
     }
 
     /**
