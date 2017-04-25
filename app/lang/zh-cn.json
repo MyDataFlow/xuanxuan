@@ -307,6 +307,7 @@
 
   "settings": {
     "chat": "聊天",
+    "showMeOnMenu": "在联系人列表上显示我自己",
     "sendHDEmoticon": "当消息只包含一个表情符时直接发送高清表情",
     "showMessageTip": "在消息发送框工具栏显示消息框小技巧按钮",
     "enableSearchInEmojionePicker": "表情面板启用搜索",

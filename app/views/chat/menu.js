@@ -246,6 +246,13 @@ const ChatMenu = React.createClass({
                     heading={(data.title || false)}
                     expand={true}
                 >
+                {App.user.getConfig('ui.chat.menu.showMe') ? <ListItem
+                    key={App.user.id}
+                    style={STYLE.itemStyle}
+                    onClick={() => App.openProfile()} 
+                    primaryText={App.user.displayName} 
+                    leftAvatar={<UserAvatar size={20} user={App.user} style={STYLE.avatar}/>}
+                /> : null}
                 {
                     data.items.map(item => {
                         let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;

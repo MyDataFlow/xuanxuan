@@ -58,6 +58,12 @@ class UserSettingView extends Component {
             <header style={STYLE.header}>{Lang.settings.chat}</header>
             <div style={STYLE.body}>
               <Checkbox
+                label={Lang.settings.showMeOnMenu}
+                style={STYLE.checkbox}
+                checked={this.state.config['ui.chat.menu.showMe']}
+                onCheck={(e, isChecked) => this.changeConfig('ui.chat.menu.showMe', isChecked)}
+              />
+              <Checkbox
                 label={Lang.settings.sendHDEmoticon}
                 style={STYLE.checkbox}
                 checked={this.state.config['ui.chat.sendHDEmoticon']}

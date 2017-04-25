@@ -504,7 +504,7 @@ class ChatApp extends AppCore {
      * Get contacts chats
      * @return {array}
      */
-    getContactsChats() {
+    getContactsChats(includeMe) {
         let chats = [];
         this.$app.members.forEach(member => {
             if(member.id !== this.user.id) {
