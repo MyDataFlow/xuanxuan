@@ -1,5 +1,4 @@
 import fs                 from 'fs';
-import Moment             from 'moment';
 import UUID               from 'uuid';
 import Path               from 'path';
 import {

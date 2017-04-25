@@ -4,6 +4,9 @@ import Marked       from 'marked';
 import HighlightJS  from 'highlight.js';
 import mkdirp       from 'mkdirp';
 import PinYin       from 'pinyin';
+import Moment       from 'moment';
+
+Moment.locale('zh-cn');
 
 /**
  * Init markdown helpers
