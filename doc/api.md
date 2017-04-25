@@ -656,7 +656,7 @@ xxd把client发送的数据转发给rzs。
         recPerPage, // 每页记录数
         pageID,     // 当前也数
         recTotal,   // 总记录数
-        continued   // 
+        continued   // 是否继续获取历史记录
     }
 }
 ```
@@ -690,7 +690,7 @@ xxd把client发送的数据转发给rzs。
         pageID,     // 当前页数
         recTotal,   // 总记录数
         gid,        // 当前会话id
-        continued   //
+        continued   // 是否继续获取历史记录
     }
 }
 ```
