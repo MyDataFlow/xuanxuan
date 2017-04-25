@@ -56,7 +56,7 @@ HTTP Status Code
     module: 'chat',
     method: 'login',
     params: [
-		serverName, //多然之时客户端登录的服务器名称
+		    serverName, //多然之时客户端登录的服务器名称
         account,
         password,   // 已加密
         status      // 登录后设置的状态,包括online,away,busy
@@ -76,13 +76,19 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
     users[]，
     data: 
     {             // 当前登录的用户数据
-        id,
+        id,       // ID
         account,  // 用户名
         realname, // 真实姓名
         avatar,   // 头像URL
         role,     // 角色
         dept,     // 部门ID
-        status    // 当前状态
+        status,   // 当前状态
+        admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
+        gender,   // 性别，u 未知 | f 女 | m 男
+        email,    // 邮箱
+        mobile,   // 手机
+        site,     // 网站
+        phone     // 电话
     }
 }
 ```
@@ -111,14 +117,20 @@ xxd把client发送的数据转发给rzs。
     result,
     users[],
     data:
-    {
-        id,
-        account,
-        realname,
-        avatar,
-        role,
-        dept,
-        status,
+    {             // 当前登录的用户数据
+        id,       // ID
+        account,  // 用户名
+        realname, // 真实姓名
+        avatar,   // 头像URL
+        role,     // 角色
+        dept,     // 部门ID
+        status,   // 当前状态
+        admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
+        gender,   // 性别，u 未知 | f 女 | m 男
+        email,    // 邮箱
+        mobile,   // 手机
+        site,     // 网站
+        phone     // 电话
     }
 }
 ```
@@ -160,15 +172,21 @@ xxd把client发送的数据转发给rzs。
     result,
     users[],
     data:
-    [           // 所有用户状态数组
-        {       // 其中一个用户数据
-            id,
-            account,
-            realname,
-            avatar,
-            role,
-            dept
-            status
+    [                 // 所有用户状态数组
+        {             // 其中一个用户数据
+            id,       // ID
+            account,  // 用户名
+            realname, // 真实姓名
+            avatar,   // 头像URL
+            role,     // 角色
+            dept,     // 部门ID
+            status,   // 当前状态
+            admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
+            gender,   // 性别，u 未知 | f 女 | m 男
+            email,    // 邮箱
+            mobile,   // 手机
+            site,     // 网站
+            phone     // 电话
         },
         // 更多用户数据...
     ]
@@ -277,14 +295,20 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'userChange',
     params:
-    {          //更改后的信息
-        name,
-        account,
-        realname,
-        avatar,
-        role,
-        dept,
-        status //要设置的新状态,包括online, away, busy
+    {             //更改后的信息        
+        id,       // ID
+        account,  // 用户名
+        realname, // 真实姓名
+        avatar,   // 头像URL
+        role,     // 角色
+        dept,     // 部门ID
+        status,   // 要设置的新状态,包括online, away, busy
+        admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
+        gender,   // 性别，u 未知 | f 女 | m 男
+        email,    // 邮箱
+        mobile,   // 手机
+        site,     // 网站
+        phone     // 电话
     }
 }
 ```
@@ -300,15 +324,20 @@ xxd把client发送的数据转发给rzs。
     result,
     users[],
     data: 
-    {          //当前登录用户数据
-        id,
-        name,  // 更改后的姓名
-        account,
-        realname,
-        avatar,
-        role,
-        dept,
-        status //要设置的新状态,包括online, away, busy
+    {             //当前登录用户数据     
+        id,       // ID
+        account,  // 用户名
+        realname, // 真实姓名
+        avatar,   // 头像URL
+        role,     // 角色
+        dept,     // 部门ID
+        status,   // 状态
+        admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
+        gender,   // 性别，u 未知 | f 女 | m 男
+        email,    // 邮箱
+        mobile,   // 手机
+        site,     // 网站
+        phone     // 电话
     }
 }
 ```
@@ -347,8 +376,8 @@ xxd把client发送的数据转发给rzs。
     method: 'create',
     result,
     users[],
-    data: // 新创建的会话完整信息
-    {
+    data:               
+    {                   // 新创建的会话完整信息
         id,             // 会话在服务器数据保存的id
         gid,            // 会话的全局id,
         name,           // 会话的名称
@@ -426,10 +455,10 @@ xxd把client发送的数据转发给rzs。
 {
     userID,
     module: 'chat',
-    method: 'changename',
+    method: 'changeName',
     params:
     {
-        id,  // 要更改的会话id
+        gid, // 要更改的会话id
         name // 新的名称
     }
 }
@@ -442,7 +471,7 @@ xxd把client发送的数据转发给rzs。
 ```js
 {
     module: 'chat',
-    method: 'changename',
+    method: 'changeName',
     result,
     users[],
     data:
@@ -495,13 +524,25 @@ xxd把client发送的数据转发给rzs。
     result,
     users[],
     data:
-    {
-        gid // 要收藏或取消收藏的会话id
+    {                   // 会话的完整信息
+        id,             // 会话在服务器数据保存的id
+        gid,            // 会话的全局id,
+        name,           // 会话的名称
+        type,           // 会话的类型
+        admins,         // 会话允许发言的用户列表
+        subject,        // 主题会话的关联主题ID
+        public,         // 是否公共会话
+        createdBy,      // 创建者用户名
+        createdDate,    // 创建时间
+        editedBy,       // 编辑者用户名
+        editedDate,     // 编辑时间
+        lastActiveTime, // 会话最后一次发送消息的时间
+        members: [{id}, {id}...] // 会话的成员列表         
     }
 }
 ```
 #### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
 
 ## 邀请新的用户到会话或者将用户踢出会话
 ### 请求
@@ -566,7 +607,7 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'message',
     params: 
-    [        // 一个包含一条或多条新消息的数组
+    [                    // 一个包含一条或多条新消息的数组
         {
             gid,         // 此消息的gid
             cgid,        // 此消息关联的会话的gid
@@ -593,7 +634,7 @@ xxd把client发送的数据转发给rzs。
     method: 'message',
     result,
     users[],
-    data:  // 一个包含一条或多条新消息的数组
+    data:                // 一个包含一条或多条新消息的数组
     [
         {
             id,          // 消息在服务器保存的id
@@ -622,7 +663,11 @@ xxd把client发送的数据转发给rzs。
     method: 'history',
     params: 
     {
-        gid // 要获取消息记录的会话gid
+        gid,        // 要获取消息记录的会话gid
+        recPerPage, // 每页记录数
+        pageID,     // 当前也数
+        recTotal,   // 总记录数
+        continued   // 
     }
 }
 ```
@@ -639,11 +684,25 @@ xxd把client发送的数据转发给rzs。
     users[],
     data: 
     [
-        {
-        // 一条历史消息...
+        {                // 一条历史消息
+            gid,         // 此消息的gid
+            cgid,        // 此消息关联的会话的gid
+            user,        // 如果为空,则为发送此请求的用户
+            date,        // 如果为空,则已服务器处理时间为准
+            type,        // 消息的类型
+            contentType, // 消息内容的类型
+            content      // 消息内容
         },
         // 更多历史消息
-    ]
+    ]，
+    pager: // 分页数据
+    {
+        recPerPage, // 每页记录数
+        pageID,     // 当前页数
+        recTotal,   // 总记录数
+        gid,        // 当前会话id
+        continued   //
+    }
 }
 ```
 #### 方向：xxd --> client
@@ -722,12 +781,13 @@ xxd把client发送的数据转发给rzs。
     users[],
     data:
     {
-        gid // 要隐藏或显示的会话id
+        gid, // 要隐藏或显示的会话id
+        hide // true隐藏会话, false显示会话, 默认为true
     }
 }
 ```
 #### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
 
 ## 将会话设置为公共会话或者取消设置公共会话
 >用户可以将一个非主题会话设置为公共会话或者取消设置公共会话。
@@ -738,7 +798,7 @@ xxd把client发送的数据转发给rzs。
 {
     userID,
     module: 'chat',
-    method: 'changepublic',
+    method: 'changePublic',
     params: 
     {
         gid,
@@ -758,7 +818,7 @@ xxd把client发送的数据转发给rzs。
     result,
     users[],
     data: 
-    {           // 会话的完整信息
+    {                   // 会话的完整信息
         id,             // 会话在服务器数据保存的id
         gid,            // 会话的全局id,
         name,           // 会话的名称
