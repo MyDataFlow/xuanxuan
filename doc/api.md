@@ -6,7 +6,7 @@ rzs：后台然之服务器
 
 ## 数据格式和约定
 常见的请求对象格式
-```json
+```js
 {
     userID, // 用户id，xxd -> rzs 非登录时必须
     module, // 模块名称,必须
@@ -18,7 +18,7 @@ rzs：后台然之服务器
 ```
 
 常见的响应数据格式
-```json
+```js
 {
     module,            // 模块名称,必须
     method,            // 方法名称,必须
@@ -33,7 +33,7 @@ rzs：后台然之服务器
 ## 登录
 ### 请求  
 #### 方向：client --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'login',
@@ -50,7 +50,7 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'login',
@@ -73,7 +73,7 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
 ## 登出
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID, //登出用户的id号
     module: 'chat',
@@ -86,7 +86,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向 rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'logout',
@@ -111,7 +111,7 @@ xxd把client发送的数据转发给rzs。
 >当同一用户重复登录时,系统会向前一个登录的用户推送一条特殊的消息,客户端接收到该消息后应该将用户登出，并关闭相关的网络连接。该消息不需要响应或返回结果。
 
 #### 方向：xxd --> client
-```json
+```js
 {
     module:  'null',
     method:  'null',
@@ -122,7 +122,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取所有用户列表
 ### 请求
 #### 方向： client --> xxd
-```json
+```js
 {
     userID, //用户的id号
     module: 'chat',
@@ -135,7 +135,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'userGetlist',
@@ -162,7 +162,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取当前登录用户所有会话数据
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -174,7 +174,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'getList',
@@ -253,7 +253,7 @@ xxd把client发送的数据转发给rzs。
 ## 更改当前登录用户的信息
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -275,7 +275,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'userChange',
@@ -300,7 +300,7 @@ xxd把client发送的数据转发给rzs。
 ## 创建聊天会话
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -323,7 +323,7 @@ xxd把client发送的数据转发给rzs。
 >服务器在创建会话时应该先检查gid是否已经存在，如果存在则直接为当前登录用户返回已存在的会话信息。
 
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'create',
@@ -355,7 +355,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -372,7 +372,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'joinchat',
@@ -404,7 +404,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -421,7 +421,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'changename',
@@ -453,7 +453,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -470,7 +470,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'star',
@@ -490,7 +490,7 @@ xxd把client发送的数据转发给rzs。
 >用户可以邀请一个或多个用户到类型为group的已有会话中；会话管理员可以将一个或多个用户踢出类型为group的会话。
 
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -510,7 +510,7 @@ xxd把client发送的数据转发给rzs。
 >当新用户被添加到会话之后或者用户被踢出会话后,服务器应该主动推送此会话的信息给此会话的所有在线成员；此响应与chat/create/响应的结果一致。
 
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'addmember',
@@ -542,7 +542,7 @@ xxd把client发送的数据转发给rzs。
 >用户向一个或多个会话中发送一条或多条消息,服务器推送此消息给此会话中的所有在线成员；当前不在线的成员会在下次上线时通过离线消息送达。
 
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -569,7 +569,7 @@ xxd把client发送的数据转发给rzs。
 >当有新的消息收到时,服务器会所有消息,并发送给对应会话的所有在线成员
 
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'message',
@@ -597,7 +597,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取会话的所有消息记录
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -613,7 +613,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'history',
@@ -634,7 +634,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取会话的所有成员信息
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -650,7 +650,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'members',
@@ -679,7 +679,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -696,7 +696,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'hide',
@@ -716,7 +716,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -733,7 +733,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: ' chat';
     method: 'changepublic',
@@ -763,7 +763,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取所有公共会话列表
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -775,7 +775,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'getPublicList',
@@ -807,7 +807,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取指定会话的所有文件列表
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'attach',
@@ -823,7 +823,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'attach',
     method: 'getList',
@@ -847,7 +847,7 @@ xxd把client发送的数据转发给rzs。
 ## 设置会话管理员
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -865,7 +865,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'setAdmin',
@@ -896,7 +896,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -913,7 +913,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'setCommitters',
@@ -942,7 +942,7 @@ xxd把client发送的数据转发给rzs。
 ## 上传下载用户在客户端的配置信息
 ### 请求
 #### 方向：client --> xxd
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -959,7 +959,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'settings',
@@ -974,18 +974,40 @@ xxd把client发送的数据转发给rzs。
 ## 上传文件
 ### 请求
 #### 方向：client --> xxd
-```json
+
+客户端通过 https 向 xxd 服务器发起 POST 请求。
+请求头部需要包含如下内容：
+
+* `ServerName`：然之服务器名称；
+* `Authorization`：用户 token；
+
+请求表单需要包含如下字段：
+
+* `file`：文件域，包括文件名；
+* `gid`：该文件所属会话的 gid；
+
+以下为以 JavaScript 对象存储的请求数据示例：
+
+```js
 {
-    userID,
-    module: 'chat',
-    method: 'uploadFile',
-    params: 
-    {
+    headers: {
+        ServerName: 'ranzhiServer1',
+        Authorization: '12345678888888888888888888888888'
+    },
+    multipart: {
+        {
+            'Content-Disposition': 'form-data; name="file"; filename="example.txt"',
+            body: e.target.result
+        }, {
+            'Content-Disposition': 'form-data; name="gid"',
+            body: '1&2'
+        }
     }
 }
 ```
+
 #### 方向： xxd --> rzs
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -1004,7 +1026,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'uploadFile',
@@ -1014,4 +1036,18 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 #### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+
+xxd 服务器在客户端发起的 POST 请求中以 JSON 文本格式返回文件基本信息。
+
+```js
+{
+    result: 'success',
+    data: 
+    {
+        url,      // 文件在xxd服务器上的下载地址（可选，无此属性会按照规则生成 URL 地址）
+        time,     // 时间戳
+        id,       // 文件 ID 
+        name,     // 文件标题
+    }
+}
+```
