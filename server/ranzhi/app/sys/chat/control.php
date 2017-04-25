@@ -301,7 +301,7 @@ class chat extends control
      */
     public function create($gid = '', $name = '', $type = 'group', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
-        $chat = $this->chat->getByGID($gid, $members = true);
+        $chat = $this->chat->getByGID($gid, true);
 
         if(!$chat)
         { 
@@ -416,7 +416,7 @@ class chat extends control
 
         $this->chat->joinChat($gid, $userID, $join);
 
-        $chat  = $this->chat->getByGID($gid, $members = true);
+        $chat  = $this->chat->getByGID($gid, true);
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
@@ -739,7 +739,7 @@ class chat extends control
         /* Check whether the logon user can send message in chat. */
         $errors  = array();
         $message = current($messages);
-        $chat    = $this->chat->getByGID($message->cgid, $members = true);
+        $chat    = $this->chat->getByGID($message->cgid, true);
         if(!$chat)
         {
             $error = new stdclass();
@@ -901,7 +901,7 @@ class chat extends control
      */
     public function uploadFile($fileName = '', $path = '', $size = 0, $time = 0, $gid = '', $userID = 0)
     {
-        $chat = $this->chat->getByGID($gid, $members = true);
+        $chat = $this->chat->getByGID($gid, true);
         if(!$chat)
         {
             $this->output->result  = 'fail';
