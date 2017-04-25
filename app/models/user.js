@@ -231,7 +231,7 @@ class User extends Member {
         if(path && path[path.length - 1] === '/') {
             path = path.substr(0, path.length - 1);
         }
-        return serverUrlRoot + path;
+        return this.serverUrlRoot + path;
     }
 
     /**
