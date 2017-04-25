@@ -1035,7 +1035,6 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     sendImageMessage(chat, file, reject) {
-        console.info('sendImageMessage', chat, file, reject);
         if(!file.path) {
             if(DEBUG) console.error('Cannot send image message ', file, chat);
             return;
@@ -1047,7 +1046,7 @@ class ChatApp extends AppCore {
             date: new Date(),
             contentType: 'image',
             attachFile: file,
-            imageContent: {name: file.name, size: file.size, send: 0, type: file.type}
+            imageContent: {name: file.name, size: file.size, send: 0, type: file.type, time: file.time}
         });
 
         let imagesPath = this.user.imagesPath;
@@ -1087,7 +1086,7 @@ class ChatApp extends AppCore {
         this.$app.emit(R.event.data_change, {chats: [chat]});
         
         this.$app.uploadFile(file, {gid: message.cgid}).then(f => {
-            message.fileContent = Object.assign(message.fileContent, {send: true, id: f.id});
+            message.fileContent = Object.assign(message.fileContent, f, {send: true});
             this.sendChatMessage(message, chat);
         }).catch(err => {
             message.fileContent = Object.assign(message.fileContent, {send: false});
@@ -1110,7 +1109,7 @@ class ChatApp extends AppCore {
             date: new Date(),
             contentType: 'file',
             attachFile: file,
-            fileContent: {name: file.name, size: file.size, send: 0, type: file.type},
+            fileContent: {name: file.name, size: file.size, send: 0, type: file.type, time: file.time},
         });
 
         chat.addMessage(message);

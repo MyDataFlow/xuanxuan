@@ -183,6 +183,7 @@ class Message extends Entity {
      * @return {void}
      */
     set imageContent(content) {
+        delete content.path;
         if(!this.contentType) {
             this.contentType = 'image';
         }
@@ -215,7 +216,7 @@ class Message extends Entity {
         }
         if(this.contentType === 'file') {
             this.$.fileContent = content;
-            this.content = JSON.stringify({name: content.name, size: content.size, send: content.send, type: content.type, id: content.id});
+            this.content = JSON.stringify({name: content.name || content.title, size: content.size, send: content.send, type: content.type, id: content.id, time: content.time});
         }
     }
 
