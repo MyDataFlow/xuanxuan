@@ -195,8 +195,8 @@ class Socket extends ReadyNotifier {
      */
     changeUserStatus(status) {
         return this.send(this.createSocketMessage({
-            'method': 'userChangeStatus',
-            'params': [status]
+            'method': 'userChange',
+            'params': [{status}]
         }));
     }
 
@@ -346,6 +346,19 @@ class Socket extends ReadyNotifier {
                 userchangestatus: msg => {
                     if(msg.isSuccess) {
                         if(!msg.data.id || msg.data.id === this.user.id) {
+                            this.user.changeStatus(msg.data.status);
+                        }
+                        let member = this.app.dao.getMember(msg.data.id);
+                        if(member) {
+                            member.status = msg.data.status;
+                            this._emit(R.event.data_change, {members: [member]});
+                        }
+                    }
+                },
+                userchange: msg => {
+                    if(msg.isSuccess && msg.data) {
+                        if(!msg.data.id || msg.data.id === this.user.id) {
+                            this.user.assign(msg.data);
                             this.user.changeStatus(msg.data.status);
                         }
                         let member = this.app.dao.getMember(msg.data.id);
