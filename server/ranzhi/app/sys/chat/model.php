@@ -2,6 +2,19 @@
 class chatModel extends model
 {
     /**
+     * Reset user status. 
+     * 
+     * @param  string $status 
+     * @access public
+     * @return bool
+     */
+    public function resetUserStatus($status = 'offline')    
+    {
+        $this->dao->update(TABLE_USER)->set('status')->eq($status)->exec();
+        return !dao::isError();
+    }
+
+    /**
      * Get a user. 
      * 
      * @param  int    $userID 

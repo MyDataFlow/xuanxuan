@@ -11,6 +11,17 @@ class chat extends control
     }
 
     /**
+     * Server start.
+     * 
+     * @access public
+     * @return void
+     */
+    public function serverStart()
+    {
+        $this->chat->resetUserStatus();
+    }
+
+    /**
      * Login.  
      * 
      * @param  string $account 
@@ -95,7 +106,7 @@ class chat extends control
         else
         {
             $this->output->result = 'success';
-            $this->output->users  = array($userID);
+            $this->output->users  = !empty($userID) ? array($userID) : array();
             $this->output->data   = $users;
         }
 

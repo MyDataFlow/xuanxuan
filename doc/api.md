@@ -30,6 +30,24 @@ rzs：后台然之服务器
 }
 ```
 
+## xxd启动
+>xxd启动时会向rzs发送一条请求，rzs收到请求将所有用户状态重置为offline。
+
+### 请求
+#### 方向：xxd --> rzs
+```js
+{
+    module: 'chat',
+    method: 'serverStart'
+}
+```
+
+### 响应
+#### 方向：rzs ---> xxd
+```js
+HTTP Status Code
+```
+
 ## 登录
 ### 请求  
 #### 方向：client --> xxd
@@ -215,7 +233,7 @@ xxd把client发送的数据转发给rzs。
 ## 获取当前登录用户所有离线消息
 ### 请求
 #### 方向： xxd --> rzs
-```json
+```js
 {
     userID,
     module: 'chat',
@@ -225,7 +243,7 @@ xxd把client发送的数据转发给rzs。
 
 ### 响应
 #### 方向：rzs --> xxd
-```json
+```js
 {
     module: 'chat',
     method: 'message',
