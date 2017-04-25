@@ -275,7 +275,7 @@ class xuanxuan extends router
     {
         $key    = $this->config->xuanxuan->key;
         $iv     = substr($key, 0, 16);
-        $output = helper::jsonEncode($output) . PHP_EOL;
+        $output = helper::jsonEncode($output);
         $output = $this->pkcs5_pad($output, $blockSize = 16);
         $output = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $output, MCRYPT_MODE_CBC, $iv);
         return helper::removeUTF8Bom($output);

@@ -128,18 +128,10 @@ class chat extends control
      * @access public
      * @return void
      */
-    public function userChange($name = '', $account = '', $realname = '', $avatar = '', $role = '', $dept = '', $status = '', $userID = 0)
+    public function userChange($user = array(), $userID = 0)
     {
-        $user = new stdclass();
-        $user->id       = $userID;
-        $user->name     = $name;
-        $user->account  = $account;
-        $user->realname = $realname;
-        $user->avatar   = $avatar;
-        $user->role     = $role;
-        $user->dept     = $dept;
-        $user->status   = $status;
-
+        $user = (object)$user;
+        $user->id = $userID;
         $user  = $this->chat->editUser($user);
         $users = $this->chat->getUserList($status = 'online');
 
@@ -176,14 +168,13 @@ class chat extends control
     /**
      * Get public chat list. 
      * 
-     * @param  bool   $public 
      * @param  int    $userID
      * @access public
      * @return void
      */
-    public function getPublicList($public = true, $userID = 0)
+    public function getPublicList($userID = 0)
     {
-        $chatList = $this->chat->getList($public);
+        $chatList = $this->chat->getList();
         foreach($chatList as $chat) 
         {
             $chat->members = $this->chat->getMemberListByGID($chat->gid);
@@ -242,7 +233,7 @@ class chat extends control
      */
     public function members($gid = '', $userID = 0)
     {
-        $memberList = $this->chat->getMemberListByGID($gid);
+        $members = $this->chat->getMemberListByGID($gid);
         if(dao::isError())
         {
             $this->output->result  = 'fail';
@@ -252,7 +243,7 @@ class chat extends control
         {
             $data = new stdclass();
             $data->gid     = $gid;
-            $data->members = $memberList;
+            $data->members = $members;
 
             $this->output->result = 'success';
             $this->output->users  = array($userID);
@@ -273,7 +264,6 @@ class chat extends control
         $messages = $this->chat->getOfflineMessages($userID);
         if(dao::isError())
         {
-            $this->output->method  = 'message';
             $this->output->result  = 'fail';
             $this->output->message = 'Get offline messages fail.';
         }
@@ -283,6 +273,7 @@ class chat extends control
             $this->output->users  = array($userID);
             $this->output->data   = $messages;
         }
+        $this->output->method = 'message';
         die($this->app->encrypt($this->output));
     }
 
@@ -418,6 +409,8 @@ class chat extends control
 
         $chat  = $this->chat->getByGID($gid, true);
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
+        $users = array_keys($users);
+        $users[] = $userID;
 
         if(dao::isError())
         {
@@ -436,7 +429,7 @@ class chat extends control
         else
         {
             $this->output->result = 'success';
-            $this->output->users  = array_keys($users);
+            $this->output->users  = $users;
             $this->output->data   = $chat;
         }
 
@@ -577,7 +570,7 @@ class chat extends control
         {
             $this->output->result = 'success';
             $this->output->users  = array_keys($users);
-            $this->output->data   = $data;
+            $this->output->data   = $chat;
         }
 
         die($this->app->encrypt($this->output));
@@ -611,9 +604,13 @@ class chat extends control
         }
         else
         {
+            $data = new stdclass();
+            $data->gid  = $gid;
+            $data->star = $star;
+
             $this->output->result = 'success';
             $this->output->users  = array($userID);
-            $this->output->data   = $chat;
+            $this->output->data   = $data;
         }
         die($this->app->encrypt($this->output));
     }
@@ -687,8 +684,8 @@ class chat extends control
 
         foreach($members as $member) $this->chat->joinChat($gid, $member, $join);
 
-        $members = $this->chat->getMemberListByGID($gid);
-        $users   = $this->chat->getUserList($status = 'online', array_values($members));
+        $chat->members = $this->chat->getMemberListByGID($gid);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
 
         if(dao::isError())
         {
@@ -878,10 +875,7 @@ class chat extends control
         {
             $this->output->result = 'success';
             $this->output->userID = array($userID);
-            if(!$settings)
-            {
-                $this->output->data = $this->config->chat->settings->$account;
-            }
+            $this->output->data   = !empty($settings) ? $settings : $this->config->chat->settings->$account;
         }
 
         die($this->app->encrypt($this->output));
