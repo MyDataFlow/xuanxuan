@@ -246,7 +246,7 @@ const ChatMenu = React.createClass({
                     heading={(data.title || false)}
                     expand={true}
                 >
-                {App.user.getConfig('ui.chat.menu.showMe') ? <ListItem
+                {this.state.type === MENU_TYPES.contacts && App.user.getConfig('ui.chat.menu.showMe') ? <ListItem
                     key={App.user.id}
                     style={STYLE.itemStyle}
                     onClick={() => App.openProfile()} 
