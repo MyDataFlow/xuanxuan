@@ -963,6 +963,7 @@ xxd把client发送的数据转发给rzs。
 
 * `file`：文件域，包括文件名；
 * `gid`：该文件所属会话的 gid；
+* `userid`：当前用户 id；
 
 以下为以 JavaScript 对象存储的请求数据示例：
 
