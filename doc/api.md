@@ -68,7 +68,7 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
     }
 }
 ```
-登录成功以后xxd主动从rzs服务器获取用户列表和用户所参与的会话信息发送送给当前客户端。最后把rzs服务器响应给xxd服务器的登录信息去掉users字段后，发送给此会话包含的所有在线用户。
+登录成功以后xxd主动从rzs服务器获取用户列表、用户所参与的会话信息和用户的离线消息发送给当前客户端。最后把rzs服务器响应给xxd服务器的登录信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ## 登出
 ### 请求
@@ -211,6 +211,44 @@ xxd把client发送的数据转发给rzs。
 ```
 #### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+
+## 获取当前登录用户所有离线消息
+### 请求
+#### 方向： xxd --> rzs
+```json
+{
+    userID,
+    module: 'chat',
+    method: 'getOfflineMessages',
+}
+```
+
+### 响应
+#### 方向：rzs --> xxd
+```json
+{
+    module: 'chat',
+    method: 'message',
+    result,
+    users[],
+    data:  // 一个包含一条或多条离线消息的数组
+    [
+        {                // 其中一条离线消息
+            id,          // 消息在服务器保存的id
+            gid,         // 此消息的gid
+            cgid,        // 此消息关联的会话的gid
+            user,        // 消息发送的用户名
+            date,        // 消息发送的时间
+            type,        // 消息的类型
+            contentType, // 消息内容的类型
+            content,     // 消息内容
+        },
+        // 更多离线消息
+    ]
+}
+```
+#### 方向：xxd --> client
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
 ## 更改当前登录用户的信息
 ### 请求
