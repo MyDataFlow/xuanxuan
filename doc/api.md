@@ -804,46 +804,6 @@ xxd把client发送的数据转发给rzs。
 #### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 获取指定会话的所有文件列表
-### 请求
-#### 方向：client --> xxd
-```js
-{
-    userID,
-    module: 'attach',
-    method: 'getList',
-    params: 
-    {
-        gid // 要获取文件列表的会话的全局id
-    }
-}
-```
-#### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
-
-### 响应
-#### 方向：rzs --> xxd
-```js
-{
-    module: 'attach',
-    method: 'getList',
-    result,
-    users[],
-    data: 
-    [      // 所有文件列表
-        {
-            id,      // 文件id, 下载文件需要此id值
-            title,   // 文件标题
-            size,    // 文件大小
-            addedBy, // 上传人
-        },
-        /// 更多文件
-    ]
-}
-```
-#### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
-
 ## 设置会话管理员
 ### 请求
 #### 方向：client --> xxd
@@ -969,7 +929,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 #### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
 ## 上传文件
 ### 请求
