@@ -80,10 +80,12 @@ class ChatApp extends AppCore {
                                 }
 
                                 chat.assign(msg.data);
+                                chat.lastActiveTime = new Date().getTime();
                                 chat.updateMembersSet(this);
                                 this.dao.updateChats(chat);
                             } else {
                                 chat = new Chat(msg.data);
+                                chat.lastActiveTime = new Date().getTime();
                                 chat.updateWithApp(this);
                                 this.dao.updateChats(chat);
                             }
@@ -169,17 +171,30 @@ class ChatApp extends AppCore {
                     },
                     joinchat: msg => {
                         if(msg.isSuccess) {
-                            if(!msg.data.join) {
-                                this.dao.deleteChat(msg.data.gid);
+                            if(this.user.isNewApi) {
+                                if(msg.data.gid) {
+                                    let chat = new Chat(msg.data);
+                                    if(chat.isMember(this.user.id)) {
+                                        chat.lastActiveTime = new Date().getTime();
+                                        chat.updateWithApp(this);
+                                        this.dao.updateChats(chat);
+                                    } else if(this.dao.chats[chat.gid]) {
+                                        this.dao.deleteChat(chat.gid);
+                                    }
+                                }
                             } else {
-                                let chat = this.dao.getChat(msg.data.gid);
-                                if(chat) {
-                                    chat.addMember(this.user);
-                                    this.dao.updateChats(chat);
+                                if(!msg.data.join) {
+                                    this.dao.deleteChat(msg.data.gid);
                                 } else {
-                                    chat = new Chat(msg.data.chat);
-                                    chat.updateWithApp(this);
-                                    this.dao.updateChats(chat);
+                                    let chat = this.dao.getChat(msg.data.gid);
+                                    if(chat) {
+                                        chat.addMember(this.user);
+                                        this.dao.updateChats(chat);
+                                    } else {
+                                        chat = new Chat(msg.data.chat);
+                                        chat.updateWithApp(this);
+                                        this.dao.updateChats(chat);
+                                    }
                                 }
                             }
                         }
@@ -369,7 +384,14 @@ class ChatApp extends AppCore {
         }
         this.socket.send(this.socket.createSocketMessage({
             'method': 'create',
-            'params': [chat.gid, chat.name || '', chat.type, chat.members, 0]
+            'params': [
+                chat.gid, 
+                chat.name || '',
+                chat.type,
+                chat.members,
+                0,
+                false
+            ]
         }));
     }
 

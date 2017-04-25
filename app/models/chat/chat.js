@@ -130,6 +130,15 @@ class Chat extends Entity {
     }
 
     /**
+     * Is member
+     * @param  {number|object}  member
+     * @return {Boolean}
+     */
+    isMember(member) {
+        return this.members && this.members.has((typeof member === 'object') ? member.id : member);
+    }
+
+    /**
      * Try to get the other member
      * @param  {Member} current user, me
      * @return {Member | null}
