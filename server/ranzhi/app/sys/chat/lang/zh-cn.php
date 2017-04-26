@@ -1,5 +1,9 @@
 <?php
 $lang->chat = new stdclass();
+$lang->chat->upgradeSuccess = '升级成功！';
+$lang->chat->upgradeFail    = '升级失败！';
+$lang->chat->latestVersion  = '喧喧已经是最新版！';
+
 $lang->chat->notAdmin       = '不是系统管理员。';
 $lang->chat->notSystemChat  = '不是系统会话。';
 $lang->chat->notGroupChat   = '不是多人会话。';

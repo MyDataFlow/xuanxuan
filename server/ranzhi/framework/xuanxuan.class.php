@@ -80,12 +80,12 @@ class xuanxuan extends router
         $method  = !empty($input->method) ? $input->method : '';
         $params  = !empty($input->params) ? $input->params : array();
         
-        if(!$module or !$method) 
+        if(!$module or !$method or $module != 'chat') 
         {
             $data = new stdclass();
-            $data->module = 'null';
-            $data->method = 'null';
-            $data->data   = 'Invalid module or method.';
+            $data->module = 'chat';
+            $data->method = 'kickoff';
+            $data->data   = 'Illegal Requset.';
             die($this->encrypt($data));
         }
         
@@ -260,6 +260,10 @@ class xuanxuan extends router
         $iv    = substr($key, 0, 16);
         $input = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $input, MCRYPT_MODE_CBC, $iv);
         $input = $this->pkcs5_unpad($input, $blockSize = 16);
+        if($this->config->debug)
+        {
+            $this->log("decrypt: " . $input);
+        }
         $input = json_decode($input);
         return $input;
     }
@@ -276,6 +280,10 @@ class xuanxuan extends router
         $key    = $this->config->xuanxuan->key;
         $iv     = substr($key, 0, 16);
         $output = helper::jsonEncode($output);
+        if($this->config->debug)
+        {
+            $this->log("encrypt: " . $output);
+        }
         $output = $this->pkcs5_pad($output, $blockSize = 16);
         $output = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $output, MCRYPT_MODE_CBC, $iv);
         return helper::removeUTF8Bom($output);

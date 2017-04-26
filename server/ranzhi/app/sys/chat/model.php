@@ -512,4 +512,89 @@ class chatModel extends model
         }
         return !dao::isError();
     }
+
+    /**
+     * Upgrade xuanxuan. 
+     * 
+     * @access public
+     * @return void
+     */
+    public function upgrade()
+    {
+        $version = $this->getVersion();
+        if(version_compare($this->config->xuanxuan->version, $version, '<=')) 
+        {
+            $output = <<<EOT
+<html>
+  <head><meta charset='utf-8'></head>
+  <body>
+    <div style='text-align: center'>
+      <h1>{$this->lang->chat->latestVersion}</h1>
+    </div>
+  </body>
+</html>
+EOT;
+            die($output);
+        }
+
+        switch($version)
+        {
+        case '1.0': $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
+        default: $this->loadModel('setting')->setItem('system.sys.xuanxuan.global.version', $this->config->xuanxuan->version);
+        }
+
+        if(dao::isError())
+        {
+            $error  = dao::getError(true);
+            $output = <<<EOT
+<html>
+  <head><meta charset='utf-8'></head>
+  <body>
+    <div style='text-align: center'>
+      <h1>{$this->lang->chat->upgradeFail}</h1>
+      <p>{$error}</p>
+    </div>
+  </body>
+</html>
+EOT;
+        }
+        else
+        {
+            $output = <<<EOT
+<html>
+  <head><meta charset='utf-8'></head>
+  <body>
+    <div style='text-align: center'>
+      <h1>{$this->lang->chat->upgradeSuccess}</h1>
+    </div>
+  </body>
+</html>
+EOT;
+        }
+        die($output);
+    }
+
+    /**
+     * Get version of xuanxuan.
+     * 
+     * @access public
+     * @return string
+     */
+    public function getVersion()
+    {
+        $version = !empty($this->config->xuanxuan->global->version) ? $this->config->xuanxuan->global->version : '1.0';
+        return $version;
+    }
+
+    /**
+     * Get upgrade file. 
+     * 
+     * @param  string $version 
+     * @access public
+     * @return string
+     */
+    public function getUpgradeFile($version = '1.0')
+    {
+        return $this->app->getBasepath() . 'db' . DS . 'upgradexuanxuan' . $version . '.sql';
+    }
 }

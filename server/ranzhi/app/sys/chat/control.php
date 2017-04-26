@@ -910,7 +910,7 @@ class chat extends control
 
         $file = new stdclass(); 
         $file->pathname    = $path;
-        $file->title       = rtrim($fileName, $extension);
+        $file->title       = rtrim($fileName, ".$extension");
         $file->extension   = $extension;
         $file->size        = $size;
         $file->objectType  = 'chat';
