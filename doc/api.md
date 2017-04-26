@@ -143,8 +143,8 @@ xxd把client发送的数据转发给rzs。
 #### 方向：xxd --> client
 ```js
 {
-    module:  'null',
-    method:  'null',
+    module:  'chat',
+    method:  'kickoff',
     message: 'This account logined in another place.'
 }
 ```

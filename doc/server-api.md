@@ -1250,7 +1250,7 @@ Socket API 执行的模式有两种：
     }
 }
 ```
-
+ 
 ### 重复登录
 
 当同一用户重复登录时,系统会向前一个登录的用户推送一条特殊的消息,客户端接收到该消息后应该将用户登出。该消息不需要响应或返回结果。
@@ -1259,8 +1259,8 @@ Socket API 执行的模式有两种：
 
 ```js
 {
-    module:  'null',
-    method:  'null',
+    module:  'chat',
+    method:  'kickoff',
     message: 'This account logined in another place.',
 }
 ```
