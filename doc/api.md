@@ -295,21 +295,24 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'userChange',
     params:
-    {             //更改后的信息        
-        id,       // ID
-        account,  // 用户名
-        realname, // 真实姓名
-        avatar,   // 头像URL
-        role,     // 角色
-        dept,     // 部门ID
-        status,   // 要设置的新状态,包括online, away, busy
-        admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
-        gender,   // 性别，u 未知 | f 女 | m 男
-        email,    // 邮箱
-        mobile,   // 手机
-        site,     // 网站
-        phone     // 电话
-    }
+    [                 // 更改后的用户        
+        user:         // 一个用户对象
+        {
+            id,       // ID
+            account,  // 用户名
+            realname, // 真实姓名
+            avatar,   // 头像URL
+            role,     // 角色
+            dept,     // 部门ID
+            status,   // 要设置的新状态,包括online, away, busy
+            admin,    // 是否超级管理员，super 超级管理员 | no 普通用户
+            gender,   // 性别，u 未知 | f 女 | m 男
+            email,    // 邮箱
+            mobile,   // 手机
+            site,     // 网站
+            phone     // 电话
+        }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -353,14 +356,14 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'create',
     params:
-    {
+    [
         gid,     // 会话的全局id,
         name,    // 会话的名称
         type,    // 会话的类型
         members: [{id}, {id}...] // 会话的成员列表 
         subject, //可选,主题会话的关联主题ID,默认为0
         pulic    //可选,是否公共会话,默认为false
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -408,10 +411,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'joinchat',
     params: 
-    {
+    [
         gid, // 要加入或退出的会话id
         join // 可选, true加入会话, false退出会话, 默认为true
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -457,10 +460,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'changeName',
     params:
-    {
+    [
         gid, // 要更改的会话id
         name // 新的名称
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -506,10 +509,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'star',
     params: 
-    {
+    [
         gid, // 要收藏会话id
         star // 可选, true收藏会话, false取消收藏会话, 默认为true
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -544,11 +547,11 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'addmember',
     params: 
-    {
+    [
         gid,     // 要操作的会话id
         members, // 用户id数组
         join     // 可选, true邀请用户加入会话, false将用户踢出会话, 默认为true
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -651,13 +654,13 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'history',
     params: 
-    {
+    [
         gid,        // 要获取消息记录的会话gid
         recPerPage, // 每页记录数
         pageID,     // 当前也数
         recTotal,   // 总记录数
         continued   // 是否继续获取历史记录
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -706,9 +709,9 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'members',
     params:
-    {
+    [
         gid // 要获取成员列表的会话gid
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -751,10 +754,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'hide',
     params: 
-    {
+    [
         gid, // 要收藏会话id
         hide // 可选, true隐藏会话, false显示会话, 默认为true
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -789,10 +792,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'changePublic',
     params: 
-    {
+    [
         gid,
         public, // 可选,true设置公共会话,false取消设置公共会话,默认为true
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -880,11 +883,11 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'setAdmin',
     params: 
-    {
+    [
         gid,  
         admins: [{id},{id}...], // 指定的用户列表
         isAdmin, //可选, true允许指定用户发言, false禁止指定用户发言, 默认为true 
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -929,10 +932,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'setCommitters',
     params: 
-    {
+    [
         gid,  
         committers: [{id},{id}...] // 指定的用户列表
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -975,10 +978,10 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'settings',
     params: 
-    {
+    [
         account, //用户名
         settings //用户配置信息, 可选, 为空表示下载用户配置信息, 不为空表示上传用户配置信息, 默认为空 
-    }
+    ]
 }
 ```
 #### 方向： xxd --> rzs
@@ -1041,13 +1044,13 @@ xxd把client发送的数据转发给rzs。
     module: 'chat',
     method: 'uploadFile',
     params: 
-    {
+    [
         fileName, // 文件名(带扩展名)
         path,     // 文件在xxd的路径
         size,     // 文件大小
         time,     // 时间戳
         gid,      // 会话ID
-    }
+    ]
 }
 ```
 xxd把client发送的数据转发给rzs。
