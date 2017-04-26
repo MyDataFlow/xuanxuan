@@ -150,7 +150,7 @@ const NewChatPublic = React.createClass({
         if(chats) {
             if(chats.length) {
                 if(Helper.isNotEmptyString(this.state.searchText)) {
-                    chats = chats.filter(member => {
+                    chats = chats.filter(chat => {
                         return (chat.name && chat.name.toLowerCase().includes(this.state.searchText))
                            || (chat.id && chat.id == this.searchText);
                     });
