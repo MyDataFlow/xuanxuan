@@ -157,6 +157,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		util.LogError().Println("get file size error")
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	//util.Println("fileSzie:", fileSize.Size())
@@ -167,10 +168,14 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	gid := r.Form["gid"][0]
 	userID := r.Form["userID"][0]
 
-	x2rJson := `{"userID":` + userID + `,"module":"chat","method":"uploadFile","params":{"fileName":"` + fileName + `","path":"` + savePath + `","size":` + util.Int642String(fileSize.Size()) + `,"time":` + nowTimeStr + `,"gid":"` + gid + `"}}`
+	x2rJson := `{"userID":` + userID + `,"module":"chat","method":"uploadFile","params":["` + fileName + `","` + savePath + `",` + util.Int642String(fileSize.Size()) + `,` + nowTimeStr + `,"` + gid + `"]}`
 
+	//util.Println(x2rJson)
 	fileID, err := api.UploadFileInfo(serverName, []byte(x2rJson))
 	if err != nil {
+		util.LogError().Println("Upload file info error:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// new file name = md5(old filename + fileID + nowTime)
