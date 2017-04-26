@@ -161,9 +161,15 @@ class Socket extends ReadyNotifier {
      * @return {void}
      */
     logout() {
-        return this.send({
+        this.send({
             'method': 'logout'
         });
+        if(this.user.isNewApi) {
+            clearTimeout(this.destroyTimeTask);
+            this.destroyTimeTask = setTimeout(() => {
+                this.destroy();
+            }, 5000);
+        }
     }
 
     /**
@@ -371,14 +377,16 @@ class Socket extends ReadyNotifier {
                 logout: msg => {
                     if(msg.isSuccess) {
                         if(msg.data.id === this.user.id) {
-                            this.user.status = 'offline';
+                            this.user.changeStatus(USER_STATUS.unverified);
+                            clearTimeout(this.destroyTimeTask);
+                            this.destroy();
+                        } else {
+                            let member = this.app.dao.getMember(msg.data.id);
+                            if(member) {
+                                member.status = 'offline';
+                                this._emit(R.event.data_change, {members: [member]});
+                            }
                         }
-                        let member = this.app.dao.getMember(msg.data.id);
-                        if(member) {
-                            member.status = 'offline';
-                            this._emit(R.event.data_change, {members: [member]});
-                        }
-                        this.destroy();
                     }
                 },
                 usergetlist: msg => {
@@ -568,6 +576,9 @@ class Socket extends ReadyNotifier {
             this.client.destroy();
         }
         this.isConnected = false;
+        if(DEBUG) {
+            console.log('Socket destroied!');
+        }
     }
 }
 
