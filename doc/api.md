@@ -57,9 +57,9 @@ HTTP Status Code
     method: 'login',
     params: 
     [
-		    serverName, //多然之时客户端登录的服务器名称
-        account,
-        password,   // 已加密
+        serverName, //多然之时客户端登录的服务器名称
+        account,    // 用户名
+        password,   // 加密后的密码
         status      // 登录后设置的状态,包括online,away,busy
     ]
  }
@@ -887,7 +887,7 @@ xxd把client发送的数据转发给rzs。
     [
         gid,  
         admins: [{id},{id}...], // 指定的用户列表
-        isAdmin, //可选, true允许指定用户发言, false禁止指定用户发言, 默认为true 
+        isAdmin //可选, true允许指定用户发言, false禁止指定用户发言, 默认为true 
     ]
 }
 ```
@@ -1016,7 +1016,7 @@ xxd把client发送的数据转发给rzs。
 
 * `file`：文件域，包括文件名；
 * `gid`：该文件所属会话的 gid；
-* `userid`：当前用户 id；
+* `userID`：当前用户 id；
 
 以下为以 JavaScript 对象存储的请求数据示例：
 
