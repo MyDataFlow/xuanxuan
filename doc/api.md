@@ -55,7 +55,8 @@ HTTP Status Code
 {
     module: 'chat',
     method: 'login',
-    params: [
+    params: 
+    [
 		    serverName, //多然之时客户端登录的服务器名称
         account,
         password,   // 已加密
