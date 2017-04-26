@@ -271,7 +271,9 @@ global.Helper = {
                 } else {
                     resolve();
                 }
-                callback && callback(err);
+                if(typeof callback === 'function') {
+                    callback(err);
+                }
             });
         });
     },
