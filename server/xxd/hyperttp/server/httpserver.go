@@ -13,11 +13,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
+	//"strings"
 	"xxd/api"
-	"xxd/hyperttp"
 	"xxd/util"
 )
 
@@ -42,6 +41,11 @@ const (
 	sInfo    = "/serverInfo"
 )
 
+// 获取文件大小的接口
+type Size interface {
+	Size() int64
+}
+
 func InitHttp() {
 	crt, key, err := CreateSignedCertKey()
 	if err != nil {
@@ -49,12 +53,10 @@ func InitHttp() {
 		return
 	}
 
-	/*
-		err = api.StartXXD()
-		if err != nil {
-			util.Exit("ranzhi server login error")
-		}
-	*/
+	err = api.StartXXD()
+	if err != nil {
+		util.Exit("ranzhi server login error")
+	}
 
 	http.HandleFunc(download, fileDownload)
 	http.HandleFunc(upload, fileUpload)
@@ -85,7 +87,6 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fromat "username,token"
 	auth := r.Header.Get("Authorization")
 	if auth != string(util.Token) {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -106,6 +107,7 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 
 	// new file name = md5(old filename + fileID + fileTime)
 	fileName := util.Config.UploadPath + serverName + "/" + util.GetYmdPath(fileTime) + util.GetMD5(reqFileName+reqFileID+reqFileTime)
+	//util.Println(fileName)
 	if util.IsNotExist(fileName) || util.IsDir(fileName) {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -120,8 +122,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.Println(r.Header)
-	// fromat "userID,token"
+	//util.Println(r.Header)
 	serverName := r.Header.Get("ServerName")
 	_, ok := util.Config.RanzhiServer[serverName]
 	if !ok {
@@ -129,23 +130,20 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	auth := r.Header.Get("Authorization")
-	if auth != string(util.Token) {
+	authorization := r.Header.Get("Authorization")
+	if authorization != string(util.Token) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	r.ParseMultipartForm(32 << 20)
+
 	file, handler, err := r.FormFile("file")
 	if err != nil {
 		util.LogError().Println("form file error:", err)
 		return
 	}
 	defer file.Close()
-
-	//发送数据到然之服务器，文件名和nowTime
-	//与然之进行通信
-	//获取然之返回的文件ID
 
 	nowTime := util.GetUnixTime()
 	savePath := util.Config.UploadPath + serverName + "/" + util.GetYmdPath(nowTime)
@@ -155,9 +153,28 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fileSize, ok := file.(Size)
+	if !ok {
+		util.LogError().Println("get file size error")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	//util.Println("fileSzie:", fileSize.Size())
+
+	//util.Println(r.Form)
+	fileName := util.FileBaseName(handler.Filename)
+	nowTimeStr := util.Int642String(nowTime)
+	gid := r.Form["gid"][0]
+	userID := r.Form["userID"][0]
+
+	x2rJson := `{"userID":` + userID + `,"module":"chat","method":"uploadFile","params":{"fileName":"` + fileName + `","path":"` + savePath + `","size":` + util.Int642String(fileSize.Size()) + `,"time":` + nowTimeStr + `,"gid":"` + gid + `"}}`
+
+	fileID, err := api.UploadFileInfo(serverName, []byte(x2rJson))
+	if err != nil {
+	}
+
 	// new file name = md5(old filename + fileID + nowTime)
-	fileID := string("1")
-	saveFile := savePath + util.GetMD5(util.FileBaseName(handler.Filename)+fileID+util.Int642String(nowTime))
+	saveFile := savePath + util.GetMD5(fileName+fileID+nowTimeStr)
 	f, err := os.OpenFile(saveFile, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		util.LogError().Println("open file error:", err)
@@ -167,7 +184,10 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 	io.Copy(f, file)
 
-	fmt.Fprintf(w, "%v", handler.Header)
+	x2cJson := `{"result":"success","data":{"time":` + nowTimeStr + `,"id":` + fileID + `,"name":"` + fileName + `"}}`
+	//fmt.Fprintln(w, handler.Header)
+	//util.Println(x2cJson)
+	fmt.Fprintln(w, x2cJson)
 }
 
 func serverInfo(w http.ResponseWriter, r *http.Request) {
@@ -175,30 +195,22 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "not supported request")
 		return
 	}
-	//该处需要做登录验证
-	body, err := ioutil.ReadAll(r.Body)
+
+	r.ParseForm()
+	//util.Println(r.Form)
+
+	ok, err := api.VerifyLogin([]byte(r.Form["data"][0]))
 	if err != nil {
+		util.LogError().Println("verify login error:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	defer r.Body.Close()
 
-	if body == nil {
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
 	}
-	/*
-			ok, err := verifyLogin(body)
-			if err != nil {
-				util.LogError().Println("verify login error:", err)
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
 
-		if !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-	*/
 	chatPort, err := util.String2Int(util.Config.ChatPort)
 	if err != nil {
 		util.LogError().Println("string to int error:", err)
@@ -221,29 +233,4 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, string(jsonData))
-}
-
-func verifyLogin(body []byte) (bool, error) {
-	parseData := make(api.ParseData)
-	if err := json.Unmarshal(body, &parseData); err != nil {
-		util.LogError().Println("json unmarshal error:", err)
-		return false, err
-	}
-
-	ranzhiServer, ok := util.Config.RanzhiServer[parseData.ServerName()]
-	if !ok {
-		return false, util.Errorf("no ranzhi server name")
-	}
-
-	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, api.ApiUnparse(parseData, ranzhiServer.RanzhiToken))
-	if err != nil {
-		return false, err
-	}
-
-	parseData, err = api.ApiParse(r2xMessage, ranzhiServer.RanzhiToken)
-	if err != nil {
-		return false, err
-	}
-
-	return parseData.Result() == "success", nil
 }

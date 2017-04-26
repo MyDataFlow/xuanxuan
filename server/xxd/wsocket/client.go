@@ -88,30 +88,10 @@ func dataProcessing(message []byte, client *Client) error {
 	return switchMethod(message, parseData, client)
 }
 
-func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) error {
-	switch parseData.Module() + "." + parseData.Method() {
-	case "chat.login":
-		if err := chatTestLogin(parseData, client); err != nil {
-			return err
-		}
-		break
-
-	case "chat.logout":
-		break
-
-	default:
-		chatTestMessage(parseData, client)
-		break
-	}
-
-	return nil
-}
-
 func switchMethod(message []byte, parseData api.ParseData, client *Client) error {
 
 	switch parseData.Module() + "." + parseData.Method() {
 	case "chat.login":
-		break
 		if err := chatLogin(parseData, client); err != nil {
 			return err
 		}
@@ -119,9 +99,12 @@ func switchMethod(message []byte, parseData api.ParseData, client *Client) error
 		break
 
 	case "chat.logout":
-		if err := chatLogout(parseData.UserID(), client); err != nil {
-			return err
-		}
+		client.conn.Close()
+		/*
+			if err := chatLogout(parseData.UserID(), client); err != nil {
+				return err
+			}
+		*/
 		break
 
 	default:
@@ -144,10 +127,8 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	}
 
 	if !ok {
-		//登录失败返回错误信息
+		// 登录失败返回错误信息
 		client.send <- loginData
-
-		util.LogError().Println("chat login error")
 		return util.Errorf("%s\n", "chat login error")
 	}
 	// 成功后返回login数据给客户端
@@ -188,6 +169,15 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 		//是重复登录，不需要再发送给其他用户上线信息
 		return nil
 	}
+
+	//获取历史消息
+	offlineMessages, err := api.GetofflineMessages(client.serverName, client.userID)
+	if err != nil {
+		util.LogError().Println("chat get offline messages error")
+		// 返回给客户端登录失败的错误信息
+		return err
+	}
+	client.send <- offlineMessages
 
 	// 推送当前登录用户信息给其他在线用户
 	// 因为是broadcast类型，所以不需要初始化userID
@@ -234,33 +224,6 @@ func X2cSend(serverName string, sendUsers []int64, message []byte, client *Clien
 	return nil
 }
 
-func chatTestLogin(parseData api.ParseData, client *Client) error {
-	client.serverName = parseData.ServerName()
-	client.userID = util.GetUnixTime()
-
-	cRegister := &ClientRegister{client: client, retClient: make(chan *Client)}
-	defer close(cRegister.retClient)
-
-	client.hub.register <- cRegister
-	if retClient := <-cRegister.retClient; retClient.repeatLogin {
-		retClient.send <- api.RepeatLogin()
-
-		util.Println("chat test login error")
-		return util.Errorf("%s\n", "chat test login error")
-	}
-
-	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: api.TestLogin()}
-
-	return nil
-}
-
-func chatTestMessage(parseData api.ParseData, client *Client) error {
-	message := api.ApiUnparse(parseData, util.Token)
-	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: message}
-
-	return nil
-}
-
 // readPump pumps messages from the websocket connection to the hub.
 //
 // The application runs readPump in a per-connection goroutine. The application
@@ -270,12 +233,12 @@ func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
-		// 要区分是断线退出还是正常退出
-		//chatLogout(c.userID, c)
+		// user logout
+		chatLogout(c.userID, c)
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
-	c.conn.SetReadDeadline(time.Now().Add(pongWait))
+	//c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
 	for util.Run {
@@ -321,30 +284,27 @@ func (c *Client) writePump() {
 			if !ok {
 				// The hub closed the channel.
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				util.LogError().Println("The hub closed the channel")
 				return
 			}
 
-			w, err := c.conn.NextWriter(websocket.BinaryMessage)
-			if err != nil {
+			if err := c.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
+				util.LogError().Println("write message error", err)
 				return
 			}
 
-			//message = append(newline, message...)
-			w.Write(message)
-
-			// Add queued chat messages to the current websocket message.
 			n := len(c.send)
 			for i := 0; i < n; i++ {
-				//w.Write(newline)
-				w.Write(<-c.send)
+				if err := c.conn.WriteMessage(websocket.BinaryMessage, <-c.send); err != nil {
+					util.LogError().Println("write message error", err)
+					return
+				}
 			}
 
-			if err := w.Close(); err != nil {
-				return
-			}
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
+				util.LogError().Println("write ping message error:", err)
 				return
 			}
 		}
