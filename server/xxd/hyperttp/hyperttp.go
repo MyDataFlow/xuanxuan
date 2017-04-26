@@ -21,7 +21,7 @@ const https = "https:"
 
 func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	if postData == nil || addr == "" {
-		return nil, util.Errorf("%s", "post data or addr is null\n")
+		return nil, util.Errorf("%s", "post data or addr is null")
 	}
 
 	var client *http.Client
@@ -54,10 +54,12 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	if len(body) == 0 {
-		util.LogError().Println("request body len is zero")
-		return nil, util.Errorf("%s", "request body len is zero\n")
-	}
+	/*
+		if len(body) == 0 {
+			util.LogError().Println("request body len is zero")
+			return nil, util.Errorf("%s", "request body len is zero")
+		}
+	*/
 
 	return body, nil
 }

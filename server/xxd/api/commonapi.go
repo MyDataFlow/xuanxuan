@@ -16,10 +16,6 @@ import (
 
 type ParseData map[string]interface{}
 
-type partForm struct {
-	Message []byte `json:message`
-}
-
 // 对通讯的api进行解析
 func ApiParse(message, token []byte) (ParseData, error) {
 	jsonData, err := aesDecrypt(message, token)
@@ -87,6 +83,15 @@ func (pd ParseData) Method() string {
 	}
 
 	return ret.(string)
+}
+
+func (pd ParseData) UserID() int64 {
+	ret, ok := pd["userID"]
+	if !ok {
+		return -1
+	}
+
+	return int64(ret.(float64))
 }
 
 func (pd ParseData) Result() string {

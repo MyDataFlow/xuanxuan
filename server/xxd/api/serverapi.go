@@ -10,26 +10,16 @@
 package api
 
 import (
+	"encoding/json"
 	"xxd/hyperttp"
 	"xxd/util"
 )
-
-func (pd ParseData) UserID() int64 {
-	data, ok := pd["data"]
-	if !ok {
-		return -1
-	}
-
-	intfData := data.(map[string]interface{})
-	ret := int64(intfData["id"].(float64))
-	return ret
-}
 
 // 需要重新构思，多然之时，不能因为一个登陆失败就导致所有的不能登录。
 // 是否考虑可以自动重连。
 // 需要考虑登录成功后，然之服务器掉线的处理方式
 func StartXXD() error {
-	startXXD := []byte(`{module:  'null',method:  'null',message: 'This account logined in another place.'}`)
+	startXXD := []byte(`{"module":"chat","method":"serverStart"}`)
 
 	for serverName, serverInfo := range util.Config.RanzhiServer {
 		message, err := aesEncrypt(startXXD, serverInfo.RanzhiToken)
@@ -46,4 +36,74 @@ func StartXXD() error {
 	}
 
 	return nil
+}
+
+func VerifyLogin(body []byte) (bool, error) {
+	parseData := make(ParseData)
+	if err := json.Unmarshal(body, &parseData); err != nil {
+		util.LogError().Println("json unmarshal error:", err)
+		return false, err
+	}
+
+	ranzhiServer, ok := util.Config.RanzhiServer[parseData.ServerName()]
+	if !ok {
+		return false, util.Errorf("no ranzhi server name")
+	}
+
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, ApiUnparse(parseData, ranzhiServer.RanzhiToken))
+	if err != nil {
+		return false, err
+	}
+
+	parseData, err = ApiParse(r2xMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		return false, err
+	}
+
+	return parseData.Result() == "success", nil
+}
+
+func UploadFileInfo(serverName string, jsonData []byte) (string, error) {
+	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	if !ok {
+		return "", util.Errorf("%s", "no ranzhi server name")
+	}
+
+	message, err := aesEncrypt(jsonData, ranzhiServer.RanzhiToken)
+	if err != nil {
+		util.LogError().Println("aes encrypt error:", err)
+		return "", err
+	}
+
+	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
+	if err != nil {
+		return "", err
+	}
+
+	parseData, err := ApiParse(r2xMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		return "", err
+	}
+
+	return parseData.FileID(), nil
+}
+
+func (pd ParseData) loginUserID() int64 {
+	data, ok := pd["data"]
+	if !ok {
+		return -1
+	}
+
+	intfData := data.(map[string]interface{})
+	ret := int64(intfData["id"].(float64))
+	return ret
+}
+
+func (pd ParseData) FileID() string {
+	data, ok := pd["data"]
+	if !ok {
+		return ""
+	}
+
+	return (data.(interface{})).(string)
 }
