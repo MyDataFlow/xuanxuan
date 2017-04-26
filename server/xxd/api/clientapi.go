@@ -95,8 +95,8 @@ func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
 }
 
 func RepeatLogin() []byte {
-	repeatLogin := []byte(`{module:  'null',method:  'null',message: 'This account logined in another place.'}`)
-	repeatLogin = append(repeatLogin, newline...)
+	repeatLogin := []byte(`{"module":"chat","method:"kickoff","message":"当前账号已在其他地方登录，如果不是本人操作，请及时修改密码"}`)
+	//repeatLogin := []byte(`{"module":"chat","method:"kickoff","message":"This account logined in another place."}`)
 
 	message, err := aesEncrypt(repeatLogin, util.Token)
 	if err != nil {
@@ -110,7 +110,7 @@ func RepeatLogin() []byte {
 func TestLogin() []byte {
 	loginData := []byte(`{"result":"success","data":{"id":12,"account":"demo8","realname":"\u6210\u7a0b\u7a0b","avatar":"","role":"hr","dept":0,"status":"online","admin":"no","gender":"f","email":"ccc@demo.com","mobile":"","site":"","phone":""},"sid":"18025976a786ec78194e491e7b790731","module":"chat","method":"login"}`)
 
-	loginData = append(loginData, newline...)
+	//loginData = append(loginData, newline...)
 	message, err := aesEncrypt(loginData, util.Token)
 	if err != nil {
 		util.LogError().Println("aes encrypt error:", err)
