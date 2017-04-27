@@ -29,7 +29,7 @@ func init() {
 
 	timeStr := Int642String(GetUnixTime())
 	Token = []byte(GetMD5(timeStr))
-	Token = []byte("12345678888888888888888888888888")
+	//Token = []byte("12345678888888888888888888888888")
 
 	LogInfo().Println()
 	LogInfo().Printf("sys start,version:%s, server test model is %v\n", Version, IsTest)

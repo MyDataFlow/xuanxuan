@@ -26,8 +26,9 @@ class chatModel extends model
         $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
         if($user)
         {
-            $user->id   = (int)$user->id;
-            $user->dept = (int)$user->dept;
+            $user->id     = (int)$user->id;
+            $user->dept   = (int)$user->dept;
+            $user->avatar = !empty($user->avatar) ? commonModel::getSysURL() . $user->avatar : $user->avatar;
         }
 
         return $user;
@@ -59,8 +60,9 @@ class chatModel extends model
 
         foreach($users as $user) 
         {
-            $user->id   = (int)$user->id;
-            $user->dept = (int)$user->dept;
+            $user->id     = (int)$user->id;
+            $user->dept   = (int)$user->dept;
+            $user->avatar = !empty($user->avatar) ? commonModel::getSysURL() . $user->avatar : $user->avatar;
         }
 
         return $users;
@@ -267,7 +269,7 @@ class chatModel extends model
         $dataList = $this->dao->select('*')->from(TABLE_IM_USERMESSAGE)->where('user')->eq($userID)->orderBy('level, id')->fetchAll();
         foreach($dataList as $data)
         {
-            $messages = array_merge($messages, json_decode($data->messages));
+            $messages = array_merge($messages, json_decode($data->message));
         }
         if(!dao::isError()) $this->dao->delete()->from(TABLE_IM_USERMESSAGE)->where('user')->eq($userID)->exec();
         return $messages;
@@ -506,8 +508,8 @@ class chatModel extends model
         foreach($users as $user)
         {
             $data = new stdclass();
-            $data->user     = $user;
-            $data->messages = helper::jsonEncode($messages);
+            $data->user    = $user;
+            $data->message = helper::jsonEncode($messages);
             $this->dao->insert(TABLE_IM_USERMESSAGE)->data($data)->exec();
         }
         return !dao::isError();

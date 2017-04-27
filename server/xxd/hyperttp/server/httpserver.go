@@ -212,6 +212,7 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !ok {
+		//util.Println("auth error")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}

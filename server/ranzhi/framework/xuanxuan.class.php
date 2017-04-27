@@ -73,6 +73,15 @@ class xuanxuan extends router
      */
     public function parseRequest()
     {
+        if(!function_exists('mcrypt_encrypt'))
+        {
+            $data = new stdclass();
+            $data->module = 'chat';
+            $data->method = 'kickoff';
+            $data->data   = 'Need enable mcrypt module of php.';
+            die($this->encrypt($data));
+        }
+
         $input   = file_get_contents("php://input");
         $input   = $this->decrypt($input);
         $userID  = !empty($input->userID) ? $input->userID : '';

@@ -30,7 +30,7 @@ func StartXXD() error {
 
 		_, err = hyperttp.RequestInfo(serverInfo.RanzhiAddr, message)
 		if err != nil {
-			util.LogError().Printf("aes encrypt error:%s,ranzhi %s server login err", err, serverName)
+			util.LogError().Printf("start xxd to server [%s],login error: [%s]", serverName, err)
 			return err
 		}
 	}
@@ -50,6 +50,7 @@ func VerifyLogin(body []byte) (bool, error) {
 		return false, util.Errorf("no ranzhi server name")
 	}
 
+	//util.Println(ranzhiServer)
 	r2xMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, ApiUnparse(parseData, ranzhiServer.RanzhiToken))
 	if err != nil {
 		return false, err
