@@ -25,7 +25,7 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	}
 
 	var client *http.Client
-	if addr[:6] == https {
+	if addr[:5] == https {
 		client = httpRequest()
 	} else {
 		client = httpsRequest()
