@@ -95,7 +95,7 @@ func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
 }
 
 func RepeatLogin() []byte {
-	repeatLogin := []byte(`{"module":"chat","method:"kickoff","message":"当前账号已在其他地方登录，如果不是本人操作，请及时修改密码"}`)
+	repeatLogin := []byte(`{"module":"chat","method":"kickoff","message":"当前账号已在其他地方登录，如果不是本人操作，请及时修改密码"}`)
 	//repeatLogin := []byte(`{"module":"chat","method:"kickoff","message":"This account logined in another place."}`)
 
 	message, err := aesEncrypt(repeatLogin, util.Token)
