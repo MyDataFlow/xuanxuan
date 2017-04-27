@@ -39,12 +39,13 @@ func aesDecrypt(crypted, key []byte) ([]byte, error) {
 	}
 
 	blockSize := block.BlockSize()
-	if len(crypted)%blockSize != 0 {
+	cryptedSize := len(crypted)
+	if cryptedSize == 0 || cryptedSize%blockSize != 0 {
 		return nil, util.Errorf("%s\n", "input not full blocks")
 	}
 
 	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
-	origData := make([]byte, len(crypted))
+	origData := make([]byte, cryptedSize)
 	// origData := crypted
 	blockMode.CryptBlocks(origData, crypted)
 	origData = pkcs5UnPadding(origData)

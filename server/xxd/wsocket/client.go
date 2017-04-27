@@ -258,7 +258,8 @@ func (c *Client) readPump() {
 
 		//返回user id 、登录响应的数据、ok
 		if dataProcessing(message, c) != nil {
-			util.Println("error exit")
+
+			util.LogInfo().Println("client exit ip:", c.conn.RemoteAddr())
 			break
 		}
 	}
