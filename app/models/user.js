@@ -60,11 +60,8 @@ class User extends Member {
             server = (this.isClassicApi ? 'http://' : 'https://') + server;
         }
         let url = new URL(server);
-        if(!url.port && this.isNewApi) {
-            url.port = 11443;
-        }
         this._server = url.toString();
-        this.$.serverUrl = url;
+        this.$.serverUrl = null;
     }
 
     /**
@@ -101,6 +98,9 @@ class User extends Member {
         }
         if(!this.$.serverUrl) {
             this.$.serverUrl = new URL(this._server);
+            if(!this.$.serverUrl.port) {
+                this.$.serverUrl.port = 11443;
+            }
         }
         return this.$.serverUrl;
     }
