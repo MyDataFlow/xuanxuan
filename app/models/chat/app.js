@@ -576,8 +576,12 @@ class ChatApp extends AppCore {
             let theOtherOneContactInfo = '';
             if(chat.isOne2One) {
                 let theOtherOne = chat.getTheOtherOne(this.user);
-                theOtherOneAccount = theOtherOne.account;
-                theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');
+                if(theOtherOne) {
+                    theOtherOneAccount = theOtherOne.account;
+                    theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');
+                } else {
+                    if(DEBUG) console.warn('Cannot get the other one of chat', chat);
+                }
             }
             search.forEach(s => {
                 if(!s.length) return;
