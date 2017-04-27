@@ -184,6 +184,7 @@ class App extends ReadyNotifier {
 
         this.browserWindow.on('focus', () => {
             this.emit(R.event.ui_focus_main_window);
+            this.flashTrayIcon(false);
         });
 
         this.browserWindow.on('blur', () => {
