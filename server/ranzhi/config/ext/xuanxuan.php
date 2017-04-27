@@ -1,7 +1,7 @@
 <?php
 $config->xuanxuan = new stdclass();
 $config->xuanxuan->version = '1.1.0';
-$config->xuanxuan->key     = 'c3c5374a2ea38cfe8282ef6a33f3ef8c';
+$config->xuanxuan->key     = '';    //Set a 32 byte string as your key.
 
 define('TABLE_IM_CHAT',        '`im_chat`');
 define('TABLE_IM_MESSAGE',     '`im_message`');
