@@ -46,6 +46,11 @@ type Size interface {
 	Size() int64
 }
 
+// 获取文件信息的接口
+type Stat interface {
+	Stat() (os.FileInfo, error)
+}
+
 func InitHttp() {
 	crt, key, err := CreateSignedCertKey()
 	if err != nil {
@@ -153,14 +158,19 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fileSize, ok := file.(Size)
-	if !ok {
-		util.LogError().Println("get file size error")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	var fileSize int64 = 0
+	if statInterface, ok := file.(Stat); ok {
+		fileInfo, _ := statInterface.Stat()
+		fileSize = fileInfo.Size()
 	}
 
-	//util.Println("fileSzie:", fileSize.Size())
+	if sizeInterface, ok := file.(Size); ok {
+		fileSize = sizeInterface.Size()
+	}
+
+	if fileSize <= 0 {
+		util.LogError().Println("get file size error")
+	}
 
 	//util.Println(r.Form)
 	fileName := util.FileBaseName(handler.Filename)
@@ -168,7 +178,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	gid := r.Form["gid"][0]
 	userID := r.Form["userID"][0]
 
-	x2rJson := `{"userID":` + userID + `,"module":"chat","method":"uploadFile","params":["` + fileName + `","` + savePath + `",` + util.Int642String(fileSize.Size()) + `,` + nowTimeStr + `,"` + gid + `"]}`
+	x2rJson := `{"userID":` + userID + `,"module":"chat","method":"uploadFile","params":["` + fileName + `","` + savePath + `",` + util.Int642String(fileSize) + `,` + nowTimeStr + `,"` + gid + `"]}`
 
 	//util.Println(x2rJson)
 	fileID, err := api.UploadFileInfo(serverName, []byte(x2rJson))
