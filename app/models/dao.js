@@ -310,6 +310,13 @@ class DAO {
                 return this.$.members[x].account === idOrAccount;
             });
             if(findId) member = this.$.members[findId]
+            else {
+                member = new Member({
+                    id: idOrAccount,
+                    account: idOrAccount,
+                    realname: '用户-' + idOrAccount
+                });
+            }
         }
         return member;
     }

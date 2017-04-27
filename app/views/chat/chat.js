@@ -66,11 +66,14 @@ const ChatPage = React.createClass({
         }
     },
 
-    componentDidMount() {
-        let chat = App.chat.dao.getChat(this.props.chatGid);
+    _initChat(chat) {
+        chat = chat || this.state.chat || App.chat.dao.getChat(this.props.chatGid);
         if(!chat) {
             return;
+        } else if(this._chatInited) {
+            return;
         }
+        this._chatInited = true;
         let sidebarConfig = App.user.getConfig(`ui.chat.sidebar.${chat.gid}`, {expand: !chat.isOne2One});
         this.setState({
             chat,
@@ -109,13 +112,6 @@ const ChatPage = React.createClass({
             this.sidebarConfig = sidebarConfig;
             this.messageList.scrollToBottom(1500);
         });
-        this._handleDataChangeEvent = App.on(R.event.data_change, data => {
-            let chat = null;
-            if(data.chats) {
-                chat = data.chats.find(x => x.gid === this.props.chatGid);
-            }
-            if(chat && chat.gid === this.props.chatGid) this.setState({chat});
-        });
 
         if(chat.isCommitter(App.user)) {
             this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
@@ -132,6 +128,22 @@ const ChatPage = React.createClass({
                 }
             });
         }
+    },
+
+    componentDidMount() {
+        this._handleDataChangeEvent = App.on(R.event.data_change, data => {
+            let chat = null;
+            if(data.chats) {
+                chat = data.chats.find(x => x.gid === this.props.chatGid);
+            }
+            if(chat && chat.gid === this.props.chatGid) {
+                this.setState({chat}, () => {
+                    this._initChat();
+                });
+            }
+        });
+
+        this._initChat();
     },
 
     componentWillUnmount() {
