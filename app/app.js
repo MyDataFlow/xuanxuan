@@ -500,16 +500,14 @@ class App extends ReadyNotifier {
                 if(DEBUG) {
                     console.log('%cUSER DATA PATH ' + user.dataPath, 'display: inline-block; font-size: 10px; color: #009688; background: #A7FFEB; border: 1px solid #A7FFEB; padding: 1px 5px; border-radius: 2px;');
                 }
-                this.config.save(user);
-                // API.tryLogin(user);
 
+                // set user status
+                this.user = user;
+                this.config.save(user);
+                this.isUserLogining = false;
+                this.user.changeStatus(serverStatus || 'online');
                 setTimeout(() => {
-                    // set user status
-                    this.user = user;
-                    this.user.changeStatus(serverStatus || 'online')
-                    this.socket.user = user;
-                    this.isUserLogining = false;
-                    this.emit(R.event.user_login_finish, {user: user, result: true});
+                    this.emit(R.event.user_login_finish, {user: user, result: true});                    
                 }, 2000);
             }).catch(err => {
                 this.user = user;

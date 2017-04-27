@@ -54,8 +54,8 @@ const PageContianer = React.createClass({
                 if(pageConfig.online && App.user.isUnverified) {
                     this.updateTimeTask = setTimeout(() => {
                         this.forceUpdate();
-                    }, 3000);
-                    return <ContentNotReady className="page dock-full" title={'正在联系服务器...'} />;;
+                    }, 1000);
+                    return <ContentNotReady iconName=":train:" className="page dock-full" title={'正在联系服务器...'} />;;
                 }
                 let PageComponent = pageConfig.component;
                 return <PageComponent className="page dock-full"/>;
