@@ -571,7 +571,7 @@ class ChatApp extends AppCore {
             let score = 0;
             let chatGid = chat.gid.toLowerCase();
             let chatName = chat.getDisplayName(this.$app, false).toLowerCase();
-            let pinYin = chat.getPinYin(chatName);
+            let pinYin = chat.getPinYin(this.$app);
             let theOtherOneAccount = '';
             let theOtherOneContactInfo = '';
             if(chat.isOne2One) {
