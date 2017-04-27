@@ -38,6 +38,7 @@ const PageContianer = React.createClass({
 
     componentWillUnmount() {
         App.off(this._handleUIChangeEvent);
+        clearTimeout(this.updateTimeTask);
     },
 
     getDisplayCacheContentId(cacheName) {
@@ -46,11 +47,15 @@ const PageContianer = React.createClass({
     },
 
     renderCacheContent(contentId, cacheName) {
+        clearTimeout(this.updateTimeTask);
         let pageConfig = PAGES[contentId];
         if(pageConfig) {
             if(pageConfig.component) {
                 if(pageConfig.online && App.user.isUnverified) {
-                    return <ContentNotReady className="page dock-full" title={'你需要登录验证后才能使用完整功能。'} />;;
+                    this.updateTimeTask = setTimeout(() => {
+                        this.forceUpdate();
+                    }, 3000);
+                    return <ContentNotReady className="page dock-full" title={'正在联系服务器...'} />;;
                 }
                 let PageComponent = pageConfig.component;
                 return <PageComponent className="page dock-full"/>;
