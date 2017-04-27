@@ -200,10 +200,10 @@ class Socket extends ReadyNotifier {
      * @return {void}
      */
     changeUserStatus(status) {
-        return this.send(this.createSocketMessage({
-            'method': 'userChange',
-            'params': [{status}]
-        }));
+        return this.send({
+            'method': this.user.isNewApi ? 'userChange' : 'userchangestatus',
+            'params': [this.user.isNewApi ? {status} : status]
+        });
     }
 
     /**
