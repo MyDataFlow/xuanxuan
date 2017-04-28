@@ -25,7 +25,7 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	}
 
 	var client *http.Client
-	if addr[:5] == https {
+	if addr[:6] != https {
 		client = httpRequest()
 	} else {
 		client = httpsRequest()
@@ -43,7 +43,7 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, util.Errorf("request status code:%v", resp.StatusCode)
+		return nil, util.Errorf("server addr:%s, request status code:%v", addr, resp.StatusCode)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
