@@ -2,11 +2,11 @@
 
 ## v 1.1.0
 
-[2017-04-24]
+[2017-04-28]
 
-大幅改进客户端界面交互体验，增加会话和联系人搜索功能，优化表情功能等多项改进。增加个人设置面板，轻松定制消息提醒方式和窗口界面行为。
+本次更新大幅改进客户端界面交互体验，增加会话和联系人搜索功能，优化表情显示，增加个人设置面板，轻松定制消息提醒方式和窗口界面行为。
 
-服务器进行了重大改进。增加全新的 go 语言实现的服务器（xxd），支持 AES 加密消息，使用 WebSocket 和 https 与客户端通信，使用 http 或 https 与然之服务器或你的网站进行通信。重构了然之服务器（现在然之服务器仅提供 http 接口）。客户端仍然支持 1.0 版的服务器，需要在登录框填写服务器地址时添加 `#v1.0` 后缀。
+服务器进行了重大改进：增加全新的 go 语言实现的服务器（xxd），全程使用 AES 加密消息，通过 WebSocket 和 https 与客户端通信，使用 http 或 https 与然之服务器或你的网站进行通信。重构了然之服务器（现在然之服务器仅提供 http 接口）。客户端仍然支持 1.0 版的服务器，需要在登录框填写服务器地址时添加 `#v1.0` 后缀。
 
 ### 更新明细：
 
@@ -48,10 +48,10 @@
 
 下载地址：
 
-* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-debug-win64-setup.exe)
-* MacOS：[xuanxuan-1.1.0-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-mac.dmg)
-* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-linux-x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-linux-amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-linux-x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-linux-ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-linux-i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-linux-ia32.rpm)
-* Server: [Ranzhi xuanxuan extension](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-ranzhi-ext.zip)、[xxd server](http://dl.cnezsoft.com/xuanxuan/1.0/xuanxuan-1.1.0-xxd.zip)
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-debug-win64-setup.exe)
+* MacOS：[xuanxuan-1.1.0-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-mac.dmg)
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-ia32.rpm)
+* Server: [Ranzhi xuanxuan extension](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-ranzhi-ext.zip)、[xxd server](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-xxd.zip)
 
 ## v 1.0.2
 
