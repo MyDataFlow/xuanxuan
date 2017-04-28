@@ -135,3 +135,9 @@
 在聊天联系人列表上点击右键，选择查看资料，即可查看当前联系人资料信息。
 
 ![喧喧通讯录](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/contacts.png)
+
+## 个人设置
+
+在个人弹出面板中选择设置功能，打开个人设置面板。在个人设置面板中分别可以设置聊天、通知、导航、窗口、快捷键等相关选项。更改选项之后点击保存会让设置生效。
+
+![喧喧通讯录](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/setting.png)
