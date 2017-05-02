@@ -20,7 +20,7 @@ import (
 	"xxd/util"
 )
 
-type vtscInfo struct {
+type retCInfo struct {
 	// server version
 	Version string `json:"version"`
 
@@ -29,6 +29,8 @@ type vtscInfo struct {
 
 	// multiSite or singleSite
 	SiteType string `json:"siteType"`
+
+	UploadFileSize int64 `json:"uploadFileSize"`
 
 	ChatPort  int  `json:"chatPort"`
 	TestModel bool `json:"testModel"`
@@ -86,7 +88,7 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serverName := r.Header.Get("ServerName")
-	_, ok := util.Config.RanzhiServer[serverName]
+	_, ok := api.RanzhiServer(serverName)
 	if !ok {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -105,7 +107,7 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 
 	fileTime, err := util.String2Int64(reqFileTime)
 	if err != nil {
-		util.LogError().Println(err)
+		util.LogError().Println("file download,time undefined:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -129,7 +131,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 
 	//util.Println(r.Header)
 	serverName := r.Header.Get("ServerName")
-	_, ok := util.Config.RanzhiServer[serverName]
+	_, ok := api.RanzhiServer(serverName)
 	if !ok {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -170,6 +172,14 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 
 	if fileSize <= 0 {
 		util.LogError().Println("get file size error")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if fileSize > util.Config.UploadFileSize {
+		// 400
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	//util.Println(r.Form)
@@ -234,12 +244,13 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	info := vtscInfo{
-		Version:   util.Version,
-		Token:     string(util.Token),
-		SiteType:  util.Config.SiteType,
-		ChatPort:  chatPort,
-		TestModel: util.IsTest}
+	info := retCInfo{
+		Version:        util.Version,
+		Token:          string(util.Token),
+		SiteType:       util.Config.SiteType,
+		UploadFileSize: util.Config.UploadFileSize,
+		ChatPort:       chatPort,
+		TestModel:      util.IsTest}
 
 	jsonData, err := json.Marshal(info)
 	if err != nil {

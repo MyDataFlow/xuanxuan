@@ -18,7 +18,7 @@ var newline = []byte{'\n'}
 
 // 从客户端发来的登录请求，通过该函数转发到后台服务器进行登录验证
 func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
-	ranzhiServer, ok := util.Config.RanzhiServer[clientData.ServerName()]
+	ranzhiServer, ok := RanzhiServer(clientData.ServerName())
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
 		return nil, -1, false
@@ -56,7 +56,7 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 }
 
 func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
-	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
 		return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
@@ -121,7 +121,7 @@ func TestLogin() []byte {
 }
 
 func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) {
-	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
 		return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
@@ -157,7 +157,7 @@ func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) 
 }
 
 func UserGetlist(serverName string, userID int64) ([]byte, error) {
-	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
 		return nil, util.Errorf("%s\n", "no ranzhi server name")
@@ -189,7 +189,7 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
 }
 
 func Getlist(serverName string, userID int64) ([]byte, error) {
-	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
 		return nil, util.Errorf("%s\n", "no ranzhi server name")
@@ -213,6 +213,7 @@ func Getlist(serverName string, userID int64) ([]byte, error) {
 	//由于http服务器和客户端的token不一致，所以需要进行交换
 	retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
+		util.LogError().Println("get list swap token error:", err)
 		return nil, err
 	}
 
@@ -221,7 +222,7 @@ func Getlist(serverName string, userID int64) ([]byte, error) {
 }
 
 func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
-	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
 		return nil, util.Errorf("%s\n", "no ranzhi server name")
@@ -249,6 +250,16 @@ func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
 	}
 
 	return retData, nil
+}
+
+func RanzhiServer(serverName string) (util.RanzhiServer, bool) {
+	if serverName == "" {
+		info, ok := util.Config.RanzhiServer[util.Config.DefaultServer]
+		return info, ok
+	}
+
+	info, ok := util.Config.RanzhiServer[serverName]
+	return info, ok
 }
 
 func (pd ParseData) ServerName() string {

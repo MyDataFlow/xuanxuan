@@ -45,9 +45,9 @@ func VerifyLogin(body []byte) (bool, error) {
 		return false, err
 	}
 
-	ranzhiServer, ok := util.Config.RanzhiServer[parseData.ServerName()]
+	ranzhiServer, ok := RanzhiServer(parseData.ServerName())
 	if !ok {
-		return false, util.Errorf("no ranzhi server name")
+		return false, util.Errorf("no ranzhi server name:%s", parseData.ServerName())
 	}
 
 	//util.Println(ranzhiServer)
@@ -65,7 +65,7 @@ func VerifyLogin(body []byte) (bool, error) {
 }
 
 func UploadFileInfo(serverName string, jsonData []byte) (string, error) {
-	ranzhiServer, ok := util.Config.RanzhiServer[serverName]
+	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
 		return "", util.Errorf("%s", "no ranzhi server name")
 	}

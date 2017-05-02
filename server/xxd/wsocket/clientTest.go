@@ -53,7 +53,7 @@ func chatTestLogin(parseData api.ParseData, client *Client) error {
 		return util.Errorf("%s\n", "chat test login error")
 	}
 
-	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: api.TestLogin()}
+	//client.hub.broadcast <- SendMsg{serverName: client.serverName, message: api.TestLogin()}
 
 	return nil
 }
