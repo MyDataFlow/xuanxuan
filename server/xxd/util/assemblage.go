@@ -18,6 +18,12 @@ import (
 	"time"
 )
 
+const (
+	KB = 1024
+	MB = 1024 * KB
+	GB = 1024 * MB
+)
+
 func GetYmd() string {
 	return time.Now().Format("20060102")
 }
@@ -48,6 +54,10 @@ func GetProgramName() string {
 
 func Sleep(second int) {
 	time.Sleep(time.Duration(second) * time.Second)
+}
+
+func SleepMillisecond(Millisecond int) {
+	time.Sleep(time.Duration(Millisecond) * time.Millisecond)
 }
 
 func Mkdir(path string) error {

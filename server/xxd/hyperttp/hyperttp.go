@@ -18,6 +18,7 @@ import (
 )
 
 const https = "https:"
+const requestCount = 3
 
 func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	if postData == nil || addr == "" {
@@ -31,33 +32,45 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 		client = httpsRequest()
 	}
 
-	req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
-	req.Header.Set("Content-type", "application/x-www-form-urlencoded")
-	req.Header.Set("User-Agent", "easysoft-xxdClient/0.1")
-	resp, err := client.Do(req)
-	if err != nil {
-		util.LogError().Printf("request addr [%s] error:", addr, err)
-		return nil, err
+	var i int = 0
+	var resp *http.Response
+
+	for i = 0; i < requestCount; i++ {
+		req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
+		if err != nil {
+			util.LogError().Printf("http new request error, addr [%s] error:%v", addr, err)
+		}
+
+		req.Header.Set("Content-type", "application/x-www-form-urlencoded")
+		req.Header.Set("User-Agent", "easysoft-xxdClient/"+util.Version)
+		resp, err = client.Do(req)
+		if err != nil {
+			util.LogError().Printf("request addr [%s] error:%v", addr, err)
+
+			util.SleepMillisecond(200)
+			continue
+		}
+
+		// StatusOK == 200
+		if resp.StatusCode == http.StatusOK {
+			break
+		}
+
+		util.LogError().Printf(" request status code:%v", resp.StatusCode)
+		util.SleepMillisecond(200)
+	}
+
+	if i >= requestCount {
+		return nil, util.Errorf("%s", "http request error, request count > 3")
 	}
 
 	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return nil, util.Errorf("server addr:%s, request status code:%v", addr, resp.StatusCode)
-	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		util.LogError().Println("request body read error:", err)
 		return nil, err
 	}
-
-	/*
-		if len(body) == 0 {
-			util.LogError().Println("request body len is zero")
-			return nil, util.Errorf("%s", "request body len is zero")
-		}
-	*/
 
 	return body, nil
 }

@@ -111,7 +111,6 @@ func switchMethod(message []byte, parseData api.ParseData, client *Client) error
 		err := transitData(message, parseData.UserID(), client)
 		if err != nil {
 			util.LogError().Println(err)
-			return err
 		}
 		break
 	}
@@ -123,24 +122,27 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	loginData, userID, ok := api.ChatLogin(parseData)
 	if userID == -1 {
 		util.LogError().Println("chat login error")
-		return util.Errorf("%s\n", "chat login error")
+		return util.Errorf("%s", "chat login error")
 	}
 
 	if !ok {
 		// 登录失败返回错误信息
 		client.send <- loginData
-		return util.Errorf("%s\n", "chat login error")
+		return util.Errorf("%s", "chat login error")
 	}
 	// 成功后返回login数据给客户端
 	client.send <- loginData
 
-	client.serverName = parseData.ServerName()
 	client.userID = userID
+	client.serverName = parseData.ServerName()
+	if client.serverName == "" {
+		client.serverName = util.Config.DefaultServer
+	}
 
 	// 获取所有用户列表
 	usergl, err := api.UserGetlist(client.serverName, client.userID)
 	if err != nil {
-		util.LogError().Println("chat user get list error")
+		util.LogError().Println("chat user get user list error:", err)
 		//返回给客户端登录失败的错误信息
 		return err
 	}
@@ -150,7 +152,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	// 获取当前登录用户所有会话数据,组合好的数据放入send发送队列
 	getlist, err := api.Getlist(client.serverName, client.userID)
 	if err != nil {
-		util.LogError().Println("chat get list error")
+		util.LogError().Println("chat get list error:", err)
 		// 返回给客户端登录失败的错误信息
 		return err
 	}
