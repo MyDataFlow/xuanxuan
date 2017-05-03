@@ -21,11 +21,9 @@ import R                   from '../../resource';
 import UserAvatar          from '../user-avatar';
 import Moment              from 'moment';
 import {shell as Shell}    from 'electron';
-
-const Helper = global.Helper;
+import Helper              from 'Helper';
 
 const FileListItem = React.createClass({
-    // mixins: [PureRenderMixin],
     
     getInitialState() {
         return {
@@ -137,47 +135,48 @@ const FileListItem = React.createClass({
     render() {
         const STYLE = {
             main: {
-                display: 'table',
-                fontSize: '13px'
+                display  : 'flex',
+                fontSize : '13px'
             },
             iconWrapper: {
-                display: 'table-cell',
-                verticalAlign: 'top',
-                width: 40,
+                verticalAlign : 'top',
+                width         : 40,
             },
             content: {
-                display: 'table-cell',
-                verticalAlign: 'top',
-                padding: '0 8px',
-                lineHeight: '20px'
+                verticalAlign : 'top',
+                padding       : '0 8px',
+                lineHeight    : '20px',
+                flex          : 'auto'
             },
             actions: {
-                display: 'table-cell',
-                verticalAlign: 'top',
-                textAlign: 'right',
-                whiteSpace: 'nowrap'
+                verticalAlign : 'top',
+                textAlign     : 'right',
+                whiteSpace    : 'nowrap'
             },
             filename: {
-                fontWeight: '500',
+                fontWeight    : '500',
+                lineHeight    : 1.25,
+                paddingBottom : 4,
+                wordBreak     : 'break-all'
             },
             filesize: {
-                fontSize: '12px',
-                color: Theme.color.disabled
+                fontSize : '12px',
+                color    : Theme.color.disabled
             },
             progressWrapper: {
                 position: 'relative',
             },
             progressIcon: {
-                position: 'absolute',
-                left: 8,
-                top: 4,
-                color: Theme.color.icon,
-                fill: Theme.color.icon,
+                position : 'absolute',
+                left     : 8,
+                top      : 4,
+                color    : Theme.color.icon,
+                fill     : Theme.color.icon,
             },
             tooltip: {
-                fontSize: '12px',
-                zIndex: 100,
-                pointerEvents: 'none'
+                fontSize      : '12px',
+                zIndex        : 100,
+                pointerEvents : 'none'
             }
         };
 
@@ -194,7 +193,7 @@ const FileListItem = React.createClass({
         style = Object.assign({}, STYLE.main, style);
         if(!file && message) file = this.props.message.fileContent;
 
-        if(icon === undefined) {
+        if(icon !== false && !icon) {
             if(file.type && file.type.startsWith('image')) {
                 icon = <Avatar style={{display: 'block'}} color={Theme.color.file.image} backgroundColor={ColorManipulator.fade(Theme.color.file.image, 0.15)} icon={<ImageIcon />}/>
             } else {
@@ -221,16 +220,16 @@ const FileListItem = React.createClass({
             let fileReceived = this.fileReceived;
             let fileReceivedPercent = Math.round(100*fileReceived/file.size);
             let progressTextStyle = {
-                position: 'absolute',
-                left: 7,
-                top: 0,
-                width: 40,
-                height: 40,
-                lineHeight: '40px',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: Theme.color.icon,
-                fontSize: '15px'
+                position   : 'absolute',
+                left       : 7,
+                top        : 0,
+                width      : 40,
+                height     : 40,
+                lineHeight : '40px',
+                textAlign  : 'center',
+                fontWeight : 'bold',
+                color      : Theme.color.icon,
+                fontSize   : '15px'
             };
             let progressStyle = {zoom: 0.68, margin: '4px', display: 'block'};
             actions.push(
@@ -247,16 +246,16 @@ const FileListItem = React.createClass({
             tip = <span style={tipStyle}>{Lang.chat.uploadingFile} &nbsp; </span>;
             let isInProgress = typeof(file.send) === 'number' && file.send > 0;
             let progressTextStyle = {
-                position: 'absolute',
-                left: 7,
-                top: 0,
-                width: 40,
-                height: 40,
-                lineHeight: '40px',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: Theme.color.icon,
-                fontSize: '15px'
+                position   : 'absolute',
+                left       : 7,
+                top        : 0,
+                width      : 40,
+                height     : 40,
+                lineHeight : '40px',
+                textAlign  : 'center',
+                fontWeight : 'bold',
+                color      : Theme.color.icon,
+                fontSize   : '15px'
             };
             let progressStyle = {zoom: 0.68, margin: '4px', display: 'block'};
             let fileSendPercent = Math.round(100*file.send/file.size);
@@ -268,25 +267,19 @@ const FileListItem = React.createClass({
             );
         } else if(fileState === 'fail') {
             let tipStyle = {
-                fontSize: '12px',
-                color: Theme.color.negative
+                fontSize : '12px',
+                color    : Theme.color.negative
             };
             tip = <span style={tipStyle}>{Lang.chat.uploadFail} &nbsp; </span>;
-            // actions.push(
-            //     <DeleteIcon tooltip={Lang.common.delete} key='deleteFileBtn' style={{padding: 8, width: 40, height: 40}} onClick={this._handOnDeleteFileBtnClick} ><OpenIcon color={Theme.color.primary1} /></DeleteIcon>
-            // );
         } else if(fileState === 'failForResend') {
             let tipStyle = {
-                fontSize: '12px',
-                color: Theme.color.negative
+                fontSize : '12px',
+                color    : Theme.color.negative
             };
             tip = <span style={tipStyle}>{Lang.chat.uploadFailAndResend} &nbsp; </span>;
             actions.push(
                 <IconButton tooltipStyles={STYLE.tooltip} tooltip={Lang.chat.resend} key='resendFileBtn' style={{padding: 8, width: 40, height: 40}} onClick={this._handOnResendFileBtnClick} ><RefreshIcon color={Theme.color.primary1} /></IconButton>
             );
-            // actions.push(
-            //     <IconButton tooltipStyles={STYLE.tooltip} tooltip={Lang.common.delete} key='deleteFileBtn' style={{padding: 8, width: 40, height: 40}} onClick={this._handOnDeleteFileBtnClick} ><DeleteIcon color={Theme.color.primary1} /></IconButton>
-            // );
         } else if(fileState === 'ok') {
             actions.push(
                 <IconButton tooltipStyles={STYLE.tooltip} tooltip={Lang.common.download} key='downloadBtn' style={{padding: 8, width: 40, height: 40}} onClick={this._handOnDownloadBtnClick} ><DownloadIcon color={Theme.color.primary1} /></IconButton>
@@ -299,9 +292,9 @@ const FileListItem = React.createClass({
                 file.sender = App.dao.getMember(file.user);
             }
             let userStyle = {
-                fontSize: '12px',
-                display: 'inline-block',
-                marginRight: 8,
+                fontSize    : '12px',
+                display     : 'inline-block',
+                marginRight : 8,
             };
             userContent = <span style={userStyle}><UserAvatar size={16} user={file.sender}/> {file.sender.displayName}</span>
         }
@@ -309,19 +302,19 @@ const FileListItem = React.createClass({
         let timeContent = null;
         if(showTime && file.date) {
             let timeStyle = {
-                color: Theme.color.disabled,
-                fontSize: '12px',
-                display: 'inline-block',
-                marginRight: 8,
-                marginLeft: 8,
+                color       : Theme.color.disabled,
+                fontSize    : '12px',
+                display     : 'inline-block',
+                marginRight : 8,
+                marginLeft  : 8,
             };
             timeContent = <small style={timeStyle}>{Moment(file.date).fromNow()}</small>
         }
 
         return <div {...other} style={style}>
-            <div style={STYLE.iconWrapper}>{icon}</div>
-            <div style={STYLE.content} className='user-selectable'>
-              <div style={STYLE.filename} className='text-ellipsis'>{file.name}</div>
+            {icon !== false ? <div style={STYLE.iconWrapper}>{icon}</div> : null}
+            <div style={Object.assign({}, STYLE.content, {padding: icon === false ? 0 : '0 8px'})} className='user-selectable'>
+              <div style={STYLE.filename}>{file.name}</div>
               {tip}{userContent}<small style={STYLE.filesize}><ByteSizeSpan size={file.size} /></small>{timeContent}
             </div>
             <div style={STYLE.actions}>{actions}</div>
