@@ -10,8 +10,6 @@ const STYLE = {
 
 // display app component
 const Tabs = React.createClass({
-    mixins: [PureRenderMixin],
-    
     render() {
         let {
             style,
