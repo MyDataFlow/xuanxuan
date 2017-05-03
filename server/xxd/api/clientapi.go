@@ -1,10 +1,10 @@
 /**
- * The aes file of api current module of xxd.
+ * The clientapi file of api current module of xxd.
  *
  * @copyright   Copyright 2009-2017 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
  * @author      Archer Peng <pengjiangxiu@cnezsoft.com>
- * @package     util
+ * @package     api
  * @link        http://www.zentao.net
  */
 package api
@@ -40,6 +40,7 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
 
 	retMessage, err = SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
+		util.LogError().Println("chat login swap token error:", err)
 		return nil, -1, false
 	}
 
@@ -129,6 +130,7 @@ func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) 
 
 	message, err := SwapToken(clientData, util.Token, ranzhiServer.RanzhiToken)
 	if err != nil {
+		util.LogError().Println("transit data swap token error:", err)
 		return nil, nil, err
 	}
 
@@ -182,6 +184,7 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
 	//由于http服务器和客户端的token不一致，所以需要进行交换
 	retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
+		util.LogError().Println("user get list swap token error:", err)
 		return nil, err
 	}
 
@@ -246,6 +249,7 @@ func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
 	//由于http服务器和客户端的token不一致，所以需要进行交换
 	retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
 	if err != nil {
+		util.LogError().Println("get off line message swap token error:", err)
 		return nil, err
 	}
 
