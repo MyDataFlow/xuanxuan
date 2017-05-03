@@ -233,6 +233,7 @@
 
   "user": {
     "swapUser": "切换用户",
+    "logout": "注销",
     "profile": "个人资料",
     "viewProfile": "查看资料",
     "status": {
