@@ -9,11 +9,12 @@ import EmoticonIcon        from 'material-ui/svg-icons/editor/insert-emoticon';
 import SendIcon            from 'material-ui/svg-icons/hardware/keyboard-return';
 import CutIcon             from 'material-ui/svg-icons/content/content-cut';
 import HelpIcon            from 'material-ui/svg-icons/communication/live-help';
+import FontSizeIcon        from 'material-ui/svg-icons/editor/format-size';
 import IconButton          from 'material-ui/IconButton';
 import ColorManipulator    from 'Utils/color-helper';
 import Checkbox            from 'material-ui/Checkbox';
 import FileIcon            from '../icons/file-outline';
-import ImageIcon           from '../icons/message-image';
+import ImageIcon           from 'material-ui/svg-icons/image/photo';
 import Moment              from 'moment';
 import Popover             from '../components/popover';
 import Modal               from '../components/modal';
@@ -24,6 +25,7 @@ import Helper              from 'Helper';
 import R                   from 'Resource';
 import ShortcutField       from '../components/shortcut-field';
 import EmojiPicker         from 'emojione-picker';
+import ChangeFontSize      from 'Views/chat/change-font-size';
 
 /**
  * React component: MessageSendbox
@@ -204,6 +206,24 @@ const MessageSendbox = React.createClass({
         });
     },
 
+    _handleChangeFontSize() {
+        Popover.toggle({
+            getLazyContent: () => <ChangeFontSize hidePreviewBox={true} showHeader={true} hideActions={true} onCloseClick={() => {
+                Popover.hide('ChangeFontSizePopover');
+            }} />,
+            contentId: 'chat-' + this.props.chatId,
+            id: 'ChangeFontSizePopover',
+            removeAfterHide: false,
+            trigger: this.changeFontSizeBtn,
+            placement: 'top',
+            style: {
+                width: 250,
+                height: 85
+            },
+            float: 'center'
+        });
+    },
+
     componentDidMount() {
         this._handleCaptureScreenGlobalShortcutEvent = App.on(R.event.capture_screen_global, (image, chat) => {
             if(this.props.chatId === chat.gid) {
@@ -298,7 +318,12 @@ const MessageSendbox = React.createClass({
               </div>
               <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z') + ')'}>
                 <IconButton onClick={this._handleCaptureScreen} onContextMenu={this._openCaptureScreenContextMenu}>
-                    <CutIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
+                    <CutIcon className="rotate-270" color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
+                </IconButton>
+              </div>
+              <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.changeFontSize} ref={e => this.changeFontSizeBtn = e}>
+                <IconButton onClick={this._handleChangeFontSize}>
+                    <FontSizeIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
               {App.user.getConfig('ui.chat.showMessageTip') ? <div ref={e => this.messageTipBtn = e} style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.messageTip}>

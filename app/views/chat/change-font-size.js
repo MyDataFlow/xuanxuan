@@ -64,6 +64,12 @@ class ChangeFontSizeView extends Component {
         select: 1
     };
 
+    static defaultProps = {
+        hidePreviewBox: false,
+        hideActions: false,
+        showHeader: false
+    };
+
     componentWillMount() {
         let selectConfig = App.user.getConfig('ui.chat.fontSize', CONFIGS[1]);
         let configs = CONFIGS.slice();
@@ -122,20 +128,29 @@ class ChangeFontSizeView extends Component {
     render() {
         let {
             onCloseClick,
+            hidePreviewBox,
+            hideActions,
+            showHeader,
             ...other
         } = this.props;
 
-        let message = this.message;
         let fontSize = this.configs[this.state.select];
-        message.content = Lang.chat.changeFontSizePlacehoder.format(fontSize.size);
-        message.markForceRender();
+        if(!hidePreviewBox) {
+            let message = this.message;
+            message.content = Lang.chat.changeFontSizePlacehoder.format(fontSize.size);
+            message.markForceRender();
+        }
         return <div {...other}>
-            <div style={{padding: 20, border: '1px solid rgba(0,0,0,.1)'}}><MessageListItem fontSize={fontSize} className={'message message-t-' + message.type} key={message.gid} message={message} hideAvatar={false} hideTime={false} style={{marginBottom: 0}} /></div>
+            {showHeader ? <div className="clearfix" style={{padding: '10px 10px 0'}}>
+                <strong>{Lang.chat.changeFontSize}</strong>
+                <div style={{float: 'right'}}><small className="muted">{Lang.chat.currentFontSize.format(fontSize.size)}</small> &nbsp; {DEFAULT_CONFIG.size !== fontSize.size ? <a onClick={this._handleRestoreDefaultClick.bind(this)} href="###">{Lang.common.restoreDefault}</a> : null}</div>
+            </div> : null}
+            {hidePreviewBox ? null : <div style={{padding: 20, border: '1px solid rgba(0,0,0,.1)'}}><MessageListItem fontSize={fontSize} className={'message message-t-' + message.type} key={message.gid} message={message} hideAvatar={false} hideTime={false} style={{marginBottom: 0}} /></div>}
             <Slider min={0} max={this.configs.length - 1} step={1} value={this.state.select} onChange={this._handleFontSizeChange.bind(this)} sliderStyle={{marginBottom: 20}} style={{paddingLeft: 10, paddingRight: 10}} />
-            <div className="clearfix" style={{margin: '0 -10px'}}>
+            {hideActions ? null : <div className="clearfix" style={{margin: '0 -10px'}}>
                 <FlatButton secondary={true} style={{float: 'left'}} label={Lang.common.restoreDefault} onClick={this._handleRestoreDefaultClick.bind(this)}/>
                 <FlatButton primary={true} style={{float: 'right'}} label={Lang.common.close} onClick={this._handleCloseBtnClick.bind(this)}/>
-            </div>
+            </div>}
         </div>
     }
 }

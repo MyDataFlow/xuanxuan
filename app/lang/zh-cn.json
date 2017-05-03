@@ -112,6 +112,7 @@
     "setChatCommitters": "设置会话 【{0}】的白名单",
     "exitChatConfirm": "确定退出会话 【{0}】?",
     "changeFontSize": "设置字体大小",
+    "currentFontSize": "当前 {0}px",
     "setPublic": "设为公开讨论组",
     "publicGroup": "公开",
     "publicGroupTip": "公开讨论组是可以被所有人搜索到并且允许自由加入的讨论组。",
