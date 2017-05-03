@@ -863,7 +863,7 @@ class chat extends control
     {
         if($settings)
         {
-            $this->loadModel('setting')->setItem("system.sys.chat.settings.$account", $settings);
+            $this->loadModel('setting')->setItem("system.sys.chat.settings.$account", helper::jsonEncode($settings));
         }
 
         if(dao::isError())
@@ -875,7 +875,7 @@ class chat extends control
         {
             $this->output->result = 'success';
             $this->output->userID = array($userID);
-            $this->output->data   = !empty($settings) ? $settings : $this->config->chat->settings->$account;
+            $this->output->data   = !empty($settings) ? $settings : json_decode($this->config->chat->settings->$account);
         }
 
         die($this->app->encrypt($this->output));
