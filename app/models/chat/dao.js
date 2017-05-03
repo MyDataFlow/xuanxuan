@@ -132,14 +132,17 @@ class Dao {
      * @param  {boolean} returnMessages
      * @return {Promise}
      */
-    getChatFiles(gid, returnMessages = false) {
+    getChatFiles(gid, returnMessages = false, includeFailFile = false) {
         return new Promise((resolve, reject) => {
             this.getChatMessages(gid, true).then(messages => {
                 let files = [];
                 if(messages && messages.length) {
                     messages.forEach(f => {
                         if(f.contentType === 'file') {
-                            files.push(returnMessages ? f : f.fileContent);
+                            const fileContent = f.fileContent;
+                            if(includeFailFile || (fileContent.send === true && fileContent.id)) {
+                                files.push(returnMessages ? f : fileContent);
+                            }
                         }
                     });
                 }
