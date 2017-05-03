@@ -388,6 +388,21 @@ class Socket extends ReadyNotifier {
                         this._emit(R.event.user_login_message, null, new Error(msg.data));
                     }
                 },
+                error: msg => {
+                    let message = '';
+                    if(msg.code) {
+                        message = App.lang.errors[msg.code + ''];
+                    }
+                    message = message || msg.message;
+                    if(message) {
+                        this.emit(R.event.ui_messager, {
+                            id: 'socketMessager',
+                            clickAway: true,
+                            autoHide: false,
+                            content: message
+                        });
+                    }
+                },
                 settings: msg => {
                     if(msg.isSuccess) {
                         let user = this.user;
