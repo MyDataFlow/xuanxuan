@@ -1082,6 +1082,7 @@ class App extends ReadyNotifier {
      * Quit application
      */
     quit() {
+        this.browserWindow.hide();
         this.logout();
         if(this.saveUserTimerTask) {
             this.saveUser();
