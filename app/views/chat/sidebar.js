@@ -94,7 +94,7 @@ const ChatSidebar = React.createClass({
     },
 
     _handleMemberClick(member) {
-        App.emit(R.event.ui_link, new AppActionLink('@Member/' + member.account));
+        App.emit(R.event.ui_link, new AppActionLink('@Member/' + (member.realname || member.account)));
     },
 
     _handleExitChatButtonClick() {

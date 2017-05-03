@@ -696,7 +696,7 @@ class ChatApp extends AppCore {
             menu.push({
                 label: this.lang.chat.atHim,
                 click: () => {
-                    this.$app.emit(R.event.ui_link, new AppActionLink('@Member/' + member.account));
+                    this.$app.emit(R.event.ui_link, new AppActionLink('@Member/' + (member.realname || member.account)));
                 }
             }, {
                 label: this.lang.chat.sendMessage,

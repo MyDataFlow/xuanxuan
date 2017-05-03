@@ -61,13 +61,15 @@ const draftDecorator = new CompositeDecorator([{
     }
 }, {
     strategy: (contentBlock, callback, contentState) => {
-        findWithRegex(/@\w+ /g, contentBlock, callback);
+        findWithRegex(/@[\u4e00-\u9fa5_\w]+[，。,\.\/\s:@\n]/g, contentBlock, callback);
     },
     component: (props) => {
-        let guess = props.decoratedText.trim().substr(1);
-        let member = App.dao.guessMember(guess);
-        if(member) {
-            return <a className="link-app" href={'#Member/' + member.id} title={'@' + member.displayName} style={{color: Theme.color.primary1}} data-offset-key={props.offsetKey} >{props.children}</a>;
+        let guess = props.decoratedText.substr(1).trim().replace(/[，。,\.\/\s:@\n]/g, '');
+        if(guess) {
+            let member = App.dao.guessMember(guess);
+            if(member) {
+                return <a className="link-app" href={'#Member/' + member.id} title={'@' + member.displayName} style={{color: Theme.color.primary1}} data-offset-key={props.offsetKey}>{props.children}</a>;
+            }
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
     }
