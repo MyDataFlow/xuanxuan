@@ -20,13 +20,13 @@ rzs：后台然之服务器
 常见的响应数据格式
 ```js
 {
-    module,            // 模块名称,必须
-    method,            // 方法名称,必须
-    users[],           // 该数据响应给哪些用户，users为空表示所有在线用户
-    params,            // 参数对象,可选
-    result: 'success', // 响应状态,可为'success'（成功）, 'fail'(失败), 'denied'(拒绝,需要登录),
-    message: '',       // 消息,可选,当result不为success时,使用此字段来解释原因
-    data               // 数据 
+    module,    // 模块名称,必须
+    method,    // 方法名称,必须
+    users[],   // 该数据响应给哪些用户，users为空表示所有在线用户
+    params,    // 参数对象,可选
+    result:,   // 响应状态,可为'success'（成功）, 'fail'(失败), 'denied'(拒绝,需要登录),
+    message:,  // 消息,可选,当result不为success时,使用此字段来解释原因
+    data       // 数据 
 }
 ```
 
@@ -1064,7 +1064,7 @@ xxd把client发送的数据转发给rzs。
     method: 'uploadFile',
     users[],
     result, 
-    data: fileID
+    data: fileID  // 文件在然之服务器数据库存储的id
 }
 ```
 #### 方向：xxd --> client

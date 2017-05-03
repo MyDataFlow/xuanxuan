@@ -154,6 +154,7 @@ const ChatSidebar = React.createClass({
             return <FileList
                     style={STYLE.tabContent}
                     chatId={this.props.chat.gid}
+                    showFileIcon={false}
                     onFilesLoad={files => {
                         if(!this.tabsNameAlias) this.tabsNameAlias = {};
                         this.tabsNameAlias[contentId] = files.length;

@@ -30,7 +30,9 @@ func init() {
 	timeStr := Int642String(GetUnixTime())
 	Token = []byte(GetMD5(timeStr))
 	if IsTest {
-		Printf("Server test model is %v [Token:%s]\n", IsTest, Token)
+		Printf("Server test model is %t \n", IsTest)
+		Printf("Test token: %s \n", string(Token))
+		Printf("xuan xuan chat listen port:%s\n", Config.ChatPort)
 	}
 
 	LogInfo().Println()

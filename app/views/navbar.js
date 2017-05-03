@@ -1,37 +1,37 @@
-import React           from 'react';
-import ClickAwayable   from 'react-clickaway';
-import List            from 'material-ui/List/List';
-import ListDivider     from 'material-ui/Divider';
-import Colors          from 'Utils/material-colors';
-import Avatar          from 'material-ui/Avatar';
-import FontIcon        from 'material-ui/FontIcon';
-import Paper           from 'material-ui/Paper';
-import Menu            from 'material-ui/Menu';
-import MenuItem        from 'material-ui/MenuItem';
-import MenuDivider     from 'material-ui/Divider';
-import IconButton      from 'material-ui/IconButton';
-import ChatIcon        from './icons/comment-outline';
-import ActiveChatIcon  from './icons/comment';
-import GroupIcon       from './icons/comments-outline';
-import PoundIcon       from './icons/pound';
-import PoundBoxIcon    from './icons/pound-box';
-import PeopleIcon      from 'material-ui/svg-icons/social/people-outline';
+import React            from 'react';
+import ClickAwayable    from 'react-clickaway';
+import List             from 'material-ui/List/List';
+import ListDivider      from 'material-ui/Divider';
+import Colors           from 'Utils/material-colors';
+import Avatar           from 'material-ui/Avatar';
+import FontIcon         from 'material-ui/FontIcon';
+import Paper            from 'material-ui/Paper';
+import Menu             from 'material-ui/Menu';
+import MenuItem         from 'material-ui/MenuItem';
+import MenuDivider      from 'material-ui/Divider';
+import IconButton       from 'material-ui/IconButton';
+import ChatIcon         from './icons/comment-outline';
+import ActiveChatIcon   from './icons/comment';
+import GroupIcon        from './icons/comments-outline';
+import PoundIcon        from './icons/pound';
+import PoundBoxIcon     from './icons/pound-box';
+import PeopleIcon       from 'material-ui/svg-icons/social/people-outline';
 import ActivePeopleIcon from 'material-ui/svg-icons/social/people';
-import TimeIcon        from 'material-ui/svg-icons/device/access-time';
-import AppsIcon        from 'material-ui/svg-icons/action/dashboard';
-import MoreIcon        from 'material-ui/svg-icons/navigation/more-vert';
-import MenuIcon        from 'material-ui/svg-icons/navigation/menu';
-import CvLeftIcon      from 'material-ui/svg-icons/navigation/chevron-left';
-import CheckIcon       from 'material-ui/svg-icons/navigation/check';
-import SettingIcon     from 'material-ui/svg-icons/action/settings';
-import UserAvatar      from './user-avatar';
-import ListItem        from './components/small-list-item';
-import UserStatus      from './chat/user-status';
-import Theme           from '../theme';
-import Lang            from '../lang';
-import R               from '../resource';
-import App             from '../app';
-import {USER_STATUS}   from 'Models/user';
+import TimeIcon         from 'material-ui/svg-icons/device/access-time';
+import AppsIcon         from 'material-ui/svg-icons/action/dashboard';
+import MoreIcon         from 'material-ui/svg-icons/navigation/more-vert';
+import MenuIcon         from 'material-ui/svg-icons/navigation/menu';
+import CvLeftIcon       from 'material-ui/svg-icons/navigation/chevron-left';
+import CheckIcon        from 'material-ui/svg-icons/navigation/check';
+import SettingIcon      from 'material-ui/svg-icons/action/settings';
+import UserAvatar       from './user-avatar';
+import ListItem         from './components/small-list-item';
+import UserStatus       from './chat/user-status';
+import Theme            from '../theme';
+import Lang             from '../lang';
+import R                from '../resource';
+import App              from '../app';
+import {USER_STATUS}    from 'Models/user';
 
 const userStatus = [
     USER_STATUS.online,
@@ -57,6 +57,7 @@ const UserMenu = React.createClass({
     },
 
     handleStatusItemClick(status) {
+        status = USER_STATUS.getName(status);
         if(status === 'offline' || status === 'unverified') {
             App.logout();
         } else if(App.user.isOffline) {
@@ -92,20 +93,25 @@ const UserMenu = React.createClass({
         this.componentClickAway();
     },
 
+    handleSettingBtnClick() {
+        App.openSettingDialog();
+        this.componentClickAway();
+    },
+
     render() {
         const STYLE = {
             menu: {paddingTop: 8, paddingBottom: 8, display: 'block'},
             menuItem: {fontSize: '13px'},
             focusMenuItem: {
-                fontSize: '13px',
-                color: Theme.color.positive,
-                boxShadow: 'inset 3px 0 0 ' + Theme.color.positive,
-                fontWeight: '500',
+                fontSize   : '13px',
+                color      : Theme.color.positive,
+                boxShadow  : 'inset 3px 0 0 ' + Theme.color.positive,
+                fontWeight : '500',
             },
             navbar:    {width: App.user.getConfig('ui.navbar.width', 50), transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
             status:    {
                 base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
-                dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
+                dot:    {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
                 inmenu: {
                     dot:  {position: 'relative', top: 1, marginRight: 10},
                     text: {fontSize: '14px'}
@@ -120,6 +126,9 @@ const UserMenu = React.createClass({
           <Menu key='user-menu' desktop={true} autoWidth={false} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
               {
                   userStatus.map(function(statusValue) {
+                      if(statusValue === USER_STATUS.offline) {
+                          return;
+                      }
                       let statusName = USER_STATUS[statusValue];
                       let iconStyle = Object.assign({}, STYLE.status.base, STYLE.status[statusName], STYLE.status.inmenu);
                       let icon = <span className={'user-status user-status-' + statusName} style={iconStyle}></span>;
@@ -134,10 +143,8 @@ const UserMenu = React.createClass({
               <MenuItem style={STYLE.menuItem} key='profile' primaryText={Lang.user.profile} onClick={this.handleProfileClick} />
               <MenuDivider />
               <MenuItem style={STYLE.menuItem} key='about' primaryText={Lang.common.about} onClick={this.handleAboutClick} />
-              <MenuItem style={STYLE.menuItem} key='settings' primaryText={Lang.common.settings} onClick={() => {
-                  App.openSettingDialog();
-                  this.componentClickAway();
-              }} />
+              <MenuItem style={STYLE.menuItem} key='settings' primaryText={Lang.common.settings} onClick={this.handleSettingBtnClick} />
+              <MenuItem style={STYLE.menuItem} key='logout' primaryText={Lang.user.logout} onClick={this.handleStatusItemClick.bind(this, USER_STATUS.offline)} />
               <MenuItem style={STYLE.menuItem} key='exit' primaryText={Lang.common.exit} onClick={this.handleExitClick} />
           </Menu>
         </Paper>;
@@ -211,23 +218,23 @@ const Navbar = React.createClass({
             iconButton: {position: 'absolute', left: 1, top: -4},
             status:     {
                 base:   {position: 'absolute', bottom: 3, left: 32, transition: Theme.transition.normal('left', 'top'), zIndex: 10, },
-                dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
+                dot:    {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
             },
             noticeBadge: {
-                position: 'absolute',
-                top: 3,
-                right: 14,
+                position       : 'absolute',
+                top            : 3,
+                right          : 14,
                 backgroundColor: Theme.colors.red500,
-                color: 'white',
-                lineHeight: '16px',
-                display: 'inline-block',
-                fontSize: '12px',
-                padding: '0 4px',
-                borderRadius: 8,
-                minWidth: 8,
-                textAlign: 'center',
-                width: 'auto',
-                zIndex: 10
+                color          : 'white',
+                lineHeight     : '16px',
+                display        : 'inline-block',
+                fontSize       : '12px',
+                padding        : '0 4px',
+                borderRadius   : 8,
+                minWidth       : 8,
+                textAlign      : 'center',
+                width          : 'auto',
+                zIndex         : 10
             }
         };
 
@@ -237,8 +244,8 @@ const Navbar = React.createClass({
         if(showRecentsOnNavbar) {
             listItems.push({name: R.ui.navbar_chat, text: "最近聊天", icon: this.state.active === R.ui.navbar_chat ? <ActiveChatIcon className='icon' style={STYLE.icon}/> : <ChatIcon className='icon' style={STYLE.icon}/>});
         }
-        listItems.push({name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>});
         listItems.push({name: R.ui.navbar_groups, text: "讨论组", icon: this.state.active === R.ui.navbar_groups ? <PoundBoxIcon className='icon' style={STYLE.icon}/> : <PoundIcon className='icon' style={STYLE.icon}/>});
+        listItems.push({name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>});
 
         let statusStyle = Object.assign({}, STYLE.status.base);
         let userDisplayName = this.state.user.displayName || this.state.user.realName || this.state.user.account;

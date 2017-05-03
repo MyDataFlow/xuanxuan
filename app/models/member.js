@@ -191,7 +191,7 @@ class Member extends Entity {
      */
     static sort(members, orders, app) {
         if(!orders || orders === 'default') {
-            orders = ['status', 'namePinyin', '-id'];
+            orders = ['me', 'status', '-namePinyin', '-id'];
         } else if(typeof orders === 'string') {
             orders = orders.split(' ');
         }
@@ -211,6 +211,12 @@ class Member extends Entity {
                 let isInverse = order[0] === '-';
                 if(isInverse) order = order.substr(1);
                 switch(order) {
+                    case 'me':
+                        if(app && app.user) {
+                            if(app.user.id === x.id) result = 1;
+                            else if(app.user.id === y.id) result = -1;
+                        }
+                        break;
                     case 'status':
                         let xStatus = x.statusValue,
                             yStatus = y.statusValue;

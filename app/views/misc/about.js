@@ -6,8 +6,7 @@ import BuildInfo           from './build-info';
 import FlatButton          from 'material-ui/FlatButton';
 import {shell}             from 'electron';
 import Helper              from 'Helper';
-
-const xuanxuanWebsite = 'http://xuanxuan.chat';
+import PKG                 from '../../package.json';
 
 // display app component
 const About = React.createClass({
@@ -41,16 +40,16 @@ const About = React.createClass({
             <BuildInfo style={{fontSize: '12px'}}/>
             <br/><br/>
             <FlatButton onClick={e => {
-                shell.openExternal(xuanxuanWebsite);
-            }} label={xuanxuanWebsite} primary={true} labelStyle={{textTransform: 'none'}} />
+                shell.openExternal(PKG.homepage);
+            }} label={PKG.homepage} primary={true} labelStyle={{textTransform: 'none'}} />
             <br/>
             <FlatButton onClick={e => {
                 shell.openExternal('https://github.com/easysoft/xuanxuan/blob/master/LICENSE');
-            }} label='License ZPL' labelStyle={STYLE.btnLabel} />
+            }} label={`Open source license ${PKG.license}`} labelStyle={STYLE.btnLabel} />
             <br/>
             <FlatButton onClick={e => {
                 shell.openExternal('http://cnezsoft.com/');
-            }} label='Copyright (c) 2017 cnezsoft.com' labelStyle={STYLE.btnLabel} />
+            }} label={Lang.common.copyrightFormat.format({year: new Date().getFullYear(), name: PKG.company})} labelStyle={STYLE.btnLabel} />
             <br/>
             <FlatButton onClick={e => {
                 shell.openExternal('http://emojione.com/');

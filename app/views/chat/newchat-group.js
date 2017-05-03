@@ -114,7 +114,7 @@ const NewChatGroup = React.createClass({
                        || (member.id && member.id == this.searchText);
                 });
             }
-            this.setState({members: Member.sort(members)});
+            this.setState({members: Member.sort(members, 'default', App)});
         }
     },
 
@@ -191,7 +191,9 @@ const NewChatGroup = React.createClass({
 
         style = Object.assign({}, STYLE.main, style);
 
-        if(!this.state.members) {
+        let {members} = this.state;
+
+        if(!members) {
             return <div {...other} style={style}><Spinner/></div>
         }
 
@@ -221,7 +223,7 @@ const NewChatGroup = React.createClass({
           <div className='dock-full scroll-y' ref={e => {this.listContainer = e;}} style={STYLE.content}>
             <List className='clearfix' style={STYLE.list}>
             {
-                this.state.members.map(member => {
+                members.map(member => {
                     let actived = !!this.state.choosed[member.id];
                     let roleText = member.role && Lang.user.roles[member.role] ? ('[' + Lang.user.roles[member.role] + ']') : null;
                     let secondaryText = roleText;

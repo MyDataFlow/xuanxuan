@@ -10,11 +10,11 @@ Centos通过yum，Ubuntu通过apt-get进行安装，Mac通过[官方网站](http
 
 下载后进行安装，之前的步骤可以选择默认，到下图步骤时请选择 ***Use Git Bash only***
 
-![Adjusting your PATH environment](http://img.sinkiot.com/xxdUserManual/25806493_1345448675558S.jpg)
+![Adjusting your PATH environment](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xxd-developer/use-git-bash-onlg.jpg)
 
 **next** 进入到一下界面，选择 ***Checkout as-is, commit Unix-style line endings***
 
-![Configuring the line ending conversions](http://img.sinkiot.com/xxdUserManual/25806493_134544868979mf.jpg)
+![Configuring the line ending conversions](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xxd-developer/unix-style.jpg)
 
 之后的步骤都可以选择默认 **next** 直到安装完成。这个时候已经可以使用git了， 打开Git Bash可以进入linux shell，可以使用git命令进行各种操作。
 
@@ -35,14 +35,14 @@ Centos通过yum，Ubuntu通过apt-get进行安装，Mac通过[官方网站](http
 * 创建golang的工作目录，如目录在 *c:/gowork/* 并在目录中建立src目录
 
 * 设置GOPATH环境变量
-   ![gopath|550x400](http://img.sinkiot.com/xxdUserManual/20170418144924_gopath.png)
+   ![gopath|550x400](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xxd-developer/gopath.png)
 
 * 设置Path环境变量
-   ![path|550x400](http://img.sinkiot.com/xxdUserManual/20170418145032_path.png)
+   ![path|550x400](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xxd-developer/path.png)
 
 * 在命令行模式下输入 go,如果输出以下字符，go语言就安装成功了。
 
-   ![test_go|550x400](http://img.sinkiot.com/xxdUserManual/20170418160649_go.png)
+   ![test_go|550x400](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xxd-developer/test-go.png)
 
 完成以上配置后，Windows的golang环境就配置完成了。
 

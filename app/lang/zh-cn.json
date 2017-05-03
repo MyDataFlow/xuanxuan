@@ -34,7 +34,8 @@
     "restoreDefault": "恢复默认",
     "close": "关闭",
     "settings": "设置",
-    "search": "搜索"
+    "search": "搜索",
+    "copyrightFormat": "版权所有 ©️ {year} {name}"
   },
 
   "debug": {
@@ -105,18 +106,19 @@
     "closeSidebar": "关闭侧边栏",
     "chatGroup": "讨论组",
     "tempChat": "临时",
-    "exitChat": "退出会话",
+    "exitChat": "退出讨论组",
     "setCommitters": "设置白名单",
     "addToWhitelist": "加入白名单",
     "removeFromWhitelist": "从白名单移除",
     "setChatCommitters": "设置会话 【{0}】的白名单",
-    "exitChatConfirm": "确定退出会话 【{0}】?",
+    "exitChatConfirm": "确定退出讨论组 【{0}】?",
     "changeFontSize": "设置字体大小",
-    "setPublic": "设为公开讨论组",
+    "currentFontSize": "当前 {0}px",
+    "setPublic": "设为公开",
     "publicGroup": "公开",
     "publicGroupTip": "公开讨论组是可以被所有人搜索到并且允许自由加入的讨论组。",
     "groupNameFormat": "{0}（{1}人）",
-    "cancelSetPublic": "取消设为公开讨论组",
+    "cancelSetPublic": "设为私密",
     "pinnedInList": "在最近的会话列表上显示",
     "removeFromList": "从最近会话列表上移除",
     "imageError": "无法显示图片",
@@ -231,6 +233,7 @@
 
   "user": {
     "swapUser": "切换用户",
+    "logout": "注销",
     "profile": "个人资料",
     "viewProfile": "查看资料",
     "status": {

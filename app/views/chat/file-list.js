@@ -45,6 +45,7 @@ const FileList = React.createClass({
         let {
             style,
             itemStyle,
+            showFileIcon,
             chatId,
             files,
             ...other
@@ -58,7 +59,7 @@ const FileList = React.createClass({
         if(files) {
             if(files.length) {
                 filesContent = files.map(file => {
-                    return <FileListItem showTime={true} showUser={true} style={Object.assign({}, STYLE.item, itemStyle)} key={file.gid} file={file} />;
+                    return <FileListItem icon={showFileIcon ? '' : false} showTime={true} showUser={true} style={Object.assign({}, STYLE.item, itemStyle)} key={file.gid} file={file} />;
                 });
             } else {
                 filesContent = <ContentNotReady iconName=':blowfish:' title={Lang.chat.emptyFileList}/>

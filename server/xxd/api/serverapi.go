@@ -1,10 +1,10 @@
 /**
- * The aes file of api current module of xxd.
+ * The serverapi file of api current module of xxd.
  *
  * @copyright   Copyright 2009-2017 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
  * @author      Archer Peng <pengjiangxiu@cnezsoft.com>
- * @package     util
+ * @package     api
  * @link        http://www.zentao.net
  */
 package api
@@ -19,6 +19,10 @@ import (
 // 是否考虑可以自动重连。
 // 需要考虑登录成功后，然之服务器掉线的处理方式
 func StartXXD() error {
+	if util.IsTest {
+		return nil
+	}
+
 	startXXD := []byte(`{"module":"chat","method":"serverStart"}`)
 
 	for serverName, serverInfo := range util.Config.RanzhiServer {

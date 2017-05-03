@@ -33,9 +33,11 @@ const MessageList = React.createClass({
     mixins: [StayBottom],
 
     getInitialState() {
-        return {
-            fontSize: Object.assign({}, defaultFontSize, App.user.getConfig('ui.chat.fontSize'))
-        };
+        let fontSize = Object.assign({}, defaultFontSize, App.user.getConfig('ui.chat.fontSize'));
+        if(fontSize.size === defaultFontSize.size) {
+            fontSize = defaultFontSize;
+        }
+        return {fontSize};
     },
 
     componentDidMount() {
