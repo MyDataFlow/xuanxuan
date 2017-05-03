@@ -804,7 +804,7 @@ class App extends ReadyNotifier {
             content: () => {
                 return <AboutView/>;
             },
-            width: 300,
+            width: 400,
             actions: null
         });
     }
