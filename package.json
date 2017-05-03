@@ -104,7 +104,7 @@
     "name": "Catouse",
     "email": "catouse@gmail.com"
   },
-  "license": "ZPL",
+  "license": "ZPL 1.2",
   "bugs": {
     "url": "https://github.com/cnezsoft/xuanxuan/issues"
   },
@@ -116,7 +116,8 @@
     "webpack",
     "react-hot"
   ],
-  "homepage": "http://xuanxuan.chat",
+  "homepage": "http://xuan.im",
+  "company": "青岛易软天创网络科技有限公司",
   "devDependencies": {
     "asar": "^0.13.0",
     "babel-core": "^6.22.1",
