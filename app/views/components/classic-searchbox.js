@@ -6,6 +6,7 @@ import Theme               from '../../theme';
 import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 import SearchIcon          from 'material-ui/svg-icons/action/search';
 import Helper              from 'Helper';
+import Lang                from 'Lang';
 
 class ClassicSearchBox extends Component {
 
@@ -21,7 +22,7 @@ class ClassicSearchBox extends Component {
 
     static defaultProps = {
         defaultValue: '',
-        hintText: '搜索',
+        hintText: Lang.common.search,
         onValueChange: null,
         delayValueChangeTime: 100
     };

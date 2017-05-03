@@ -91,7 +91,7 @@ const ChatMenu = React.createClass({
         type = type || this.state.type || MENU_TYPES.contacts;
         search = search || this.state.search;
         if(!Helper.isEmptyString(search)) {
-            return [{name: 'search', items: App.chat.searchChats(search)}];
+            return [{name: 'search', items: App.chat.searchChats(search, type === MENU_TYPES.contacts ? 'contact' : (type === MENU_TYPES.groups ? 'group' : false))}];
         }
         if(!this.dataCache) this.dataCache = {};
         if(this.dataCache[type]) return this.dataCache[type];
@@ -246,7 +246,7 @@ const ChatMenu = React.createClass({
                     heading={(data.title || false)}
                     expand={true}
                 >
-                {this.state.type === MENU_TYPES.contacts && App.user.getConfig('ui.chat.menu.showMe') ? <ListItem
+                {!this.state.search && this.state.type === MENU_TYPES.contacts && App.user.getConfig('ui.chat.menu.showMe') ? <ListItem
                     key={App.user.id}
                     style={STYLE.itemStyle}
                     onClick={() => App.openProfile()} 
@@ -303,7 +303,13 @@ const ChatMenu = React.createClass({
         let focusSearch = this.state.searchFocus || !Helper.isEmptyString(this.state.search);
         return <div className='dock-left' style={style} {...other}>
           <div className='dock-top' style={STYLE.header}>
-            <SearchBox className="dock-left" style={{right: focusSearch ? 0 : 40, position: 'absolute', transition: Theme.transition.normal('right')}} onValueChange={this._handleSearchChange} onFocusChange={this._handleSearchFocusChange}/>
+            <SearchBox
+                className="dock-left"
+                style={{right: focusSearch ? 0 : 40, position: 'absolute', transition: Theme.transition.normal('right')}}
+                onValueChange={this._handleSearchChange}
+                onFocusChange={this._handleSearchFocusChange}
+                hintText={this.state.type === MENU_TYPES.contacts ? Lang.chat.searchContacts : (this.state.type === MENU_TYPES.groups ? Lang.chat.searchGroups : Lang.common.search)}
+            />
             <IconButton onClick={e => {App.chat.openCreateNewChat();}} className="dock-right hint--left" data-hint={Lang.chat.newChat} style={{position: 'absolute', transform: focusSearch ? 'scale(0)' : 'scale(1)', opacity: focusSearch ? 0 : 1, transition: Theme.transition.normal('transform', 'opacity')}}><ChatPlusIcon style={{width: 20, height: 20}} color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>
           </div>
           <div className='scroll-y dock-full' style={STYLE.listContainer}>

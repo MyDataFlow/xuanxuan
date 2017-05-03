@@ -552,7 +552,7 @@ class ChatApp extends AppCore {
      * @param  {string} search
      * @return {array}  chat array
      */
-    searchChats(search) {
+    searchChats(search, chatType) {
         if(Helper.isEmptyString(search)) return [];
         search = search.trim().toLowerCase().split(' ');
         if(!search.length) return [];
@@ -566,8 +566,15 @@ class ChatApp extends AppCore {
             let idx = whitch.indexOf(sKey);
             return idx === 0 ? SEARCH_SCORE_MAP.matchPrefix : (idx > 0 ? SEARCH_SCORE_MAP.include : 0);
         };
+        const hasChatType = !!chatType;
         Object.keys(this.dao.chats).forEach(gid => {
             let chat = this.dao.chats[gid];
+
+            if(hasChatType)
+            {
+                if((chatType === 'contact' && !chat.isOne2One) || (chatType === 'group' && !chat.isGroupOrSystem)) return;
+            }
+
             let score = 0;
             let chatGid = chat.gid.toLowerCase();
             let chatName = chat.getDisplayName(this.$app, false).toLowerCase();

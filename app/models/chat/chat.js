@@ -191,6 +191,14 @@ class Chat extends Entity {
     }
 
     /**
+     * Check the chat type is system or group
+     * @return {Boolean}
+     */
+    get isGroupOrSystem() {
+        return this.type === 'system' || this.type === 'group';
+    }
+
+    /**
      * Check the chat whether can turn public status by the given user
      * @param  {User | Member} user
      * @return {boolean}
