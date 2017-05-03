@@ -300,6 +300,12 @@ class ChatApp extends AppCore {
                 this.registerGlobalHotKey();
             }
         });
+
+        app.on(R.event.user_config_reset, (user, config, oldConfig) => {
+            if(config['shortcut.captureScreen'] !== oldConfig['shortcut.captureScreen']) {
+                this.registerGlobalHotKey();
+            }
+        });
     }
 
     get activeChat() {

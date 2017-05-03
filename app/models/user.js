@@ -316,8 +316,23 @@ class User extends Member {
         } else {
             this.config[objOrKey] = value;
         }
+        this.config.lastSaveTime = new Date().getTime();
         if(this.listenStatus) {
             Events.emit(R.event.user_config_change, this, objOrKey, value);
+        }
+    }
+
+    /**
+     * Reset config
+     * @param  {object} config
+     * @return {void}
+     */
+    resetConfig(config) {
+        Object.assign(this.config, objOrKey);
+        let oldConfig = Object.assign({}, this.config);
+        this.config.lastSaveTime = new Date().getTime();
+        if(this.listenStatus) {
+            Events.emit(R.event.user_config_reset, this, config, oldConfig);
         }
     }
 

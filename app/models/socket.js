@@ -173,6 +173,40 @@ class Socket extends ReadyNotifier {
     }
 
     /**
+     * Upload user settings
+     * @return {void}
+     */
+    uploadUserSettings(user) {
+        if(this.user.isNewApi) {
+            user = user || this.user;
+            this.send({
+                'method': 'settings',
+                params: [
+                    user.account,
+                    user.config
+                ]
+            });
+        }
+    }
+
+    /**
+     * Sync user settings
+     * @return {void}
+     */
+    syncUserSettings(user) {
+        if(this.user.isNewApi) {
+            user = user || this.user;
+            this.send({
+                'method': 'settings',
+                params: [
+                    this.user.account,
+                    ''
+                ]
+            });
+        }
+    }
+
+    /**
      * Create a SocketMessage with default data
      * @param  {object} data
      * @return {void}
@@ -333,11 +367,10 @@ class Socket extends ReadyNotifier {
                             this.sid = msg.sid;
                             let user = Object.assign({sid: msg.sid}, msg.data);
                             this._emit(R.event.user_login_message, user);
-
-                            // clearTimeout(this.fetchUserListTask);
-                            // this.fetchUserListTask = setTimeout(() => {
-                            //     this.fetchUserList();
-                            // }, 10000);
+                            if(!this.isUserLogined) {
+                                this.syncUserSettings();
+                                this.isUserLogined = true;
+                            }
                         } else {
                             let member = this.app.dao.getMember(msg.data.id);
                             if(member) {
@@ -347,6 +380,14 @@ class Socket extends ReadyNotifier {
                         }
                     } else {
                         this._emit(R.event.user_login_message, null, new Error(msg.data));
+                    }
+                },
+                settings: msg => {
+                    if(msg.isSuccess) {
+                        let user = this.user;
+                        if(msg.data && msg.data.lastSaveTime > user.getConfig('lastSaveTime', 0)) {
+                            user.resetConfig(msg.data);
+                        }
                     }
                 },
                 userchangestatus: msg => {
