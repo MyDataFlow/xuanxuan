@@ -27,6 +27,7 @@ export default {
     'ui.app.hideWindowOnBlur': false,
     'ui.app.removeFromTaskbarOnHide': true,
     'ui.app.onClose': 'ask', // or 'close', 'minimize'
+    // 'local.ui.app.lastFileSavePath': '',
     'shortcut.captureScreen': 'Ctrl+Alt+Z',
     'shortcut.sendMessage': 'Enter'
 };

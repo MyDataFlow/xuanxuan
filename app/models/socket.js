@@ -179,11 +179,17 @@ class Socket extends ReadyNotifier {
     uploadUserSettings(user) {
         if(this.user.isNewApi) {
             user = user || this.user;
+            let config = {};
+            for(key of user.config) {
+                if(key.indexOf('local.') !== 0) {
+                    config[key] = user.config[key];
+                }
+            }
             this.send({
                 'method': 'settings',
                 params: [
                     user.account,
-                    user.config
+                    config
                 ]
             });
         }

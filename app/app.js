@@ -700,9 +700,14 @@ class App extends ReadyNotifier {
 
         options = Object.assign({
             title: Lang.dialog.fileSaveTo,
-            defaultPath: Path.join(this.desktopPath, filename)
+            defaultPath: Path.join(this.user.getConfig('local.ui.app.lastFileSavePath', this.desktopPath), filename)
         }, options);
-        Dialog.showSaveDialog(this.browserWindow, options, callback);
+        Dialog.showSaveDialog(this.browserWindow, options, filename => {
+            if(filename) {
+                this.user.setConfig('local.ui.app.lastFileSavePath', Path.dirname(filename));
+            }
+            callback && callback(filename);
+        });
     }
 
     /**
