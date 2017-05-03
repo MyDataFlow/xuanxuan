@@ -1,10 +1,10 @@
 /**
- * The aes file of websocket current module of xxd.
+ * The clientTest file of wsocket current module of xxd.
  *
  * @copyright   Copyright 2009-2017 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
  * @author      Archer Peng <pengjiangxiu@cnezsoft.com>
- * @package     util
+ * @package     wsocket
  * @link        http://www.zentao.net
  */
 package wsocket
@@ -38,9 +38,11 @@ func testSwitchMethod(message []byte, parseData api.ParseData, client *Client) e
 }
 
 func chatTestLogin(parseData api.ParseData, client *Client) error {
-	client.serverName = parseData.ServerName()
-	//client.userID = util.GetUnixTime()
 	client.userID = autoNumber()
+	client.serverName = parseData.ServerName()
+	if client.serverName == "" {
+		client.serverName = util.Config.DefaultServer
+	}
 
 	cRegister := &ClientRegister{client: client, retClient: make(chan *Client)}
 	defer close(cRegister.retClient)
