@@ -132,9 +132,11 @@ const ChatPage = React.createClass({
 
     componentDidMount() {
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
-            let chat = null;
+            let chat = null, oldChat = this.state.chat;
             if(data.chats) {
                 chat = data.chats.find(x => x.gid === this.props.chatGid);
+            } else if(oldChat && oldChat.isOne2One && data.members) {
+                chat = oldChat;
             }
             if(chat && chat.gid === this.props.chatGid) {
                 this.setState({chat}, () => {
