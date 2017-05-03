@@ -55,7 +55,8 @@ class ModalView extends Component {
         actions: [
             {type: 'cancel'},
             {type: 'submit'},
-        ]
+        ],
+        actionsAlign: 'right'
     };
 
     _resetContentSize() {
@@ -187,9 +188,6 @@ class ModalView extends Component {
                 lineHeight: '36px',
                 padding: 8,
             },
-            actions: {
-                textAlign: 'right',
-            },
             content: {
                 fontSize: '14px',
                 lineHeight: '20px',
@@ -256,6 +254,7 @@ class ModalView extends Component {
             closeButtonStyle,
             clickThrough,
             actions,
+            actionsAlign,
             ...other
         } = this.props;
 
@@ -333,7 +332,7 @@ class ModalView extends Component {
                   {typeof(content) === 'function' ? content() : content || <Spinner />}
                   {children ? <div>{children}</div> : null}
                 </div>
-                {footer !== undefined || buttons ? <footer ref={e => this.modalFooter = e} style={STYLE.footer}>{footer}<div style={STYLE.actions}>{buttons}</div></footer> : null}
+                {footer !== undefined || buttons ? <footer ref={e => this.modalFooter = e} style={STYLE.footer}>{footer}<div style={{textAlign: actionsAlign || 'right'}}>{buttons}</div></footer> : null}
               </Paper>
               <EventListener
                 target='window'

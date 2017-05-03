@@ -768,7 +768,7 @@ class App extends ReadyNotifier {
             content: () => {
                 return <UserSettingView config={this.user.config} ref={e => userSettingView = e}/>;
             },
-            width: 650,
+            width: 500,
             actions: [
                 {type: 'submit'},
                 {type: 'cancel'},
@@ -778,9 +778,10 @@ class App extends ReadyNotifier {
                     click: () => {
                         userSettingView.resetConfig();
                     },
-                    style: {float: 'left'}
+                    style: {float: Helper.isWindowsOS ? 'none' : 'left'}
                 },
             ],
+            actionsAlign: Helper.isWindowsOS ? 'left' : 'right',
             onSubmit: () => {
                 if(userSettingView.configChanged) {
                     this.user.config = Object.assign(this.user.config, userSettingView.getConfig());
