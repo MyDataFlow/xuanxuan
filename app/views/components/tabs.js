@@ -27,7 +27,7 @@ const Tabs = React.createClass({
         return <div className='tabs' {...other} style={style}>
         {
             tabs.map(tab => {
-                let className = 'tab';
+                let className = 'tab text-ellipsis';
                 let isActive = selected === tab.key;
                 if(isActive) className += ' active';
                 if(tab.hint) {

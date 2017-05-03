@@ -139,8 +139,10 @@ const ChatSidebar = React.createClass({
             let members = Member.sort(this.props.chat.membersSet, [(x, y) => {
                 if(x.account === user.account) return -1;
                 if(y.account === user.account) return 1;
-                if(chat.isAdmin(x)) return -1;
-                if(chat.isAdmin(y)) return 1;
+                const xIsAdmin = chat.isAdmin(x);
+                const yIsAdmin = chat.isAdmin(y);
+                if(xIsAdmin && !yIsAdmin) return -1;
+                if(yIsAdmin && !xIsAdmin) return 1;
                 return 0;
             }, 'status', 'namePinyin', '-id']);
             if(!this.tabsNameAlias) this.tabsNameAlias = {};

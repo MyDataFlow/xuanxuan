@@ -97,7 +97,7 @@ const ChatPage = React.createClass({
                 direction: 'horizontal',
                 gutterSize: 2,
                 sizes: [100 - sidebarConfig.width , sidebarConfig.width],
-                minSize: [450, 250],
+                minSize: [450, 200],
                 onDragEnd: e => {
                     this.sidebarConfig = {
                         width: this.colSpliter.getSizes()[1],
