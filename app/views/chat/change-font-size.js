@@ -9,7 +9,7 @@ import FlatButton         from 'material-ui/FlatButton';
 
 const DEFAULT_CONFIG = {
     size: 13,
-    lineHeight: 1.2307692308,
+    lineHeight: 1.5384615385,
     title: '1em',
     titleLineHeight: 1.53846153846
 };
