@@ -180,11 +180,11 @@ class Socket extends ReadyNotifier {
         if(this.user.isNewApi) {
             user = user || this.user;
             let config = {};
-            for(key of user.config) {
+            Object.keys(user.config).forEach(key => {
                 if(key.indexOf('local.') !== 0) {
                     config[key] = user.config[key];
                 }
-            }
+            });
             this.send({
                 'method': 'settings',
                 params: [
