@@ -237,8 +237,8 @@ const Navbar = React.createClass({
         if(showRecentsOnNavbar) {
             listItems.push({name: R.ui.navbar_chat, text: "最近聊天", icon: this.state.active === R.ui.navbar_chat ? <ActiveChatIcon className='icon' style={STYLE.icon}/> : <ChatIcon className='icon' style={STYLE.icon}/>});
         }
-        listItems.push({name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>});
         listItems.push({name: R.ui.navbar_groups, text: "讨论组", icon: this.state.active === R.ui.navbar_groups ? <PoundBoxIcon className='icon' style={STYLE.icon}/> : <PoundIcon className='icon' style={STYLE.icon}/>});
+        listItems.push({name: R.ui.navbar_contacts, text: "联系人", icon: this.state.active === R.ui.navbar_contacts ? <ActivePeopleIcon className='icon' style={STYLE.icon}/> : <PeopleIcon className='icon' style={STYLE.icon}/>});
 
         let statusStyle = Object.assign({}, STYLE.status.base);
         let userDisplayName = this.state.user.displayName || this.state.user.realName || this.state.user.account;
