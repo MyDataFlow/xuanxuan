@@ -120,7 +120,7 @@ const ChatSidebar = React.createClass({
           <UserStatus status={member.status} />
           {member.displayName}
           {this.props.chat.isCommitter(member) ? null : <div data-hint={Lang.chat.blockedCommitter} className="hint--left pull-right"><LockIcon style={STYLE.blockIcon} /></div>}
-          {this.props.chat.isAdmin(member) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
+          {(this.props.chat.isGroupOrSystem && this.props.chat.isAdmin(member)) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
         </div>;
         return <ListItem onContextMenu={this._handleMemberItemContextMenu.bind(this, member)} onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />;
     },
