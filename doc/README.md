@@ -4,7 +4,7 @@
 
 ## 下载与安装
 
-选择适合自己操作系统版本进行下载安装：http://xuanxuan.chat/#downloads
+选择适合自己操作系统版本进行下载安装：http://xuan.im/#downloads
 
 ## 用户账号及登录
 

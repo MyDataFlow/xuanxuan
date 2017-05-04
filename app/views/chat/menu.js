@@ -46,18 +46,18 @@ const ChatMenu = React.createClass({
     getInitialState() {
         let configType = App.user.getConfig('ui.navbar.active', R.ui.navbar_chat);
         return {
-            data: {},
-            type: MENU_TYPES[configType] || MENU_TYPES.contacts,
-            activeChat: App.user.getConfig('ui.chat.activeChat'),
-            search: ''
+            data       : {},
+            type       : MENU_TYPES[configType] || MENU_TYPES.contacts,
+            activeChat : App.user.getConfig('ui.chat.activeChat'),
+            search     : ''
         };
     },
 
     _handleItemClick(chatGid, chat) {
         if(typeof chatGid === 'object') {
             let chatTemp = chatGid;
-            chatGid = chatTemp.gid;
-            chat = chatTemp;
+            chatGid      = chatTemp.gid;
+            chat         = chatTemp;
         }
 
         if(chat && chat.noticeCount) {
@@ -88,7 +88,7 @@ const ChatMenu = React.createClass({
 
     _getData(type, search) {
         if(!App.user || App.user.isOffline) return [];
-        type = type || this.state.type || MENU_TYPES.contacts;
+        type = type || this.state.type || MENU_TYPES.recent;
         search = search || this.state.search;
         if(!Helper.isEmptyString(search)) {
             return [{name: 'search', items: App.chat.searchChats(search, type === MENU_TYPES.contacts ? 'contact' : (type === MENU_TYPES.groups ? 'group' : false))}];
@@ -110,7 +110,7 @@ const ChatMenu = React.createClass({
                     break;
                 case MENU_TYPES.groups:
                     var items = App.chat.getGroups();
-                    items = Chat.sort(items, ['star', 'name'], App);
+                    items = Chat.sort(items, ['star', 'isSystem', '-namePinyin'], App);
                     data.push({name: MENU_TYPES.groups, items});
                     break;
             }
@@ -165,11 +165,14 @@ const ChatMenu = React.createClass({
 
     render() {
         const STYLE = {
-            menu: {width: App.user.getConfig('ui.chat.menu.width', 200), backgroundColor: Theme.color.pale1, paddingBottom: 48},
+            menu: {
+                width           : App.user.getConfig('ui.chat.menu.width', 200),
+                backgroundColor : Theme.color.pale1, paddingBottom: 48
+            },
             list: {
-                backgroundColor: 'transparent', 
-                paddingTop: 0, 
-                paddingBottom: 0
+                backgroundColor : 'transparent', 
+                paddingTop      : 0, 
+                paddingBottom   : 0
             },
             listContainer: {
                 top: 48
@@ -178,48 +181,48 @@ const ChatMenu = React.createClass({
                 outline: '1px solid transparent'
             },
             activeItemStyle: {
-                backgroundColor: '#fff',
-                outline: '1px solid rgba(0,0,0,.075)',
-                outlineOffset: 0
+                backgroundColor : '#fff',
+                outline         : '1px solid rgba(0,0,0,.075)',
+                outlineOffset   : 0
             },
             starIconStyle: {
-                color: Theme.color.icon,
-                fill: Theme.color.icon,
-                position: 'absolute',
-                right: 8,
-                top: 14,
-                width: 12,
-                height: 12,
-                opacity: .6
+                color    : Theme.color.icon,
+                fill     : Theme.color.icon,
+                position : 'absolute',
+                right    : 8,
+                top      : 14,
+                width    : 12,
+                height   : 12,
+                opacity  : .6
             },
             buttonItem: {color: Theme.color.primary1},
             rightIcon: {
-                textAlign: 'right',
-                paddingLeft: 0,
-                lineHeight: '24px'
+                textAlign   : 'right',
+                paddingLeft : 0,
+                lineHeight  : '24px'
             },
             badgeRed: {
-                backgroundColor: Theme.colors.red500,
-                color: 'white',
-                lineHeight: '16px',
-                display: 'inline-block',
-                fontSize: '12px',
-                padding: '0 4px',
-                borderRadius: 8,
-                minWidth: 8,
-                textAlign: 'center',
-                width: 'auto'
+                backgroundColor : Theme.colors.red500,
+                color           : 'white',
+                lineHeight      : '16px',
+                display         : 'inline-block',
+                fontSize        : '12px',
+                padding         : '0 4px',
+                borderRadius    : 8,
+                minWidth        : 8,
+                textAlign       : 'center',
+                width           : 'auto'
             },
             subheader: {fontSize: '12px', lineHeight: '30px', marginTop: 10, width: 'auto'},
             listShowButton: {
-                fontSize: '13px',
-                display: 'block',
-                padding: '10px 15px'
+                fontSize : '13px',
+                display  : 'block',
+                padding  : '10px 15px'
             },
             userStatus: {
-                position: 'absolute',
-                bottom: 0,
-                right: 0
+                position : 'absolute',
+                bottom   : 0,
+                right    : 0
             },
             header: {
                 height: 50

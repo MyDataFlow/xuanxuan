@@ -17,7 +17,7 @@
 
 注意：测试服务器不能使用传送文件功能。
 
-然之协同服务器端部署基本步骤参见：http://xuanxuan.chat/page/2.html
+然之协同服务器端部署基本步骤参见：http://xuan.im/page/2.html
 
 ## 其他服务器端实现
 

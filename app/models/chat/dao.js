@@ -30,6 +30,9 @@ class Dao {
                 this.chats[chat.gid] = chat;
             // }
         });
+        if(chats.length === 1 && chats[0].isSystem) {
+            chats[0].lastActiveTime = new Date().getTime();
+        }
         this.$dao.upsert(chats);
         this.$dao._emit(R.event.data_change, {chats: chats});
 

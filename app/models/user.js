@@ -328,8 +328,8 @@ class User extends Member {
      * @return {void}
      */
     resetConfig(config) {
-        Object.assign(this.config, objOrKey);
-        let oldConfig = Object.assign({}, this.config);
+        const oldConfig = this.config;
+        Object.assign(this.config, config);
         this.config.lastSaveTime = new Date().getTime();
         if(this.listenStatus) {
             Events.emit(R.event.user_config_reset, this, config, oldConfig);
