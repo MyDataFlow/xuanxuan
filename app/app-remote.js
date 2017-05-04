@@ -322,6 +322,11 @@ class AppRemote extends ReadyNotifier {
         }
     }
 
+    setOverlayIcon(base64Image, label) {
+        const img = NativeImage.createFromDataURL(base64Image);
+        mainWindow.setOverlayIcon(img, label);
+    }
+
     dockBounce(type = 'informational') {
         if(Helper.isOSX) {
             ElectronApp.dock.bounce(type);

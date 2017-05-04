@@ -626,8 +626,7 @@ class App extends ReadyNotifier {
             }
 
             const badgeDataURL = canvas.toDataURL();
-            const img = NativeImage.createFromDataUrl(badgeDataURL);
-            this.browserWindow.setOverlayIcon(img, label);
+            this.remote('setOverlayIcon', badgeDataURL, label);
         }
     }
 
