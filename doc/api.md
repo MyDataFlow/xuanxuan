@@ -1,10 +1,89 @@
-# API
-## 名词约定
+# 服务器端API
+服务器端 API 是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
+
+请参考以下 API 设计来开发自己的服务器端。
+
+## 数据库设计参考
+
+MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/ranzhi/db/xuanxuan.sql
+
+### Chat 表
+
+存储会话数据。
+
+| 名称             | 类型       | 必须/可选 | 说明                                       |
+| :------------- | :------- | :---: | :--------------------------------------- |
+| id             | number   |  必须   | 存储在远程数据库的id,客户端根据此id值是否设置来判定是否为远程保存的对象   |
+| gid            | string   |  必须   | 当客户端向系统提交新的会话时,会创建全局唯一的id                |
+| name           | string   |  可选   | 会话名称,当为空时,客户端会自动生成会话名称                   |
+| type           | string   |  可选   | 表明会话类型：system(系统), one2one(一对一), gourp（多人讨论组）, project, product等 |
+| admins         | string   |  可选   | 会话管理员用户列表                                |
+| committers     | string   |  可选   | 会话允许发言用户清单                               |
+| subject        | int      |  可选   | 主题会话关联的主题(product, project等)ID           |
+| public         | bool     |  可选   | 是否公共会话                                   |
+| createdBy      | string   |  必须   | 创建者的账号                                   |
+| createdDate    | datetime |  必须   | 创建会话时服务器的时间戳                             |
+| editedBy       | string   |  可选   | 编辑者的账号                                   |
+| editedDate     | datetime |  可选   | 编辑会话时服务器的时间戳                             |
+| lastActiveTime | datetime |  可选   | 会话最后一次发送消息时服务器的时间戳                       |
+| [users]        | 关联数据集    |  必须   | 包含此会话的所有成员,和每个成员加入此会话的时间                 |
+| [messages]     | 关联数据集    |  必须   | 包含此会话的所有消息                               |
+
+### Message 表
+
+存储会话消息数据。
+
+| 名称          | 类型     | 必须/可选 | 说明                                       |
+| :---------- | :----- | :---: | ---------------------------------------- |
+| id          | number |  必须   | 存储在远程数据库的id,客户端根据此id值是否设置来判定是否为远程保存的对象   |
+| gid         | string |  必须   | 当客户端向系统提交新的消息时,会创建全局唯一的id                |
+| cgid        | string |  必须   | 此消息所属于的会话的gid属性,会话根据此值来查询包含的消息           |
+| user        | string |  可选   | 此消息发送者的用户名,广播类的消息没有此值                    |
+| date        | number |  必须   | 消息发送的时间戳                                 |
+| type        | string |  可选   | 消息的类型,为'normal'（默认）, 'broadcast'         |
+| content     | string |  必须   | 消息的内容,如果消息内容类型不是文本,则已此值为json格式的对象        |
+| contentType | string |  必须   | 消息内容的类型,为'text'(默认), 'emoticon', 'image', 'file' |
+
+
+### ChatsOfUser 表
+
+存储参与会话的成员数据。
+
+| 名称    | 类型       | 必须/可选 | 说明             |
+| :---- | :------- | :---: | -------------- |
+| id    | number   |  必须   | 存储在远程数据库的id    |
+| cgid  | string   |  必须   | 会话的gid属性       |
+| user  | number   |  必须   | 用户id,对应用户表的id  |
+| order | number   |  可选   | 会话显示顺序         |
+| star  | bool     |  可选   | 用户是否收藏会话       |
+| hide  | bool     |  可选   | 用户是否隐藏会话       |
+| mute  | bool     |  可选   | 用户是否开启免打扰      |
+| quit  | datetime |  可选   | 用户退出会话时服务器的时间戳 |
+| join  | datetime |  必须   | 用户加入会话时服务器的时间戳 |
+
+
+### UserMessage
+
+存储用户离线时收到的消息。
+
+| 名称      | 类型     | 必须/可选 | 说明                                       |
+| ------- | ------ | ----- | ---------------------------------------- |
+| id      | number | 必须    | 存储在远程数据库的id,离线消息的标识符,服务器根据客户端返回的此id删除已发送过的离线消息。 |
+| level   | number | 必须    | 离线消息级别,默认为3。数字越低级别越高,优先发送级别高的离线消息,用户登录时会生成级别为0和1的消息各一条。 |
+| user    | number | 必须    | 离线消息的目标用户id,对应用户表的id                     |
+| message | text   | 必须    | 离线消息的内容,经过json编码的数据                      |
+
+
+
+## API说明
+
+### 名词约定
+
 client：喧喧客户端
 xxd：GO 聊天服务器
 rzs：后台然之服务器
 
-## 数据格式和约定
+### API数据格式
 常见的请求对象格式
 ```js
 {
@@ -30,11 +109,11 @@ rzs：后台然之服务器
 }
 ```
 
-## xxd启动
+### xxd启动
 >xxd启动时会向rzs发送一条请求，rzs收到请求将所有用户状态重置为offline。
 
-### 请求
-#### 方向：xxd --> rzs
+#### 请求
+##### 方向：xxd --> rzs
 ```js
 {
     module: 'chat',
@@ -42,15 +121,15 @@ rzs：后台然之服务器
 }
 ```
 
-### 响应
-#### 方向：rzs ---> xxd
+#### 响应
+##### 方向：rzs ---> xxd
 ```js
 HTTP Status Code
 ```
 
-## 登录
-### 请求  
-#### 方向：client --> xxd
+### 登录
+#### 请求  
+##### 方向：client --> xxd
 ```js
 {
     module: 'chat',
@@ -64,11 +143,11 @@ HTTP Status Code
     ]
  }
 ```
-#### 方向：xxd --> rzs
+##### 方向：xxd --> rzs
 xxd服务器根据module、method和serverName把请求发送给指定的rzs
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -95,9 +174,9 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
 ```
 登录成功以后xxd主动从rzs服务器获取用户列表、用户所参与的会话信息和用户的离线消息发送给当前客户端。最后把rzs服务器响应给xxd服务器的登录信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 登出
-### 请求
-#### 方向：client --> xxd
+### 登出
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID, //登出用户的id号
@@ -106,11 +185,11 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
 }
 ```
 
-#### 方向：xxd --> rzs
+##### 方向：xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向 rzs --> xxd
+#### 响应
+##### 方向 rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -135,13 +214,13 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的登出信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 重复登录
+### 重复登录
 >当同一用户重复登录时,系统会向前一个登录的用户推送一条特殊的消息,客户端接收到该消息后应该将用户登出，并关闭相关的网络连接。该消息不需要响应或返回结果。
 
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 ```js
 {
     module:  'chat',
@@ -150,9 +229,9 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 
-## 获取所有用户列表
-### 请求
-#### 方向： client --> xxd
+### 获取所有用户列表
+#### 请求
+##### 方向： client --> xxd
 ```js
 {
     userID, //用户的id号
@@ -161,11 +240,11 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -193,12 +272,12 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 获取当前登录用户所有会话数据
-### 请求
-#### 方向：client --> xxd
+### 获取当前登录用户所有会话数据
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -206,11 +285,11 @@ xxd把client发送的数据转发给rzs。
     method: 'getList',
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -246,12 +325,12 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 获取当前登录用户所有离线消息
-### 请求
-#### 方向： xxd --> rzs
+### 获取当前登录用户所有离线消息
+#### 请求
+##### 方向： xxd --> rzs
 ```js
 {
     userID,
@@ -260,8 +339,8 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -284,12 +363,12 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
-## 更改当前登录用户的信息
-### 请求
-#### 方向：client --> xxd
+### 更改当前登录用户的信息
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -316,11 +395,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -345,12 +424,12 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 创建聊天会话
-### 请求
-#### 方向：client --> xxd
+### 创建聊天会话
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -367,13 +446,13 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
+#### 响应
 >服务器在创建会话时应该先检查gid是否已经存在，如果存在则直接为当前登录用户返回已存在的会话信息。
 
-#### 方向：rzs --> xxd
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -398,14 +477,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 加入或退出聊天会话
+### 加入或退出聊天会话
 >用户可以加入类型为group并且公共的会话；用户可以退出类型为group的会话。
 
-### 请求
-#### 方向：client --> xxd
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -418,11 +497,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -447,14 +526,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户（包括退出会话的当前用户）。
 
-## 更改会话名称
+### 更改会话名称
 >用户可以更改类型为group的会话的名称。
 
-### 请求
-#### 方向：client --> xxd
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -467,11 +546,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -496,14 +575,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 收藏或取消收藏会话
+### 收藏或取消收藏会话
 >每个用户都可以单独决定收藏或取消收藏会话（加星标记）。
 
-### 请求
-#### 方向：client --> xxd
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -516,11 +595,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -534,14 +613,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
 
-## 邀请新的用户到会话或者将用户踢出会话
-### 请求
+### 邀请新的用户到会话或者将用户踢出会话
+#### 请求
 >用户可以邀请一个或多个用户到类型为group的已有会话中；会话管理员可以将一个或多个用户踢出类型为group的会话。
 
-#### 方向：client --> xxd
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -555,13 +634,13 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
+#### 响应
 >当新用户被添加到会话之后或者用户被踢出会话后,服务器应该主动推送此会话的信息给此会话的所有在线成员；此响应与chat/create/响应的结果一致。
 
-#### 方向：rzs --> xxd
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -586,14 +665,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 向会话发送消息
-### 请求
+### 向会话发送消息
+#### 请求
 >用户向一个或多个会话中发送一条或多条消息,服务器推送此消息给此会话中的所有在线成员；当前不在线的成员会在下次上线时通过离线消息送达。
 
-#### 方向：client --> xxd
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -614,13 +693,13 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
+#### 响应
 >当有新的消息收到时,服务器会所有消息,并发送给对应会话的所有在线成员
 
-#### 方向：rzs --> xxd
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -643,12 +722,12 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 获取会话的所有消息记录
-### 请求
-#### 方向：client --> xxd
+### 获取会话的所有消息记录
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -664,11 +743,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -698,12 +777,12 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 获取会话的所有成员信息
-### 请求
-#### 方向：client --> xxd
+### 获取会话的所有成员信息
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -715,11 +794,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -741,14 +820,14 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 隐藏或显示会话
+### 隐藏或显示会话
 >每个用户都可以单独决定隐藏或显示已参与的会话。
 
-### 请求
-#### 方向：client --> xxd
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -761,11 +840,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -779,14 +858,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
 
-## 将会话设置为公共会话或者取消设置公共会话
+### 将会话设置为公共会话或者取消设置公共会话
 >用户可以将一个非主题会话设置为公共会话或者取消设置公共会话。
 
-### 请求
-#### 方向：client --> xxd
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -799,11 +878,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: ' chat';
@@ -828,12 +907,12 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 获取所有公共会话列表
-### 请求
-#### 方向：client --> xxd
+### 获取所有公共会话列表
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -841,11 +920,11 @@ xxd把client发送的数据转发给rzs。
     method: 'getPublicList'
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -872,12 +951,12 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 设置会话管理员
-### 请求
-#### 方向：client --> xxd
+### 设置会话管理员
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -891,11 +970,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -919,14 +998,14 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 设置会话允许发言的人
+### 设置会话允许发言的人
 >通过此功能可以设置会话白名单。
 
-### 请求
-#### 方向：client --> xxd
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -939,11 +1018,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -967,12 +1046,12 @@ xxd把client发送的数据转发给rzs。
     }
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
-## 上传下载用户在客户端的配置信息
-### 请求
-#### 方向：client --> xxd
+### 上传下载用户在客户端的配置信息
+#### 请求
+##### 方向：client --> xxd
 ```js
 {
     userID,
@@ -985,11 +1064,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -999,12 +1078,12 @@ xxd把client发送的数据转发给rzs。
     data // 用户配置信息
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
-## 上传文件
-### 请求
-#### 方向：client --> xxd
+### 上传文件
+#### 请求
+##### 方向：client --> xxd
 
 客户端通过 https 向 xxd 服务器发起 POST 请求。
 请求头部需要包含如下内容：
@@ -1038,7 +1117,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 
-#### 方向： xxd --> rzs
+##### 方向： xxd --> rzs
 ```js
 {
     userID,
@@ -1056,8 +1135,8 @@ xxd把client发送的数据转发给rzs。
 ```
 xxd把client发送的数据转发给rzs。
 
-### 响应
-#### 方向：rzs --> xxd
+#### 响应
+##### 方向：rzs --> xxd
 ```js
 {
     module: 'chat',
@@ -1067,7 +1146,7 @@ xxd把client发送的数据转发给rzs。
     data: fileID  // 文件在然之服务器数据库存储的id
 }
 ```
-#### 方向：xxd --> client
+##### 方向：xxd --> client
 
 xxd 服务器在客户端发起的 POST 请求中以 JSON 文本格式返回文件基本信息。
 
