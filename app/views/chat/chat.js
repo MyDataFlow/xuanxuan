@@ -33,7 +33,7 @@ import Emojione            from 'Components/emojione';
 import Modal               from 'Components/modal';
 import IconMenu            from 'material-ui/IconMenu';
 import MenuItem            from 'material-ui/MenuItem';
-import MoreVertIcon        from 'material-ui/svg-icons/navigation/more-vert';
+import MoreIcon        from 'material-ui/svg-icons/navigation/more-horiz';
 import Divider             from 'material-ui/Divider';
 import LockIcon            from 'material-ui/svg-icons/action/lock-outline';
 
@@ -404,7 +404,7 @@ const ChatPage = React.createClass({
         let canRename = chat.canRename(App.user);
         let chatMenu = <IconMenu
             desktop={true}
-            iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreVertIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
+            iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
             listStyle={{paddingTop: 8, paddingBottom: 8}}
