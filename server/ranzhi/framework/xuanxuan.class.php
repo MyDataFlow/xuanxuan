@@ -8,7 +8,7 @@ class xuanxuan extends router
      * @var string
      * @access public
      */
-    public $version = '1.0';
+    public $version = '1.1.1';
 
     /**
      *  The request params.
@@ -39,6 +39,11 @@ class xuanxuan extends router
         parent::__construct($appName, $appRoot);
 
         $this->setViewType();
+
+        $key = $this->config->xuanxuan->key;
+        $iv  = substr($key, 0, 16);
+        $this->aes = $this->loadClass('phpaes');
+        $this->aes->init($key, $iv);
     }
 
     /**
@@ -73,15 +78,6 @@ class xuanxuan extends router
      */
     public function parseRequest()
     {
-        if(!function_exists('mcrypt_encrypt'))
-        {
-            $data = new stdclass();
-            $data->module = 'chat';
-            $data->method = 'kickoff';
-            $data->data   = 'Need enable mcrypt module of php.';
-            die($this->encrypt($data));
-        }
-
         $input   = file_get_contents("php://input");
         $input   = $this->decrypt($input);
         $userID  = !empty($input->userID) ? $input->userID : '';
@@ -265,10 +261,7 @@ class xuanxuan extends router
      */
     public function decrypt($input = '')
     {
-        $key   = $this->config->xuanxuan->key;
-        $iv    = substr($key, 0, 16);
-        $input = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $input, MCRYPT_MODE_CBC, $iv);
-        $input = $this->pkcs5_unpad($input, $blockSize = 16);
+        $input = $this->aes->decrypt($input);
         if($this->config->debug)
         {
             $this->log("decrypt: " . $input);
@@ -286,47 +279,13 @@ class xuanxuan extends router
      */
     public function encrypt($output = null)
     {
-        $key    = $this->config->xuanxuan->key;
-        $iv     = substr($key, 0, 16);
         $output = helper::jsonEncode($output);
         if($this->config->debug)
         {
             $this->log("encrypt: " . $output);
         }
-        $output = $this->pkcs5_pad($output, $blockSize = 16);
-        $output = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $output, MCRYPT_MODE_CBC, $iv);
+        $output = $this->aes->encrypt($output);
         return helper::removeUTF8Bom($output);
-    }
-    
-    /**
-     * pkcs5_pad 
-     * 
-     * @param  string $text 
-     * @param  int    blockSize$
-     * @static
-     * @access public
-     * @return string
-     */
-    public function pkcs5_pad($text = '', $blockSize = 16)
-    {
-        $pad = $blockSize - (strlen($text) % $blockSize);
-        return $text . str_repeat(chr($pad), $pad);
-    }
-    
-    /**
-     * pkcs5_unpad 
-     * 
-     * @param  string $text 
-     * @static
-     * @access public
-     * @return string 
-     */
-    public function pkcs5_unpad($text = '')
-    {
-        $pad = ord($text{strlen($text) - 1});
-        if($pad > strlen($text)) return false;
-        if(strspn($text, chr($pad), strlen($text) - $pad) != $pad) return false;
-        return substr($text, 0, -1 * $pad);
     }
 
     /**

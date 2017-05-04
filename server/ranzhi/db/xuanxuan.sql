@@ -71,4 +71,3 @@ CREATE TABLE IF NOT EXISTS `im_usermessage`(
 
 ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline'; 
 ALTER TABLE `sys_file` CHANGE `pathname` `pathname` char(100) NOT NULL;
-INSERT INTO `sys_config` (`owner`, `app`, `module`, `section`, `key`, `value`) VALUES ('system', 'sys', 'xuanxuan', 'global', 'version', '1.1.0');
