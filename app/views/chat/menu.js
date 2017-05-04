@@ -88,7 +88,7 @@ const ChatMenu = React.createClass({
 
     _getData(type, search) {
         if(!App.user || App.user.isOffline) return [];
-        type = type || this.state.type || MENU_TYPES.contacts;
+        type = type || this.state.type || MENU_TYPES.recent;
         search = search || this.state.search;
         if(!Helper.isEmptyString(search)) {
             return [{name: 'search', items: App.chat.searchChats(search, type === MENU_TYPES.contacts ? 'contact' : (type === MENU_TYPES.groups ? 'group' : false))}];
