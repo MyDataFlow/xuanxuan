@@ -15,6 +15,30 @@ class chatModel extends model
     }
 
     /**
+     * Create a system chat. 
+     * 
+     * @access public
+     * @return bool
+     */
+    public function createSystemChat()
+    {
+        $chat = $this->dao->select('*')->from(TABLE_IM_CHAT)->where('type')->eq('system')->fetch();
+        if(!$chat)
+        {
+            $id   = md5(time(). mt_rand());
+            $chat = new stdclass();
+            $chat->gid         = substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
+            $chat->name        = 'system group';
+            $chat->type        = 'system';
+            $chat->createdBy   = 'system';
+            $chat->createdDate = helper::now();
+
+            $this->dao->insert(TABLE_IM_CHAT)->data($chat)->exec();
+        }
+        return !dao::isError();
+    }
+
+    /**
      * Get a user. 
      * 
      * @param  int    $userID 

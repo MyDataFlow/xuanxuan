@@ -22,6 +22,7 @@ class chat extends control
     public function serverStart()
     {
         $this->chat->resetUserStatus();
+        $this->chat->createSystemChat();
     }
 
     /**
