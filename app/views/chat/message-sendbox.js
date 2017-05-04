@@ -14,7 +14,7 @@ import IconButton          from 'material-ui/IconButton';
 import ColorManipulator    from 'Utils/color-helper';
 import Checkbox            from 'material-ui/Checkbox';
 import FileIcon            from '../icons/file-outline';
-import ImageIcon           from 'material-ui/svg-icons/image/photo';
+import ImageIcon           from 'material-ui/svg-icons/image/photo-size-select-actual';
 import Moment              from 'moment';
 import Popover             from '../components/popover';
 import Modal               from '../components/modal';
