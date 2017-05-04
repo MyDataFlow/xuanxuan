@@ -324,7 +324,7 @@ class AppRemote extends ReadyNotifier {
 
     setOverlayIcon(base64Image, label) {
         const img = nativeImage.createFromDataURL(base64Image);
-        mainWindow.setOverlayIcon(img, label);
+        this.mainWindow.setOverlayIcon(img, label);
     }
 
     dockBounce(type = 'informational') {
