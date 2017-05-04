@@ -399,6 +399,7 @@ class Socket extends ReadyNotifier {
                             id: 'socketMessager',
                             clickAway: true,
                             autoHide: false,
+                            color: Colors.amber500,
                             content: message
                         });
                     }
