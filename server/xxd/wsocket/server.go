@@ -16,6 +16,7 @@ import (
 
 const (
 	webSocket = "/ws"
+	ownSocket = "/ownData"
 )
 
 func InitWs() {
@@ -24,6 +25,10 @@ func InitWs() {
 
 	http.HandleFunc(webSocket, func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
+	})
+
+	http.HandleFunc(ownSocket, func(w http.ResponseWriter, r *http.Request) {
+		ownWs(hub, w, r)
 	})
 
 	addr := util.Config.Ip + ":" + util.Config.ChatPort
