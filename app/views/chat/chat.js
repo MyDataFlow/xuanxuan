@@ -187,7 +187,6 @@ const ChatPage = React.createClass({
         } else {
             sendbox.editbox.getContentList().forEach(content => {
                 if(content.type === 'text') {
-                    content.content = content.content.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
                     content.content = Emojione.toShort(content.content);
                     let trimContent = App.user.getConfig('ui.chat.sendHDEmoticon') ? content.content.trim() : false;
                     if(trimContent && Emojione.emojioneList[trimContent]) {

@@ -153,6 +153,7 @@ class Message extends Entity {
     renderTextContent(render, forceRender) {
         if(render === true || forceRender || this.$._renderTextContent === undefined) {
             let content = this.content;
+            content = content.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
             content = Helper.markdown(content);
             content = Emojione.toImage(content);
             if(typeof render === 'function') content = render(content);
