@@ -37,8 +37,11 @@ func init() {
 	}
 
 	LogInfo().Println()
+	Printf("sys start,version:%s, server test model is %v\n", Version, IsTest)
+	Printf("ProgramName:%s,System:%s-%s\n", GetProgramName(), runtime.GOOS, runtime.GOARCH)
+
 	LogInfo().Printf("sys start,version:%s, server test model is %v\n", Version, IsTest)
-	LogInfo().Printf("ProgramName:%s,System:%s-%s", GetProgramName(), runtime.GOOS, runtime.GOARCH)
+	LogInfo().Printf("ProgramName:%s,System:%s-%s\n", GetProgramName(), runtime.GOOS, runtime.GOARCH)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }

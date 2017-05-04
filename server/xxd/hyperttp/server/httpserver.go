@@ -70,9 +70,13 @@ func InitHttp() {
 	http.HandleFunc(sInfo, serverInfo)
 
 	addr := util.Config.Ip + ":" + util.Config.CommonPort
-	util.LogInfo().Println("http server start,listen addr:", addr, download)
-	util.LogInfo().Println("http server start,listen addr:", addr, upload)
-	util.LogInfo().Println("http server start,listen addr:", addr, sInfo)
+	util.Println("file server start,listen addr:", addr, download)
+	util.Println("file server start,listen addr:", addr, upload)
+	util.Println("http server start,listen addr: https://", addr)
+
+	util.LogInfo().Println("file server start,listen addr:", addr, download)
+	util.LogInfo().Println("file server start,listen addr:", addr, upload)
+	util.LogInfo().Println("http server start,listen addr: https://", addr, sInfo)
 
 	if err := http.ListenAndServeTLS(addr, crt, key, nil); err != nil {
 		util.LogError().Println("http server listen err:", err)
