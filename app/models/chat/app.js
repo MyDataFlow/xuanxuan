@@ -92,7 +92,6 @@ class ChatApp extends AppCore {
                         }
                     },
                     getlist: msg => {
-                        // clearTimeout(this.fetchChatListTask);
                         if(msg.isSuccess) {
                             let chats = Object.keys(msg.data).map(key => {
                                 let chat = new Chat(msg.data[key]);
@@ -233,15 +232,6 @@ class ChatApp extends AppCore {
                 }
             });
         });
-
-        // app.on(R.event.user_login_message, user => {
-        //     if(user) {
-        //         clearTimeout(this.fetchChatListTask);
-        //         this.fetchChatListTask = setTimeout(() => {
-        //             this.fetchChatList();
-        //         }, 15000);
-        //     }
-        // });
 
         app.on(R.event.chats_notice, (data) => {
             let totalNoticeCount = 0,
