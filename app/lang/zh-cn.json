@@ -230,7 +230,8 @@
     "logining": "正在登录...",
     "autoLogining": "正在自动登录...",
     "loginSuccess": "登录成功",
-    "loginTimeout": "登录超时，请稍后重试。"
+    "loginTimeout": "登录超时，请稍后重试。",
+    "todaySigned": "今日已签到。"
   },
 
   "user": {

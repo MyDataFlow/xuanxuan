@@ -482,7 +482,18 @@ class App extends ReadyNotifier {
             // update user
             let serverStatus = serverUser.status;
             delete serverUser.status;
-            user.lastLoginTime = new Date().getTime();
+            const now = new Date();
+            if(!user.lastLoginTime || (new Date(user.lastLoginTime)).toLocaleDateString() !== now.toLocaleDateString()) {
+                setTimeout(() => {
+                    this.emit(R.event.ui_messager, {
+                        id: 'userSignedMessager',
+                        clickAway: true,
+                        content: Lang.login.todaySigned,
+                        color: Theme.color.positive
+                    });
+                }, 2000);
+            }
+            user.lastLoginTime = now.getTime();
             user.assign(serverUser);
             user.fixAvatar();
 
