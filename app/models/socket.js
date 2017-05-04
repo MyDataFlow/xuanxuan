@@ -12,6 +12,7 @@ import ReadyNotifier       from './ready-notifier';
 import WebSocket           from 'ws';
 import crypto              from 'crypto';
 import Helper              from 'Helper';
+import Colors              from '../utils/material-colors';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('Socket must run in renderer process.');
@@ -389,17 +390,13 @@ class Socket extends ReadyNotifier {
                     }
                 },
                 error: msg => {
-                    let message = '';
-                    if(msg.code) {
-                        message = App.lang.errors[msg.code + ''];
-                    }
-                    message = message || msg.message;
+                    let message = App.lang.errors[msg.code + ''] || message || msg.message;
                     if(message) {
-                        this.emit(R.event.ui_messager, {
+                        this._emit(R.event.ui_messager, {
                             id: 'socketMessager',
                             clickAway: true,
                             autoHide: false,
-                            color: Colors.amber500,
+                            color: Colors.amber800,
                             content: message
                         });
                     }
