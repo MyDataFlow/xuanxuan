@@ -488,6 +488,7 @@ class App extends ReadyNotifier {
                     this.emit(R.event.ui_messager, {
                         id: 'userSignedMessager',
                         clickAway: true,
+                        autoHide: 2000,
                         content: Lang.login.todaySigned,
                         color: Theme.color.positive
                     });
