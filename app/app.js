@@ -1048,9 +1048,7 @@ class App extends ReadyNotifier {
      * @return {Promise}
      */
     uploadFile(file, params) {
-        return API.uploadFile(file, this.user, params).catch(err => {
-            console.error(err);
-        });
+        return API.uploadFile(file, this.user, params);
     }
 
     /**

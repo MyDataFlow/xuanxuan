@@ -464,7 +464,7 @@ function uploadFile(files, user, data = {}) {
                 } else {
                     error = new Error('Status code is not 200.');
                     error.response = response;
-                    error.code = 'WRONG_CONNECT';
+                    error.code = 'WRONG_DATA';
                 }
                 if(DEBUG) {
                     console.groupCollapsed('%cHTTP UPLOAD ' + url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
@@ -475,8 +475,14 @@ function uploadFile(files, user, data = {}) {
                     console.groupEnd();
                 }
 
+                if(!error && (!json || !json.id)) {
+                    error = new Error('File data is incorrect.');
+                    error.response = response;
+                    error.code = 'WRONG_DATA';
+                }
+
                 if(error) reject(error);
-                else resolve(json || body);
+                else resolve(json);
             });
         };
 
