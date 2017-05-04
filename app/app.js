@@ -483,7 +483,7 @@ class App extends ReadyNotifier {
             let serverStatus = serverUser.status;
             delete serverUser.status;
             const now = new Date();
-            if(!user.lastLoginTime || (new Date(user.lastLoginTime)).toLocaleDateString() !== now.toLocaleDateString()) {
+            if(user.signed && (!user.lastLoginTime || (new Date(user.lastLoginTime)).toLocaleDateString() !== now.toLocaleDateString())) {
                 setTimeout(() => {
                     this.emit(R.event.ui_messager, {
                         id: 'userSignedMessager',

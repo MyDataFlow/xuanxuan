@@ -92,10 +92,8 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serverName := r.Header.Get("ServerName")
-	_, ok := api.RanzhiServer(serverName)
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
+	if serverName == "" {
+		serverName = util.Config.DefaultServer
 	}
 
 	auth := r.Header.Get("Authorization")
@@ -135,10 +133,8 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 
 	//util.Println(r.Header)
 	serverName := r.Header.Get("ServerName")
-	_, ok := api.RanzhiServer(serverName)
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
+	if serverName == "" {
+		serverName = util.Config.DefaultServer
 	}
 
 	authorization := r.Header.Get("Authorization")
@@ -204,6 +200,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 
 	// new file name = md5(old filename + fileID + nowTime)
 	saveFile := savePath + util.GetMD5(fileName+fileID+nowTimeStr)
+	//util.Println(saveFile)
 	f, err := os.OpenFile(saveFile, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		util.LogError().Println("open file error:", err)

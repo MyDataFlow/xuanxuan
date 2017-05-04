@@ -31,6 +31,9 @@ const Page = React.createClass({
                 data.chats.forEach(chat => {
                     this.removeCacheContent(chat.gid);
                 });
+                App.emit(R.event.ui_change, {
+                    activeChat: App.chat.lastActiveChatWindow
+                });
                 this.forceUpdate();
             }
         });

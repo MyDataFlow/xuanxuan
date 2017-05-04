@@ -1,5 +1,61 @@
 # 更新记录
 
+## v 1.1.1
+
+[2017-05-05]
+
+本次更新集成了然之的签到功能，对客户端界面进行了大量交互细节优化，并且处理社区反馈的大量问题。喧喧还启用了全新的域名 [xuan.im](http://xuanxuan.im)，欢迎大家访问网站了解更多内容。
+
+### 更新明细：
+
+* **客户端**：
+  + 增加用户个人配置云同步功能，在登录时会从服务器获取客户端配置，退出时上传个人配置到服务器；
+  + 现在会记住用户上次保存文件的位置，在打开保存位置对话框时会自动定位到用户上次保存的位置；
+  + 在上传文件之前会先检查服务器设置的最大允许上传文件大小，如果不符合要求会提示用户并拒绝上传文件；
+  + 修复上传或下载文件服务器提示错误没有捕捉到的问题；
+  + 用户当天第一次登录时会提示签到成功的消息；
+  + 更改导航上项目顺序，现在讨论组排在联系人上方；
+  + 最近会话不再是可选的（已经从设置面板中移除设置），首次启动时会默认显示最近会话；
+  + 当最近会话没有中导航上激活时，如果当前会话收到消息或着向外发送了消息会自动激活最近会话；
+  + 当激活一个包含新消息的会话时会自动滚动到消息列表的底部（如果在之前滚动位置发生过变化）；
+  + 优化导航下拉菜单界面，去掉“离线”条目，增加“注销”条目；
+  + 优化会话和联系人搜索功能，现在当在联系人列表时只会在联系人会话中查找，当在讨论组列表时只在讨论组中查找，最近会话列表中可以查找所有会话；
+  + 修复第一次使用时没有在导航上定位到最近会话的问题；
+  + 调整了系统会话在讨论组列表上的显示顺序，现在系统会话会显示在除加星会话的上方；
+  + 优化了会话底部工具栏上的图标外观，增加更改字体大小图标按钮，点击按钮会弹出面板来实时更改字体大小，更改会话字体大小功能不再在会话下拉菜单中提供访问入口；
+  + 调整了默认会话字体设置，现在文字的行间距更适合阅读；
+  + 现在在消息发送框“@他人”时，默认显示用户真实姓名；
+  + 修复无法显示消息中的空白行的问题；
+  + 修复有用户推出讨论组时，讨论组消息短暂消失的问题；
+  + 会话侧边栏文件列表中不再显示发送失败的文件，移除了文件列表中的图标，修复了有时文件名无法显示完整的问题，修复了文件列表无法自动更新的问题；
+  + 修复了会话侧边栏上的成员列表在有用户退出时没有正确刷新的问题，修复了一对一会话也显示管理员标志的问题；
+  + 调整会话侧边栏最小宽度；
+  + 现在请求退出应用时（点击关闭按钮或者在通知栏图标上选择退出），会立即关闭主界面而不是先显示登录界面再退出；
+  + 当服务器连接超时时，会在客户端上显示提示消息；
+  + 优化新建会话对话框中联系人排列顺序；
+  + 优化 Windows 上用户个人设置对话框操作按钮显示顺序；
+  + 优化在 Windows 上任务栏高亮闪烁提示功能，现在会一直高亮，直到窗口被激活；
+  + 优化关于对话框上的内容显示；
+  + 优化界面上工具提示显示的动画效果；
+  + 优化了界面上的文本，更符合语义；
+  + 开发支持：
+    - 修复了第一次启动调试时等待时间过长的问题，移除了首次运行自动安装 React 扩展策略；
+* **xxd 服务器**
+  + 增加了xxd到然之服务器和客户端的通信容错处理；
+  + 增加了默认然之服务器的设置，客户端登录不填写服务器名称时xxd使用默认设置；
+  + 增加了限制附件上传大小的配置；
+* **然之服务器**
+* **网站和文档**
+  + 网站启用全新域名：http://xuanxuan.im ；
+  + 文档进行了更新。
+
+### 下载地址：
+
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-debug-win64-setup.exe)
+* MacOS：[xuanxuan-1.1.1-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-mac.dmg)
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-ia32.rpm)
+* Server: [Ranzhi xuanxuan extension](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-ranzhi-ext.zip)、[xxd server](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-xxd.zip)
+
 ## v 1.1.0
 
 [2017-04-28]
@@ -46,7 +102,7 @@
 * **xxd 服务器**：
   - 新的 xxd 服务与客户端通过 WebSocket 和 https 进行通信，通过 https 或 http 与然之服务器端通信。
 
-下载地址：
+### 下载地址：
 
 * Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-debug-win64-setup.exe)
 * MacOS：[xuanxuan-1.1.0-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-mac.dmg)

@@ -437,8 +437,6 @@ const ChatPage = React.createClass({
             {canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
             {canSetCommitters ? <MenuItem onClick={this._handleSetCommittersMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.setCommitters} /> : null}
             {chat.canExit ? <MenuItem onClick={this._handleExitChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.exitChat} /> : null}
-            {canSetCommitters || canMakePublic || canRename || chat.canExit ? <Divider /> : null}
-            <MenuItem onClick={this._handleChangeFontSizeMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.changeFontSize} />
         </IconMenu>;
 
         let messagesView = [];

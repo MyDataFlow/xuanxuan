@@ -516,22 +516,27 @@ function downloadFile(file, user, onProgress) {
             jar,
             rejectUnauthorized: false,
             headers,
-        }, (err, response) => {
-            if(err || response.statusCode !== 200) {
-                reject(err || new Error('Status code is not 200.'));
+        }, (error, response, body) => {
+            if(error || response.statusCode !== 200) {
+                error = error || new Error('Status code is not 200.');
+                if(DEBUG) {
+                    console.groupCollapsed('%cHTTP UPLOAD ' + file.url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
+                    console.log('file', file);
+                    console.log('response', response);
+                    console.log('body', body);
+                    if(error) console.error('error', error);
+                    console.groupEnd();
+                }
+                if(error) reject(error);
             }
         }), {
             // throttle: 2000,
             // delay: 0,
             // lengthHeader: 'x-transfer-length'
         }).on('end', e => {
-            if(DEBUG) {
-                console.groupCollapsed('%cHTTP DOWNLOAD ' + file.url, 'font-weight: bold; color: blue');
-                console.log('file', file);
-                console.log('body', e);
-                console.groupEnd();
-            }
-            resolve(e);
+            setTimeout(() => {
+                resolve(e);
+            }, 100);
         })
           .on('progress', onProgress)
           .on('error',    reject)
