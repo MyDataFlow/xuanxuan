@@ -50,7 +50,10 @@ const CacheContents = {
         let contents = [];
         Object.keys(cache).forEach(contentId => {
             let contentSetting = cache[contentId];
-            if(contentSetting.remove) return;
+            if(contentSetting.remove) {
+                delete cache[contentId];
+                return;
+            }
 
             const isDisplayContent = contentId === displayContentId;
             if(isDisplayContent || contentSetting.content) {

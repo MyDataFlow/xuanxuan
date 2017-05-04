@@ -29,7 +29,7 @@ const PageContianer = React.createClass({
 
     componentDidMount() {
         this._handleUIChangeEvent = App.on(R.event.ui_change, e => {
-            if(e.navbar !== this.state.page) {
+            if(e.navbar && e.navbar !== this.state.page) {
                 this.setState({page: e.navbar});
                 App.user.setConfig('ui.navbar.active', e.navbar);
             }

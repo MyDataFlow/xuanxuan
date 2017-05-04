@@ -32,9 +32,6 @@ class ChatApp extends AppCore {
     constructor(app) {
         super(app);
 
-        // Store then actived chat window id
-        this.activeChatWindow;
-
         // Handle application events
         app.on(R.event.app_socket_change, () => {
             this.socket.setHandler({
@@ -177,10 +174,20 @@ class ChatApp extends AppCore {
                                         chat.lastActiveTime = new Date().getTime();
                                         chat.updateWithApp(this);
                                         this.dao.updateChats(chat);
+                                        if(chat.public && this.joinchatTask) {
+                                            setTimeout(() => {
+                                                this.$app.emit(R.event.ui_change, {
+                                                    navbar: R.ui.navbar_chat,
+                                                    activeChat: chat.gid
+                                                });
+                                            }, 500);
+                                        }
+
                                     } else if(this.dao.chats[chat.gid]) {
                                         this.dao.deleteChat(chat.gid);
                                     }
                                 }
+                                this.joinchatTask = false;
                             } else {
                                 if(!msg.data.join) {
                                     this.dao.deleteChat(msg.data.gid);
@@ -300,6 +307,23 @@ class ChatApp extends AppCore {
 
     get activeChat() {
         return this.activeChatWindow ? this.dao.getChat(this.activeChatWindow, true, true) : null;
+    }
+
+    get activeChatWindow() {
+        if(!this._activeChatWindow) {
+            let systemChats = this.dao.getChats(chat => {
+                return chat.isSystem;
+            });
+            if(systemChats && systemChats.length) {
+                this._activeChatWindow = systemChats[0].gid;
+            }
+        }
+        return this._activeChatWindow;
+    }
+
+    set activeChatWindow(chatGid) {
+        this.lastActiveChatWindow = this._activeChatWindow;
+        this._activeChatWindow = chatGid;
     }
 
     flashTrayIcon() {
@@ -1185,6 +1209,7 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     joinChat(chat, join = true) {
+        this.joinchatTask = true;
         return this.socket.send(this.socket.createSocketMessage({
             'method': 'joinchat',
             'params': [chat.gid, join]
