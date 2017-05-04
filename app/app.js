@@ -185,6 +185,7 @@ class App extends ReadyNotifier {
         this.browserWindow.on('focus', () => {
             this.emit(R.event.ui_focus_main_window);
             this.flashTrayIcon(false);
+            this.browserWindow.flashFrame(false);
         });
 
         this.browserWindow.on('blur', () => {
@@ -627,10 +628,6 @@ class App extends ReadyNotifier {
         this.remote('dockBounce', 'informational');
 
         this.browserWindow.flashFrame(true);
-        clearTimeout(this.flashFrameTask);
-        this.flashFrameTask = setTimeout(() => {
-            this.browserWindow.flashFrame(false);
-        }, 3000);
     }
 
     /**
