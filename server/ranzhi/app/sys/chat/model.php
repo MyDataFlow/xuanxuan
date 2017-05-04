@@ -542,6 +542,7 @@ EOT;
         switch($version)
         {
         case '1.0': $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
+        case '1.1.0':
         default: $this->loadModel('setting')->setItem('system.sys.xuanxuan.global.version', $this->config->xuanxuan->version);
         }
 
