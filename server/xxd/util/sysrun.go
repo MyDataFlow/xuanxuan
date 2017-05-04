@@ -20,6 +20,7 @@ const Version = "V1.1.1"
 var Run bool = true
 var IsTest bool = false
 var Token []byte
+var TempToken string
 
 func init() {
 
