@@ -169,7 +169,12 @@ class ChatApp extends AppCore {
                         if(msg.isSuccess) {
                             if(this.user.isNewApi) {
                                 if(msg.data.gid) {
-                                    let chat = new Chat(msg.data);
+                                    let chat = this.dao.chats[msg.data.gid];
+                                    if(chat) {
+                                        chat.assign(msg.data);
+                                    } else {
+                                        chat = new Chat(msg.data);
+                                    }
                                     if(chat.isMember(this.user.id)) {
                                         chat.lastActiveTime = new Date().getTime();
                                         chat.updateWithApp(this);
@@ -182,8 +187,7 @@ class ChatApp extends AppCore {
                                                 });
                                             }, 500);
                                         }
-
-                                    } else if(this.dao.chats[chat.gid]) {
+                                    } else {
                                         this.dao.deleteChat(chat.gid);
                                     }
                                 }
