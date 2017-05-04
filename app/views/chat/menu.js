@@ -60,11 +60,6 @@ const ChatMenu = React.createClass({
             chat         = chatTemp;
         }
 
-        if(chat && chat.noticeCount) {
-            chat.noticeCount = 0;
-            App.emit(R.event.chats_notice, {muteChats: [chat]});
-        }
-
         if(chatGid) {
             if(this.state.activeChat !== chatGid) {
                 this.setState({activeChat: chatGid});
@@ -117,6 +112,20 @@ const ChatMenu = React.createClass({
             this.dataCache[type] = data;
         }
         return data;
+    },
+
+    componentDidUpdate(prevProps, prevState) {
+        let activeChat = this.state.activeChat;
+        if(prevState.activeChat !== activeChat) {
+            let chat = typeof activeChat === 'object' ? activeChat : App.chat.dao.getChat(activeChat);
+            if(chat) {
+                App.emit(R.event.active_chat, chat);
+                if(chat.noticeCount) {
+                    chat.noticeCount = 0;
+                    App.emit(R.event.chats_notice, {muteChats: [chat]});
+                }
+            }
+        }
     },
 
     componentDidMount() {
@@ -258,7 +267,7 @@ const ChatMenu = React.createClass({
                 /> : null}
                 {
                     data.items.map(item => {
-                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;
+                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== this.state.activeChat)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;
                         let itemKey = item.gid;
                         let isItemActived = itemKey === this.state.activeChat;
                         let itemStyle = Object.assign({}, STYLE.itemStyle);

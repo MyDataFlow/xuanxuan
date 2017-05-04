@@ -145,11 +145,19 @@ const ChatPage = React.createClass({
             }
         });
 
+        this._handleActiveChatEvent = App.on(R.event.active_chat, chat => {
+            if(this.state.chat && chat.gid == this.state.chat.gid && chat.noticeCount) {
+                setTimeout(() => {
+                    if(this.messageList) this.messageList.scrollToBottom();
+                }, 10);
+            }
+        });
+
         this._initChat();
     },
 
     componentWillUnmount() {
-        App.off(this._handleDataChangeEvent, this._handleCaptureScreenEvent, this._handleUILinkEvent);
+        App.off(this._handleDataChangeEvent, this._handleCaptureScreenEvent, this._handleUILinkEvent, this._handleActiveChatEvent);
     },
 
     _sendMessage(messages) {
@@ -338,7 +346,8 @@ const ChatPage = React.createClass({
               fontSize: '14px'
             },
             headerActions: {
-              right: 0
+              right: 0,
+              backgroundColor: Theme.color.pale2
             },
             messageList: {
               top: 48,

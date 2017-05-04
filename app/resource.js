@@ -17,6 +17,7 @@ const event = {
     chats_notice: 'chats.notice',
     chats_notice_change: 'chats.notice.change',
     chats_history: 'chats.history',
+    active_chat: 'active.chat',
     database_rebuild: 'database.rebuild',
 
     socket_timeout: 'SOCKET.TIMEOUT',
