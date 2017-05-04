@@ -516,6 +516,10 @@ function downloadFile(file, user, onProgress) {
             jar,
             rejectUnauthorized: false,
             headers,
+        }, (err, response) => {
+            if(err || response.statusCode !== 200) {
+                reject(err || new Error('Status code is not 200.'));
+            }
         }), {
             // throttle: 2000,
             // delay: 0,
