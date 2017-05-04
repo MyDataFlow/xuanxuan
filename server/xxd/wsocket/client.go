@@ -159,19 +159,6 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	// 成功后返回gl数据给客户端
 	client.send <- getlist
 
-	cRegister := &ClientRegister{client: client, retClient: make(chan *Client)}
-	defer close(cRegister.retClient)
-
-	// 以上成功后把socket加入到管理
-	client.hub.register <- cRegister
-	if retClient := <-cRegister.retClient; retClient.repeatLogin {
-		//客户端收到信息后需要关闭socket连接，否则连接不会断开
-		retClient.send <- api.RepeatLogin()
-
-		//是重复登录，不需要再发送给其他用户上线信息
-		return nil
-	}
-
 	//获取历史消息
 	offlineMessages, err := api.GetofflineMessages(client.serverName, client.userID)
 	if err != nil {
@@ -184,6 +171,19 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 	// 推送当前登录用户信息给其他在线用户
 	// 因为是broadcast类型，所以不需要初始化userID
 	client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
+
+	cRegister := &ClientRegister{client: client, retClient: make(chan *Client)}
+	defer close(cRegister.retClient)
+
+	// 以上成功后把socket加入到管理
+	client.hub.register <- cRegister
+	if retClient := <-cRegister.retClient; retClient.repeatLogin {
+		//客户端收到信息后需要关闭socket连接，否则连接不会断开
+		retClient.send <- api.RepeatLogin()
+
+		//是重复登录，不需要再发送给其他用户上线信息
+		return nil
+	}
 
 	return nil
 }
