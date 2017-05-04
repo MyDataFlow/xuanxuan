@@ -99,7 +99,6 @@ const FileListItem = React.createClass({
                 }).catch(err => {
                     this.setState({fileState: 'ok'});
                     Messager.show({clickAway: true, autoHide: false, content: Lang.chat.cannotSaveAs.format(filePath), color: Theme.color.negative});
-                    if(DEBUG) console.error('_handOnDownloadBtnClick', err);
                 });
             });
         }
