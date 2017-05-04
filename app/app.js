@@ -617,7 +617,7 @@ class App extends ReadyNotifier {
             if (label.length > 2) {
                 ctx.font = '75px sans-serif';
                 ctx.fillText('' + label, 70, 98);
-            } else if (text.length > 1) {
+            } else if (label.length > 1) {
                 ctx.font = '100px sans-serif';
                 ctx.fillText('' + label, 70, 105);
             } else {
