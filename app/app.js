@@ -596,6 +596,39 @@ class App extends ReadyNotifier {
      */
     set badgeLabel(label = '') {
         this.remote('dockBadgeLabel', (label || '') + '');
+        if(Helper.isWindowsOS) {
+            if(!label) {
+                this.browserWindow.setOverlayIcon(null, '');
+                return;
+            }
+
+            // Create badge
+            let canvas = document.createElement('canvas');
+            canvas.height = 140;
+            canvas.width = 140;
+            let ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.ellipse(70, 70, 70, 70, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'white';
+
+            if (label.length > 2) {
+                ctx.font = '75px sans-serif';
+                ctx.fillText('' + label, 70, 98);
+            } else if (text.length > 1) {
+                ctx.font = '100px sans-serif';
+                ctx.fillText('' + label, 70, 105);
+            } else {
+                ctx.font = '125px sans-serif';
+                ctx.fillText('' + label, 70, 112);
+            }
+
+            const badgeDataURL = canvas.toDataURL();
+            const img = NativeImage.createFromDataUrl(badgeDataURL);
+            this.browserWindow.setOverlayIcon(img, label);
+        }
     }
 
     /**
@@ -626,7 +659,6 @@ class App extends ReadyNotifier {
      */
     requestAttention(attention) {
         this.remote('dockBounce', 'informational');
-
         this.browserWindow.flashFrame(true);
     }
 
