@@ -170,6 +170,7 @@ class App extends ReadyNotifier {
             if(this.user.isOnline) {
                 this.user.changeStatus(USER_STATUS.disconnect, Lang.errors.NET_OFFLINE, 'net_offline');
                 this.emit(R.event.ui_messager, {
+                    id: 'netOfflineMessager',
                     clickAway: false,
                     autoHide: false,
                     content: Lang.errors.NET_OFFLINE,
