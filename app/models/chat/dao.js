@@ -237,6 +237,7 @@ class Dao {
         });
 
         let chats = [], noticeChats = [];
+        let hasActiveChat = false;
         Object.keys(chatsMessages).forEach(cgid => {
             let chat = this.getChat(cgid);
             if(chat) {
@@ -254,6 +255,9 @@ class Dao {
                         noticeChats.push(chat);
                     }
                 }
+                if(chat.gid === this.app.activeChatWindow) {
+                    hasActiveChat = chat.gid;
+                }
                 chats.push(chat);
             }
         });
@@ -261,7 +265,12 @@ class Dao {
         this.$dao.upsert(messagesForUpdate);
         if(chats.length) {
             this.$dao._emit(R.event.data_change, {chats: chats});
-            if(noticeChats.length) this.$dao._emit(R.event.chats_notice, {newChats: noticeChats});
+            if(hasActiveChat) {
+                this.$dao._emit(R.event.ui_change, {navbar: R.ui.navbar_chat});
+            }
+            if(noticeChats.length) {
+                this.$dao._emit(R.event.chats_notice, {newChats: noticeChats});
+            }
         }
     }
 }

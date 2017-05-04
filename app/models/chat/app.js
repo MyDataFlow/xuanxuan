@@ -957,6 +957,7 @@ class ChatApp extends AppCore {
 
         if(chat) chat.addMessage(...messages);
         this.dao.$dao.upsert(messages);
+        App.emit(R.event.ui_change, {navbar: R.ui.navbar_chat});
         return this.sendSocketMessageForChat({
             'method': 'message',
             'params': {
