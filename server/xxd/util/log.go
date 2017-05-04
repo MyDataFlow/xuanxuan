@@ -80,26 +80,26 @@ func (l *logger) Println(v ...interface{}) {
 	mu.RLock()
 	defer mu.RUnlock()
 
-	logHandle.Println(v)
+	logHandle.Println(v...)
 }
 
 func (l *logger) Printf(format string, v ...interface{}) {
 	mu.RLock()
 	defer mu.RUnlock()
 
-	logHandle.Printf(format, v)
+	logHandle.Printf(format, v...)
 }
 
 func Errorf(format string, v ...interface{}) error {
-	return fmt.Errorf(format, v)
+	return fmt.Errorf(format, v...)
 }
 
 func Println(v ...interface{}) {
-	fmt.Println(v)
+	fmt.Println(v...)
 }
 
 func Printf(format string, v ...interface{}) {
-	fmt.Printf(format, v)
+	fmt.Printf(format, v...)
 }
 
 func CheckLog() {

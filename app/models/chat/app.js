@@ -92,7 +92,6 @@ class ChatApp extends AppCore {
                         }
                     },
                     getlist: msg => {
-                        // clearTimeout(this.fetchChatListTask);
                         if(msg.isSuccess) {
                             let chats = Object.keys(msg.data).map(key => {
                                 let chat = new Chat(msg.data[key]);
@@ -234,15 +233,6 @@ class ChatApp extends AppCore {
             });
         });
 
-        // app.on(R.event.user_login_message, user => {
-        //     if(user) {
-        //         clearTimeout(this.fetchChatListTask);
-        //         this.fetchChatListTask = setTimeout(() => {
-        //             this.fetchChatList();
-        //         }, 15000);
-        //     }
-        // });
-
         app.on(R.event.chats_notice, (data) => {
             let totalNoticeCount = 0,
                 contactsCount = 0,
@@ -297,6 +287,12 @@ class ChatApp extends AppCore {
         app.on(R.event.user_login_finish, e => {
             if(e.result) {
                 this.activeChatWindow = App.user.getConfig('ui.chat.activeChat');
+                this.registerGlobalHotKey();
+            }
+        });
+
+        app.on(R.event.user_config_reset, (user, config, oldConfig) => {
+            if(config['shortcut.captureScreen'] !== oldConfig['shortcut.captureScreen']) {
                 this.registerGlobalHotKey();
             }
         });
@@ -696,7 +692,7 @@ class ChatApp extends AppCore {
             menu.push({
                 label: this.lang.chat.atHim,
                 click: () => {
-                    this.$app.emit(R.event.ui_link, new AppActionLink('@Member/' + member.account));
+                    this.$app.emit(R.event.ui_link, new AppActionLink('@Member/' + (member.realname || member.account)));
                 }
             }, {
                 label: this.lang.chat.sendMessage,
@@ -961,6 +957,7 @@ class ChatApp extends AppCore {
 
         if(chat) chat.addMessage(...messages);
         this.dao.$dao.upsert(messages);
+        App.emit(R.event.ui_change, {navbar: R.ui.navbar_chat});
         return this.sendSocketMessageForChat({
             'method': 'message',
             'params': {

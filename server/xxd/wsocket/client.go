@@ -190,7 +190,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
 
 func chatLogout(userID int64, client *Client) error {
 	if client.userID != userID {
-		return util.Errorf("%s\n", "user id error.")
+		return util.Errorf("%s", "user id error.")
 	}
 
 	x2cMessage, sendUsers, err := api.ChatLogout(client.serverName, client.userID)
@@ -208,6 +208,13 @@ func transitData(message []byte, userID int64, client *Client) error {
 
 	x2cMessage, sendUsers, err := api.TransitData(message, client.serverName)
 	if err != nil {
+		// 与然之服务器交互失败后，生成error并返回到客户端
+		errMsg, retErr := api.RetErrorMsg("0", "time out")
+		if retErr != nil {
+			return retErr
+		}
+
+		client.send <- errMsg
 		return err
 	}
 
@@ -241,7 +248,7 @@ func (c *Client) readPump() {
 
 	c.conn.SetReadLimit(maxMessageSize)
 	//c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	//c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
 	for util.Run {
 		msgType, message, err := c.conn.ReadMessage()
@@ -327,4 +334,44 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	util.LogInfo().Println("client ip:", conn.RemoteAddr())
 	go client.writePump()
 	client.readPump()
+}
+
+// ownWs handles websocket requests from the peer.
+func ownWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		util.LogError().Println("serve ws upgrader error:", err)
+		return
+	}
+
+	defer conn.Close()
+
+	localAddr := util.Config.Ip
+	remoteAddr := conn.RemoteAddr().String()
+	if remoteAddr[:len(localAddr)] != localAddr {
+		util.LogError().Printf("conn ip addr %s != local addr", remoteAddr)
+		return
+	}
+
+	conn.SetReadLimit(32)
+	msgType, message, err := conn.ReadMessage()
+	if err != nil {
+		if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+			util.LogError().Printf("error: %v", err)
+			return
+		}
+
+		util.LogError().Printf("error: %v", err)
+		return
+	}
+
+	if msgType != websocket.TextMessage {
+		return
+	}
+
+	if string(message) != util.TempToken {
+		util.LogError().Println("own ws token error")
+		return
+	}
+
 }

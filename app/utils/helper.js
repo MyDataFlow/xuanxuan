@@ -48,6 +48,14 @@ if (!String.prototype.format) {
     };
 }
 
+const UNITS = {
+    B: 1,
+    KB: 1024, 
+    MB: 1024*1024,
+    GB: 1024*1024*1024,
+    TB: 1024*1024*1024*1024,
+};
+
 
 // set global variables
 // global.document = window.document;
@@ -410,6 +418,31 @@ global.Helper = {
 
             img.src = 'file://' + image;
         });
+    },
+
+    /**
+     * Format bytes
+     * @param  {Number} size
+     * @param  {Number} fixed
+     * @param  {String} unit
+     * @return {String}
+     */
+    formatBytes(size, fixed = 2, unit = '') {
+        if(!unit) {
+            if(size < UNITS.KB) {
+                unit = 'B';
+            } else if(size < UNITS.MB) {
+                unit = 'KB';
+            } else if(size < UNITS.GB) {
+                unit = 'MB';
+            } else if(size < UNITS.TB) {
+                unit = 'GB';
+            } else {
+                unit = 'TB';
+            }
+        }
+
+        return new Number(size / UNITS[unit]).toFixed(fixed) + unit;
     },
 
     /**

@@ -33,7 +33,7 @@ import Emojione            from 'Components/emojione';
 import Modal               from 'Components/modal';
 import IconMenu            from 'material-ui/IconMenu';
 import MenuItem            from 'material-ui/MenuItem';
-import MoreVertIcon        from 'material-ui/svg-icons/navigation/more-vert';
+import MoreIcon        from 'material-ui/svg-icons/navigation/more-horiz';
 import Divider             from 'material-ui/Divider';
 import LockIcon            from 'material-ui/svg-icons/action/lock-outline';
 
@@ -97,7 +97,7 @@ const ChatPage = React.createClass({
                 direction: 'horizontal',
                 gutterSize: 2,
                 sizes: [100 - sidebarConfig.width , sidebarConfig.width],
-                minSize: [450, 250],
+                minSize: [450, 200],
                 onDragEnd: e => {
                     this.sidebarConfig = {
                         width: this.colSpliter.getSizes()[1],
@@ -132,9 +132,11 @@ const ChatPage = React.createClass({
 
     componentDidMount() {
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
-            let chat = null;
+            let chat = null, oldChat = this.state.chat;
             if(data.chats) {
                 chat = data.chats.find(x => x.gid === this.props.chatGid);
+            } else if(oldChat && oldChat.isOne2One && data.members) {
+                chat = oldChat;
             }
             if(chat && chat.gid === this.props.chatGid) {
                 this.setState({chat}, () => {
@@ -143,11 +145,19 @@ const ChatPage = React.createClass({
             }
         });
 
+        this._handleActiveChatEvent = App.on(R.event.active_chat, chat => {
+            if(this.state.chat && chat.gid == this.state.chat.gid && chat.noticeCount) {
+                setTimeout(() => {
+                    if(this.messageList) this.messageList.scrollToBottom();
+                }, 10);
+            }
+        });
+
         this._initChat();
     },
 
     componentWillUnmount() {
-        App.off(this._handleDataChangeEvent, this._handleCaptureScreenEvent, this._handleUILinkEvent);
+        App.off(this._handleDataChangeEvent, this._handleCaptureScreenEvent, this._handleUILinkEvent, this._handleActiveChatEvent);
     },
 
     _sendMessage(messages) {
@@ -230,16 +240,32 @@ const ChatPage = React.createClass({
         this.setState({smallWindow: windowWidth < 900});
     },
 
+    _checkFileSize(file) {
+        if(!file) return false;
+        if(!App.user.checkUploadFileSize(file)) {
+            App.emit(R.event.ui_messager, {
+                id: 'uploadFileSizeMessager',
+                clickAway: true,
+                content: Lang.errors.UPLOAD_FILE_IS_TOO_LARGE.format(Helper.formatBytes(App.user.uploadFileSize)),
+                color: Theme.color.negative
+            });
+            return false;
+        }
+        return true;
+    },
+
     _handleSelectImageFile(file) {
-        if(file && file.path) App.chat.sendImageMessage(this.state.chat, file);
+        if(this._checkFileSize(file) && file.path) App.chat.sendImageMessage(this.state.chat, file);
     },
 
     _handleSelectFile(file) {
-        App.chat.sendFileMessage(this.state.chat, file, err => {
-            if(err.code) {
-                Messager.show({clickAway: true, autoHide: false, content: Lang.errors[err.code], color: Theme.color.negative});
-            }
-        });
+        if(this._checkFileSize(file)) {
+            App.chat.sendFileMessage(this.state.chat, file, err => {
+                if(err.code) {
+                    Messager.show({clickAway: true, autoHide: false, content: Lang.errors[err.code], color: Theme.color.negative});
+                }
+            });
+        }
     },
 
     _handleOnInviteBtnClick(e) {
@@ -296,7 +322,7 @@ const ChatPage = React.createClass({
     _handleDndDrop(e) {
         e.target.classList.remove('hover');
         let file = e.dataTransfer.files[0];
-        if(file) {
+        if(this._checkFileSize(file)) {
             if(file.type.startsWith('image/')) {
                 this.messageSendbox.appendImages(file);
             } else {
@@ -310,9 +336,11 @@ const ChatPage = React.createClass({
             main: {},
             header: {
               borderBottom: '1px solid ' + Theme.color.border, 
-              padding: '10px 0 10px 50px',
+              padding: '10px 0 10px 48px',
               lineHeight: '28px',
               backgroundColor: Theme.color.pale2,
+              height: 48,
+              boxSizing: 'border-box',
               zIndex: 9
             },
             icon: {
@@ -333,10 +361,11 @@ const ChatPage = React.createClass({
               fontSize: '14px'
             },
             headerActions: {
-              right: 0
+              right: 0,
+              backgroundColor: Theme.color.pale2
             },
             messageList: {
-              top: 49,
+              top: 48,
             },
             sidebar: {
                 transition: Theme.transition.normal('width', 'opacity', 'visibility')
@@ -399,7 +428,7 @@ const ChatPage = React.createClass({
         let canRename = chat.canRename(App.user);
         let chatMenu = <IconMenu
             desktop={true}
-            iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreVertIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
+            iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             targetOrigin={{horizontal: 'right', vertical: 'top'}}
             listStyle={{paddingTop: 8, paddingBottom: 8}}

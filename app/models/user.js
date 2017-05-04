@@ -316,8 +316,23 @@ class User extends Member {
         } else {
             this.config[objOrKey] = value;
         }
+        this.config.lastSaveTime = new Date().getTime();
         if(this.listenStatus) {
             Events.emit(R.event.user_config_change, this, objOrKey, value);
+        }
+    }
+
+    /**
+     * Reset config
+     * @param  {object} config
+     * @return {void}
+     */
+    resetConfig(config) {
+        const oldConfig = this.config;
+        Object.assign(this.config, config);
+        this.config.lastSaveTime = new Date().getTime();
+        if(this.listenStatus) {
+            Events.emit(R.event.user_config_reset, this, config, oldConfig);
         }
     }
 
@@ -476,6 +491,21 @@ class User extends Member {
             return Md5(this.passwordMD5 + this.zentaoConfig.rand);
         }
         return '';
+    }
+
+    /**
+     * Check upload file size
+     * @param  {number} size
+     * @return {boolean}
+     */
+    checkUploadFileSize(size) {
+        if(typeof size === 'object') {
+            size = size.size;
+        }
+        if(this.uploadFileSize) {
+            return size <= this.uploadFileSize;
+        }
+        return true;
     }
 
     /**

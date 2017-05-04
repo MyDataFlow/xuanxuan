@@ -369,10 +369,11 @@ function requestServerInfo(user) {
             })
         }).then(data => {
             if(data) {
-                user.socketPort    = data.chatPort;
-                user.token         = data.token;
-                user.serverVersion = data.version;
-                user.socketUrl     = data.socketUrl;
+                user.socketPort     = data.chatPort;
+                user.token          = data.token;
+                user.serverVersion  = data.version;
+                user.socketUrl      = data.socketUrl;
+                user.uploadFileSize = data.uploadFileSize;
                 resolve(user);
             } else {
                 reject({message: 'Empty serverInfo data', code: 'WRONG_DATA'});
@@ -463,7 +464,7 @@ function uploadFile(files, user, data = {}) {
                 } else {
                     error = new Error('Status code is not 200.');
                     error.response = response;
-                    error.code = 'WRONG_CONNECT';
+                    error.code = 'WRONG_DATA';
                 }
                 if(DEBUG) {
                     console.groupCollapsed('%cHTTP UPLOAD ' + url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
@@ -474,8 +475,14 @@ function uploadFile(files, user, data = {}) {
                     console.groupEnd();
                 }
 
+                if(!error && (!json || !json.id)) {
+                    error = new Error('File data is incorrect.');
+                    error.response = response;
+                    error.code = 'WRONG_DATA';
+                }
+
                 if(error) reject(error);
-                else resolve(json || body);
+                else resolve(json);
             });
         };
 
@@ -509,6 +516,10 @@ function downloadFile(file, user, onProgress) {
             jar,
             rejectUnauthorized: false,
             headers,
+        }, (err, response) => {
+            if(err || response.statusCode !== 200) {
+                reject(err || new Error('Status code is not 200.'));
+            }
         }), {
             // throttle: 2000,
             // delay: 0,

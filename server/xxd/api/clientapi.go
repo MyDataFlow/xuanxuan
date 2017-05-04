@@ -256,6 +256,17 @@ func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
 	return retData, nil
 }
 
+func RetErrorMsg(errCode, errMsg string) ([]byte, error) {
+	errApi := `{"module":"chat","method":"error","code":` + errCode + `,"message":"` + errMsg + `"}`
+	message, err := aesEncrypt([]byte(errApi), util.Token)
+	if err != nil {
+		util.LogError().Println("aes encrypt error:", err)
+		return nil, err
+	}
+
+	return message, nil
+}
+
 func RanzhiServer(serverName string) (util.RanzhiServer, bool) {
 	if serverName == "" {
 		info, ok := util.Config.RanzhiServer[util.Config.DefaultServer]

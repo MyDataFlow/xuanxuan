@@ -170,6 +170,7 @@ class App extends ReadyNotifier {
             if(this.user.isOnline) {
                 this.user.changeStatus(USER_STATUS.disconnect, Lang.errors.NET_OFFLINE, 'net_offline');
                 this.emit(R.event.ui_messager, {
+                    id: 'netOfflineMessager',
                     clickAway: false,
                     autoHide: false,
                     content: Lang.errors.NET_OFFLINE,
@@ -185,6 +186,7 @@ class App extends ReadyNotifier {
         this.browserWindow.on('focus', () => {
             this.emit(R.event.ui_focus_main_window);
             this.flashTrayIcon(false);
+            this.browserWindow.flashFrame(false);
         });
 
         this.browserWindow.on('blur', () => {
@@ -480,7 +482,19 @@ class App extends ReadyNotifier {
             // update user
             let serverStatus = serverUser.status;
             delete serverUser.status;
-            user.lastLoginTime = new Date().getTime();
+            const now = new Date();
+            if(!user.lastLoginTime || (new Date(user.lastLoginTime)).toLocaleDateString() !== now.toLocaleDateString()) {
+                setTimeout(() => {
+                    this.emit(R.event.ui_messager, {
+                        id: 'userSignedMessager',
+                        clickAway: true,
+                        autoHide: 2000,
+                        content: Lang.login.todaySigned,
+                        color: Theme.color.positive
+                    });
+                }, 2000);
+            }
+            user.lastLoginTime = now.getTime();
             user.assign(serverUser);
             user.fixAvatar();
 
@@ -536,6 +550,7 @@ class App extends ReadyNotifier {
             if(this.user.isOnline) {
                 this.config.save(this.user, true);
                 if(this.socket) {
+                    this.socket.uploadUserSettings(this.user);
                     this.socket.logout(this.user);
                 }
             }
@@ -594,6 +609,38 @@ class App extends ReadyNotifier {
      */
     set badgeLabel(label = '') {
         this.remote('dockBadgeLabel', (label || '') + '');
+        if(Helper.isWindowsOS) {
+            if(!label) {
+                this.browserWindow.setOverlayIcon(null, '');
+                return;
+            }
+
+            // Create badge
+            let canvas = document.createElement('canvas');
+            canvas.height = 140;
+            canvas.width = 140;
+            let ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.ellipse(70, 70, 70, 70, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'white';
+
+            if (label.length > 2) {
+                ctx.font = '75px sans-serif';
+                ctx.fillText('' + label, 70, 98);
+            } else if (label.length > 1) {
+                ctx.font = '100px sans-serif';
+                ctx.fillText('' + label, 70, 105);
+            } else {
+                ctx.font = '125px sans-serif';
+                ctx.fillText('' + label, 70, 112);
+            }
+
+            const badgeDataURL = canvas.toDataURL();
+            this.remote('setOverlayIcon', badgeDataURL, label);
+        }
     }
 
     /**
@@ -624,12 +671,7 @@ class App extends ReadyNotifier {
      */
     requestAttention(attention) {
         this.remote('dockBounce', 'informational');
-
         this.browserWindow.flashFrame(true);
-        clearTimeout(this.flashFrameTask);
-        this.flashFrameTask = setTimeout(() => {
-            this.browserWindow.flashFrame(false);
-        }, 3000);
     }
 
     /**
@@ -699,9 +741,14 @@ class App extends ReadyNotifier {
 
         options = Object.assign({
             title: Lang.dialog.fileSaveTo,
-            defaultPath: Path.join(this.desktopPath, filename)
+            defaultPath: Path.join(this.user.getConfig('local.ui.app.lastFileSavePath', this.desktopPath), filename)
         }, options);
-        Dialog.showSaveDialog(this.browserWindow, options, callback);
+        Dialog.showSaveDialog(this.browserWindow, options, filename => {
+            if(filename) {
+                this.user.setConfig('local.ui.app.lastFileSavePath', Path.dirname(filename));
+            }
+            callback && callback(filename);
+        });
     }
 
     /**
@@ -762,7 +809,6 @@ class App extends ReadyNotifier {
 
     openSettingDialog(options) {
         let userSettingView = null;
-        let oldGlobalHotKey = this.user.getConfig('shortcut.captureScreen');
         Modal.show({
             header: this.lang.common.settings,
             content: () => {
@@ -784,11 +830,7 @@ class App extends ReadyNotifier {
             actionsAlign: Helper.isWindowsOS ? 'left' : 'right',
             onSubmit: () => {
                 if(userSettingView.configChanged) {
-                    this.user.config = Object.assign(this.user.config, userSettingView.getConfig());
-                    this.emit(R.event.user_config_reset, this.user.config, this.user);
-                    if(oldGlobalHotKey !== this.user.getConfig('shortcut.captureScreen')) {
-                        this.chat.registerGlobalHotKey();
-                    }
+                    this.user.resetConfig(userSettingView.getConfig());
                 }
             },
             modal: true
@@ -1018,9 +1060,7 @@ class App extends ReadyNotifier {
      * @return {Promise}
      */
     uploadFile(file, params) {
-        return API.uploadFile(file, this.user, params).catch(err => {
-            console.error(err);
-        });
+        return API.uploadFile(file, this.user, params);
     }
 
     /**
@@ -1086,6 +1126,7 @@ class App extends ReadyNotifier {
      * Quit application
      */
     quit() {
+        this.browserWindow.hide();
         this.logout();
         if(this.saveUserTimerTask) {
             this.saveUser();

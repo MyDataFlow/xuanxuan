@@ -4,7 +4,6 @@ export default {
     'ui.navbar.width': 50,
     'ui.navbar.active': 'chat',
     'ui.navbar.avatarPosition': 'bottom',
-    'ui.navbar.showRecents': true,
     'ui.navbar.onlyShowNoticeCountOnRecents': true,
     'ui.chat.menu.with': 200,
     'ui.chat.menu.showMe': true,
@@ -27,6 +26,7 @@ export default {
     'ui.app.hideWindowOnBlur': false,
     'ui.app.removeFromTaskbarOnHide': true,
     'ui.app.onClose': 'ask', // or 'close', 'minimize'
+    // 'local.ui.app.lastFileSavePath': '',
     'shortcut.captureScreen': 'Ctrl+Alt+Z',
     'shortcut.sendMessage': 'Enter'
 };

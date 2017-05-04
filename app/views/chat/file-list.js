@@ -4,6 +4,7 @@ import {App, Lang, Config} from '../../app';
 import Spinner             from '../components/spinner';
 import FileListItem        from './file-list-item';
 import ContentNotReady     from '../misc/content-not-ready';
+import R                   from 'Resource';
 
 const FileList = React.createClass({
 
@@ -25,9 +26,16 @@ const FileList = React.createClass({
     },
 
     componentDidMount() {
-        if(this.props.chatId) {
-            this._loadFiles(this.props.chatId);
-        }
+        this._loadFiles();
+        this._handleDataChangeEvent = App.on(R.event.data_change, data => {
+            if(data.chats && data.chats.find(x => x.gid === this.props.chatId)) {
+                this._loadFiles();
+            }
+        });
+    },
+
+    componentWillUnmount() {
+        App.off(this._handleDataChangeEvent);
     },
 
     render() {

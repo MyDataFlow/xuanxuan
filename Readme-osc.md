@@ -1,6 +1,6 @@
 # 喧喧
 
-http://xuanxuan.chat
+http://xuan.im
 
 由[然之协同](http://ranzhico.com)提供的面向企业即时通信解决方案。
 
@@ -23,9 +23,9 @@ http://xuanxuan.chat
 
 受益于 Electron 的跨平台特性，喧喧客户端提供了 Windows、MacOS 和 Linux 版本。
 
-下载地址见：http://xuanxuan.chat/#downloads
+下载地址见：http://xuan.im/#downloads
 
-更多帮助参见 [官方客户端使用指南](http://xuanxuan.chat/page/1.html)。
+更多帮助参见 [官方客户端使用指南](http://xuan.im/page/1.html)。
 
 ### 服务器端
 
@@ -39,13 +39,13 @@ http://xuanxuan.chat
 +------------+                 +------------+            +----------------+
 ```
 
-客户端与服务器端 API 参考：[API 文档](http://xuanxuan.chat/page/3.html)。服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
+客户端与服务器端 API 参考：[API 文档](http://xuan.im/page/3.html)。服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
 
 官方默认的服务器使用 `go` 语言实现（简称为 `xxd` 服务），你可以在 [`/server/xxd/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/xxd) 目录下找到源代码。xxd 服务提供了 `WebSocket` 和 `https` 接口供客户端使用。
 
 `xxd` 服务本身并不存储和管理用户资料和消息数据，而是使用应用更为广泛的 http 协议与另一个服务器（简称 `http` 服务）通信。这样你只需要在你自己的网站上开发一系列 `http` 接口即可为你的网站用户启用喧喧。
 
-官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuanxuan.chat/page/2.html)。
+官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
 
 这里有一个公开的测试服务器供使用：
 

@@ -12,6 +12,7 @@ import ReadyNotifier       from './ready-notifier';
 import WebSocket           from 'ws';
 import crypto              from 'crypto';
 import Helper              from 'Helper';
+import Colors              from '../utils/material-colors';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('Socket must run in renderer process.');
@@ -173,6 +174,46 @@ class Socket extends ReadyNotifier {
     }
 
     /**
+     * Upload user settings
+     * @return {void}
+     */
+    uploadUserSettings(user) {
+        if(this.user.isNewApi) {
+            user = user || this.user;
+            let config = {};
+            Object.keys(user.config).forEach(key => {
+                if(key.indexOf('local.') !== 0) {
+                    config[key] = user.config[key];
+                }
+            });
+            this.send({
+                'method': 'settings',
+                params: [
+                    user.account,
+                    config
+                ]
+            });
+        }
+    }
+
+    /**
+     * Sync user settings
+     * @return {void}
+     */
+    syncUserSettings(user) {
+        if(this.user.isNewApi) {
+            user = user || this.user;
+            this.send({
+                'method': 'settings',
+                params: [
+                    this.user.account,
+                    ''
+                ]
+            });
+        }
+    }
+
+    /**
      * Create a SocketMessage with default data
      * @param  {object} data
      * @return {void}
@@ -330,14 +371,13 @@ class Socket extends ReadyNotifier {
                 login: msg => {
                     if(msg.isSuccess) {
                         if(!this.user || this.app.isUserLogining || msg.data.id === this.user.id) {
-                            this.sid = msg.sid;
-                            let user = Object.assign({sid: msg.sid}, msg.data);
-                            this._emit(R.event.user_login_message, user);
-
-                            // clearTimeout(this.fetchUserListTask);
-                            // this.fetchUserListTask = setTimeout(() => {
-                            //     this.fetchUserList();
-                            // }, 10000);
+                            if(!this.isUserLogined) {
+                                if(msg.sid) this.sid = msg.sid;
+                                let user = Object.assign({sid: msg.sid}, msg.data);
+                                this._emit(R.event.user_login_message, user);
+                                this.syncUserSettings();
+                                this.isUserLogined = true;
+                            }
                         } else {
                             let member = this.app.dao.getMember(msg.data.id);
                             if(member) {
@@ -347,6 +387,26 @@ class Socket extends ReadyNotifier {
                         }
                     } else {
                         this._emit(R.event.user_login_message, null, new Error(msg.data));
+                    }
+                },
+                error: msg => {
+                    let message = App.lang.errors[msg.code + ''] || message || msg.message;
+                    if(message) {
+                        this._emit(R.event.ui_messager, {
+                            id: 'socketMessager',
+                            clickAway: true,
+                            autoHide: false,
+                            color: Colors.amber800,
+                            content: message
+                        });
+                    }
+                },
+                settings: msg => {
+                    if(msg.isSuccess) {
+                        let user = this.user;
+                        if(msg.data && msg.data.lastSaveTime > user.getConfig('lastSaveTime', 0)) {
+                            user.resetConfig(msg.data);
+                        }
                     }
                 },
                 userchangestatus: msg => {

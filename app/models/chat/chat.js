@@ -612,6 +612,7 @@ class Chat extends Entity {
                 let isInverse = order[0] === '-';
                 if(isInverse) order = order.substr(1);
                 switch(order) {
+                    case 'isSystem':
                     case 'hide':
                     case 'star':
                         result = (x[order] ? 1 : 0) - (y[order] ? 1 : 0);

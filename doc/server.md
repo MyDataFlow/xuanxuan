@@ -1,24 +1,99 @@
 # 服务器端下载及使用
 
-## 然之协同服务器
+服务器部署分为然之协同和xxd两部分。
 
-当前已提供的服务器端（在 `/server` 目录下）是基于 [然之协同](https://github.com/easysoft/rangerteam) 使用 [php socket](http://php.net/manual/en/book.sockets.php) 方案实现。
+## 部署然之协同服务器端
 
-这里有一个公开的测试服务器供使用：
+1.下载安装然之协同：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
 
+2.下载喧喧然之协同服务器端 [xuanxuan-1.1.0-server-rangerteam.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-server-rangerteam.zip) 并解压缩；
+
+3.合并解压缩的目录到然之协同服务目录；
+
+4.打开 ranzhi/config/ext/xuanxuan.php，修改 $config->xuanxuan->key ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
+
+5.从浏览器访问然之协同 www 目录下的 upgradexuanxuan.php 文件进行升级。如然之协同站点地址为 http://demo.ranzhi.org ，则访问地址为 http://demo.ranzhi.org/upgradexuanxuan.php。如果使用然之协同一键安装包，则访问地址可能是 http://ip:端口号/ranzhi/upgradexuanxuan.php；
+
+6.服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
+
+7.然之协同和 xxd 之间的通信需要使用 php-mcrypt 扩展，请根据自己的 php 版本安装相应的扩展；
+
+8.调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
+
+
+## 部署xxd
+
+1.下载对应的xxd服务器版本，并解压缩。
+
+| 操作系统       | 64位                                      | 32位                                      |
+| :--------- | :--------------------------------------- | ---------------------------------------- |
+| Windows 7+ | [xxd-1.1.0-win64.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-win64.zip) | [xxd-1.1.0-win32.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-win32.zip) |
+| Mac OS10+  | [xxd-1.1.0-mac.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-mac.tar.gz) |                                          |
+| Linux      | [xxd-1.1.0-linux-x64.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-linux-x64.tar.gz) | [xxd-1.1.0-linux-ia32.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-linux-ia32.tar.gz) |
+
+2.修改目录中的config文件
+
+根据自己网络环境的情况对服务器的配置文件进行修改，路径为 *config/xxd.conf* ，说明如下：
+
+```ini
+[server]
+# 监听的服务器ip地址
+ip=192.168.1.164
+
+# 与聊天客户端通讯的端口
+chatPort=11444
+
+# 通用端口，该端口用于客户端登录时验证，以及文件上传下载使用
+commonPort=11443
+
+# 上传文件的保存路径，最后的“/”不能省略，表示路径
+uploadPath=tmpfile/
+
+# 上传文件的大小，支持：K,M,G
+uploadFileSize=32M
+
+[ranzhi]
+# xuanxuan和ranzhiName是自定义然之服务器名称，客户端登录时需要
+# token从然之服务器中获取，长度为32个字符
+# 设置某个服务器为default后，客户端省略服务器名称时默认使用default
+# 地址格式为http[s]://addr/path/xuanxuan.php,token[,default]
+# ranzhiName=http[s]://ip:port/xuanxuan.php,tokenID8888888888888888888888888
+xuanxuan=http://192.168.1.164:8188/xuanxuan.php,88888888888888888888888888888888,default
+
+# NOTE: Windows accept / as path separator.
+[log]
+# 程序运行日志的保存路径
+logPath=log/
+
+[certificate]
+# 证书的保存路径，默认情况下xxd会生成自签名证书
+crtPath=certificate/
 ```
-地址：http://demo.ranzhi.org
-用户：demo
-密码：demo
 
-或用户：demo1, demo2, ... demo10
-密码：123456
+配置文件完成后就可以启动服务器。
+
+3.启动服务器
+
+**Linux平台**
+
+执行以下命令，启动服务器：
+
+```shell
+./xxd
 ```
 
-注意：测试服务器不能使用传送文件功能。
+若启动失败，请查看log目录下面的日志文件，按照提示解决问题。
 
-然之协同服务器端部署基本步骤参见：http://xuanxuan.chat/page/2.html
+需要开机启动和后台执行，请把启动命令加入到 */etc/rc.d/rc.local* 文件的最后。
 
-## 其他服务器端实现
+```shell
+# rc.local
+/xxdPath/xxd &
+```
 
-服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
+**Windows平台**
+
+在命令终端中执行`./xxd.exe`启动服务器，若启动失败，请查看log目录下面的日志文件，按照提示解决问题。
+
+需要开机启动和后台执行的，请把启动命令加入到计划任务中。
+
