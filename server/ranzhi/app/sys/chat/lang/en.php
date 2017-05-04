@@ -1,5 +1,8 @@
 <?php
-$lang->chat = new stdclass();
+$lang->chat->settings = 'Settings';
+$lang->chat->version  = 'Version';
+$lang->chat->key      = 'Secret';
+
 $lang->chat->upgradeSuccess = 'Upgrade success.';
 $lang->chat->upgradeFail    = 'Upgrade fail.';
 $lang->chat->latestVersion  = 'Xuanxuan is already the latest version.';
@@ -13,3 +16,5 @@ $lang->chat->needLogin      = 'You need login first.';
 $lang->chat->notExist       = 'Chat do not exist.';
 $lang->chat->changeRenameTo = 'Rename chat to ';
 $lang->chat->multiChats     = 'Messages belong to different chats.';
+
+$lang->chat->errorKey = 'The key should be a 32 byte string including letters or numbers.';

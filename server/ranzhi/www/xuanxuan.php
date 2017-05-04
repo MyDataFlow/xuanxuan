@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 ob_start();
 
 /* Define the run mode as front. */
-define('RUN_MODE', 'front');
+define('RUN_MODE', 'xuanxuan');
 
 /* Load the framework. */
 include '../framework/xuanxuan.class.php';
