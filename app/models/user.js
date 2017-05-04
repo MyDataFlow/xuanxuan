@@ -494,6 +494,21 @@ class User extends Member {
     }
 
     /**
+     * Check upload file size
+     * @param  {number} size
+     * @return {boolean}
+     */
+    checkUploadFileSize(size) {
+        if(typeof size === 'object') {
+            size = size.size;
+        }
+        if(this.uploadFileSize) {
+            return size <= this.uploadFileSize;
+        }
+        return true;
+    }
+
+    /**
      * Fix user avatar path
      */
     fixAvatar(avatar) {

@@ -369,10 +369,11 @@ function requestServerInfo(user) {
             })
         }).then(data => {
             if(data) {
-                user.socketPort    = data.chatPort;
-                user.token         = data.token;
-                user.serverVersion = data.version;
-                user.socketUrl     = data.socketUrl;
+                user.socketPort     = data.chatPort;
+                user.token          = data.token;
+                user.serverVersion  = data.version;
+                user.socketUrl      = data.socketUrl;
+                user.uploadFileSize = data.uploadFileSize;
                 resolve(user);
             } else {
                 reject({message: 'Empty serverInfo data', code: 'WRONG_DATA'});

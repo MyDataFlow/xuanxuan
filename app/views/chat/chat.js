@@ -240,16 +240,32 @@ const ChatPage = React.createClass({
         this.setState({smallWindow: windowWidth < 900});
     },
 
+    _checkFileSize(file) {
+        if(!file) return false;
+        if(!App.user.checkUploadFileSize(file)) {
+            App.emit(R.event.ui_messager, {
+                id: 'uploadFileSizeMessager',
+                clickAway: true,
+                content: Lang.errors.UPLOAD_FILE_IS_TOO_LARGE.format(Helper.formatBytes(App.user.uploadFileSize)),
+                color: Theme.color.negative
+            });
+            return false;
+        }
+        return true;
+    },
+
     _handleSelectImageFile(file) {
-        if(file && file.path) App.chat.sendImageMessage(this.state.chat, file);
+        if(this._checkFileSize(file) && file.path) App.chat.sendImageMessage(this.state.chat, file);
     },
 
     _handleSelectFile(file) {
-        App.chat.sendFileMessage(this.state.chat, file, err => {
-            if(err.code) {
-                Messager.show({clickAway: true, autoHide: false, content: Lang.errors[err.code], color: Theme.color.negative});
-            }
-        });
+        if(this._checkFileSize(file)) {
+            App.chat.sendFileMessage(this.state.chat, file, err => {
+                if(err.code) {
+                    Messager.show({clickAway: true, autoHide: false, content: Lang.errors[err.code], color: Theme.color.negative});
+                }
+            });
+        }
     },
 
     _handleOnInviteBtnClick(e) {
@@ -306,7 +322,7 @@ const ChatPage = React.createClass({
     _handleDndDrop(e) {
         e.target.classList.remove('hover');
         let file = e.dataTransfer.files[0];
-        if(file) {
+        if(this._checkFileSize(file)) {
             if(file.type.startsWith('image/')) {
                 this.messageSendbox.appendImages(file);
             } else {
