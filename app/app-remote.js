@@ -323,7 +323,7 @@ class AppRemote extends ReadyNotifier {
     }
 
     setOverlayIcon(base64Image, label) {
-        const img = NativeImage.createFromDataURL(base64Image);
+        const img = nativeImage.createFromDataURL(base64Image);
         mainWindow.setOverlayIcon(img, label);
     }
 
