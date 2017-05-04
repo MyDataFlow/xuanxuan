@@ -81,8 +81,8 @@ func IsNotExist(path string) bool {
 }
 
 func IsDir(path string) bool {
-	info, _ := os.Stat(path)
-	if info.IsDir() {
+	info, err := os.Stat(path)
+	if err == nil && info.IsDir() {
 		return true
 	}
 
