@@ -69,7 +69,11 @@ const Messager = React.createClass({
         this.setStateTimeout = setTimeout(() => {
             this.setState({stage: STAGE.show}, () => {
                 if(this.props.autoHide) {
-                    setTimeout(() => {this.hide();}, this.props.autoHide);
+                    setTimeout(() => {
+                        if(!this.unmounted) {
+                            this.hide();
+                        }
+                    }, this.props.autoHide);
                 }
                 return this.props.afterShow && this.props.afterShow(this);
             })
@@ -84,6 +88,11 @@ const Messager = React.createClass({
 
     componentDidMount() {
         this.show();
+    },
+
+    componentWillUnmount() {
+        clearTimeout(this.setStateTimeout);
+        this.unmounted = true;
     },
 
     componentDidUpdate() {
