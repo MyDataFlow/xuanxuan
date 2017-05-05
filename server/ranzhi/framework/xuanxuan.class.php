@@ -39,11 +39,6 @@ class xuanxuan extends router
         parent::__construct($appName, $appRoot);
 
         $this->setViewType();
-
-        $key = $this->config->xuanxuan->key;
-        $iv  = substr($key, 0, 16);
-        $this->aes = $this->loadClass('phpaes');
-        $this->aes->init($key, $iv);
     }
 
     /**
@@ -55,6 +50,45 @@ class xuanxuan extends router
     public function setViewType()
     {
         $this->viewType = 'json';
+    }
+
+    /**
+     * 加载common模块。
+     *  
+     *  common模块比较特别，它会执行几乎每次请求都需要执行的操作，例如：
+     *  打开session，检查权限等等。
+     *  加载完$lang, $config, $dbh后，需要在入口文件(www/index.php)中手动调用该方法。
+     *
+     * Load the common module
+     *
+     *  The common module is a special module, which can be used to do some common things. For examle:
+     *  start session, check priviledge and so on.
+     *  This method should called manually in the router file(www/index.php) after the $lang, $config, $dbh loaded.
+     *
+     * @access public
+     * @return object|bool  the common model object or false if not exits.
+     */
+    public function loadCommon()
+    {
+        $result = parent::loadCommon();
+
+        $this->initAES();
+
+        return $result;
+    }
+
+    /**
+     * Init aes object. 
+     * 
+     * @access public
+     * @return void
+     */
+    public function initAES()
+    {
+        $key = $this->config->xuanxuan->key;
+        $iv  = substr($key, 0, 16);
+        $this->aes = $this->loadClass('phpaes');
+        $this->aes->init($key, $iv);
     }
 
     /**

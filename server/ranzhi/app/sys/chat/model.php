@@ -48,7 +48,7 @@ class chatModel extends model
     public function getSignedTime($account = '')
     {
         $this->app->loadModuleConfig('attend');
-        if(strpos(',all,xuanxuan,', ",$this->app->attend->signInClient,") === false) return '';
+        if(strpos(',all,xuanxuan,', ",{$this->config->attend->signInClient},") === false) return '';
 
         $attend = $this->dao->select('*')->from(TABLE_ATTEND)->where('account')->eq($account)->andWhere('`date`')->eq(date('Y-m-d'))->fetch();
         if($attend) return strtotime("$attend->date $attend->signIn");
