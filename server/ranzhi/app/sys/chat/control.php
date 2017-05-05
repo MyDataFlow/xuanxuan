@@ -49,6 +49,8 @@ class chat extends control
             $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
             
             $users = $this->chat->getUserList($status = 'online');
+            $user->signed = $this->chat->getSignedTime($account);
+
             $this->output->result = 'success';
             $this->output->users  = array_keys($users);
             $this->output->data   = $user;
