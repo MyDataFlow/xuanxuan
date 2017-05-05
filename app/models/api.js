@@ -520,7 +520,7 @@ function downloadFile(file, user, onProgress) {
             if(error || response.statusCode !== 200) {
                 error = error || new Error('Status code is not 200.');
                 if(DEBUG) {
-                    console.groupCollapsed('%cHTTP UPLOAD ' + file.url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
+                    console.groupCollapsed('%cHTTP DOWNLOAD ' + file.url, 'font-weight: bold; color: ' + (error ? 'red' : 'blue'));
                     console.log('file', file);
                     console.log('response', response);
                     console.log('body', body);
