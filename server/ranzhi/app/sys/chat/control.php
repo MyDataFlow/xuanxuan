@@ -880,7 +880,7 @@ class chat extends control
         else
         {
             $this->output->result = 'success';
-            $this->output->userID = array($userID);
+            $this->output->users  = array($userID);
             $this->output->data   = !empty($settings) ? $settings : json_decode($this->config->chat->settings->$account);
         }
 
