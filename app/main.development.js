@@ -191,7 +191,7 @@ const createWindow = () => {
             submenu: [{
                 label: lang.menu.website,
                 click() {
-                    shell.openExternal('https://github.com/easysoft/xuanxuan');
+                    shell.openExternal(PKG.homepage);
                 }
             }, {
                 label: lang.menu.project,

@@ -4,7 +4,7 @@
 
 [2017-05-05]
 
-本次更新集成了然之的签到功能，对客户端界面进行了大量交互细节优化，并且处理社区反馈的大量问题。喧喧还启用了全新的域名 [xuan.im](http://xuanxuan.im)，欢迎大家访问网站了解更多内容。
+本次更新集成了然之的签到功能，对客户端界面进行了大量交互细节优化，并且处理社区反馈的大量问题。现在最新发布的然之 4.2.2 已内置喧喧最新版本，大家无需在为然之安装扩展。喧喧还启用了全新的域名 [xuan.im](http://xuanxuan.im)，欢迎大家访问网站了解更多内容。
 
 ### 更新明细：
 
@@ -45,8 +45,14 @@
   + 增加了默认然之服务器的设置，客户端登录不填写服务器名称时xxd使用默认设置；
   + 增加了限制附件上传大小的配置；
 * **然之服务器**
+  + 加解密功能优先使用 `openssl` 扩展，其次选择 `mcrypt` 扩展，两者都未启用时使用内置纯 PHP 实现的 AES 加密类库；
+  + 喧喧登录和然之签到集成，可以在然之中设置只能通过喧喧签到；
+  + 然之内置对喧喧 1.1.1 的支持，现在使用最新版然之（4.2.2+）不再需要为然之安装喧喧扩展包；
+  + 修复新系统安装后没有系统会话（包含系统所有成员的讨论组）的问题；
+  + 然之升级时检测喧喧版本，并自动升级喧喧；
+  + 可以在然之后台设置和xxd通信需要的密钥；
 * **网站和文档**
-  + 网站启用全新域名：http://xuanxuan.im ；
+  + 网站启用全新域名：[http://xuanxuan.im](http://xuanxuan.im)；
   + 文档进行了更新。
 
 ### 下载地址：
@@ -54,7 +60,8 @@
 * Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-debug-win64-setup.exe)
 * MacOS：[xuanxuan-1.1.1-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-mac.dmg)
 * Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-ia32.rpm)
-* Server: [Ranzhi xuanxuan extension](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-ranzhi-ext.zip)、[xxd server](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-xxd.zip)
+* Server: [xxd server](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-xxd.zip)；
+* 然之：[源码包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi.4.2.2.zip)、[windows 一键安装包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi.4.2.2.exe)、[linux rpm 安装包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi-4.2.2-1.noarch.rpm)、[linux deb 安装包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi_4.2.2_1_all.deb)。
 
 ## v 1.1.0
 

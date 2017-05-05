@@ -610,6 +610,7 @@ class App extends ReadyNotifier {
     set badgeLabel(label = '') {
         this.remote('dockBadgeLabel', (label || '') + '');
         if(Helper.isWindowsOS) {
+            return;
             if(!label) {
                 this.browserWindow.setOverlayIcon(null, '');
                 return;
