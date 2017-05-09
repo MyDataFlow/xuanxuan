@@ -274,6 +274,9 @@ class ChatApp extends AppCore {
                     this.playMessageSound();
                 }
             }
+            if(this.$app.isWindowOpenAndFocus) {
+                this.$app.flashTrayIcon(false);
+            }
             this.$app.emit(R.event.chats_notice_change, {total: totalNoticeCount, contact: contactsCount, group: groupsCount});
         });
 
