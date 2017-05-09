@@ -426,7 +426,7 @@ const ChatPage = React.createClass({
         let canMakePublic = chat.canMakePublic(App.user);
         let canSetCommitters = chat.canSetCommitters(App.user);
         let canRename = chat.canRename(App.user);
-        let chatMenu = <IconMenu
+        let chatMenu = chat.isOne2One ? null : <IconMenu
             desktop={true}
             iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
