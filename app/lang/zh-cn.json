@@ -58,6 +58,7 @@
     "USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。",
     "IMAGE_NOT_FIND": "无法打开图片，找不到图片或图片已损坏。位置 {0}。",
     "UPLOAD_FILE_IS_TOO_LARGE": "文件上传失败，只支持发送小于 {0} 的文件",
+    "SERVER_DISABLED_UPLOAD": "文件上传失败，因为服务器禁止了文件上传功能",
     "0": "网络连接超时。"
   },
 

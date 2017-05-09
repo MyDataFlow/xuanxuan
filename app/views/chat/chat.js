@@ -241,7 +241,19 @@ const ChatPage = React.createClass({
     },
 
     _checkFileSize(file) {
-        if(!file) return false;
+        if(!file || !file.path) return false;
+        if(file.size === undefined || file.size === null) {
+            file.size = Helper.tryStatSync(file.path).size;
+        }
+        if(App.user.uploadFileSize === 0) {
+            App.emit(R.event.ui_messager, {
+                id: 'uploadFileSizeMessager',
+                clickAway: true,
+                content: Lang.errors.SERVER_DISABLED_UPLOAD,
+                color: Theme.color.negative
+            });
+            return false;
+        }
         if(!App.user.checkUploadFileSize(file)) {
             App.emit(R.event.ui_messager, {
                 id: 'uploadFileSizeMessager',
