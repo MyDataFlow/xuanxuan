@@ -1,6 +1,6 @@
 # 使用帮助
 
-此文档主要说明桌面客户端功能及使用方法。服务器端 API 参见 [API 文档](https://github.com/easysoft/xuanxuan/tree/master/doc/server-api.md)。
+此文档主要说明桌面客户端功能及使用方法。服务器端 API 参见 [API 文档](https://github.com/easysoft/xuanxuan/tree/master/doc/api.md)。
 
 ## 下载与安装
 
