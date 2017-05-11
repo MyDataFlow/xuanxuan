@@ -1,17 +1,20 @@
 <?php
 /**
- * The settings view file of chat module of RanZhi.
+ * The configure xuanxuan view file of setting module of RanZhi.
  *
  * @copyright   Copyright 2009-2017 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
  * @author      Gang Liu <liugang@cnezsoft.com>
- * @package     chat 
+ * @package     setting
  * @version     $Id$
  * @link        http://www.ranzhico.com
  */
 ?>
-<?php include '../../common/view/header.html.php';?>
+<?php include '../../../common/view/header.html.php';?>
 <div class='panel'>
+  <div class='panel-heading'>
+    <strong><?php echo $lang->chat->settings;?></strong>
+  </div>
   <form id='ajaxForm' method='post'>
     <table class='table table-form w-p40'>
       <tr>
@@ -29,4 +32,4 @@
     </table>
   </form>
 </div>
-<?php include '../../common/view/footer.html.php';?>
+<?php include '../../../common/view/footer.html.php';?>

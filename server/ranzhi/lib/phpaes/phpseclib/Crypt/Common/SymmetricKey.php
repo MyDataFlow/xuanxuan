@@ -1781,7 +1781,7 @@ abstract class SymmetricKey
             $this->preferredEngine,
             self::ENGINE_OPENSSL,
             self::ENGINE_MCRYPT,
-            //self::ENGINE_EVAL     // php 5.3+ can use this option. 
+            //self::ENGINE_EVAL     // php 5.3+ can use this option.
         ];
         foreach ($candidateEngines as $engine) {
             if ($this->isValidEngine($engine)) {

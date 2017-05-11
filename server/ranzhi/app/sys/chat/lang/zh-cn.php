@@ -1,5 +1,5 @@
 <?php
-$lang->chat->settings = '设置';
+$lang->chat->settings = '喧喧设置';
 $lang->chat->version  = '版本';
 $lang->chat->key      = '密钥';
 

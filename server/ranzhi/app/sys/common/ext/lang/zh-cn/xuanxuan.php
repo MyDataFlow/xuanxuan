@@ -1,9 +1,6 @@
 <?php
-$lang->system->menu->xuanxuan = '喧喧|chat|setKey|';
+$lang->system->menu->xuanxuan = '喧喧|setting|xuanxuan|';
 
 $lang->system->menuOrder[99] = 'xuanxuan';
 
-$lang->chat = new stdclass();
-$lang->chat->menu = $lang->system->menu;
-
-$lang->menuGroups->chat = 'system';
+$lang->xuanxuan = new stdclass();

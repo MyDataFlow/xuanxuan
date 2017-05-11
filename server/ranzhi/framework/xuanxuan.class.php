@@ -89,6 +89,10 @@ class xuanxuan extends router
         $iv  = substr($key, 0, 16);
         $this->aes = $this->loadClass('phpaes');
         $this->aes->init($key, $iv);
+        if($this->config->debug)
+        {
+            $this->log("engine: " . $this->aes->getEngine());
+        }
     }
 
     /**

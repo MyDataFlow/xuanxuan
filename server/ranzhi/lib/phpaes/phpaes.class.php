@@ -4,7 +4,17 @@ define('PHPAES_ROOT', dirname(__FILE__));
 include PHPAES_ROOT . '/phpseclib/Crypt/AES.php';
 class phpAES
 {
-    CONST MODE_CBC = 2;
+    CONST MODE_CTR    = -1;
+    CONST MODE_ECB    = 1;
+    CONST MODE_CBC    = 2;
+    const MODE_CFB    = 3;
+    const MODE_OFB    = 4;
+    const MODE_STREAM = 5;
+
+    const ENGINE_INTERNAL = 1;
+    const ENGINE_EVAL     = 2;
+    const ENGINE_MCRYPT   = 3;
+    const ENGINE_OPENSSL  = 4;
 
     public function init($key, $iv)
     {
@@ -21,5 +31,17 @@ class phpAES
     public function decrypt($input)
     {
         return $this->aes->decrypt($input);
+    }
+
+    public function getEngine()
+    {
+        switch($this->aes->getEngine())
+        {
+        case ENGINE_INTERNAL: return 'ENGINE_INTERNAL';
+        case ENGINE_EVAL:     return 'ENGINE_EVAL';
+        case ENGINE_MCRYPT:   return 'ENGINE_MCRYPT';
+        case ENGINE_OPENSSL:  return 'ENGINE_OPENSSL';
+        default: return 'error';
+        }
     }
 }

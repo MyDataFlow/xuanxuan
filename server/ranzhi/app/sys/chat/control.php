@@ -944,27 +944,4 @@ class chat extends control
 
         die($this->app->encrypt($this->output));
     }
-
-    /**
-     * Set key to encrypt and decrypt messages. 
-     * 
-     * @access public
-     * @return void
-     */
-    public function setKey()
-    {
-        if($this->app->user->admin != 'super') die(js::locate('back'));
-
-        if($_POST)
-        {
-            if(strlen($this->post->key) != 32 or !validater::checkREG($this->post->key, '|^[A-Za-z0-9]+$|')) $this->send(array('result' => 'fail', 'message' => array('key' => $this->lang->chat->errorKey)));
-            if($this->post->key) $this->loadModel('setting')->setItem('system.sys.xuanxuan..key', $this->post->key);
-            if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
-
-            $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess));
-        }
-
-        $this->view->title = $this->lang->chat->settings;
-        $this->display();
-    }
 }
