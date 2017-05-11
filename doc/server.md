@@ -18,7 +18,7 @@
 
 | 操作系统       | 64位                                      | 32位                                      |
 | :--------- | :--------------------------------------- | ---------------------------------------- |
-| Windows 7+ | [xxd-1.1.1-win64.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win64.zip) | [xxd-1.1.1-win32.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-win32.zip) |
+| Windows 7+ | [xxd-1.1.1-win64.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win64.zip) | [xxd-1.1.1-win32.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win32.zip) |
 | Mac OS10+  | [xxd-1.1.1-mac.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-mac.tar.gz) |                                          |
 | Linux      | [xxd-1.1.1-linux-x64.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-linux-x64.tar.gz) | [xxd-1.1.1-linux-ia32.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-linux-ia32.tar.gz) |
 
