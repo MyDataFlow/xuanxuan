@@ -4,22 +4,13 @@
 
 ## 部署然之协同服务器端
 
-1.下载安装然之协同：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
+1.下载安装然之协同最新版：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
 
-2.下载喧喧然之协同服务器端 [xuanxuan-1.1.0-server-rangerteam.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-server-rangerteam.zip) 并解压缩；
+2.以管理员身份登录然之，进入后台 -> 系统 -> 喧喧 ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
 
-3.合并解压缩的目录到然之协同服务目录；
+3.服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
 
-4.打开 ranzhi/config/ext/xuanxuan.php，修改 $config->xuanxuan->key ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
-
-5.从浏览器访问然之协同 www 目录下的 upgradexuanxuan.php 文件进行升级。如然之协同站点地址为 http://demo.ranzhi.org ，则访问地址为 http://demo.ranzhi.org/upgradexuanxuan.php。如果使用然之协同一键安装包，则访问地址可能是 http://ip:端口号/ranzhi/upgradexuanxuan.php；
-
-6.服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
-
-7.然之协同和 xxd 之间的通信需要使用 php-mcrypt 扩展，请根据自己的 php 版本安装相应的扩展；
-
-8.调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
-
+4.调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
 
 ## 部署xxd
 
