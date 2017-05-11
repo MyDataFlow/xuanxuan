@@ -60,7 +60,7 @@
 * Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-debug-win64-setup.exe)
 * MacOS：[xuanxuan-1.1.1-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-mac.dmg)
 * Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-linux-ia32.rpm)
-* Server: [xxd server](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.1-xxd.zip)；
+* Server: [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-linux-x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-linux-ia32.tar.gz)；
 * 然之：[源码包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi.4.2.2.zip)、[windows 一键安装包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi.4.2.2.exe)、[linux rpm 安装包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi-4.2.2-1.noarch.rpm)、[linux deb 安装包](http://dl.cnezsoft.com/ranzhi/4.2.2/ranzhi_4.2.2_1_all.deb)。
 
 ## v 1.1.0
@@ -114,7 +114,8 @@
 * Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win64-setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win64-zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win32-setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-win32-zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-debug-win64-setup.exe)
 * MacOS：[xuanxuan-1.1.0-mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-mac.dmg)
 * Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-linux-ia32.rpm)
-* Server: [Ranzhi xuanxuan extension](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-ranzhi-ext.zip)、[xxd server](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-xxd.zip)
+* Server: [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-linux-x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.0-linux-ia32.tar.gz)；
+* 然之：[xuanxuan-1.1.0-server-rangerteam.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xuanxuan-1.1.0-server-rangerteam.zip)。
 
 ## v 1.0.2
 

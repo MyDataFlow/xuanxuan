@@ -241,7 +241,19 @@ const ChatPage = React.createClass({
     },
 
     _checkFileSize(file) {
-        if(!file) return false;
+        if(!file || !file.path) return false;
+        if(file.size === undefined || file.size === null) {
+            file.size = Helper.tryStatSync(file.path).size;
+        }
+        if(App.user.uploadFileSize === 0) {
+            App.emit(R.event.ui_messager, {
+                id: 'uploadFileSizeMessager',
+                clickAway: true,
+                content: Lang.errors.SERVER_DISABLED_UPLOAD,
+                color: Theme.color.negative
+            });
+            return false;
+        }
         if(!App.user.checkUploadFileSize(file)) {
             App.emit(R.event.ui_messager, {
                 id: 'uploadFileSizeMessager',
@@ -426,7 +438,7 @@ const ChatPage = React.createClass({
         let canMakePublic = chat.canMakePublic(App.user);
         let canSetCommitters = chat.canSetCommitters(App.user);
         let canRename = chat.canRename(App.user);
-        let chatMenu = <IconMenu
+        let chatMenu = chat.isOne2One ? null : <IconMenu
             desktop={true}
             iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}

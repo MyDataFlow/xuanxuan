@@ -50,7 +50,7 @@ http://xuan.im
 这里有一个公开的测试服务器供使用：
 
 ```
-地址：https://demo.ranzhi.org/xuanxuan
+地址：https://demo.ranzhi.org
 用户：demo
 密码：demo
 
