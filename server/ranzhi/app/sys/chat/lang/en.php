@@ -1,5 +1,5 @@
 <?php
-$lang->chat->settings = 'Settings';
+$lang->chat->settings = 'Xuanxuan Settings';
 $lang->chat->version  = 'Version';
 $lang->chat->key      = 'Secret';
 
