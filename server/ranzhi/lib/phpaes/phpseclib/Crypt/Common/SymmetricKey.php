@@ -1777,12 +1777,12 @@ abstract class SymmetricKey
     {
         $this->engine = null;
 
-        $candidateEngines = [
+        $candidateEngines = array( 
             $this->preferredEngine,
             self::ENGINE_OPENSSL,
             self::ENGINE_MCRYPT,
             //self::ENGINE_EVAL     // php 5.3+ can use this option.
-        ];
+        );
         foreach ($candidateEngines as $engine) {
             if ($this->isValidEngine($engine)) {
                 $this->engine = $engine;
@@ -1907,14 +1907,14 @@ abstract class SymmetricKey
         $this->enchanged = $this->dechanged = true;
 
         if (!isset($this->enmcrypt)) {
-            static $mcrypt_modes = [
+            static $mcrypt_modes = array( 
                 self::MODE_CTR    => 'ctr',
                 self::MODE_ECB    => MCRYPT_MODE_ECB,
                 self::MODE_CBC    => MCRYPT_MODE_CBC,
                 self::MODE_CFB    => 'ncfb',
                 self::MODE_OFB    => MCRYPT_MODE_NOFB,
                 self::MODE_STREAM => MCRYPT_MODE_STREAM,
-            ];
+            );
 
             $this->demcrypt = @mcrypt_module_open($this->cipher_name_mcrypt, '', $mcrypt_modes[$this->mode], '');
             $this->enmcrypt = @mcrypt_module_open($this->cipher_name_mcrypt, '', $mcrypt_modes[$this->mode], '');
@@ -2005,9 +2005,9 @@ abstract class SymmetricKey
      */
     private function clearBuffers()
     {
-        $this->enbuffer = $this->debuffer = ['ciphertext' => '', 'xor' => '', 'pos' => 0, 'enmcrypt_init' => true];
+        $this->enbuffer = $this->debuffer = array('ciphertext' => '', 'xor' => '', 'pos' => 0, 'enmcrypt_init' => true);
 
-        if ($this->iv === false && !in_array($this->mode, [self::MODE_STREAM, self::MODE_ECB])) {
+        if ($this->iv === false && !in_array($this->mode, array(self::MODE_STREAM, self::MODE_ECB))) {
             throw new \UnexpectedValueException('No IV has been defined');
         }
 

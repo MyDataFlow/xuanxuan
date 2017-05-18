@@ -110,7 +110,7 @@ abstract class Strings
      */
     public static function unpackSSH2($format, $data)
     {
-        $result = [];
+        $result = array();
         for ($i = 0; $i < strlen($format); $i++) {
             switch ($format[$i]) {
                 case 'C':
