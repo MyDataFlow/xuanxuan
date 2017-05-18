@@ -364,7 +364,7 @@ function requestServerInfo(user) {
                     user.serverName,
                     user.account,
                     user.passwordMD5,
-                    'online'
+                    ''
                 ]
             })
         }).then(data => {
