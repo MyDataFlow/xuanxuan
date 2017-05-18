@@ -33,7 +33,7 @@ import Emojione            from 'Components/emojione';
 import Modal               from 'Components/modal';
 import IconMenu            from 'material-ui/IconMenu';
 import MenuItem            from 'material-ui/MenuItem';
-import MoreIcon        from 'material-ui/svg-icons/navigation/more-horiz';
+import MoreIcon            from 'material-ui/svg-icons/navigation/more-horiz';
 import Divider             from 'material-ui/Divider';
 import LockIcon            from 'material-ui/svg-icons/action/lock-outline';
 
