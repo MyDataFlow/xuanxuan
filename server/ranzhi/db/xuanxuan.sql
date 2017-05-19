@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `im_usermessage`(
   `id` mediumint(8) NOT NULL AUTO_INCREMENT,
   `level` smallint(5) NOT NULL DEFAULT 3,
   `user` mediumint(8) NOT NULL DEFAULT 0,
-  `messages` text NOT NULL DEFAULT '',
+  `message` text NOT NULL DEFAULT '',
   PRIMARY KEY `id` (`id`),
   KEY `muser` (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
