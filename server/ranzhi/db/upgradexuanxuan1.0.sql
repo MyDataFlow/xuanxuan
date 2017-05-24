@@ -6,4 +6,4 @@ ALTER TABLE `im_usermessage` DROP `module`;
 ALTER TABLE `im_usermessage` DROP `method`;
 ALTER TABLE `im_usermessage` CHANGE `data` `message` text not null;
 
-DROP TABLE `im_chatfile`;
+DROP TABLE IF EXISTS `im_chatfile`;
