@@ -41,19 +41,22 @@ class chat extends control
 
         if($user) 
         {
-            $data = new stdclass();
-            $data->id     = $user->id;
-            $data->status = $status;
-            $user = $this->chat->editUser($data);
-
-            $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
-            
-            $users = $this->chat->getUserList($status = 'online');
-            $user->signed = $this->chat->getSignedTime($account);
-
             $this->output->result = 'success';
-            $this->output->users  = array_keys($users);
-            $this->output->data   = $user;
+            if($status == 'online') 
+            {
+                $data = new stdclass();
+                $data->id     = $user->id;
+                $data->status = $status;
+                $user = $this->chat->editUser($data);
+
+                $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
+            
+                $users = $this->chat->getUserList($status = 'online');
+                $user->signed = $this->chat->getSignedTime($account);
+
+                $this->output->users = array_keys($users);
+                $this->output->data  = $user;
+            }
         }
         else
         {
