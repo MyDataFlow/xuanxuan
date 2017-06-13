@@ -1779,7 +1779,7 @@ abstract class SymmetricKey
 
         $candidateEngines = array( 
             $this->preferredEngine,
-            self::ENGINE_OPENSSL,
+            //self::ENGINE_OPENSSL, // php 5.4+ can use this option.
             self::ENGINE_MCRYPT,
             //self::ENGINE_EVAL     // php 5.3+ can use this option.
         );
