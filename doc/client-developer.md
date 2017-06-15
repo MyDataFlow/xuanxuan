@@ -222,7 +222,7 @@ $ npm run dev
 
 通常情况下，如果以上步骤都成功，此时会在你的屏幕左侧打开一个新的窗口：窗口上方是喧喧的界面，下方是 Chrome 的开发者工具。
 
-![成功启动客户端](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/dev.png)
+![成功启动客户端](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/debug.png)
 
 ## 打包
 
