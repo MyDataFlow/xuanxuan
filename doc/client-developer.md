@@ -6,12 +6,12 @@
 
 喧喧客户端使用到了如下关键技术：
 
-* **[Electron](https://electron.atom.io/)**：（最初名为Atom Shell）是 GitHub 开发一个的开源框架。它允许使用 Node.js（作为后端）和 Chromium（作为前端）完成桌面 GUI 应用程序的开发。Electron 现被已多个开源 Web 应用程序用于前端与后端的开发，著名项目包括 GitHub 的 [Atom](https://atom.io/) 和微软的 [Visual Studio Code](https://code.visualstudio.com/)；
-* **[NodeJS](https://nodejs.org/)**：一个基于Chrome V8 引擎的JavaScript 运行时；
+* **[Electron](https://electron.atom.io/)**：（最初名为 Atom Shell）是 GitHub 开发一个的开源框架。它允许使用 Node.js（作为后端）和 Chromium（作为前端）完成桌面 GUI 应用程序的开发。Electron 现被已多个开源 Web 应用程序用于前端与后端的开发，著名项目包括 GitHub 的 [Atom](https://atom.io/) 和微软的 [Visual Studio Code](https://code.visualstudio.com/)；
+* **[NodeJS](https://nodejs.org/)**：一个基于Chrome V8 引擎的 JavaScript 运行时；
 * **[npm](https://www.npmjs.com/)**：作为 nodejs 内置的包管理器；
+* **[ES6](http://es6.ruanyifeng.com/)**：（全称 ECMAScript 6.0） 是 JavaScript 语言的下一代标准，已经在2015年6月正式发布了；
 * **[React](https://facebook.github.io/react/)**：一个为数据提供渲染为 HTML 视图的开源前端库；
-* **[Webpack](https://webpack.js.org/)**：前端资源模块化管理和打包工具；
-* **[ES6](http://es6.ruanyifeng.com/)**：（全称 ECMAScript 6.0） 是 JavaScript 语言的下一代标准，已经在2015年6月正式发布了。
+* **[Webpack](https://webpack.js.org/)**：前端资源模块化管理和打包工具。
 
 如果你了解以上一个或多个技术，以下内容你可以选择性的阅读以更快的进入喧喧开发状态；如果你是第一次接触这些内容也没有关系，这篇指南仍然可以带你将喧喧跑起来。
 
@@ -25,17 +25,15 @@ $ npm install
 $ npm run dev
 ```
 
-
-
 ## 详细步骤
 
-下面为一个适合新手的指南，包含详细步骤和注意事项。
+下面的内容适合新手，包含详细步骤和注意事项。
 
 ### 1. 安装 Nodejs 和 npm
 
-访问 Nodejs 官网下载并安装 nodejs，选择一个适合你的操作系统的安装包按照官方提示安装即可。虽然不同的 nodejs 版本都可以运行喧喧，但可能需要额外的配置，建议你下载与喧喧开发者相同版本的 nodejs 版本。喧喧开发人员目前使用的 nodejs 环境版本是 **`7.8.0`**，可以在这个页面 https://nodejs.org/zh-cn/download/releases/ 找到对应版本的下载地址。
+访问 Nodejs 官网下载并安装 nodejs，选择一个适合你的操作系统的安装包，按照官方提示安装即可。虽然不同的 nodejs 版本都可以运行喧喧，但可能需要额外的配置，建议你下载与喧喧开发者相同版本的 nodejs 版本。喧喧开发人员目前使用的 nodejs 环境版本是 **`7.8.0`**，可以在这个页面 https://nodejs.org/zh-cn/download/releases/ 找到对应版本的下载地址。
 
-Windows 和 Mac 系统用户可以直接下载非常方便实用的一键安装包，安装完成后打开命令行窗口（Mac 下为应用 “终端”，Windows 下为程序 “命令提示符” 或 “PowerShell”）输入如下命令查询安装后的版本号，如果输出正确版本号说明安装成功。
+Windows 和 Mac 系统用户可以直接下载非常方便的一键安装包，安装完成后打开命令行窗口（Mac 下为应用 “终端”，Windows 下为程序 “命令提示符” 或 “PowerShell”）输入如下命令查询安装后的版本号，如果输出正确版本号说明安装成功。
 
 ```
 $ node -v
@@ -47,7 +45,7 @@ $ node -v
 v7.8.0
 ```
 
-如果 nodejs 安装成功，通常 npm 也会一起安装完成，输入 `npm -v` 来检查已安装的 npm 版本。
+如果 nodejs 安装成功，npm 也会一起安装完成，输入 `npm -v` 来检查已安装的 npm 版本。
 
 ```
 $ npm -v
@@ -97,7 +95,7 @@ $ npm install -g cnpm --registry=https://registry.npm.taobao.org
 $ cnpm install
 ```
 
-##### 将镜像地址写入 ~/.npmrc
+##### 将镜像地址写入 `~/.npmrc`
 
 在你的系统找到 `~/.npmrc` 文件，并用文本编辑器打开，写入如下内容到文件：
 
@@ -114,7 +112,7 @@ disturl=https://npm.taobao.org/dist
 $ npm info zui
 ```
 
-如果在命令行输出信息的结尾找到 ZUI 的下载地址为 taobao.com，说明配置生效了。
+如果在命令行输出信息的结尾找到 ZUI 的下载地址为 `registry.npm.taobao.com`，说明配置生效了。
 
 ```
 dist:
@@ -127,7 +125,7 @@ dist:
 
 这样再次执行 `npm install` 命令就可以使用国内的淘宝镜像进行依赖模块的安装了。
 
-#### 安装 Electron 失败
+#### 安装 Electron 失败？
 
 ##### 设置 ELECTRON_MIRROR 环境变量
 
@@ -204,7 +202,7 @@ $ npm run hot-server
 $ npm run start-hot
 ```
 
-如果你在命令行窗口看到如下内容，说明 React 热更新服务器成功启动：
+如果你在命令行窗口看到如下内容，说明客户端启动成功：
 
 ![npm run start-hot 运行成功截图](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/npm_run_start-hot.png)
 
@@ -216,7 +214,7 @@ $ npm run start-hot
 $ npm run dev
 ```
 
-不过这种方式的确定是无法单独查看热更新服务器和客户端调试的输出信息。你可以根据自己的习惯选择合适的启动方式。
+不过这种方式的缺点是无法单独查看热更新服务器和客户端调试的输出信息。你可以根据自己的习惯选择合适的启动方式。
 
 #### 恭喜
 
@@ -234,7 +232,7 @@ $ npm run dev
 $ npm run package
 ```
 
-对于 Windows 用户，默认情况下，如果你的系统是 64 位，则打包的是 Windows 64 位版本，如果你需要打包 32 位版本，则需要执行：
+对于 Windows 用户，默认情况下，如果你的系统是 64 位，则打包的是 Windows 64 位版本，如果你的系统是 32 位，则打包的是 32 位安装包，如果你需要在 Windows 64 位系统上打包 32 位版本，则需要执行：
 
 ```
 $ npm run package-win-32
@@ -248,7 +246,7 @@ $ npm run package-win-32
 $ npm run package-debug
 ```
 
-调试版会像开发模式启动的客户端一样在界面下方显示 Chrome 的开发者工具，并且不会忽略所以调试消息。
+调试版会像开发模式启动的客户端一样在界面下方显示 Chrome 的开发者工具，并且不会忽略所有调试消息。
 
 ### 跨平台打包（仅适合 Mac 用户）
 
@@ -434,7 +432,7 @@ $ brew install rpm
     </tr>
     <tr>
       <td><code>/server/ranzhi</code></td>
-      <td>ranzhi 服务器端扩展源代码目录</td>
+      <td>然之协同服务器端扩展源代码目录</td>
     </tr>
   </tbody>
 </table>
