@@ -5,9 +5,6 @@
   "description": "企业即时通讯平台",
   "main": "main.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --retries 2 --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.spec.js",
-    "test-watch": "npm test -- --watch",
-    "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --retries 2 --compilers js:babel-register --require ./test/setup.js ./test/e2e.js",
     "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r babel-register server.js",
     "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
     "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
@@ -203,5 +200,32 @@
   "optionalDependencies": {
     "bufferutil": "^3.0.0",
     "utf-8-validate": "^3.0.1"
+  },
+  "babel": {
+    "presets": [
+      ["env", { "targets": { "node": 6 }, "useBuiltIns": true }],
+      "stage-0",
+      "react"
+    ],
+    "plugins": ["add-module-exports"],
+    "env": {
+      "production": {
+        "presets": ["react-optimize"],
+        "plugins": ["babel-plugin-dev-expression"]
+      },
+      "development": {
+        "plugins": [
+          "transform-class-properties",
+          "transform-es2015-classes",
+          "tcomb"
+        ],
+        "presets": ["react-hmre"]
+      },
+      "test": {
+        "plugins": [
+          ["webpack-loaders", { "config": "webpack.config.test.js", "verbose": false }]
+        ]
+      }
+    }
   }
 }
