@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 
 const STYLE = {
 };

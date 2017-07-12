@@ -8,8 +8,8 @@ import AppContainer           from './views/app-container';
 import {ThemeProvider}        from 'Theme';
 import Messager               from 'Components/messager';
 import lang                   from './lang';
-import EventCenter            from './event-center';
-import App                    from './app';
+import EventCenter            from 'Events';
+import App                    from 'App';
 import injectTapEventPlugin   from 'react-tap-event-plugin';
 import AppActionLink          from './utils/app-link';
 

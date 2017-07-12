@@ -1,7 +1,7 @@
 import React               from 'react';
 import Path                from 'path';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import UserAvatar          from '../user-avatar';
 import Moment              from 'moment';
 import Emojione            from '../components/emojione';
@@ -13,13 +13,7 @@ import ImageIcon           from 'material-ui/svg-icons/image/photo';
 import UploadIcon          from 'material-ui/svg-icons/file/file-upload';
 import RefreshIcon         from 'material-ui/svg-icons/navigation/refresh';
 import R                   from '../../resource';
-import {
-    shell,
-    clipboard,
-    nativeImage
-}                          from 'electron';
-
-const Helper = global.Helper;
+import Helper              from 'Helper';
 
 /**
  * React component: Image message item
@@ -46,7 +40,7 @@ const ImageMessage = React.createClass({
             }, {
                 label: Lang.common.open,
                 click: () => {
-                    shell.openItem(imagePath);
+                    App.openFileItem(imagePath);
                 }
             }, {
                 label: Lang.common.savedAs,
@@ -71,8 +65,8 @@ const ImageMessage = React.createClass({
             }, {
                 label: Lang.menu.copyImage,
                 click: () => {
-                    let image = nativeImage.createFromPath(imagePath);
-                    clipboard.writeImage(image);
+                    let image = App.createImageFromPath(imagePath);
+                    App.copyImageToClipboard(image);
                 }
             }]), e);
         }
@@ -161,7 +155,7 @@ const ImageMessage = React.createClass({
         } = this.props;
 
         let image = message.imageContent;
-        
+
         if(image.type === 'base64') {
             return <img src={image.content} />;
         } else if(image.type === 'emoji') {

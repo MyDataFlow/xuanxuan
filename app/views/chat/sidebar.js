@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 import IconButton          from 'material-ui/IconButton';
 import FlatButton          from 'material-ui/FlatButton';
@@ -22,7 +22,7 @@ const STYLE = {
         borderLeft: '1px solid ' + Theme.color.border
     },
     header: {
-        borderBottom: '1px solid ' + Theme.color.border, 
+        borderBottom: '1px solid ' + Theme.color.border,
         padding: '10px 15px 10px 50px',
         lineHeight: '28px',
         height: 28,

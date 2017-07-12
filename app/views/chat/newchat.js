@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import ArrowForwardIcon    from 'material-ui/svg-icons/navigation/arrow-forward';
 import List                from 'material-ui/List/List';
 import ListDivider         from 'material-ui/Divider';
@@ -17,7 +17,7 @@ import ContentNotReady     from '../misc/content-not-ready';
 
 const STYLE = {
     header: {
-        borderBottom: '1px solid ' + Theme.color.border, 
+        borderBottom: '1px solid ' + Theme.color.border,
         padding: '10px 15px 10px 50px',
         lineHeight: '28px',
         backgroundColor: Theme.color.pale2,

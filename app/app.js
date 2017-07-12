@@ -4,13 +4,14 @@ import {
     clipboard,
     remote as Remote,
     screen as Screen,
-    nativeImage as NativeImage
+    nativeImage as NativeImage,
+    desktopCapturer
 }                         from 'electron';
 import Path               from 'path';
 import React              from 'react';
 import ReactDOM           from 'react-dom';
 import UUID               from 'uuid';
-import Event              from './event-center';
+import Event              from 'Events';
 import Config             from './config';
 import Helper             from './utils/helper';
 import R, {EVENT}         from './resource';
@@ -43,7 +44,7 @@ const GlobalShortcut = Remote.globalShortcut;
 
 /**
  * Application
- * 
+ *
  * Only for renderer process
  */
 class App extends ReadyNotifier {
@@ -61,7 +62,7 @@ class App extends ReadyNotifier {
         this.browserWindow = Remote.getCurrentWindow();
         this.desktopPath   = Remote.app.getPath('desktop');
         this.userDataPath  = Remote.app.getPath('userData');
-        
+
         this.remote('appRoot').then(appRoot => {
             this.appRoot = appRoot;
         });
@@ -520,7 +521,7 @@ class App extends ReadyNotifier {
                 this.isUserLogining = false;
                 this.user.changeStatus(serverStatus || 'online');
                 setTimeout(() => {
-                    this.emit(R.event.user_login_finish, {user: user, result: true});                    
+                    this.emit(R.event.user_login_finish, {user: user, result: true});
                 }, 2000);
             }).catch(err => {
                 this.user = user;
@@ -820,7 +821,7 @@ class App extends ReadyNotifier {
                 {type: 'cancel'},
                 {
                     type: 'secondary',
-                    label: this.lang.common.restoreDefault, 
+                    label: this.lang.common.restoreDefault,
                     click: () => {
                         userSettingView.resetConfig();
                     },
@@ -908,7 +909,7 @@ class App extends ReadyNotifier {
 
     /**
      * Capture screenshot image and save to file
-     * 
+     *
      * @param string filePath optional
      */
     captureScreen(options, filePath, hideCurrentWindow, onlyBase64) {
@@ -1134,6 +1135,42 @@ class App extends ReadyNotifier {
         setTimeout(() => {
             this.remote('quit');
         }, 1500);
+    }
+
+    getDesktopCaptureSources(options, callback) {
+        desktopCapturer.getSources(options, callback);
+    }
+
+    getPrimaryDisplay() {
+        return Screen.getPrimaryDisplay();
+    }
+
+    getAllDisplays() {
+        return Screen.getAllDisplays();
+    }
+
+    openExternal(url) {
+        return shell.openExternal(url);
+    }
+
+    createImageFromPath(path) {
+        return NativeImage.createFromPath(path);
+    }
+
+    getImageFromClipboard() {
+        clipboard.readImage();
+    }
+
+    copyImageToClipboard(image) {
+        clipboard.saveImage(image);
+    }
+
+    openFileItem(file) {
+        shell.openItem(file);
+    }
+
+    showItemInFolder(file) {
+        shell.showItemInFolder(file);
     }
 }
 

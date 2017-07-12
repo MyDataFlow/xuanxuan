@@ -1,6 +1,6 @@
 import React, {PropTypes}  from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import List                from 'material-ui/List/List';
 import ListDivider         from 'material-ui/Divider';
 import ChevronRightIcon    from 'material-ui/svg-icons/navigation/chevron-right';

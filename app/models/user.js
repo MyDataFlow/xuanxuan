@@ -2,7 +2,7 @@ import Md5      from 'md5';
 import UUID     from 'uuid';
 import Url      from 'url';
 import Path     from 'path';
-import Events   from '../event-center';
+import Events   from 'Events';
 import Member, {
     USER_STATUS
 }               from './member';
@@ -290,7 +290,7 @@ class User extends Member {
     }
 
     /**
-     * Get 
+     * Get
      * @return {string}
      */
     get cipherIV() {

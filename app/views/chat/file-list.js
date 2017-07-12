@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import Spinner             from '../components/spinner';
 import FileListItem        from './file-list-item';
 import ContentNotReady     from '../misc/content-not-ready';

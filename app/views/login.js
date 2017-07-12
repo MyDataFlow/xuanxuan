@@ -19,13 +19,13 @@ import {User}              from '../models/entities';
 import R                   from '../resource';
 import BuildInfo           from './misc/build-info';
 import Theme               from '../theme';
-import App                 from '../app';
+import App                 from 'App';
 import Lang                from 'Lang';
 import Helper              from 'Helper';
 
 const STYLE = {
     login: {
-        left: '-100%', 
+        left: '-100%',
         backgroundColor: Theme.palette.primary1Color,
         width: '100%',
     },
@@ -146,16 +146,16 @@ const SwapUser = React.createClass({
                 } else if(actived) {
                     rightIcon = <CheckIcon color={Theme.color.positive}/>;
                 }
-                return <ListItem 
-                    onMouseLeave={this._handleItemMouseLeave} 
-                    onMouseEnter={this._handleItemMouseEnter.bind(this, key)} 
-                    activeColor={Theme.color.pale1} 
-                    onClick={this._handUserSelect.bind(this, user)} 
-                    key={key} 
-                    actived={actived} 
-                    primaryText={primaryText} 
-                    secondaryText={user.server} 
-                    leftAvatar={<UserAvatar user={user} />} 
+                return <ListItem
+                    onMouseLeave={this._handleItemMouseLeave}
+                    onMouseEnter={this._handleItemMouseEnter.bind(this, key)}
+                    activeColor={Theme.color.pale1}
+                    onClick={this._handUserSelect.bind(this, user)}
+                    key={key}
+                    actived={actived}
+                    primaryText={primaryText}
+                    secondaryText={user.server}
+                    leftAvatar={<UserAvatar user={user} />}
                     rightIcon={rightIcon}/>
             })
         }
@@ -189,7 +189,7 @@ const Login = React.createClass({
         this.loginTimeoutCheck = setTimeout(() => {
             if(this.state.logining) {
                 this.setState({
-                    logining: false, 
+                    logining: false,
                     message: Lang.login.loginTimeout,
                     messageColor: Colors.red500
                 });
@@ -208,8 +208,8 @@ const Login = React.createClass({
             this.user.account = user.account;
             this.user.password = user.password;
         }
-        let submitable = Helper.isNotEmptyString(this.user.server) 
-            && Helper.isNotEmptyString(this.user.account) 
+        let submitable = Helper.isNotEmptyString(this.user.server)
+            && Helper.isNotEmptyString(this.user.account)
             && Helper.isNotEmptyString(this.user.password);
         this.setState({
             submitable,
@@ -249,8 +249,8 @@ const Login = React.createClass({
             displayed: false
         });
         this._setUser({
-            server:  appUser.server, 
-            account:  appUser.account, 
+            server:  appUser.server,
+            account:  appUser.account,
             password: appUser.password
         });
     },
@@ -312,9 +312,9 @@ const Login = React.createClass({
     },
 
     componentWillUnmount() {
-        App.off(this._handleUserLoginBeginEvent, 
-                this._handleUserLoginFinishEvent, 
-                this._handleUserStatusChangeEvent, 
+        App.off(this._handleUserLoginBeginEvent,
+                this._handleUserLoginFinishEvent,
+                this._handleUserStatusChangeEvent,
                 this._handleSocketCloseEvent);
         this.granim.clear();
     },

@@ -1,6 +1,6 @@
 import React, {PropTypes}  from 'react';
 import Theme               from 'Theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import ChatPlusIcon        from '../icons/comment-plus-outline';
 import UserAvatar          from '../user-avatar';
 import ChatsIcon           from '../icons/comments-outline';
@@ -179,8 +179,8 @@ const ChatMenu = React.createClass({
                 backgroundColor : Theme.color.pale1, paddingBottom: 48
             },
             list: {
-                backgroundColor : 'transparent', 
-                paddingTop      : 0, 
+                backgroundColor : 'transparent',
+                paddingTop      : 0,
                 paddingBottom   : 0
             },
             listContainer: {
@@ -237,7 +237,7 @@ const ChatMenu = React.createClass({
                 height: 50
             }
         };
-        
+
         let {
             style,
             ...other
@@ -253,7 +253,7 @@ const ChatMenu = React.createClass({
                     className={'small menu-list-' + key}
                     headingStyle={{color: Theme.color.icon, fontSize: '12px'}}
                     headingIconStyle={{color: Theme.color.icon, fill: Theme.color.icon}}
-                    key={'menu-list-' + key} 
+                    key={'menu-list-' + key}
                     style={STYLE.list}
                     heading={(data.title || false)}
                     expand={true}
@@ -261,8 +261,8 @@ const ChatMenu = React.createClass({
                 {!this.state.search && this.state.type === MENU_TYPES.contacts && App.user.getConfig('ui.chat.menu.showMe') ? <ListItem
                     key={App.user.id}
                     style={STYLE.itemStyle}
-                    onClick={() => App.openProfile()} 
-                    primaryText={App.user.displayName} 
+                    onClick={() => App.openProfile()}
+                    primaryText={App.user.displayName}
                     leftAvatar={<UserAvatar size={20} user={App.user} style={STYLE.avatar}/>}
                 /> : null}
                 {
@@ -283,9 +283,9 @@ const ChatMenu = React.createClass({
                                 key={itemKey}
                                 style={itemStyle}
                                 actived={isItemActived}
-                                onContextMenu={this._handleItemContextMenu.bind(this, item)} 
-                                onClick={this._handleItemClick.bind(null, item.gid, item)} 
-                                primaryText={primaryText} 
+                                onContextMenu={this._handleItemContextMenu.bind(this, item)}
+                                onClick={this._handleItemClick.bind(null, item.gid, item)}
+                                primaryText={primaryText}
                                 leftAvatar={<UserAvatar size={20} user={theOtherOne} style={STYLE.avatar} className={theOtherOne && theOtherOne.isOffline ? 'grayscale muted' : ''}/>}
                                 innerDivStyle={{paddingRight: rightIcon ? 30 : 10}}
                                 rightIcon={rightIcon}

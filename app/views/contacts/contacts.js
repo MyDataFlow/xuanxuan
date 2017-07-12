@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
 import SearchIcon          from 'material-ui/svg-icons/action/search';
 import IconButton          from 'material-ui/IconButton';
@@ -14,7 +14,7 @@ const Helper = global.Helper;
 
 const STYLE = {
     header: {
-        borderBottom: '1px solid ' + Theme.color.border, 
+        borderBottom: '1px solid ' + Theme.color.border,
         padding: '10px 15px 10px 50px',
         lineHeight: '28px',
         backgroundColor: Theme.color.pale2,

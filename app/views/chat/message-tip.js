@@ -1,7 +1,7 @@
 import React               from 'react';
 import Theme               from '../../theme';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import FlatButton          from 'material-ui/FlatButton';
 import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 

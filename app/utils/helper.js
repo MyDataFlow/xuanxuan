@@ -50,7 +50,7 @@ if (!String.prototype.format) {
 
 const UNITS = {
     B: 1,
-    KB: 1024, 
+    KB: 1024,
     MB: 1024*1024,
     GB: 1024*1024*1024,
     TB: 1024*1024*1024*1024,
@@ -64,7 +64,7 @@ const UNITS = {
 /**
  * Global helper methods
  */
-global.Helper = {
+const Helper = {
 
     /**
      * Plain a object
@@ -73,7 +73,7 @@ global.Helper = {
     plain(obj) {
         if(obj === undefined) obj = this;
         if(Array.isArray(obj)) {
-            return obj.map(global.Helper.plain);
+            return obj.map(Helper.plain);
         }
         var objType = typeof obj;
         if(obj !== null && objType === 'object') {
@@ -96,7 +96,7 @@ global.Helper = {
      * @param  {string} str
      * @param  {array|string} styles
      * @param  {string} separator
-     * @return {string}          
+     * @return {string}
      */
     pinyin(str, styles, separator) {
         if(!styles) {
@@ -137,7 +137,7 @@ global.Helper = {
     markdown(content) {
         return Marked(content);
     },
-    
+
     /**
      * Encode html
      * @param  {string} s
@@ -311,7 +311,7 @@ global.Helper = {
 
     /**
      * Delete file
-     * 
+     *
      * @param {string} path
      * @return {Promise}
      */
@@ -477,5 +477,7 @@ global.Helper = {
         return _guid++;
     }
 };
+
+global.Helper = Helper;
 
 export default Helper;

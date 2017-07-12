@@ -2,11 +2,11 @@ import React               from 'react';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
 import Moment              from 'moment';
 import Theme               from '../../theme';
-import {Lang}              from '../../app';
+import {Lang}              from 'App';
 
 const TimeSpan = React.createClass({
     mixins: [PureRenderMixin],
-    
+
     render() {
         let {
             begin,

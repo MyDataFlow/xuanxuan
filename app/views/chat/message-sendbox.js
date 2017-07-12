@@ -1,7 +1,6 @@
-import {clipboard}         from 'electron';
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import MessageListItem     from './message-list-item';
 import MessageListDivider  from './message-list-divider';
 import MessageTip          from './message-tip';
@@ -102,7 +101,7 @@ const MessageSendbox = React.createClass({
 
     _handleOnPaste(e) {
         if(!e || App.chat.activeChatWindow !== this.props.chatId) return;
-        let imageFile = clipboard.readImage();
+        let imageFile = App.getImageFromClipboard();
         let imageFileSize = imageFile.getSize();
         if(imageFileSize && imageFileSize.width * imageFileSize.height > 0) {
             let filename = UUID.v4() + '.png';
@@ -288,7 +287,7 @@ const MessageSendbox = React.createClass({
         } = this.props;
 
         style = Object.assign({}, STYLE.main, style);
-    
+
         return <div {...other} style={style}>
             <DraftEditor className="dock-full"
               ref={e => {this.editbox = e;}}
