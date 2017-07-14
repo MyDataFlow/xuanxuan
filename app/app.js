@@ -325,7 +325,7 @@ class App extends AppBase {
         hideCurrentWindow = hideCurrentWindow && this.browserWindow.isVisible();
         return new Promise((resolve, reject) => {
             let captureScreenWindows = [];
-            Event.ipc.once(EVENT.capture_screen, (e, image) => {
+            this.ipc.once(EVENT.capture_screen, (e, image) => {
                 if(captureScreenWindows) {
                     captureScreenWindows.forEach(captureWindow => {
                         captureWindow.close();
