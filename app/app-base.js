@@ -935,11 +935,11 @@ class AppBase extends ReadyNotifier {
     }
 
     getDesktopCaptureSources(options, callback) {
-        throw new Error('Application.showOpenDialog(options, callback) should be implement in sub class.');
+        throw new Error('Application.getDesktopCaptureSources(options, callback) should be implement in sub class.');
     }
 
     getPrimaryDisplay() {
-        throw new Error('Application.showOpenDialog(options, callback) should be implement in sub class.');
+        throw new Error('Application.getPrimaryDisplay(options, callback) should be implement in sub class.');
     }
 
     getAllDisplays() {
