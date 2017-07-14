@@ -413,7 +413,7 @@ class App extends ReadyNotifier {
                 if(this.socket) {
                     this.socket.destroy();
                 }
-                this.socket = new Socket(app, user);
+                this.socket = new Socket(this, user);
                 this.emit(EVENT.app_socket_change, this.socket);
             }).catch((err) => {
                 err.oringeMessage = err.message;
@@ -446,7 +446,7 @@ class App extends ReadyNotifier {
             if(this.socket) {
                 this.socket.destroy();
             }
-            this.socket = new Socket(app, user);
+            this.socket = new Socket(this, user);
             this.emit(EVENT.app_socket_change, this.socket);
         }).catch(err => {
             err.oringeMessage = err.message;
