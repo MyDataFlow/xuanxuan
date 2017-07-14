@@ -22,7 +22,7 @@ class Config extends ReadyNotifier {
     /**
      * Config constructor
      * @param  {object} cfg
-     * @return {Config}    
+     * @return {Config}
      */
     constructor(cfg) {
         super();
@@ -55,11 +55,11 @@ class Config extends ReadyNotifier {
 
     /**
      * Save user
-     * 
+     *
      * @param {object} user
      * @param {function} callback
      * @returns
-     * 
+     *
      * @memberOf Config
      */
     save(user, callback) {
@@ -87,11 +87,11 @@ class Config extends ReadyNotifier {
 
     /**
      * Remove user
-     * 
+     *
      * @param {string/object} userOrIdentify
      * @param {function}      callback
      * @returns
-     * 
+     *
      * @memberOf Config
      */
     removeUser(userOrIdentify, callback) {
@@ -172,4 +172,6 @@ class Config extends ReadyNotifier {
     }
 }
 
-export default Config;
+const config = new Config();
+
+export default config;

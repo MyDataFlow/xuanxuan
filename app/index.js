@@ -1,17 +1,17 @@
 import './style/less/app.less';
 import './utils/debug';
 import './utils/helper';
+import App                    from 'App';
 import React                  from 'react';
 import ReactDOM               from 'react-dom';
-import R                      from './resource';
-import AppContainer           from './views/app-container';
-import {ThemeProvider}        from 'Theme';
-import Messager               from 'Components/messager';
-import lang                   from './lang';
-import EventCenter            from 'Events';
-import App                    from 'App';
 import injectTapEventPlugin   from 'react-tap-event-plugin';
-import AppActionLink          from './utils/app-link';
+import R                      from 'Resource';
+import lang                   from 'Lang';
+import EventCenter            from 'Events';
+import {ThemeProvider}        from 'Theme';
+import AppContainer           from 'Views/app-container';
+import Messager               from 'Components/messager';
+import AppActionLink          from 'Utils/app-link';
 
 injectTapEventPlugin();
 

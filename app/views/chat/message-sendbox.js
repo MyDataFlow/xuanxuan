@@ -25,6 +25,7 @@ import R                   from 'Resource';
 import ShortcutField       from '../components/shortcut-field';
 import EmojiPicker         from 'emojione-picker';
 import ChangeFontSize      from 'Views/chat/change-font-size';
+import Emojione            from '../components/emojione';
 
 /**
  * React component: MessageSendbox
@@ -66,7 +67,7 @@ const MessageSendbox = React.createClass({
     _handleEmoticonClick(e) {
         const enableSearchInEmojionePicker = App.user.getConfig('ui.chat.enableSearchInEmojionePicker');
         Popover.toggle({
-            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} search={enableSearchInEmojionePicker ? true : undefined} searchPlaceholder={enableSearchInEmojionePicker ? Lang.common.search : undefined} emojione={{imagePathPNG: './assets/emojione/png/', imageType: 'png'}} onChange={data => {
+            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} search={enableSearchInEmojionePicker ? true : undefined} searchPlaceholder={enableSearchInEmojionePicker ? Lang.common.search : undefined} emojione={{imagePathPNG: Emojione.imagePathPNG, imageType: Emojione.imageType}} onChange={data => {
                 this._handleEmoticonSelect(data);
             }} />,
             contentId: 'chat-' + this.props.chatId,

@@ -1,6 +1,11 @@
-import Emojione            from 'emojione';
+import Emojione from 'emojione';
+import Config   from 'Config';
 
-Emojione.imagePathPNG = './assets/emojione/png/';
+Emojione.imagePathPNG = Config.emojioneImagesPath;
 Emojione.imageType = 'png';
+
+if(DEBUG) {
+    window.Emojione = Emojione;
+}
 
 export default Emojione;

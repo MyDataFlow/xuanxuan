@@ -1,4 +1,3 @@
-import 'ion-sound';
 import {
     shell,
     clipboard,

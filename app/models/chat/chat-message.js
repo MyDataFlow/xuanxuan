@@ -1,6 +1,6 @@
 import Entity from '../entity';
 import UUID   from 'uuid';
-import Emojione  from '../../views/components/emojione';
+import Emojione from 'Components/emojione';
 
 const Helper = global.Helper;
 

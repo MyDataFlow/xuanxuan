@@ -2,7 +2,6 @@ import 'ion-sound';
 import Path               from 'path';
 import React              from 'react';
 import ReactDOM           from 'react-dom';
-import os                 from 'os';
 import Events             from 'Events';
 import Config             from 'Config';
 import Helper             from 'Utils/helper';
@@ -22,14 +21,12 @@ import Lang               from 'Lang';
 import Theme              from 'Theme';
 import UserSettingView    from 'Views/user-settings';
 
-const config = new Config();
-
 /**
  * Application
  *
  * Only for renderer process
  */
-class App extends ReadyNotifier {
+class AppBase extends ReadyNotifier {
 
     /**
      * Application constructor
@@ -38,15 +35,15 @@ class App extends ReadyNotifier {
         super();
 
         this.event         = Events;
-        this.config        = config;
+        this.config        = Config;
         this.lang          = Lang;
 
-        config.ready(() => {
+        this.config.ready(() => {
             this.resetUser(this.config.user);
             this._checkReady();
         });
 
-        config.load(this.userDataPath);
+        this.config.load(this.userDataPath);
 
         this.$ = {
             chat: new ChatApp(this)
@@ -59,21 +56,33 @@ class App extends ReadyNotifier {
         this._initEvents();
 
         if(window.ion) {
-            window.ion.sound({
-                sounds: [
-                    {name: 'message'}
-                ],
-                multiplay: true,
-                volume: 1,
-                path: 'sound/',
-                preload: true,
-            });
-            if(DEBUG) {
-                console.groupCollapsed('%cSOUND inited', 'display: inline-block; font-size: 10px; color: #689F38; background: #CCFF90; border: 1px solid #CCFF90; padding: 1px 5px; border-radius: 2px;');
-                console.log('ion', window.ion);
-                console.groupEnd();
-            }
+            // window.ion.sound({
+            //     sounds: [
+            //         {name: 'message'}
+            //     ],
+            //     multiplay: true,
+            //     volume: 1,
+            //     path: this.soundPath,
+            //     preload: true,
+            // });
+            // if(DEBUG) {
+            //     console.groupCollapsed('%cSOUND inited', 'display: inline-block; font-size: 10px; color: #689F38; background: #CCFF90; border: 1px solid #CCFF90; padding: 1px 5px; border-radius: 2px;');
+            //     console.log('ion', window.ion);
+            //     console.groupEnd();
+            // }
         }
+    }
+
+    get soundPath() {
+        return 'sound/';
+    }
+
+    get imagesResourcePath() {
+        return 'img/';
+    }
+
+    get emojioneImagesPath() {
+        return './assets/emojione/png/';
     }
 
     get browserWindow() {
@@ -626,7 +635,7 @@ class App extends ReadyNotifier {
      * @return {void}
      */
     showAndFocusWindow() {
-        tihs.showWindow();
+        this.showWindow();
         this.focusWindow();
     }
 
@@ -958,4 +967,4 @@ class App extends ReadyNotifier {
     }
 }
 
-export default App;
+export default AppBase;

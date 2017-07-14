@@ -329,7 +329,7 @@ const Login = React.createClass({
           <canvas id="loginBgCanvas" className="dock-full" style={STYLE.canvas} width={window.innerWidth} height={window.innerWidth}></canvas>
           <div style={STYLE.container}>
             <header style={STYLE.header}>
-              <div style={STYLE.logo}><img src='img/logo-inverse.png' /></div>
+              <div style={STYLE.logo}><img src={App.config.imagesResourcePath + 'logo-inverse.png'} /></div>
             </header>
             <Paper zDepth={2} style={STYLE.paper}>
                 <Message content={this.state.message} color={this.state.messageColor} style={STYLE.message} />
