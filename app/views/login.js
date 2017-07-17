@@ -343,6 +343,7 @@ const Login = React.createClass({
                       floatingLabelText={Lang.login.address}
                       onChange={this.handleFieldChange.bind(this, 'server')}
                       value={this.user.server}
+                      autoComplete="off"
                     />
                     {switchUserBtn}
                   </div>
@@ -354,6 +355,7 @@ const Login = React.createClass({
                     floatingLabelText={Lang.login.account}
                     value={this.user.account}
                     onChange={this.handleFieldChange.bind(this, 'account')}
+                    autoComplete="off"
                   /></div>
                   <div><TextField
                     name="password"
@@ -362,6 +364,7 @@ const Login = React.createClass({
                     floatingLabelText={Lang.login.password}
                     value={this.user.password}
                     onChange={this.handleFieldChange.bind(this, 'password')}
+                    autoComplete="off"
                     type="password"
                   /></div>
                   <div style={STYLE.submit}><FlatButton fullWidth={true} label={this.state.logining ? Lang.login.logining : Lang.login.login} primary={true} disabled={!this.state.submitable || this.state.logining} onClick={this.handleSubmitClick} style={{display: 'block', width: '100%'}} backgroundColor={Theme.color.pale2} /></div>

@@ -13,6 +13,7 @@ import {
 import Theme                         from 'Theme';
 import Emojione                      from 'Components/emojione';
 import Helper                        from 'Helper';
+import App                           from 'App';
 
 const AtomicComponent = props => {
     const key = props.block.getEntityAt(0)
@@ -25,7 +26,7 @@ const AtomicComponent = props => {
         const data = entity.getData();
         return <img
             className="draft-editor-image"
-            src={data.src}
+            src={App.makeLocalFileUrl(data.src)}
             alt={data.alt || ''}
         />;
     } else if(type === 'emoji') {
@@ -225,7 +226,7 @@ class DraftEditor extends Component {
             <Editor
                 ref={e => {this.editor = e;}}
                 placeholder={placeholder}
-                editorState={this.state.editorState} 
+                editorState={this.state.editorState}
                 onChange={this.onChange.bind(this)}
                 handleKeyCommand={this.handleKeyCommand.bind(this)}
                 handleReturn={this.handleReturn.bind(this)}

@@ -35,7 +35,7 @@ const About = React.createClass({
 
         return <div {...other} style={style}>
           <div className='text-center'>
-            <div style={STYLE.logo}><img src='img/logo.png' /></div>
+            <div style={STYLE.logo}><img src={App.config.imagesResourcePath + 'logo.png'} /></div>
             <BuildInfo style={{fontSize: '12px'}}/>
             <br/><br/>
             <FlatButton onClick={e => {

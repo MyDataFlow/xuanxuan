@@ -31,7 +31,7 @@ const ImageMessage = React.createClass({
         let image = message.imageContent;
         if(image && this.state.imageState === 'ok') {
             let imagePath = Path.join(App.user.imagesPath, image.name);
-            App.popupContextMenu(App.createContextMenu([
+            let menuConfig = [
             {
                 label: Lang.common.preview,
                 click: () => {
@@ -62,13 +62,17 @@ const ImageMessage = React.createClass({
                         }
                     });
                 }
-            }, {
-                label: Lang.menu.copyImage,
-                click: () => {
-                    let image = App.createImageFromPath(imagePath);
-                    App.copyImageToClipboard(image);
-                }
-            }]), e);
+            }];
+            if(!App.config.clipboardNotSupportImageType) {
+                menuConfig.push({
+                    label: Lang.menu.copyImage,
+                    click: () => {
+                        let image = App.createImageFromPath(imagePath);
+                        App.copyImageToClipboard(image);
+                    }
+                });
+            }
+            App.popupContextMenu(App.createContextMenu(menuConfig), e);
         }
     },
 

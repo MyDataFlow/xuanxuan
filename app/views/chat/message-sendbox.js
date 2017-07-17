@@ -31,6 +31,7 @@ import Emojione            from '../components/emojione';
  * React component: MessageSendbox
  */
 const MessageSendbox = React.createClass({
+
     getInitialState() {
         return {
             expand: true,
@@ -316,11 +317,11 @@ const MessageSendbox = React.createClass({
                     <FileIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
-              <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z') + ')'}>
+              {App.config.screenCaptureDisabled ? null : <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z') + ')'}>
                 <IconButton onClick={this._handleCaptureScreen} onContextMenu={this._openCaptureScreenContextMenu}>
                     <CutIcon className="rotate-270" color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
-              </div>
+              </div>}
               <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.changeFontSize} ref={e => this.changeFontSizeBtn = e}>
                 <IconButton onClick={this._handleChangeFontSize}>
                     <FontSizeIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
