@@ -475,7 +475,9 @@ const Helper = {
      */
     get guid() {
         return _guid++;
-    }
+    },
+
+    runtimeId: new Date().getTime()
 };
 
 global.Helper = Helper;
