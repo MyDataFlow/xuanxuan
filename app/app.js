@@ -441,7 +441,7 @@ class App extends AppBase {
     }
 
     getDesktopCaptureSources(options, callback) {
-        desktopCapturer.getSources(options, callback);
+        return desktopCapturer.getSources(options, callback);
     }
 
     getPrimaryDisplay() {
@@ -457,19 +457,19 @@ class App extends AppBase {
     }
 
     getImageFromClipboard() {
-        clipboard.readImage();
+        return clipboard.readImage();
     }
 
     copyImageToClipboard(image) {
-        clipboard.saveImage(image);
+        return clipboard.saveImage(image);
     }
 
     openFileItem(file) {
-        shell.openItem(file);
+        return shell.openItem(file);
     }
 
     showItemInFolder(file) {
-        shell.showItemInFolder(file);
+        return shell.showItemInFolder(file);
     }
 }
 
