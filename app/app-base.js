@@ -466,11 +466,11 @@ class AppBase extends ReadyNotifier {
         let userDataPath = Path.join(this.userDataPath, 'users/' + user.identify);
         user.dataPath = userDataPath;
         return Helper.tryMkdirp(userDataPath).then(() => {
-            return Promise.all([
-                Helper.tryMkdirp(Path.join(userDataPath, 'temp/')),
-                Helper.tryMkdirp(Path.join(userDataPath, 'images/')),
-                Helper.tryMkdirp(Path.join(userDataPath, 'files/'))
-            ]);
+            return Helper.tryMkdirp(Path.join(userDataPath, 'temp/')).then(() => {
+                return Helper.tryMkdirp(Path.join(userDataPath, 'images/')).then(() => {
+                    return Helper.tryMkdirp(Path.join(userDataPath, 'files/'));
+                });
+            });
         });
     }
 

@@ -43,7 +43,8 @@ export default validate({
         Components: 'views/components',
         Views: 'views',
         Utils: 'utils',
-        Models: 'models'
+        Models: 'models',
+        WebSocket: 'ws'
     },
     root: path.join(__dirname, 'app')
   },

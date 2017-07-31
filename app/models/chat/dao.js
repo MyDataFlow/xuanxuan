@@ -79,7 +79,7 @@ class Dao {
      */
     getChat(gid, includeHiddenItem = false, ignoreMessage = false) {
         let chat = this.chats[gid];
-        if(!chat) {
+        if(!chat && gid) {
             if(gid.indexOf('&') > -1) {
                 let members = gid.split('&').map(x => Number.parseInt(x));
                 chat = new Chat({
@@ -221,7 +221,7 @@ class Dao {
             if(!message.sender) message.sender = this.$dao.getMember(message.user, true);
 
             if(ignoreDuplicate && (
-               (message.contentType === 'image' && message.imageContent.send === 0) 
+               (message.contentType === 'image' && message.imageContent.send === 0)
                || (message.contentType === 'file' && message.fileContent.send === 0)
                )) {
                 return;

@@ -66,7 +66,7 @@ class DAO {
     /**
      * Set inner values
      * @param {String|Object} key
-     * @param {Any} val 
+     * @param {Any} val
      */
     $set(key, val) {
         if(typeof(key) === 'object') {
@@ -93,14 +93,14 @@ class DAO {
         let dbName = this.user.identify;
 
         this.db = new PouchDB(dbName, {
-            adapter: 'websql',
+            adapter: 'idb',
             auto_compaction: true
         });
 
         let rebuildDb = (callback) => {
             this.db.destroy().then(() => {
                 this.db = new PouchDB(dbName, {
-                    adapter: 'websql',
+                    adapter: 'idb',
                     auto_compaction: true
                 });
                 this.db.put({_id: '_local/config', version: DAO.version});
@@ -186,7 +186,7 @@ class DAO {
     all(entityName, options) {
         return new Promise((resolve, reject) => {
             this.db.allDocs(Object.assign({
-                include_docs: true, 
+                include_docs: true,
                 startkey: entityName + '/',
                 endkey: entityName + '/\uffff',
             }, options)).then(data => {
