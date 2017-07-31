@@ -3,6 +3,7 @@ import Theme         from '../theme';
 import Avatar        from 'material-ui/Avatar';
 import PersonIcon    from 'material-ui/svg-icons/social/person';
 import Helper        from 'Helper';
+import App           from 'App';
 
 function getCodeFromString(str) {
     return str.split('')
@@ -67,21 +68,11 @@ const UserAvatar = React.createClass({
 
         if(user) {
             if(user.avatar && !src) {
-                if(Helper.isOSX) {
-                    if(this.state && this.state.src) {
-                        src = this.state.src;
-                    } else {
-                        setTimeout(() => {
-                            this.downloadLocalPath();
-                        }, 50);
-                    }
-                } else {
-                    src = user.avatar;
-                }
+                src = user.avatar;
             }
             if(src) {
-                if(Helper.isOSX) src += '?v=' + Helper.guid;
-                return <Avatar className='user-avatar' size={size} src={src} {...other} style={Object.assign({backgroundColor: '#eee'}, style)}/>;
+                if(Helper.isOSX) src += '?v=' + Helper.runtimeId;
+                return <Avatar className='user-avatar' size={size} src={App.makeLocalFileUrl(src)} {...other} style={Object.assign({backgroundColor: '#eee'}, style)}/>;
             } else {
                 let displayName = user.displayName || user.account || user.realname;
                 if(displayName) {

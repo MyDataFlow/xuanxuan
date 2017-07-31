@@ -30,7 +30,7 @@ import UserStatus       from './chat/user-status';
 import Theme            from '../theme';
 import Lang             from '../lang';
 import R                from '../resource';
-import App              from '../app';
+import App              from 'App';
 import {USER_STATUS}    from 'Models/user';
 
 const userStatus = [
@@ -249,7 +249,7 @@ const Navbar = React.createClass({
         let userAvatar = <UserAvatar user={this.state.user} style={STYLE.avatar} size={36}/>;
         let navbarStyle = Object.assign({}, STYLE.navbar);
         let menu = this.state.menu ? <UserMenu user={this.state.user} onClickAway={this.hideMenu} style={!isAvatarOnTop ? {top: 'auto', bottom: 0} : null}/> : null;
-        let userAvatarItem = <ListItem 
+        let userAvatarItem = <ListItem
             className='item hint--right'
             key='user-info'
             data-hint={userDisplayName + ' [' + Lang.user.status[USER_STATUS.getName(this.state.user.status)] + ']'}
@@ -308,7 +308,7 @@ const Navbar = React.createClass({
             }
             </List>
             <List className='list navbar-footer dock-bottom' style={STYLE.list}>
-              {isAvatarOnTop ? <ListItem data-hint={Lang.common.settings} className="item hint--right" key='setting' leftIcon={<SettingIcon className='icon' style={STYLE.icon}/>} primaryText='&nbsp;' onClick={that.handleSettingBtnClick} style={STYLE.navItem}/> : null} 
+              {isAvatarOnTop ? <ListItem data-hint={Lang.common.settings} className="item hint--right" key='setting' leftIcon={<SettingIcon className='icon' style={STYLE.icon}/>} primaryText='&nbsp;' onClick={that.handleSettingBtnClick} style={STYLE.navItem}/> : null}
               {!isAvatarOnTop ? userAvatarItem : null}
             </List>
           </div>

@@ -19,13 +19,13 @@ import {User}              from '../models/entities';
 import R                   from '../resource';
 import BuildInfo           from './misc/build-info';
 import Theme               from '../theme';
-import App                 from '../app';
+import App                 from 'App';
 import Lang                from 'Lang';
 import Helper              from 'Helper';
 
 const STYLE = {
     login: {
-        left: '-100%', 
+        left: '-100%',
         backgroundColor: Theme.palette.primary1Color,
         width: '100%',
     },
@@ -146,16 +146,16 @@ const SwapUser = React.createClass({
                 } else if(actived) {
                     rightIcon = <CheckIcon color={Theme.color.positive}/>;
                 }
-                return <ListItem 
-                    onMouseLeave={this._handleItemMouseLeave} 
-                    onMouseEnter={this._handleItemMouseEnter.bind(this, key)} 
-                    activeColor={Theme.color.pale1} 
-                    onClick={this._handUserSelect.bind(this, user)} 
-                    key={key} 
-                    actived={actived} 
-                    primaryText={primaryText} 
-                    secondaryText={user.server} 
-                    leftAvatar={<UserAvatar user={user} />} 
+                return <ListItem
+                    onMouseLeave={this._handleItemMouseLeave}
+                    onMouseEnter={this._handleItemMouseEnter.bind(this, key)}
+                    activeColor={Theme.color.pale1}
+                    onClick={this._handUserSelect.bind(this, user)}
+                    key={key}
+                    actived={actived}
+                    primaryText={primaryText}
+                    secondaryText={user.server}
+                    leftAvatar={<UserAvatar user={user} />}
                     rightIcon={rightIcon}/>
             })
         }
@@ -189,7 +189,7 @@ const Login = React.createClass({
         this.loginTimeoutCheck = setTimeout(() => {
             if(this.state.logining) {
                 this.setState({
-                    logining: false, 
+                    logining: false,
                     message: Lang.login.loginTimeout,
                     messageColor: Colors.red500
                 });
@@ -208,8 +208,8 @@ const Login = React.createClass({
             this.user.account = user.account;
             this.user.password = user.password;
         }
-        let submitable = Helper.isNotEmptyString(this.user.server) 
-            && Helper.isNotEmptyString(this.user.account) 
+        let submitable = Helper.isNotEmptyString(this.user.server)
+            && Helper.isNotEmptyString(this.user.account)
             && Helper.isNotEmptyString(this.user.password);
         this.setState({
             submitable,
@@ -249,8 +249,8 @@ const Login = React.createClass({
             displayed: false
         });
         this._setUser({
-            server:  appUser.server, 
-            account:  appUser.account, 
+            server:  appUser.server,
+            account:  appUser.account,
             password: appUser.password
         });
     },
@@ -312,9 +312,9 @@ const Login = React.createClass({
     },
 
     componentWillUnmount() {
-        App.off(this._handleUserLoginBeginEvent, 
-                this._handleUserLoginFinishEvent, 
-                this._handleUserStatusChangeEvent, 
+        App.off(this._handleUserLoginBeginEvent,
+                this._handleUserLoginFinishEvent,
+                this._handleUserStatusChangeEvent,
                 this._handleSocketCloseEvent);
         this.granim.clear();
     },
@@ -329,7 +329,7 @@ const Login = React.createClass({
           <canvas id="loginBgCanvas" className="dock-full" style={STYLE.canvas} width={window.innerWidth} height={window.innerWidth}></canvas>
           <div style={STYLE.container}>
             <header style={STYLE.header}>
-              <div style={STYLE.logo}><img src='img/logo-inverse.png' /></div>
+              <div style={STYLE.logo}><img src={App.config.imagesResourcePath + 'logo-inverse.png'} /></div>
             </header>
             <Paper zDepth={2} style={STYLE.paper}>
                 <Message content={this.state.message} color={this.state.messageColor} style={STYLE.message} />
@@ -343,6 +343,7 @@ const Login = React.createClass({
                       floatingLabelText={Lang.login.address}
                       onChange={this.handleFieldChange.bind(this, 'server')}
                       value={this.user.server}
+                      autoComplete="off"
                     />
                     {switchUserBtn}
                   </div>
@@ -354,6 +355,7 @@ const Login = React.createClass({
                     floatingLabelText={Lang.login.account}
                     value={this.user.account}
                     onChange={this.handleFieldChange.bind(this, 'account')}
+                    autoComplete="off"
                   /></div>
                   <div><TextField
                     name="password"
@@ -362,6 +364,7 @@ const Login = React.createClass({
                     floatingLabelText={Lang.login.password}
                     value={this.user.password}
                     onChange={this.handleFieldChange.bind(this, 'password')}
+                    autoComplete="off"
                     type="password"
                   /></div>
                   <div style={STYLE.submit}><FlatButton fullWidth={true} label={this.state.logining ? Lang.login.logining : Lang.login.login} primary={true} disabled={!this.state.submitable || this.state.logining} onClick={this.handleSubmitClick} style={{display: 'block', width: '100%'}} backgroundColor={Theme.color.pale2} /></div>

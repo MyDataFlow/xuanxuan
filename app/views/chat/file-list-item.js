@@ -15,16 +15,15 @@ import Avatar              from 'material-ui/Avatar';
 import IconButton          from 'material-ui/IconButton';
 import RefreshIcon         from 'material-ui/svg-icons/navigation/refresh';
 import DeleteIcon          from 'material-ui/svg-icons/action/delete';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import Messager            from '../components/messager';
 import R                   from '../../resource';
 import UserAvatar          from '../user-avatar';
 import Moment              from 'moment';
-import {shell as Shell}    from 'electron';
 import Helper              from 'Helper';
 
 const FileListItem = React.createClass({
-    
+
     getInitialState() {
         return {
             fileState: null, // null(need check), upload, download, ok, ready, fail, failForResend
@@ -106,13 +105,13 @@ const FileListItem = React.createClass({
 
     _handOnOpenFolderBtnClick() {
         if(this.state.fileState === 'ready' && this.filePath) {
-            Shell.showItemInFolder(this.filePath);
+            App.showItemInFolder(this.filePath);
         }
     },
 
     _handOnOpenFileBtnClick() {
         if(this.state.fileState === 'ready' && this.filePath) {
-            Shell.openItem(this.filePath);
+            App.openFileItem(this.filePath);
         }
     },
 

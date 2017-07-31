@@ -147,9 +147,9 @@ class ChatApp extends AppCore {
                             pager.isFetchOver = pager.pageID * pager.recPerPage >= pager.recTotal;
                             if(pager.continued && !pager.isFetchOver) {
                                 this.getChatHistory(pager.gid, {
-                                    recPerPage: pager.recPerPage, 
-                                    pageID: pager.pageID + 1, 
-                                    recTotal: pager.recTotal, 
+                                    recPerPage: pager.recPerPage,
+                                    pageID: pager.pageID + 1,
+                                    recTotal: pager.recTotal,
                                     continued: true
                                 });
                             }
@@ -414,7 +414,7 @@ class ChatApp extends AppCore {
         this.socket.send(this.socket.createSocketMessage({
             'method': 'create',
             'params': [
-                chat.gid, 
+                chat.gid,
                 chat.name || '',
                 chat.type,
                 chat.members,
@@ -924,9 +924,9 @@ class ChatApp extends AppCore {
      */
     getChatHistory(chat, options) {
         options = Object.assign({
-            recPerPage: 20, 
-            pageID: 1, 
-            recTotal: 0, 
+            recPerPage: 20,
+            pageID: 1,
+            recTotal: 0,
             continued: true
         }, options);
         let cgid = chat.gid || chat;
@@ -1019,7 +1019,7 @@ class ChatApp extends AppCore {
                     this.rename(this.dao.getChat(message.cgid), command.name);
                 }, 500);
             } else if(command.action === 'version') {
-                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
+                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''}${App.config.specialVersion ? (' for ' + App.config.specialVersion) : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
             }
         }
         this.sendChatMessage(message, chat);
@@ -1147,7 +1147,7 @@ class ChatApp extends AppCore {
         message.fileContent = Object.assign(message.fileContent, {send: 0});
         message.date = new Date().getTime();
         this.$app.emit(R.event.data_change, {chats: [chat]});
-        
+
         this.$app.uploadFile(file, {gid: message.cgid}).then(f => {
             message.fileContent = Object.assign(message.fileContent, f, {send: true});
             this.sendChatMessage(message, chat);
@@ -1176,7 +1176,7 @@ class ChatApp extends AppCore {
         });
 
         chat.addMessage(message);
-        
+
         this.uploadMessageFile(message, chat, reject);
     }
 

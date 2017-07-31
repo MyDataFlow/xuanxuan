@@ -1,7 +1,7 @@
 import React               from 'react';
 import Theme               from '../../theme';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import RadioButtonGroup    from 'material-ui/RadioButton/RadioButtonGroup';
 import RadioButton         from 'material-ui/RadioButton/RadioButton';
 import Checkbox            from 'material-ui/Checkbox';
@@ -32,7 +32,7 @@ const ConfirmCloseWindow = React.createClass({
             this.remember = false;
             onOptionChange && onOptionChange({option: this.option, remember: this.remember});
         }
-        
+
         return <div {...other} style={style}>
           <RadioButtonGroup name="confirmCloseWindow" defaultSelected={this.option} onChange={this._onOptionsChange} style={{marginBottom:32}}>
           {

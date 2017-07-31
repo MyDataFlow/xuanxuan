@@ -1,6 +1,6 @@
 import Entity from '../entity';
 import UUID   from 'uuid';
-import Emojione  from '../../views/components/emojione';
+import Emojione from 'Components/emojione';
 
 const Helper = global.Helper;
 
@@ -137,7 +137,7 @@ class Message extends Entity {
             if(content.length > 8 && content.startsWith('$$name=')) {
                 return {action: 'rename', name: content.substr(7)};
             } else if(content === '$$version') {
-                this.content = '```\n$$version = ' +  + ';\n```'
+                this.content = '```\n$$version = ?;\n```'
                 return {action: 'version'};
             }
         }

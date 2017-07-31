@@ -1,7 +1,7 @@
 import React               from 'react';
 import Theme               from '../../theme';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import FlatButton          from 'material-ui/FlatButton';
 import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 
@@ -61,7 +61,7 @@ const MessageTip = React.createClass({
             <li>拖拽图片和文件到消息框来发送；</li>
             <li>使用 Markdown 语法来发送富文本；</li>
             <li>你可以直接粘贴剪切板中的图片进行发送；</li>
-            <li>从截图按钮右键菜单上使用截图高级功能；</li>
+            {App.config.screenCaptureDisabled ? null : <li>从截图按钮右键菜单上使用截图高级功能；</li>}
             <li>发送 “<strong>$$name=会话名称</strong>” 来为多人会话重命名；</li>
             <li>发送 “<strong>$$version</strong>” 查询当前客户端版本。</li>
           </ul>

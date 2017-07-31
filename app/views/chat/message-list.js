@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import MessageListItem     from './message-list-item';
 import MessageListDivider  from './message-list-divider';
 import Moment              from 'moment';
@@ -51,7 +51,7 @@ const MessageList = React.createClass({
     componentWillUnmount() {
         App.off(this._handleUserConfigChangeEvent);
     },
-    
+
     render() {
         let {
             messages,
@@ -63,7 +63,7 @@ const MessageList = React.createClass({
         } = this.props;
 
         style = Object.assign({}, STYLE.main, style);
-        
+
         let list = [];
         if(messages) {
             let lastMessage, lastMomentMessageDate;

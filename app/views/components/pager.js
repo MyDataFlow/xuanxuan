@@ -4,7 +4,7 @@ import Theme               from '../../theme';
 import IconButton          from 'material-ui/IconButton';
 import LeftIcon            from 'material-ui/svg-icons/navigation/chevron-left';
 import RightIcon           from 'material-ui/svg-icons/navigation/chevron-right';
-import {Lang}              from '../../app';
+import {Lang}              from 'App';
 
 const Pager = React.createClass({
     mixins: [PureRenderMixin],
@@ -28,7 +28,7 @@ const Pager = React.createClass({
             this.props.onPageChange(this.props.page + 1);
         }
     },
-    
+
     render() {
         let STYLE = {
             btn: {

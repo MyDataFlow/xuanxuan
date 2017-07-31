@@ -1,5 +1,5 @@
 import RecordRTC                     from "recordrtc";
-import electron, { desktopCapturer } from "electron";
+import App                           from 'App';
 
 /* This is NEEDED because RecordRTC is badly written */
 global.html2canvas = (canvas, obj) => {
@@ -8,14 +8,14 @@ global.html2canvas = (canvas, obj) => {
 
 const getStream = sourceId => {
     return new Promise((resolve, reject) => {
-        desktopCapturer.getSources({ types: ['screen'] }, (error, sources) => {
+        App.getDesktopCaptureSources({ types: ['screen'] }, (error, sources) => {
             if (error) {
                 reject(error);
                 return;
             }
 
             const display = getDisplay(sourceId);
-            const displayIndex = electron.screen.getAllDisplays().findIndex(item => item.id === sourceId);
+            const displayIndex = App.getAllDisplays().findIndex(item => item.id === sourceId);
 
             navigator.webkitGetUserMedia({
                 audio: false,
@@ -61,8 +61,8 @@ const getFrameImage = canvas => {
 };
 
 const getDisplay = id => {
-    if(id) return electron.screen.getAllDisplays().find(item => item.id === id);
-    else return electron.screen.getPrimaryDisplay();
+    if(id) return App.getAllDisplays().find(item => item.id === id);
+    else return App.getPrimaryDisplay();
 };
 
 const getLoop = fn => {
@@ -122,7 +122,7 @@ const takeScreenshot = ({ x = 0, y = 0, width = 0, height = 0, sourceId = 0 }) =
 
 const takeAllScreenshots = (options) => {
     if(!options) {
-        options = electron.screen.getAllDisplays().map(item => {
+        options = App.getAllDisplays().map(item => {
             return {
                 x: 0,
                 y: 0,

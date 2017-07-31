@@ -71,6 +71,8 @@ http://xuan.im
 
 执行 `npm run package` 进行客户端打包。
 
+详情请参考：[客户端开发者指南](https://github.com/easysoft/xuanxuan/blob/master/doc/client-developer.md)
+
 ## 许可证
 
 喧喧使用 [ZPL](https://github.com/easysoft/xuanxuan/blob/master/LICENSE) 开源许可证，另外还使用了如下开源项目：

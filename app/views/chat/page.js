@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import Menu                from './menu';
 import NewChatWindow       from './newchat';
 import ContactsWindow      from '../contacts/contacts';
@@ -14,7 +14,7 @@ import R                   from '../../resource';
  */
 const Page = React.createClass({
     mixins: [CacheContents],
-    
+
     getInitialState() {
         return {
             chatGid: App.user.getConfig('ui.chat.activeChat')

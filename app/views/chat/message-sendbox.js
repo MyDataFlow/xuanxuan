@@ -1,7 +1,6 @@
-import {clipboard}         from 'electron';
 import React               from 'react';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import MessageListItem     from './message-list-item';
 import MessageListDivider  from './message-list-divider';
 import MessageTip          from './message-tip';
@@ -26,11 +25,13 @@ import R                   from 'Resource';
 import ShortcutField       from '../components/shortcut-field';
 import EmojiPicker         from 'emojione-picker';
 import ChangeFontSize      from 'Views/chat/change-font-size';
+import Emojione            from '../components/emojione';
 
 /**
  * React component: MessageSendbox
  */
 const MessageSendbox = React.createClass({
+
     getInitialState() {
         return {
             expand: true,
@@ -67,7 +68,7 @@ const MessageSendbox = React.createClass({
     _handleEmoticonClick(e) {
         const enableSearchInEmojionePicker = App.user.getConfig('ui.chat.enableSearchInEmojionePicker');
         Popover.toggle({
-            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} search={enableSearchInEmojionePicker ? true : undefined} searchPlaceholder={enableSearchInEmojionePicker ? Lang.common.search : undefined} emojione={{imagePathPNG: './assets/emojione/png/', imageType: 'png'}} onChange={data => {
+            getLazyContent: () => <EmojiPicker categories={Lang.emojioneCategories} style={{height: 260}} search={enableSearchInEmojionePicker ? true : undefined} searchPlaceholder={enableSearchInEmojionePicker ? Lang.common.search : undefined} emojione={{imagePathPNG: Emojione.imagePathPNG, imageType: Emojione.imageType}} onChange={data => {
                 this._handleEmoticonSelect(data);
             }} />,
             contentId: 'chat-' + this.props.chatId,
@@ -102,7 +103,7 @@ const MessageSendbox = React.createClass({
 
     _handleOnPaste(e) {
         if(!e || App.chat.activeChatWindow !== this.props.chatId) return;
-        let imageFile = clipboard.readImage();
+        let imageFile = App.getImageFromClipboard();
         let imageFileSize = imageFile.getSize();
         if(imageFileSize && imageFileSize.width * imageFileSize.height > 0) {
             let filename = UUID.v4() + '.png';
@@ -288,7 +289,7 @@ const MessageSendbox = React.createClass({
         } = this.props;
 
         style = Object.assign({}, STYLE.main, style);
-    
+
         return <div {...other} style={style}>
             <DraftEditor className="dock-full"
               ref={e => {this.editbox = e;}}
@@ -316,11 +317,11 @@ const MessageSendbox = React.createClass({
                     <FileIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
-              <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z') + ')'}>
+              {App.config.screenCaptureDisabled ? null : <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.captureScreen + ' (' + App.user.getConfig('shortcut.captureScreen', 'Ctrl+Alt+Z') + ')'}>
                 <IconButton onClick={this._handleCaptureScreen} onContextMenu={this._openCaptureScreenContextMenu}>
                     <CutIcon className="rotate-270" color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
-              </div>
+              </div>}
               <div style={STYLE.fileButtonWrapper} className="hint--top" data-hint={Lang.chat.changeFontSize} ref={e => this.changeFontSizeBtn = e}>
                 <IconButton onClick={this._handleChangeFontSize}>
                     <FontSizeIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>

@@ -35,14 +35,14 @@ class Socket extends ReadyNotifier {
         super();
 
         this.pingInterval = 1000 * 60 * 5;
-        this.app    = app;
-        this.user   = user;
-        this.emiter = app;
-        this.host   = this.user.classicApiHost;
-        this.port   = this.user.classicApiPort;
+        this.app          = app;
+        this.user         = user;
+        this.emiter       = app;
+        this.host         = this.user.classicApiHost;
+        this.port         = this.user.classicApiPort;
         this.lastHandTime = 0;
-        this.lastOkTime = 0;
-        this.client = user.isNewApi ? new WebSocket(user.socketUrl) : new Net.Socket();
+        this.lastOkTime   = 0;
+        this.client       = user.isNewApi ? new WebSocket(user.socketUrl) : new Net.Socket();
 
         this._initHandlers();
         this.userStatusChangeEvent = this.app.on(R.event.user_status_change, status => {

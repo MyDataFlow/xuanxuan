@@ -8,14 +8,14 @@ import Login                from './login';
 import Hotkey               from './mixins/hotkey';
 import Messager             from './components/messager';
 import R                    from '../resource';
-import App                  from '../app';
+import App                  from 'App';
 
 EnhancedButton.defaultProps.disableTouchRipple = true;
 EnhancedButton.defaultProps.disableFocusRipple = true;
 
 const STYLE = {
     app: {
-        transition: Theme.transition.long('left'), 
+        transition: Theme.transition.long('left'),
         width: '100%',
         color: Theme.color.text
     }

@@ -1,7 +1,7 @@
 import React               from 'react';
 import ReactDOM            from 'react-dom';
 import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import Chat                from '../../models/chat/chat';
 import Message             from '../../models/chat/chat-message';
 import Member              from '../../models/member';
@@ -207,7 +207,7 @@ const ChatPage = React.createClass({
             sendbox.clearContent();
             sendbox.focusInputArea();
         }
-        
+
         this.setState({chat});
         this.messageList.scrollToBottom();
     },
@@ -347,7 +347,7 @@ const ChatPage = React.createClass({
         const STYLE = {
             main: {},
             header: {
-              borderBottom: '1px solid ' + Theme.color.border, 
+              borderBottom: '1px solid ' + Theme.color.border,
               padding: '10px 0 10px 48px',
               lineHeight: '28px',
               backgroundColor: Theme.color.pale2,
@@ -401,7 +401,7 @@ const ChatPage = React.createClass({
                 fontSize: '13px'
             }
         };
-        
+
         let {
             style,
             chatId,
@@ -431,7 +431,7 @@ const ChatPage = React.createClass({
 
         let ChatStarIcon = chat.star ? StarIcon : StarBorderIcon;
         let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.isSystem ? <ComtentTextIcon color={Colors.indigo500} style={STYLE.headerIcon}/> : chat.public ? <PoundIcon color={Colors.lightGreen700} style={STYLE.headerIcon}/> : <ChatsIcon color={Colors.lightBlue500} style={STYLE.headerIcon}/>;
-        
+
         let theOtherOne = chat.getTheOtherOne(App.user);
         let chatTitle = theOtherOne ? <a className="link-app" href={'#Member/' + theOtherOne.id} title={'@' + theOtherOne.displayName} ><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</a> : chat.getDisplayName(App);
 

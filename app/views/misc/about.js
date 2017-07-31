@@ -1,10 +1,9 @@
 import React               from 'react';
 import Theme               from '../../theme';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import BuildInfo           from './build-info';
 import FlatButton          from 'material-ui/FlatButton';
-import {shell}             from 'electron';
 import Helper              from 'Helper';
 import PKG                 from '../../package.json';
 
@@ -22,7 +21,7 @@ const About = React.createClass({
                 margin: '0 auto 20px'
             },
             btnLabel: {
-                textTransform: 'none', 
+                textTransform: 'none',
                 fontWeight: 'normal'
             }
         };
@@ -36,23 +35,23 @@ const About = React.createClass({
 
         return <div {...other} style={style}>
           <div className='text-center'>
-            <div style={STYLE.logo}><img src='img/logo.png' /></div>
+            <div style={STYLE.logo}><img src={App.config.imagesResourcePath + 'logo.png'} /></div>
             <BuildInfo style={{fontSize: '12px'}}/>
             <br/><br/>
             <FlatButton onClick={e => {
-                shell.openExternal(PKG.homepage);
+                App.openExternal(PKG.homepage);
             }} label={PKG.homepage} primary={true} labelStyle={{textTransform: 'none'}} />
             <br/>
             <FlatButton onClick={e => {
-                shell.openExternal('https://github.com/easysoft/xuanxuan/blob/master/LICENSE');
+                App.openExternal('https://github.com/easysoft/xuanxuan/blob/master/LICENSE');
             }} label={`Open source license ${PKG.license}`} labelStyle={STYLE.btnLabel} />
             <br/>
             <FlatButton onClick={e => {
-                shell.openExternal('http://cnezsoft.com/');
+                App.openExternal('http://cnezsoft.com/');
             }} label={Lang.common.copyrightFormat.format({year: new Date().getFullYear(), name: PKG.company})} labelStyle={STYLE.btnLabel} />
             <br/>
             <FlatButton onClick={e => {
-                shell.openExternal('http://emojione.com/');
+                App.openExternal('http://emojione.com/');
             }} label="Emoji provided free by EmojiOne" labelStyle={STYLE.btnLabel} />
             <br/>
           </div>

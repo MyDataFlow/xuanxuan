@@ -6,7 +6,7 @@ import PeopleIcon          from 'material-ui/svg-icons/social/people';
 import VisibilityOffIcon   from 'material-ui/svg-icons/action/visibility-off';
 import ChevronRightIcon    from 'material-ui/svg-icons/navigation/chevron-right';
 import CloudDownloadIcon   from 'material-ui/svg-icons/file/cloud-download';
-import {App, Lang, Config} from '../../app';
+import {App, Lang, Config} from 'App';
 import ChatsIcon           from '../icons/comments-outline';
 import ComtentTextIcon     from '../icons/comment-text';
 import PoundIcon           from '../icons/pound-box';
@@ -166,7 +166,7 @@ const ChatsManager = React.createClass({
                 left: 240
             },
             historyHeader: {
-                borderBottom: '1px solid ' + Theme.color.border, 
+                borderBottom: '1px solid ' + Theme.color.border,
                 padding: '10px 15px 10px 50px',
                 lineHeight: '28px',
                 height: 28,

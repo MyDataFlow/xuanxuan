@@ -176,15 +176,17 @@ class UserSettingView extends Component {
               </div>
             </div>
           </section>
-          <section>
-            <header style={STYLE.header}>{Lang.settings.shortcuts}</header>
-            <div style={STYLE.body}>
-              <div className="clearfix" style={{marginTop: -10}}>
-                <div className="pull-left" style={{marginTop: 14}}>{Lang.settings.globalCaptureScreen}</div>
-                <ShortcutField ref={e => this.globalShortcutField = e} className="pull-left" fullWidth={true} value={this.state.config['shortcut.captureScreen'] || 'Ctrl+Alt+Z'} checkGlobal={true} onChange={newShortcut => this.changeConfig('shortcut.captureScreen', newShortcut)} style={{width: 150, marginLeft: 24}}/>
-              </div>
-            </div>
-          </section>
+          {
+            App.config.screenCaptureDisabled ? null : <section>
+                <header style={STYLE.header}>{Lang.settings.shortcuts}</header>
+                <div style={STYLE.body}>
+                <div className="clearfix" style={{marginTop: -10}}>
+                    <div className="pull-left" style={{marginTop: 14}}>{Lang.settings.globalCaptureScreen}</div>
+                    <ShortcutField ref={e => this.globalShortcutField = e} className="pull-left" fullWidth={true} value={this.state.config['shortcut.captureScreen'] || 'Ctrl+Alt+Z'} checkGlobal={true} onChange={newShortcut => this.changeConfig('shortcut.captureScreen', newShortcut)} style={{width: 150, marginLeft: 24}}/>
+                </div>
+                </div>
+            </section>
+          }
         </div>;
     }
 }

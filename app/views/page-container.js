@@ -1,6 +1,6 @@
 import React               from 'react';
 import Theme               from '../theme';
-import {App, Lang, Config} from '../app';
+import {App, Lang, Config} from 'App';
 import ChatPage            from './chat/page';
 import ContactsPage        from './contacts/contacts';
 import CacheContents       from './mixins/cache-contents';
@@ -69,7 +69,7 @@ const PageContianer = React.createClass({
 
     render() {
         return (
-          <div {...this.props} 
+          <div {...this.props}
             className="page-container dock-full"
             style={{left: 50}}>
             {this.renderCacheContents()}
