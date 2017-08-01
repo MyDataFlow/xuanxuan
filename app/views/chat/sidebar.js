@@ -112,7 +112,8 @@ const ChatSidebar = React.createClass({
 
     _handleMemberItemContextMenu(member, e) {
         e.preventDefault();
-        App.popupContextMenu(App.chat.createChatMemberContextMenu(this.props.chat, member), e);
+        this.contextMenu = App.chat.createChatMemberContextMenu(this.props.chat, member);
+        App.popupContextMenu(this.contextMenu, e);
     },
 
     _memberItemCreator(member) {

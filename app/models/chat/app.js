@@ -1139,6 +1139,7 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     uploadMessageFile(message, chat, reject) {
+        console.log('uploadMessageFile', message, chat, reject);
         if(!chat) chat = this.dao.getChat(message.cgid);
         if(!chat) return false;
         let file = message.attachFile;

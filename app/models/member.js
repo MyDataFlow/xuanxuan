@@ -186,7 +186,7 @@ class Member extends Entity {
      * Sort members
      * @param  {array}         members
      * @param  {array|string}  orders
-     * @param  {object}        app    
+     * @param  {object}        app
      * @return {array}
      */
     static sort(members, orders, app) {
@@ -195,7 +195,7 @@ class Member extends Entity {
         } else if(typeof orders === 'string') {
             orders = orders.split(' ');
         }
-        const isFinalInverse = false;
+        let isFinalInverse = false;
         if(orders[0] === '-' || orders[0] === -1) {
             isFinalInverse = true;
             orders.shift();

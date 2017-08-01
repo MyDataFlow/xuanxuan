@@ -429,7 +429,7 @@ class Chat extends Entity {
     }
 
     /**
-     * Add a member as 
+     * Add a member as
      */
     addAdmin(member) {
         if(!this.admins) {
@@ -587,7 +587,7 @@ class Chat extends Entity {
      * Sort chats
      * @param  {array}         chats
      * @param  {array|string}  orders
-     * @param  {object}        app    
+     * @param  {object}        app
      * @return {array}
      */
     static sort(chats, orders, app) {
@@ -596,7 +596,7 @@ class Chat extends Entity {
         } else if(typeof orders === 'string') {
             orders = orders.split(' ');
         }
-        const isFinalInverse = false;
+        let isFinalInverse = false;
         if(orders[0] === '-' || orders[0] === -1) {
             isFinalInverse = true;
             orders.shift();

@@ -71,9 +71,9 @@ function getJSON(url) {
 
 /**
  * Post request
- * @param  {string} url 
+ * @param  {string} url
  * @param  {data} form
- * @return {Promise}     
+ * @return {Promise}
  */
 function post(url, form) {
     return new Promise((resolve, reject) => {

@@ -9,7 +9,7 @@ import {
     ChatMessage
 }                          from './entities';
 import ReadyNotifier       from './ready-notifier';
-import WebSocket           from 'ws';
+import WebSocket           from 'WebSocket';
 import crypto              from 'crypto';
 import Helper              from 'Helper';
 import Colors              from '../utils/material-colors';
@@ -303,7 +303,7 @@ class Socket extends ReadyNotifier {
                     console.log('encrypted', data);
                     console.log('decrypt', this.decrypt(data));
                     console.groupEnd();
-                } 
+                }
             }
             this.client.send(data, {
                 binary: encryptEnabled
@@ -464,10 +464,10 @@ class Socket extends ReadyNotifier {
                 uploadfile: msg => {
                     if(msg.isSuccess) {
                         let task = this.uploadTasks[msg.data.gid];
-                        
+
                         if(task) {
                             this._emit(R.event.file_upload, task);
-                            
+
                             if(task.isFinish) {
                                 delete this.uploadTasks[msg.data.gid];
                                 if(DEBUG) console.info('FILE UPLOAD FINISH', msg, task);
