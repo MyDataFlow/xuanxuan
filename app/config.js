@@ -174,4 +174,8 @@ class Config extends ReadyNotifier {
 
 const config = new Config();
 
+config.soundPath = 'sound/';
+config.imagesResourcePath = 'img/';
+config.emojioneImagesPath = './assets/emojione/png/';
+
 export default config;
