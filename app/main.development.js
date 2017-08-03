@@ -1,7 +1,7 @@
-import electron, { 
-    app, 
-    BrowserWindow, 
-    Menu, 
+import electron, {
+    app,
+    BrowserWindow,
+    Menu,
     shell
 }                   from 'electron';
 import DEBUG        from './utils/debug';
@@ -66,7 +66,7 @@ const createWindow = () => {
     }
     mainWindow = new BrowserWindow(mainWindowOptions);
 
-    mainWindow.loadURL(`file://${__dirname}/app.html`);
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
 
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.show();
