@@ -84,7 +84,8 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "${productName}-${version}-${os}-${arch}-setup.${ext}"
+      "artifactName": "${productName}-${version}-${os}-${arch}-setup.${ext}",
+      "deleteAppDataOnUninstall": true
     },
     "directories": {
       "buildResources": "resources",
