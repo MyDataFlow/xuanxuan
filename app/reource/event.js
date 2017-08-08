@@ -54,15 +54,4 @@ const event = {
     app_main_window_close: 'app.main_window.close'
 };
 
-const ui = {
-    navbar_chat: 'chat',
-    navbar_contacts: 'contacts',
-    navbar_groups: 'groups',
-    navbar_note: 'note',
-    navbar_apps: 'apps'
-};
-
-const Resource = {event, ui};
-
-export {event as EVENT, ui as UI};
-export default Resource;
+export default event;
