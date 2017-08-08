@@ -2,6 +2,7 @@
  * Application action link object
  */
 class AppActionLink {
+
     constructor(link, event) {
         this.link  = link;
         this.event = event;
