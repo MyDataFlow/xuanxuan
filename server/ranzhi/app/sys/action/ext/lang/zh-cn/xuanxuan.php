@@ -1,3 +1,3 @@
 <?php
-$lang->action->label->loginXuanxuan  = '登录喧喧';
-$lang->action->label->logoutXuanxuan = '退出喧喧';
+$lang->action->label->loginxuanxuan  = '登录喧喧';
+$lang->action->label->logoutxuanxuan = '退出喧喧';
