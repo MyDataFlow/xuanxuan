@@ -142,6 +142,8 @@ if(global.DEBUG) {
             console.group(...formatOutput(args));
         };
     }
+
+    global.$ = {};
 }
 
 export default global.DEBUG;

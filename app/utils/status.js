@@ -14,15 +14,16 @@ class StatusKeeper {
     }
 
     get value() {
-        return this.mapper.getValue(this.value);
+        return this.mapper.getValue(this.status);
     }
 
     change(nameOrValue) {
         const value = this.mapper.getValue(nameOrValue);
-        if(value !== undefined && this.status !== value) {
+        const oldValue = this.value;
+        if(value !== undefined && oldValue !== value) {
             this.status = value;
             if(typeof this.onChange === 'function') {
-                this.onChange(value, this);
+                this.onChange(value, oldValue, this);
             }
         } else if(DEBUG) {
             console.log(`Status '${nameOrValue}' is not a valid value or name.`);
