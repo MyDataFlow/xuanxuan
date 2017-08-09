@@ -7,7 +7,6 @@ import Config             from 'Config';
 import Helper             from 'Utils/helper';
 import R, {EVENT}         from 'Resource';
 import User, {USER_STATUS}from 'Models/user';
-import ReadyNotifier      from 'Models/ready-notifier';
 import API                from 'Models/api';
 import Socket             from 'Models/socket';
 import DAO                from 'Models/dao';
@@ -26,7 +25,7 @@ import UserSettingView    from 'Views/user-settings';
  *
  * Only for renderer process
  */
-class AppBase extends ReadyNotifier {
+class AppBase {
 
     /**
      * Application constructor
@@ -34,16 +33,11 @@ class AppBase extends ReadyNotifier {
     constructor() {
         super();
 
+        document.title = Lang.title;
+
         this.event         = Events;
         this.config        = Config;
         this.lang          = Lang;
-
-        this.config.ready(() => {
-            this.resetUser(this.config.user);
-            this._checkReady();
-        });
-
-        this.config.load(this.userDataPath);
 
         this.$ = {
             chat: new ChatApp(this)
@@ -54,67 +48,6 @@ class AppBase extends ReadyNotifier {
         });
 
         this._initEvents();
-
-        if(window.ion) {
-            window.ion.sound({
-                sounds: [
-                    {name: 'message'}
-                ],
-                multiplay: true,
-                volume: 1,
-                path: this.config.soundPath,
-                preload: true,
-            });
-            if(DEBUG) {
-                console.groupCollapsed('%cSOUND inited', 'display: inline-block; font-size: 10px; color: #689F38; background: #CCFF90; border: 1px solid #CCFF90; padding: 1px 5px; border-radius: 2px;');
-                console.log('ion', window.ion);
-                console.groupEnd();
-            }
-        }
-    }
-
-    makeLocalFileUrl(url) {
-        return url;
-    }
-
-    get browserWindow() {
-        throw new Error('Application.browserWindow getter should be implement in sub class.');
-    }
-
-    get desktopPath() {
-        if(this._desktopPath !== undefined) {
-            return this._desktopPath;
-        }
-        throw new Error('Application.desktopPath getter should be implement in sub class.');
-    }
-
-    get userDataPath() {
-        throw new Error('Application.userDataPath getter should be implement in sub class.');
-    }
-
-    get appRoot() {
-        if(this._appRoot !== undefined) {
-            return this._appRoot;
-        }
-        throw new Error('Application.appRoot getter should be implement in sub class.');
-    }
-
-    _checkReady() {
-        if(this.config && this.config.isReady) {
-            this.ready();
-        }
-    }
-
-    openExternal(path, options) {
-        throw new Error('Application.openExternal(path, options) should be implement in sub class.');
-    }
-
-    requestAttention(attentions) {
-        throw new Error('Application.requestAttention(attentions) should be implement in sub class.');
-    }
-
-    setShowInTaskbar(flag) {
-        throw new Error('Application.setShowInTaskbar(flag) should be implement in sub class.');
     }
 
     /**
@@ -125,6 +58,60 @@ class AppBase extends ReadyNotifier {
         this._isWindowFocus = true;
         this._isWindowMinimized = false;
         this._isWindowHide = false;
+
+        // prevent default behavior from changing page on dropped file
+        let completeDragNDrop = () => {
+            document.body.classList.remove('drag-n-drop-over-in');
+            setTimeout(() => {
+                document.body.classList.remove('drag-n-drop-over');
+            }, 350);
+        }
+        window.ondragover = e => {
+            clearTimeout(this.dragLeaveTask);
+            if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+                document.body.classList.add('drag-n-drop-over');
+                setTimeout(() => {
+                    document.body.classList.add('drag-n-drop-over-in');
+                }, 10);
+            }
+            e.preventDefault();
+            return false;
+        };
+        window.ondragleave = e => {
+            clearTimeout(this.dragLeaveTask);
+            this.dragLeaveTask = setTimeout(completeDragNDrop, 300);
+            e.preventDefault();
+            return false;
+        };
+        window.ondrop = e => {
+            clearTimeout(this.dragLeaveTask);
+            completeDragNDrop();
+            if(DEBUG) console.log('%cDRAG FILE ' + (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length ? e.dataTransfer.files[0].path : ''), 'display: inline-block; font-size: 13px; background: #03B8CF; color: #fff; padding: 2px 5px', Object.assign({}, e));
+            e.preventDefault();
+            return false;
+        };
+        window.addEventListener('online',  () => {
+            EventCenter.emit(R.event.net_online);
+            EventCenter.ipc.emit(R.event.net_online);
+        });
+        window.addEventListener('offline',  () => {
+            EventCenter.emit(R.event.net_offline);
+            EventCenter.ipc.emit(R.event.net_online);
+        });
+
+        document.addEventListener('click', e => {
+            let target = e.target;
+            while(target && !((target.classList && target.classList.contains('link-app')) || (target.tagName === 'A' && target.attributes['href']))) {
+                target = target.parentNode;
+            }
+            if(target && ((target.classList && target.classList.contains('link-app')) || (target.tagName === 'A' && target.attributes['href']))) {
+                let link = target.attributes['href'] || target.attributes['data-target'];
+                if(link && link.value) {
+                    App.emit(R.event.ui_link, new AppActionLink(link.value, e));
+                }
+                e.preventDefault();
+            }
+        });
 
         this.on(R.event.ui_link, link => {
             if(link.action === 'URL') {
@@ -286,39 +273,15 @@ class AppBase extends ReadyNotifier {
                 this.delaySaveUser();
             }
         });
-    }
 
-    /**
-     * Bind event
-     * @param  {String} event
-     * @param  {Function} listener
-     * @return {Symbol}
-     */
-    on(event, listener) {
-        return this.event.on(event, listener);
-    }
-
-    /**
-     * Bind once event
-     */
-    once(event, listener) {
-        return this.event.once(event, listener);
-    }
-
-    /**
-     * Unbind event by name
-     * @param  {...[Symbol]} names
-     * @return {Void}
-     */
-    off(...names) {
-        this.event.off(...names);
-    }
-
-    /**
-     * Emit event
-     */
-    emit(names, ...args) {
-        this.event.emit(names, ...args);
+        Events.on(R.event.ui_messager, (options, ...args) => {
+            if(typeof option === 'string') {
+                Messager[option].call(...args);
+            } else {
+                Messager.hide();
+                Messager.show(options);
+            }
+        });
     }
 
     /**
@@ -425,36 +388,6 @@ class AppBase extends ReadyNotifier {
         } else {
             return this.oldLogin(user);
         }
-    }
-
-    /**
-     * Login with user for old version
-     * @param  {object} user
-     * @return {void}
-     */
-    oldLogin(user) {
-        this.isUserLogining = true;
-        this.emit(EVENT.user_login_begin, user);
-
-        this.off(this._handleUserLoginFinishEvent);
-        this._handleUserLoginFinishEvent = this.once(EVENT.user_login_message, (serverUser, error) => {
-            this._handleUserLoginFinishEvent = false;
-            this._handleUserLoginFinish(user, serverUser, error);
-        });
-
-        API.getZentaoConfig(user.serverUrlRoot).then(zentaoConfig => {
-            user.zentaoConfig = zentaoConfig;
-            if(this.socket) {
-                this.socket.destroy();
-            }
-            this.socket = new Socket(this, user);
-            this.emit(EVENT.app_socket_change, this.socket);
-        }).catch(err => {
-            err.oringeMessage = err.message;
-            err.message = Lang.errors[err && err.code ? err.code : 'WRONG_CONNECT'] || err.message;
-            if(DEBUG) console.error(err);
-            this.emit(EVENT.user_login_message, null, err);
-        });
     }
 
     /**
@@ -574,138 +507,6 @@ class AppBase extends ReadyNotifier {
         } else {
             this.logout();
         }
-    }
-
-    /**
-     * Play soudn
-     * @param  {string} sound name
-     * @return {void}
-     */
-    playSound(sound) {
-        // determine play sound by user config
-        window.ion.sound.play(sound);
-    }
-
-    /**
-     * Preview file
-     */
-    previewFile(path, displayName) {
-        if(Help.isOSX) {
-            this.browserWindow.previewFile(path, displayName);
-        } else {
-            // TODO: preview file on windows
-        }
-    }
-
-    /**
-     * Set current badage label
-     * @param  {string | false} label
-     * @return {void}
-     */
-    set badgeLabel(label = '') {
-        if(DEBUG) {
-            console.error('Application.setShowInTaskbar(flag) should be implement in sub class.');
-        }
-    }
-
-    showWindow() {
-        this.browserWindow.show();
-        this._isWindowHide = false;
-    }
-
-    hideWindow() {
-        this.browserWindow.hide();
-        this._isWindowHide = true;
-    }
-
-    focusWindow() {
-        this.browserWindow.focus();
-    }
-
-    /**
-     * Show and focus main window
-     * @return {void}
-     */
-    showAndFocusWindow() {
-        this.showWindow();
-        this.focusWindow();
-    }
-
-    get isWindowsFocus() {
-        return this._isWindowFocus;
-    }
-
-    /**
-     * Check whether the main window is open and focus
-     * @return {boolean}
-     */
-    get isWindowOpenAndFocus() {
-        return this.isWindowsFocus && this.isWindowOpen;
-    }
-
-    /**
-     * Check whether the main window is open
-     */
-    get isWindowOpen() {
-        return !this._isWindowMinimized && !this._isWindowHide;
-    }
-
-    /**
-     * Set tooltip text on tray icon
-     * @param  {string | false} tooltip
-     * @return {void}
-     */
-    set trayTooltip(tooltip) {
-        throw new Error('Application.trayTooltip setter should be implement in sub class.');
-    }
-
-    /**
-     * Flash tray icon
-     * @param  {boolean} flash
-     * @return {void}
-     */
-    flashTrayIcon(flash = true) {
-        throw new Error('Application.flashTrayIcon(flash) should be implement in sub class.');
-    }
-
-    /**
-     * Create context menu
-     * @param  {Array[Object]} items
-     * @return {Menu}
-     */
-    createContextMenu(menu) {
-        throw new Error('Application.createContextMenu(menu) should be implement in sub class.');
-    }
-
-    /**
-     * Popup context menu
-     */
-    popupContextMenu(menu, x, y) {
-        throw new Error('Application.popupContextMenu(menu, x, y) should be implement in sub class.');
-    }
-
-    /**
-     * Show save dialog
-     * @param object   options
-     */
-    showSaveDialog(options, callback) {
-        throw new Error('Application.showSaveDialog(options, callback) should be implement in sub class.');
-    }
-
-    /**
-     * Show open dialog
-     */
-    showOpenDialog(options, callback) {
-        throw new Error('Application.showOpenDialog(options, callback) should be implement in sub class.');
-    }
-
-    /**
-     * Open dialog window
-     * @param  {Object} options
-     * @return {Promise}
-     */
-    openDialog(options) {
-        Modal.show(options);
     }
 
     /**
@@ -843,22 +644,6 @@ class AppBase extends ReadyNotifier {
     }
 
     /**
-     * Capture screenshot image and save to file
-     *
-     * @param string filePath optional
-     */
-    captureScreen(options, filePath, hideCurrentWindow, onlyBase64) {
-        throw new Error('Application.captureScreen(options, filePath, hideCurrentWindow, onlyBase64) should be implement in sub class.');
-    }
-
-    /**
-     * Open capture screen window
-     */
-    openCaptureScreen(screenSources = 0, hideCurrentWindow = false) {
-        throw new Error('Application.openCaptureScreen(screenSources = 0, hideCurrentWindow = false) should be implement in sub class.');
-    }
-
-    /**
      * Upload file to server with zentao API
      * @param  {File} file
      * @param  {object} params
@@ -890,32 +675,6 @@ class AppBase extends ReadyNotifier {
     }
 
     /**
-     * Register global hotkey
-     * @param  {object} option
-     * @param  {string} name
-     * @return {void}
-     */
-    registerGlobalShortcut(name, accelerator, callback) {
-        throw new Error('Application.registerGlobalShortcut(name, accelerator, callback) should be implement in sub class.');
-    }
-
-    /**
-     * Check a shortcu whether is registered
-     */
-    isGlobalShortcutRegistered(accelerator) {
-        throw new Error('Application.isGlobalShortcutRegistered(accelerator) should be implement in sub class.');
-    }
-
-    /**
-     * Unregister global hotkey
-     * @param  {gui.Shortcut | string | object} hotkey
-     * @return {void}
-     */
-    unregisterGlobalShortcut(name) {
-        throw new Error('Application.unregisterGlobalShortcut(name) should be implement in sub class.');
-    }
-
-    /**
      * Quit application
      */
     quit() {
@@ -924,38 +683,6 @@ class AppBase extends ReadyNotifier {
         if(this.saveUserTimerTask) {
             this.saveUser();
         }
-    }
-
-    getDesktopCaptureSources(options, callback) {
-        throw new Error('Application.getDesktopCaptureSources(options, callback) should be implement in sub class.');
-    }
-
-    getPrimaryDisplay() {
-        throw new Error('Application.getPrimaryDisplay(options, callback) should be implement in sub class.');
-    }
-
-    getAllDisplays() {
-        throw new Error('Application.getAllDisplays() should be implement in sub class.');
-    }
-
-    createImageFromPath(path) {
-        throw new Error('Application.createImageFromPath(path) should be implement in sub class.');
-    }
-
-    getImageFromClipboard() {
-        throw new Error('Application.getImageFromClipboard() should be implement in sub class.');
-    }
-
-    copyImageToClipboard(image) {
-        throw new Error('Application.copyImageToClipboard(image) should be implement in sub class.');
-    }
-
-    openFileItem(file) {
-        throw new Error('Application.openFileItem(file) should be implement in sub class.');
-    }
-
-    showItemInFolder(file) {
-        throw new Error('Application.showItemInFolder(file) should be implement in sub class.');
     }
 }
 

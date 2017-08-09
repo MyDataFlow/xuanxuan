@@ -35,7 +35,7 @@ const userList = () => {
 const saveUser = (user) => {
     const identify = user.identify;
 
-    Store.set(`${KEY_USER_PREFIX}${identify}`, Helper.plain(user));
+    Store.set(`${KEY_USER_PREFIX}${identify}`, user.plain());
 
     let users = allUsers();
     users[identify] = new Date().getTime();

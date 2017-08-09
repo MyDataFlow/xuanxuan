@@ -16,6 +16,8 @@ import ReadyNotifier      from './models/ready-notifier';
 import Event              from './event-center';
 import Helper             from './utils/helper';
 
+const EVENT_REMOTE = 'remote';
+
 if(DEBUG && process.type === 'renderer') {
     console.error('App must run in main process.');
 }
@@ -39,7 +41,7 @@ const INPUT_MENU = Menu.buildFromTemplate([
 
 /**
  * App
- * 
+ *
  * Only for main process
  */
 class AppRemote extends ReadyNotifier {
@@ -106,29 +108,6 @@ class AppRemote extends ReadyNotifier {
         }
     }
 
-        /**
-     * Bind event
-     * @param  {String} event
-     * @param  {Function} listener
-     * @return {Symbol}
-     */
-    on(event, listener) {
-        return this.event.on(event, listener);
-    }
-
-    /**
-     * Unbind event
-     * @param  {...[Symbol]} names
-     * @return {Void}
-     */
-    off(...names) {
-        this.event.off(...names);
-    }
-
-    emit(event, ...args) {
-        this.event.emit(event, ...args);
-    }
-
     init(mainWindow) {
         if(mainWindow instanceof BrowserWindow) {
             this.mainWindow = mainWindow;
@@ -140,7 +119,7 @@ class AppRemote extends ReadyNotifier {
             this.quit();
         });
 
-        Event.ipc.on(EVENT.app_remote, (e, method, callBackEventName, ...args) => {
+        Event.ipc.on(EVENT_REMOTE, (e, method, callBackEventName, ...args) => {
             let result = this[method];
             if(typeof result === 'function') {
                 result = result.call(this, ...args);
@@ -190,7 +169,7 @@ class AppRemote extends ReadyNotifier {
         });
         this.tray = tray;
         this._trayIcons = [
-            nativeImage.createFromPath(`${__dirname}/img/tray-icon-16.png`), 
+            nativeImage.createFromPath(`${__dirname}/img/tray-icon-16.png`),
             nativeImage.createFromPath(`${__dirname}/img/tray-icon-transparent.png`)
         ];
         this._trayIconCounter = 0;
@@ -270,7 +249,7 @@ class AppRemote extends ReadyNotifier {
                     SELECT_MENU.popup(mainWindow);
                 }
             });
-            
+
         }
     }
 

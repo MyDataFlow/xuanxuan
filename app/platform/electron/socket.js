@@ -4,19 +4,19 @@ import Events from './events';
 import Status from '../../utils/status';
 
 const STATUS = new Status({
-    UNCONNECT: -1,  // 未连接
     CONNECTING:	0,	// 连接还没开启。
     OPEN:	    1,	// 连接已开启并准备好进行通信。
     CLOSING:	2,	// 连接正在关闭的过程中。
     CLOSED:	    3,	// 连接已经关闭，或者连接无法建立。
-});
+    UNCONNECT:  4,  // 未连接
+}, 4);
 
 const EVENT = {
-    socket_data: 'socket.data',
-    socket_close: 'socket.close',
-    socket_error: 'socket.error',
-    socket_connect: 'socket.connect',
-    socket_status_change: 'socket.status_change',
+    data: 'socket.data',
+    close: 'socket.close',
+    error: 'socket.error',
+    connect: 'socket.connect',
+    status_change: 'socket.status_change',
 };
 
 const PING_INTERVAL = 1000 * 60 * 5;
@@ -29,7 +29,7 @@ class Socket {
     constructor(url, options) {
         this._status = STATUS.create(STATUS.UNCONNECT);
         this._status.onChange = newStatus => {
-            Events.emit(EVENT.socket_status_change, this, newStatus);
+            Events.emit(EVENT.status_change, this, newStatus);
         };
         this.init(url, options);
     }
@@ -112,7 +112,7 @@ class Socket {
             this.options.onConnect(this);
         }
 
-        Events.emit(EVENT.socket_connect, this);
+        Events.emit(EVENT.connect, this);
     }
 
     handleClose(code, reason) {
@@ -131,7 +131,7 @@ class Socket {
             this.options.onClose(this, code, reason);
         }
 
-        Events.emit(EVENT.socket_close, this, code, reason);
+        Events.emit(EVENT.close, this, code, reason);
     }
 
     handleError(error) {
@@ -148,7 +148,7 @@ class Socket {
             this.options.onError(this, code, reason);
         }
 
-        Events.emit(EVENT.socket_error, this, error);
+        Events.emit(EVENT.error, this, error);
     }
 
     handleData(rawdata, flags) {
@@ -175,7 +175,7 @@ class Socket {
             this.options.onData(this, data, flags);
         }
 
-        Events.emit(EVENT.socket_data, this, data, flags);
+        Events.emit(EVENT.data, this, data, flags);
     }
 
     send(rawdata) {
