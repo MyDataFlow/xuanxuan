@@ -1,186 +1,99 @@
 import Entity from './entity';
-import Path   from 'path';
+import Pinyin from '../utils/pinyin';
+import Status from '../utils/status';
 
-/**
- * Define status names
- */
-const USER_STATUS = ['unverified', 'disconnect', 'online', 'busy', 'away'];
+const STATUS = new Status({
+    unverified: 0,   // 未登录
+    logining: 1,     // 正在登录
+    reconnecting: 2, // 正在重连
+    disconnect: 3,   // 登录过，但掉线了
+    logined: 4,      // 登录成功
+    online: 5,       // 在线
+    busy: 6,         // 忙碌
+    away: 7,         // 离开
+}, 0);
 
-/**
- * Define status value code
- */
-USER_STATUS.unverified = 0;
-USER_STATUS.offline    = 0;
-USER_STATUS.disconnect = 1;
-USER_STATUS.online     = 2;
-USER_STATUS.busy       = 3;
-USER_STATUS.away       = 4;
-
-/**
- * Get status name
- */
-USER_STATUS.getName = (val, defaultName) => {
-    if(val !== undefined && USER_STATUS[val] !== undefined) {
-        let typeofStatus = typeof val;
-        if(typeofStatus === 'string') {
-            return val;
-        } else if(typeofStatus === 'number') {
-            return USER_STATUS[val];
-        }
-    }
-    return defaultName || USER_STATUS[USER_STATUS.unverified];
-};
-
-/**
- * Get status value code
- */
-USER_STATUS.getValue = (value, defaultValue) => {
-    if(value !== undefined && USER_STATUS[value] !== undefined) {
-        let typeofStatus = typeof value;
-        if(typeofStatus === 'number') {
-            return value;
-        } else if(typeofStatus === 'string') {
-            return USER_STATUS[value];
-        }
-    }
-    return defaultValue || USER_STATUS.unverified;
-}
-
-/**
- * Member class
- */
 class Member extends Entity {
 
-    constructor(data) {
-        super(data, {dept: 'int'});
+    static NAME = 'Member';
+    static STATUS = STATUS;
+    static SCHEMA = Entity.SCHEMA.extend({
+        account: {type: 'string', unique: true},
+        email: {type: 'string', indexed: true},
+        phone: {type: 'string', indexed: true},
+        realName: {type: 'string', indexed: true},
+    });
+
+    constructor(data, entityType = Member.NAME) {
+        super(data, entityType);
+        this._status = STATUS.create(this.$.status);
     }
 
-    /**
-     * Get display name
-     * @return {String}
-     */
-    get displayName() {
-        return this.realname ? this.realname : `[${this.account}]`;
+    get schema() {
+        return Member.SCHEMA;
     }
 
+    // Member status
 
-    /**
-     * Get pinyin str
-     * @return {string}
-     */
-    namePinyin() {
-        if(!this.$.pinyin) {
-            this.$.pinyin = Helper.pinyin(this.displayName);
-        }
-        return this.$.pinyin;
+    get status() {
+        return this._status.value;
     }
 
-    /**
-     * Get user status name
-     */
     get statusName() {
-        return USER_STATUS.getName(this.status);
+        return this._status.name;
     }
 
-    /**
-     * Get status value
-     */
-    get statusValue() {
-        if(this.status !== undefined && USER_STATUS[this.status] !== undefined) {
-            let typeofStatus = typeof this.status;
-            if(typeofStatus === 'number') {
-                return this.status;
-            } else if(typeofStatus === 'string') {
-                return USER_STATUS[this.status];
-            }
-        }
-        return USER_STATUS.unverified;
+    set status(newStatus) {
+        this._status.change(newStatus);
     }
 
-    /**
-     * Check user status is online
-     * @return {Boolean}
-     */
     get isOnline() {
-        return this.statusValue >= USER_STATUS.online;
+        return this.status >= STATUS.logined;
     }
 
-    /**
-     * Check user status is disconnect
-     */
-    get isDisconnect() {
-        return this.statusValue === USER_STATUS.disconnect;
-    }
-
-    /**
-     * Check user status is offline
-     * @return {Boolean}
-     */
     get isOffline() {
         return !this.isOnline;
     }
 
-    /**
-     * Check user status is busy
-     * @return {Boolean}
-     */
-    get isBusy() {
-        return this.statusValue === USER_STATUS.busy;
-    }
-
-    /**
-     * Check user status is unverified
-     */
-    get isUnverified() {
-        return this.statusValue <= USER_STATUS.unverified;
-    }
-
-    /**
-     * Check user status is disconnect
-     */
-    get isDisconnect() {
-        return this.statusValue === USER_STATUS.disconnect;
-    }
-
-    /**
-     * Check status
-     */
     isStatus(status) {
-        return this.status === status || this.statusValue === status || this.statusName === status;
+        return this._status.is(status);
     }
 
-    /**
-     * Check the member is current user
-     */
-    get isMyself() {
-        return this.$.isMyself;
+    // Name or account
+
+    isMember(account) {
+        return this.account === account;
     }
 
-    /**
-     * Set the member is current user
-     */
-    set isMyself(isMyself) {
-        this.$.isMyself = isMyself;
-    }
-
-    /**
-     * Check the user is supper admin
-     */
     get isSuperAdmin() {
         return this.admin === 'super';
     }
 
-    /**
-     * Get local avatar image path
-     * @param  {string} imagePath
-     * @return {string}
-     */
-    getLocalAvatar(imagePath) {
-        if(this.avatar) {
-            return Path.join(imagePath, Path.basename(this.avatar));
-        }
-        return null;
+    get realName() {
+        return this.$get('realName');
     }
+
+    get account() {
+        return this.$get('account');
+    }
+
+    get displayName() {
+        let name = this.$get('realname', `[${this.account}]`);
+        if(!name) {
+            name = `User-${this.id}`;
+        }
+        return name;
+    }
+
+    get namePinyin() {
+        if(!this._namePinyin) {
+            this._namePinyin = Pinyin(this.displayName);
+        }
+        return this._namePinyin;
+    }
+
+
+    // Static methods
 
     /**
      * Sort members
@@ -218,10 +131,10 @@ class Member extends Entity {
                         }
                         break;
                     case 'status':
-                        let xStatus = x.statusValue,
-                            yStatus = y.statusValue;
-                        if(xStatus === USER_STATUS.online) xStatus = 100;
-                        if(yStatus === USER_STATUS.online) yStatus = 100;
+                        let xStatus = x.status,
+                            yStatus = y.status;
+                        if(xStatus === STATUS.online) xStatus = 100;
+                        if(yStatus === STATUS.online) yStatus = 100;
                         result = xStatus > yStatus ? 1 : (xStatus == yStatus ? 0 : -1);
                         break;
                     default:
@@ -237,7 +150,4 @@ class Member extends Entity {
     }
 }
 
-Entity.addCreator({Member});
-
-export {USER_STATUS}
 export default Member;
