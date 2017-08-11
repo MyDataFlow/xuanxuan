@@ -1,6 +1,6 @@
 
 import fs from 'fs-extra';
-import db from '../common/database'
+import Database from '../common/database'
 import config from '../common/config'
 import sound from '../common/sound'
 import env from './env';
@@ -38,10 +38,10 @@ export default {
     image,
     ui,
     fs,
-    db,
     config,
     sound,
     net,
     crypto,
+    Database,
     Socket
 };
