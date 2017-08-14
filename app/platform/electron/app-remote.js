@@ -1,6 +1,6 @@
-import { BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
+import electron, { BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
 import fse                from 'fs-extra';
-import Lang               from 'Lang';
+import Lang               from '../../resource/lang';
 import Events             from './events';
 import EVENT              from './remote-events';
 
@@ -35,10 +35,6 @@ const INPUT_MENU = Menu.buildFromTemplate([
 class AppRemote {
 
     constructor() {
-        super();
-
-        this.dataPath = ElectronApp.getPath('userData');
-        this.appRoot  = __dirname;
         this.windows  = {};
 
         // Ensure user data directory exist
@@ -96,9 +92,29 @@ class AppRemote {
             Events.emit(eventId, ...args);
             if(SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
         });
+    }
 
+    init(entryPath) {
+        if(!entryPath) {
+            throw new Error('Argument entryPath must be set on init app-remote.')
+        }
+
+        this.entryPath = entryPath;
+        if(ElectronApp.isReady()) {
+            this.initTrayIcon();
+        } else {
+            ElectronApp.on('ready', () => {
+                this.initTrayIcon();
+            });
+        }
+    }
+
+    initTrayIcon() {
+        if(this.tray) {
+            this.tray.destroy();
+        }
         // Make tray icon
-        let tray = new Tray(`${__dirname}/img/tray-icon-16.png`);
+        let tray = new Tray(`${this.entryPath}/assets/img/tray-icon-16.png`);
         let trayContextMenu = Menu.buildFromTemplate([
             {
                 label: Lang.common.open,
@@ -163,7 +179,7 @@ class AppRemote {
             url: `index.html`,
             autoHideMenuBar: !IS_MAC_OSX,
             backgroundColor: '#FFF',
-            show: false
+            show: DEBUG
         }, options);
 
         let browserWindow = this.windows[name];
@@ -197,7 +213,7 @@ class AppRemote {
         let url = options.url;
         if(url) {
             if(!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
-                url = `file://${__dirname}/windows/${options.url}`;
+                url = `file://${this.entryPath}/${options.url}`;
             }
             if(options.hashRoute) {
                 url += `#${options.hashRoute}`;
@@ -236,7 +252,24 @@ class AppRemote {
             this.windows.main = mainWindow;
             mainWindow.on('close', e => {
                 if(this.markClose) return;
-                mainWindow.webContents.send(EVENT.remote_app_quit);
+                const now = new Date().getTime();
+                if(this.lastRequestCloseTime && (now - this.lastRequestCloseTime) < 1000) {
+                    electron.dialog.showMessageBox(mainWindow, {
+                        buttons: [Lang.common.exitIM, Lang.common.cancel],
+                        defaultId: 0,
+                        type: 'question',
+                        message: Lang.common.comfirmQuiteIM
+                    }, response => {
+                        if(response === 0) {
+                            setTimeout(() => {
+                                this.quit();
+                            }, 0);
+                        }
+                    });
+                } else {
+                    this.lastRequestCloseTime = now;
+                    mainWindow.webContents.send(EVENT.remote_app_quit);
+                }
                 e.preventDefault();
                 return false;
             });
@@ -319,8 +352,8 @@ class AppRemote {
     quit() {
         this.closeMainWindow();
         this.tray.destroy();
-        ElectronApp.quit();
         globalShortcut.unregisterAll();
+        ElectronApp.quit();
     }
 
 

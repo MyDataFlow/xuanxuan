@@ -14,7 +14,6 @@ class Events extends EventEmitter {
      */
     constructor() {
         super();
-        this.$             = EVENT;
         this.eventsMap     = {};
         this.isMainProcess = process.type !== 'renderer';
 
