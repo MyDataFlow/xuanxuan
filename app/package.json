@@ -11,7 +11,5 @@
   },
   "homepage": "http://xuan.im",
   "company": "青岛易软天创网络科技有限公司",
-  "license": "ZPL 1.2",
-  "dependencies": {
-  }
+  "license": "ZPL 1.2"
 }
