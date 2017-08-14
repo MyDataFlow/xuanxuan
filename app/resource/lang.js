@@ -1,9 +1,9 @@
-import DefaultLang from '../lang/zh-cn.json';
+import DefaultLang from '../assets/lang/zh-cn.json';
 import StringHelper from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
-let langData = Object.assign({}, DEFAULT_LANG);
+let langData = Object.assign({}, DefaultLang);
 let lang = DEFAULT_LANG;
 
 /**
