@@ -241,6 +241,16 @@ class AppRemote {
         return browserWindow;
     }
 
+    openMainWindow() {
+        let mainWindow = this.mainWindow;
+        if(!mainWindow) {
+            this.createMainWindow();
+        } else if(!mainWindow.isVisible()) {
+            mainWindow.show();
+            mainWindow.focus();
+        }
+    }
+
     get mainWindow() {
         return this.windows.main;
     }

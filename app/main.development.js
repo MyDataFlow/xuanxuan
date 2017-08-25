@@ -8,8 +8,6 @@ import Lang         from './resource/lang';
 
 application.init(__dirname);
 
-let mainWindow = null;
-
 if(process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support'); // eslint-disable-line
     sourceMapSupport.install();
@@ -24,9 +22,7 @@ if(DEBUG && DEBUG !== 'production') {
 
 // Quit when all windows are closed.
 ElectronApp.on('window-all-closed', () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') ElectronApp.quit();
+    ElectronApp.quit();
 });
 
 const installExtensions = async() => {
@@ -46,28 +42,19 @@ const installExtensions = async() => {
     }
 };
 
-const createWindow = () => {
-    mainWindow = application.createMainWindow();
-}
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 ElectronApp.on('ready', async() => {
     await installExtensions();
-    createWindow();
+    application.openMainWindow();
     if(DEBUG) console.info('\n>> Electron app ready.');
 });
 
 ElectronApp.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (!mainWindow) {
-        createWindow();
-    } else if(!mainWindow.isVisible()) {
-        mainWindow.show();
-        mainWindow.focus();
-    }
+    application.openMainWindow();
     if(DEBUG) console.info('\n>> Electron app activate.');
 });
 
@@ -82,6 +69,5 @@ if(typeof ElectronApp.setAboutPanelOptions === 'function') {
 }
 
 if(DEBUG) {
-    global.mainWindow = mainWindow;
     console.info('\n>> Electron main process finish.');
 }
