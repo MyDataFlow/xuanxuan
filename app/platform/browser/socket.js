@@ -1,5 +1,4 @@
 import crypto from './crypto';
-import WS from 'ws';
 import Status from '../../utils/status';
 
 const STATUS = new Status({
@@ -9,6 +8,7 @@ const STATUS = new Status({
     CLOSED:	    3,	// 连接已经关闭，或者连接无法建立。
     UNCONNECT:  4,  // 未连接
 }, 4);
+
 
 class Socket {
 
@@ -81,13 +81,21 @@ class Socket {
         this.close();
 
         this.status = STATUS.CONNECTING;
-        this.client = new WS(this.url);
 
-        this.client.on('open', this.handleConnect.bind(this));
-        this.client.on('message', this.handleData.bind(this));
-        this.client.on('close', this.handleClose.bind(this));
-        this.client.on('error', this.handleError.bind(this));
-        this.client.on('unexpected-response', this.handleError.bind(this));
+        const client = new WebSocket(this.url);
+        client.binaryType = 'arraybuffer';
+        client.onopen = this.handleConnect.bind(this);
+        client.onmessage = e => {
+            this.handleData(e.data, {binary: true});
+        };
+        client.onclose = e => {
+            this.handleClose(e.code, e.reason);
+        };
+        client.onerror = e => {
+            this.handleError(e);
+        };
+
+        this.client = client;
     }
 
     reconnect() {
