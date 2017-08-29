@@ -21,9 +21,13 @@ class StatusKeeper {
         const value = this.mapper.getValue(nameOrValue);
         const oldValue = this.value;
         if(value !== undefined && oldValue !== value) {
-            this.status = value;
-            if(typeof this.onChange === 'function') {
-                this.onChange(value, oldValue, this);
+            if(!this.canChange || this.canChange(value, oldValue)) {
+                this.status = value;
+                if(typeof this.onChange === 'function') {
+                    this.onChange(value, oldValue, this);
+                }
+            } else if(DEBUG) {
+                console.log(`Status '${oldValue}' cannot change to ${nameOrValue} with the rule.`);
             }
         } else if(DEBUG) {
             console.log(`Status '${nameOrValue}' is not a valid value or name.`);
