@@ -4,7 +4,7 @@ import electron, {
 import DEBUG        from './utils/debug';
 import application  from './platform/electron/app-remote';
 import PKG          from './package.json';
-import Lang         from './resource/lang';
+import Lang         from './core/lang';
 
 application.init(__dirname);
 
