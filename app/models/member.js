@@ -3,14 +3,16 @@ import Pinyin from '../utils/pinyin';
 import Status from '../utils/status';
 
 const STATUS = new Status({
-    unverified: 0,   // 未登录
-    logining: 1,     // 正在登录
-    reconnecting: 2, // 正在重连
-    disconnect: 3,   // 登录过，但掉线了
-    logined: 4,      // 登录成功
-    online: 5,       // 在线
-    busy: 6,         // 忙碌
-    away: 7,         // 离开
+    unverified: 0,    // 未登录
+    loginFailed: 1,   // 登录失败
+    waitReconnect: 2, // 等待重连
+    logining: 3,      // 正在登录
+    reconnecting: 4,  // 正在重连
+    disconnect: 5,    // 登录过，但掉线了
+    logined: 6,       // 登录成功
+    online: 7,        // 在线
+    busy: 8,          // 忙碌
+    away: 9,          // 离开
 }, 0);
 
 class Member extends Entity {
@@ -95,6 +97,13 @@ class Member extends Entity {
 
     // Static methods
 
+    static create(member) {
+        if(member instanceof Member) {
+            return member;
+        }
+        return new Member(member);
+    }
+
     /**
      * Sort members
      * @param  {array}         members
@@ -102,8 +111,11 @@ class Member extends Entity {
      * @param  {object}        app
      * @return {array}
      */
-    static sort(members, orders, app) {
-        if(!orders || orders === 'default') {
+    static sort(members, orders, userMe) {
+        if(typeof orders === 'function') {
+            return members.sort(orders);
+        }
+        if(!orders || orders === 'default' || orders === true) {
             orders = ['me', 'status', '-namePinyin', '-id'];
         } else if(typeof orders === 'string') {
             orders = orders.split(' ');
@@ -113,6 +125,7 @@ class Member extends Entity {
             isFinalInverse = true;
             orders.shift();
         }
+        const userMeId = (typeof userMe === 'object') ? userMe.id : userMe;
         return members.sort((y, x) => {
             let result = 0;
             for(let order of orders) {
@@ -125,9 +138,9 @@ class Member extends Entity {
                 if(isInverse) order = order.substr(1);
                 switch(order) {
                     case 'me':
-                        if(app && app.user) {
-                            if(app.user.id === x.id) result = 1;
-                            else if(app.user.id === y.id) result = -1;
+                        if(userMe) {
+                            if(userMeId === x.id) result = 1;
+                            else if(userMeId === y.id) result = -1;
                         }
                         break;
                     case 'status':
