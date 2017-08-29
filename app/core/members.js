@@ -1,6 +1,7 @@
 import Member from '../models/member';
 import Platform from 'Platform';
 import profile from './user-profile';
+import Events from './events';
 
 let members = null;
 
@@ -13,7 +14,7 @@ const update = (...memberArr) => {
         newMembers[member.id] = member;
     });
     Object.assign(members, newMembers);
-    Platform.events.emitDataChange({members: newMembers});
+    Events.emitDataChange({members: newMembers});
 };
 
 const init = (memberArr) => {

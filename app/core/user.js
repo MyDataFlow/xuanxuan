@@ -2,6 +2,7 @@ import Member from '../models/member';
 import UserConfig from '../user-config';
 import Platfrom from 'Platform';
 import DelayAction from '../utils/delay-action';
+import Events from './events';
 
 const PASSWORD_WITH_MD5_FLAG = '%%%PWD_FLAG%%% ';
 const EVENT = {
@@ -35,7 +36,7 @@ class User extends Member {
         });
 
         this._status.onChnage = (status, oldStatus) => {
-            Platfrom.events.emit(EVENT.status_change, status, oldStatus, this);
+            Events.emit(EVENT.status_change, status, oldStatus, this);
 
             clearTimeout(this.statusChangeCallTimer);
             if(this._status.is(Member.STATUS.logined)) {
@@ -81,7 +82,7 @@ class User extends Member {
                 this.save();
 
                 // Emit user config change event
-                Platfrom.events.emit(EVENT.config_change, change, config, this);
+                Events.emit(EVENT.config_change, change, config, this);
             };
         }
         return this._config;
@@ -148,7 +149,7 @@ class User extends Member {
             clearDelayTimer();
             if(this._status.is(Member.STATUS.waitReconnect)) {
                 this.reconnectTimes++;
-                Platfrom.events.emit(EVENT.reconnect, 0, this);
+                Events.emit(EVENT.reconnect, 0, this);
             }
         };
 
@@ -161,7 +162,7 @@ class User extends Member {
                 this.waitReconnectTimer = setInterval(() => {
                     const now = new Date().getTime();
                     const time = Math.max(0, this.waitReconnectTime + delay - now);
-                    Platfrom.events.emit(EVENT.reconnect, time, this);
+                    Events.emit(EVENT.reconnect, time, this);
                 }, 1000);
             }
         } else {

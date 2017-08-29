@@ -2,7 +2,6 @@ import Entity from './entity';
 import Status from '../utils/status';
 import Lang from '../resource/lang';
 import Pinyin from '../utils/pinyin';
-import Platform from 'Platform';
 
 const STATUS = new Status({
     local: 0,
@@ -23,10 +22,6 @@ const COMMITTERS_TYPES = {
     all: 'all'
 };
 
-const EVENT = {
-    message: 'chat.message'
-};
-
 const MAX_MESSAGE_COUNT = 100;
 
 class Chat extends Entity {
@@ -34,7 +29,6 @@ class Chat extends Entity {
     static NAME = 'Chat';
     static STATUS = STATUS;
     static TYPES = TYPES;
-    static EVENT = EVENT;
     static CONTENT_TYPES = CONTENT_TYPES;
     static SCHEMA = Entity.SCHEMA.extend({
         user: {type: 'int', indexed: true},
@@ -521,8 +515,6 @@ class Chat extends Entity {
                 return orderResult;
             });
         }
-
-        Platform.events.emit(EVENT.message, messages, this);
 
         return this;
     }

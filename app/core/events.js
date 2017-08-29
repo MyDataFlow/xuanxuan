@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import {EventEmitter} from 'Platform';
 
 const EVENT = {
     data_change: 'data.change'

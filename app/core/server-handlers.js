@@ -1,7 +1,7 @@
 import members from './members';
 import Lang from '../resource/lang';
-import Platform from 'Platform';
 import Member from '../models/Member';
+import Events from './events';
 
 const chatLogin = (msg, socket) => {
     if(msg.isSuccess) {
@@ -40,7 +40,7 @@ const chatLogout = (msg, socket) => {
 const chatError = (msg) => {
     let message = Lang.error(msg);
     if(message) {
-        Platform.events.emit('ui.message', message);
+        Events.emit('ui.message', message);
     }
 };
 
@@ -88,7 +88,7 @@ const chatUserchange = (msg, socket) => {
 };
 
 const chatKickoff = (msg, socket) => {
-    Platform.events.emit('ui.message', Lang.error('KICKOFF'));
+    Events.emit('ui.message', Lang.error('KICKOFF'));
     socket.close();
 };
 

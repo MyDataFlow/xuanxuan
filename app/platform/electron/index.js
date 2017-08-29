@@ -7,7 +7,7 @@ import env from './env';
 import screenshot from './screenshot';
 import contextmenu from './contextmenu';
 import remote from './remote';
-import events from './events';
+import EventEmitter from './event-emitter';
 import image from './image';
 import ui from './ui';
 import notify from '../notify';
@@ -33,7 +33,7 @@ export default {
     env,
     screenshot,
     contextmenu,
-    events,
+    EventEmitter,
     remote,
     image,
     ui,

@@ -1,4 +1,4 @@
-import Platfrom from 'Platform';
+import Events from './events';
 
 const EVENT = {
     swap: 'user.swap',
@@ -13,12 +13,12 @@ const setUser = newUser => {
     let oldUser = user;
     user = newUser;
     if(!oldUser || oldUser.identify !== user.identify) {
-        Platfrom.events.emit(EVENT.swap, user);
+        Events.emit(EVENT.swap, user);
     }
 };
 
 const onSwapUser = listener => {
-    return Platfrom.events.on(EVENT.swap, listener);
+    return Events.on(EVENT.swap, listener);
 };
 
 export default {
