@@ -3,7 +3,17 @@
  */
 class SocketMessage {
     constructor(data) {
-        Object.assign(this, data);
+        Object.assign(this, {
+            'module': 'chat'
+        }, data);
+    }
+
+    get pathname() {
+        let pathnames = [this.module];
+        if(this.method !== undefined) {
+            pathnames.push(this.method);
+        }
+        return pathnames.join('/').toLowerCase();
     }
 
     /**
@@ -69,6 +79,15 @@ class SocketMessage {
                 console.groupEnd();
             }
         }
+    }
+
+    static create(msg) {
+        if(typeof msg === 'string') {
+            msg = {method: msg};
+        } else if(msg instanceof SocketMessage) {
+            return msg;
+        }
+        return new SocketMessage(msg);
     }
 }
 
