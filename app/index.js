@@ -10,7 +10,11 @@ import AppContainer           from 'Views/app-container';
 injectTapEventPlugin();
 
 let appElement = document.getElementById('appContainer');
-ReactDOM.render(<ThemeProvider><AppContainer /></ThemeProvider>, appElement);
+ReactDOM.render(
+    (<ThemeProvider>
+        <AppContainer />
+    </ThemeProvider>),
+appElement);
 
 let loadingElement = document.getElementById('loading');
 loadingElement.parentNode.removeChild(loadingElement);
