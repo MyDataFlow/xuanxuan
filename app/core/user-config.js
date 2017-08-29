@@ -19,6 +19,16 @@ class UserConfig {
         return Object.assign({}, this.$);
     }
 
+    exportCloud() {
+        let config = {};
+        Object.keys(this.$).forEach(key => {
+            if(key.indexOf('local.') !== 0) {
+                config[key] = this.$[key];
+            }
+        });
+        return config;
+    }
+
     makeChange(change) {
         this.lastChange = Object.assign({}, this.lastChange, change);
 
@@ -49,9 +59,28 @@ class UserConfig {
         }
     }
 
-    resetDefault() {
-        this.$ = Object.assign({}, DEFAULT);
+    reset(newConfig) {
+        this.$ = Object.assign({}, newConfig, DEFAULT);
         this.makeChange(this.$);
+    }
+
+    get autoReconnect() {
+        return this.get('user.autoReconnect');
+    }
+
+    set autoReconnect(flag) {
+        return this.set('user.autoReconnect', flag);
+    }
+
+    get lastSaveTime() {
+        return this.get('lastSaveTime');
+    }
+
+    set lastSaveTime(time) {
+        if(time instanceof Date) {
+            time = time.getTime();
+        }
+        return this.set('lastSaveTime', time);
     }
 }
 
