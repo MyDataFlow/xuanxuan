@@ -47,6 +47,9 @@ const getJSONData = (url, options) => {
 };
 
 const postJSONData = (url, options) => {
+    if(options instanceof FormData) {
+        options = {body: options};
+    }
     return getJSONData(url, Object.assign({
         method: 'POST',
     }, options));

@@ -19,8 +19,6 @@ const EVENT = {
     status_change: 'socket.status_change',
 };
 
-const PING_INTERVAL = 1000 * 60 * 5;
-
 class Socket {
 
     static STATUS = STATUS;
@@ -31,12 +29,17 @@ class Socket {
         this._status.onChange = newStatus => {
             Events.emit(EVENT.status_change, this, newStatus);
         };
-        this.init(url, options);
+
+        if(url) {
+            this.init(url, options);
+        }
     }
 
     init(url, options) {
+        // Close socket before init
+        this.close();
+
         options = Object.assign({
-            pingInterval: PING_INTERVAL,
             connent: true,
             userToken: '',
             cipherIV: '',
@@ -47,8 +50,12 @@ class Socket {
         this.url = url;
         this._status.change(STATUS.UNCONNECT);
 
-        if(options.connect) {
+        if(options.connect && this.url) {
             this.connect();
+        }
+
+        if(this.onInit) {
+            this.onInit();
         }
     }
 
@@ -81,9 +88,7 @@ class Socket {
     }
 
     connect() {
-        if(this.client) {
-            this.close();
-        }
+        this.close();
 
         this.status = STATUS.CONNECTING;
         this.client = new WS(this.url);
@@ -112,10 +117,15 @@ class Socket {
             this.options.onConnect(this);
         }
 
+        if(this.onConnect) {
+            this.onConnect();
+        }
+
         Events.emit(EVENT.connect, this);
     }
 
     handleClose(code, reason) {
+        const unexpected = !this._status.is(STATUS.CLOSING);
         this.updateStatusFromClient();
         this.client = null;
 
@@ -128,24 +138,32 @@ class Socket {
         }
 
         if(this.options.onClose) {
-            this.options.onClose(this, code, reason);
+            this.options.onClose(this, code, reason, unexpected);
         }
 
-        Events.emit(EVENT.close, this, code, reason);
+        if(this.onClose) {
+            this.onClose(code, reason, unexpected);
+        }
+
+        Events.emit(EVENT.close, this, code, reason, unexpected);
     }
 
     handleError(error) {
         this.updateStatusFromClient();
 
         if(DEBUG) {
-            console.collapse('SOCKET Error', 'greenBg', this.url, 'greenPale');
+            console.collapse('SOCKET Error', 'redBg', this.url, 'redPale');
             console.log('socket', this);
             console.log('error', error);
             console.groupEnd();
         }
 
         if(this.options.onError) {
-            this.options.onError(this, code, reason);
+            this.options.onError(this, error);
+        }
+
+        if(this.onError) {
+            this.onError(error);
         }
 
         Events.emit(EVENT.error, this, error);
@@ -175,10 +193,14 @@ class Socket {
             this.options.onData(this, data, flags);
         }
 
+        if(this.onData) {
+            this.onData(data, flags);
+        }
+
         Events.emit(EVENT.data, this, data, flags);
     }
 
-    send(rawdata) {
+    send(rawdata, callback) {
         let data = null;
         if(this.options.encryptEnable) {
             data = crypto.encrypt(rawdata);
@@ -192,11 +214,14 @@ class Socket {
 
         this.client.send(data, {
             binary: this.options.encryptEnable
-        }, DEBUG ? () => {
-            console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'greenPale');
-            console.log('rawdata', rawdata);
-            console.groupEnd();
-        } : null);
+        }, () => {
+            if(DEBUG) {
+                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'greenPale');
+                console.log('rawdata', rawdata);
+                console.groupEnd();
+                callback && callback();
+            }
+        });
     }
 
     close() {

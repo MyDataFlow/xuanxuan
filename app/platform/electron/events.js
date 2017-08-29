@@ -1,5 +1,11 @@
 import EventEmitter from 'events';
 
+const EVENT = {
+    data_change: 'data.change'
+};
+
+const DATA_CHANGE_DELAY = 50;
+
 /**
  * Events emitter
  * Can be used in both main process and renderer process
@@ -8,6 +14,8 @@ import EventEmitter from 'events';
  * @extends {EventEmitter}
  */
 class Events extends EventEmitter {
+
+    static EVENT = EVENT;
 
     /**
      * Event center constructor
@@ -113,6 +121,35 @@ class Events extends EventEmitter {
                 console.groupEnd();
             }
         }
+    }
+
+    onDataChange(listener) {
+        return this.on(EVENT.data_change, listener);
+    }
+
+    emitDataChange(data, delay = DATA_CHANGE_DELAY) {
+        if(typeof data === 'object') {
+            if(this.delayEmitData && data) {
+                Object.keys(data).forEach(dataKey => {
+                    this.delayEmitData[dataKey] = Object.assign(this.delayEmitData[dataKey], data[dataKey]);
+                });
+            } else {
+                this.delayEmitData = data;
+            }
+        } else {
+            if(DEBUG) {
+                console.warn('Events.emitDataChange  error, because the data param is not object.');
+            }
+        }
+        if(this.delayEmitDataChangeEventTimer) {
+            clearTimeout(this.delayEmitDataChangeEventTimer);
+        }
+        this.delayEmitDataChangeEventTimer = setTimeout(() => {
+            const data = this.delayEmitData;
+            this.emit(EVENT.data_change, data);
+            this.delayEmitData = null;
+            this.delayEmitDataChangeEventTimer = null;
+        }, delay);
     }
 }
 

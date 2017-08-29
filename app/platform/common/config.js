@@ -1,5 +1,4 @@
 import Store from '../../utils/store';
-import Helper from '../../utils/helper';
 import User from '../../models/user';
 
 const KEY_USER_PREFIX = 'USER::';
