@@ -37,7 +37,7 @@ const chatLogout = (msg, socket) => {
     }
 };
 
-const chatError = (msg) => {
+const chatError = (msg, socket) => {
     let message = Lang.error(msg);
     if(message) {
         Events.emit('ui.message', message);

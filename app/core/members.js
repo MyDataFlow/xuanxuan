@@ -1,16 +1,19 @@
 import Member from '../models/member';
-import Platform from 'Platform';
 import profile from './user-profile';
 import Events from './events';
 
 let members = null;
 
-const update = (...memberArr) => {
+const update = (memberArr) => {
+    if(!Array.isArray(memberArr)) {
+        memberArr = [memberArr];
+    }
+
     let newMembers = {};
 
     memberArr.forEach(member => {
         member = Member.create(member);
-        member.isMe = member.id === userMeId;
+        member.isMe = profile.user && member.id === profile.user.id;
         newMembers[member.id] = member;
     });
     Object.assign(members, newMembers);
@@ -21,6 +24,18 @@ const init = (memberArr) => {
     members = {};
     if(memberArr && memberArr.length) {
         update(memberArr);
+    }
+};
+
+const getAll = () => {
+  return members ? Object.keys(members).map(x => members[x]) : [];
+};
+
+const forEach = (callback) => {
+    if(members) {
+        Object.keys(members).forEach(memberId => {
+            callback(members[memberId]);
+        });
     }
 };
 
@@ -35,7 +50,7 @@ const get = (idOrAccount) => {
             member = new Member({
                 id: idOrAccount,
                 account: idOrAccount,
-                realname: '用户-' + idOrAccount
+                realname: 'User-' + idOrAccount
             });
         }
     }
@@ -56,10 +71,21 @@ const guess = (search) => {
 
 const query = (condition, sortList) => {
     let result = null;
+    if(typeof condition === 'object') {
+        let conditionObj = condition;
+        let conditionKeys = Object.keys(conditionObj);
+        condition = member => {
+            for(let key of conditionKeys) {
+                if(conditionObj[key] !== member[key]) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
     if(typeof condition === 'function') {
         result = [];
-        Object.keys(members).forEach(x => {
-            let member = members[x];
+        forEach(member => {
             if(condition(member)) {
                 result.push(member);
             }
@@ -67,16 +93,16 @@ const query = (condition, sortList) => {
     } else if(Array.isArray(condition)) {
         result = [];
         condition.forEach(x => {
-            let member = this.getMember(x);
+            let member = get(x);
             if(member) {
                 result.push(member);
             }
         });
     } else {
-        result = Object.keys(members).map(x => members[x]);
+        result = getAll();
     }
     if(sortList && result && result.length) {
-        Member.sort(result, sortList, userMeId);
+        Member.sort(result, sortList, profile.user && profile.user.id);
     }
     return result || [];
 };
@@ -91,20 +117,29 @@ const remove = member => {
     }
 };
 
-const removeAll = () => {
-    members = null;
-    userMeId = null;
-};
+profile.onSwapUser(user => {
+    init();
+});
+
+Events.onDataChange(data => {
+    if(data.members) {
+        update(data.members);
+    }
+});
 
 export default {
     update,
     init,
     get,
+    getAll,
+    forEach,
     guess,
     query,
     remove,
-    removeAll,
-    get all() {
+    get map() {
         return members;
+    },
+    get all() {
+        return getAll();
     }
 };

@@ -1,7 +1,7 @@
-const init = () => {
+import chats from './im-chats';
 
-};
+
 
 export default {
-    init
+    chats,
 };

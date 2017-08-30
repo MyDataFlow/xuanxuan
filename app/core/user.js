@@ -36,7 +36,9 @@ class User extends Member {
         });
 
         this._status.onChnage = (status, oldStatus) => {
-            Events.emit(EVENT.status_change, status, oldStatus, this);
+            if(!this.markDestory) {
+                Events.emit(EVENT.status_change, status, oldStatus, this);
+            }
 
             clearTimeout(this.statusChangeCallTimer);
             if(this._status.is(Member.STATUS.logined)) {
@@ -64,6 +66,10 @@ class User extends Member {
         return User.SCHEMA;
     }
 
+    destroy() {
+        this.markDestory = true;
+    }
+
     plain() {
         return Object.assign({}, this.$, {
             config: this.config.plain()
@@ -82,7 +88,9 @@ class User extends Member {
                 this.save();
 
                 // Emit user config change event
-                Events.emit(EVENT.config_change, change, config, this);
+                if(!this.markDestory) {
+                    Events.emit(EVENT.config_change, change, config, this);
+                }
             };
         }
         return this._config;

@@ -1,7 +1,7 @@
 import Events from './events';
 
 const EVENT = {
-    swap: 'user.swap',
+    swap: 'profile.user.swap',
 };
 
 let user = null;
@@ -11,6 +11,9 @@ const setUser = newUser => {
         throw new Error(`The newUser param is not User class instance.`);
     }
     let oldUser = user;
+    if(oldUser) {
+        oldUser.destroy();
+    }
     user = newUser;
     if(!oldUser || oldUser.identify !== user.identify) {
         Events.emit(EVENT.swap, user);
