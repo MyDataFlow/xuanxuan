@@ -171,8 +171,8 @@ class Chat extends Entity {
         return this.$get('public');
     }
 
-    set public(public) {
-        this.$set('public', public);
+    set public(flag) {
+        this.$set('public', flag);
     }
 
     get lastActiveTime() {
@@ -355,6 +355,19 @@ class Chat extends Entity {
         return this.$get('members');
     }
 
+    set members(newMembers) {
+        if(newMembers.length) {
+            if(typeof newMembers[0] === 'object') {
+                this.resetMembers(newMembers);
+            } else {
+                this.$set('members', new Set(newMembers));
+                this._membersSet = null;
+            }
+        } else {
+            this._membersSet = [];
+        }
+    }
+
     get membersCount() {
         let members = this.members;
         return members ? members.size : 0;
@@ -389,25 +402,22 @@ class Chat extends Entity {
         this.$set('members', members);
     }
 
-    updateMembersSet(app) {
-        this._membersSet = Array.from(this.members).map(memberId => membersMap[memberId]);
+    updateMembersSet(appMembers) {
+        this._membersSet = Array.from(this.members).map(memberId => appMembers.get);
     }
 
-    getMembersSet(app) {
-        const membersMap = app.members;
-
+    getMembersSet(appMembers) {
         if(!this._membersSet) {
-            this.updateMembersSet(app);
+            this.updateMembersSet(appMembers);
         }
         return this._membersSet;
     }
 
     getTheOtherOne(app) {
+        const appMembers = app.members;
         const currentUser = app.user;
-        const membersMap = app.members;
-
         if(this.isOne2One && !this._theOtherOne) {
-            this._theOtherOne = this.getMembersSet(membersMap).find(member => member.id !== currentUser.id);
+            this._theOtherOne = this.getMembersSet(appMembers).find(member => member.id !== currentUser.id);
         }
         return this._theOtherOne;
     }
@@ -448,6 +458,10 @@ class Chat extends Entity {
         this._noticeCount = count;
     }
 
+    muteNotice() {
+        this._noticeCount = 0;
+    }
+
     get messages() {
         return this._messages || [];
     }
@@ -455,7 +469,9 @@ class Chat extends Entity {
     set messages(messages) {
         this._messages = [];
         this._noticeCount = 0;
-        this.addMessage(messages);
+        if(messages) {
+            this.addMessages(messages, true);
+        }
     }
 
     get lastActiveTime() {
@@ -470,7 +486,11 @@ class Chat extends Entity {
         this.$set('lastActiveTime', time);
     }
 
-    addMessage(messages) {
+    get hasSetMessages() {
+        return !!this._messages;
+    }
+
+    addMessages(messages, limitSize) {
         if(!Array.isArray(messages)) {
             messages = [messages];
         }
@@ -516,6 +536,10 @@ class Chat extends Entity {
             });
         }
 
+        if(limitSize && this._messages.length > MAX_MESSAGE_COUNT) {
+            this._messages.splice(0, this._messages.length - MAX_MESSAGE_COUNT);
+        }
+
         return this;
     }
 
@@ -531,6 +555,13 @@ class Chat extends Entity {
             }
         }
         return false;
+    }
+
+    static create(chat) {
+        if(chat instanceof chat) {
+            return chat;
+        }
+        return new Chat(chat);
     }
 
     /**

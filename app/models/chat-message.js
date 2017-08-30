@@ -162,6 +162,13 @@ class ChatMessage extends Entity {
         }
     }
 
+    getSender(appMembers) {
+        if(!this._sender) {
+            this._sender = appMembers.get(this.senderId);
+        }
+        return this._sender;
+    }
+
     get contentType() {
         return this.$get('contentType', CONTENT_TYPES.text);
     }
@@ -269,6 +276,13 @@ class ChatMessage extends Entity {
             time: content.time
         });
         this._fileContent = content;
+    }
+
+    static create(chatMessage) {
+        if(chatMessage instanceof chatMessage) {
+            return chatMessage;
+        }
+        return new ChatMessage(chatMessage);
     }
 
     reset(newData) {
