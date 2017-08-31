@@ -57,6 +57,18 @@ class ChatMessage extends Entity {
         }
     }
 
+    get plainServer() {
+        return {
+            gid: this.gid,
+            cgid: this.cgid,
+            type: this.type,
+            contentType: this.contentType,
+            content: this.content,
+            date: "",
+            user: this.senderId
+        };
+    }
+
     get schema() {
         return ChatMessage.SCHEMA;
     }
@@ -276,6 +288,18 @@ class ChatMessage extends Entity {
             time: content.time
         });
         this._fileContent = content;
+    }
+
+    getCommand() {
+        if(this.contentType === 'text') {
+            let content = this.content.trim();
+            if(content.length > 8 && content.startsWith('$$name=')) {
+                return {action: 'rename', name: content.substr(7)};
+            } else if(content === '$$version') {
+                return {action: 'version'};
+            }
+        }
+        return null;
     }
 
     static create(chatMessage) {

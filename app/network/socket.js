@@ -96,6 +96,23 @@ class AppSocket extends Socket {
         });
     }
 
+    sendAndListen(msg, check) {
+        return new Promise((resolve, reject) => {
+            msg = SocketMessage.create(msg);
+            this.listenMessage(msg.module, msg.method).then((result, serverMsg) => {
+                if(check) {
+                    result = check(serverMsg, result);
+                }
+                if(result) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            }).catch(reject);
+            this.send(msg);
+        });
+    }
+
     onInit() {
         this.lastHandTime = 0;
         this.lastOkTime   = 0;
@@ -171,40 +188,22 @@ class AppSocket extends Socket {
     }
 
     uploadUserSettings() {
-        return new Promise((resolve, reject) => {
-            this.listenMessage('chat', 'settings').then((result, msg) => {
-                if(msg.isSuccess) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            }).catch(reject);
-            this.send({
-                'method': 'settings',
-                params: [
-                    this.user.account,
-                    this.user.config.exportCloud()
-                ]
-            });
+        return this.sendAndListen({
+            'method': 'settings',
+            params: [
+                this.user.account,
+                this.user.config.exportCloud()
+            ]
         });
     }
 
     syncUserSettings() {
-        return new Promise((resolve, reject) => {
-            this.listenMessage('chat', 'settings').then((result, msg) => {
-                if(msg.isSuccess) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            }).catch(reject);
-            this.send({
-                'method': 'settings',
-                params: [
-                    this.user.account,
-                    ''
-                ]
-            });
+        return this.sendAndListen({
+            'method': 'settings',
+            params: [
+                this.user.account,
+                ''
+            ]
         });
     }
 

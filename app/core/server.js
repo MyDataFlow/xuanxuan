@@ -39,5 +39,6 @@ const login = user => {
 };
 
 export default {
-    login
+    login,
+    socket
 };

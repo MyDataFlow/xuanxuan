@@ -486,6 +486,10 @@ class Chat extends Entity {
         this.$set('lastActiveTime', time);
     }
 
+    makeActive() {
+        this.lastActiveTime = new Date().getTime();
+    }
+
     get hasSetMessages() {
         return !!this._messages;
     }
