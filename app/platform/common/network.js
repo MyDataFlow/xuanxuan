@@ -1,3 +1,7 @@
+import limitTimePromise from '../../utils/limit-time-promise';
+
+const TIMEOUT_DEFAULT = 15*1000;
+
 const request = (url, options) => {
     return new Promise((resolve, reject) => {
         fetch(url, options).then(response => {
@@ -55,6 +59,8 @@ const postJSONData = (url, options) => {
     }, options));
 };
 
+
+
 const downloadFile = (url, beforeSend, onprogress) => {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
@@ -101,7 +107,15 @@ const downloadFile = (url, beforeSend, onprogress) => {
     });
 };
 
-const uploadFile = (file, serverUrl, beforeSend, onProgress) => {
+/**
+ * Upload file to the server
+ *
+ * @param {object} file
+ * @param {string} serverUrl
+ * @param {Function} beforeSend
+ * @param {Function} onProgress
+ */
+const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.onload = e => {
@@ -160,6 +174,10 @@ const uploadFile = (file, serverUrl, beforeSend, onProgress) => {
     });
 };
 
+const timeout = (promise, timeout = TIMEOUT_DEFAULT, errorText = 'timeout') => {
+    return limitTimePromise(promise, timeout, errorText);
+};
+
 export default {
     request,
     getText,
@@ -167,5 +185,6 @@ export default {
     getJSONData,
     postJSONData,
     downloadFile,
-    uploadFile
+    uploadFile,
+    timeout
 };
