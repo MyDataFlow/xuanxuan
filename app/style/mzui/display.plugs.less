@@ -1,0 +1,63 @@
+//
+// Display plugs
+// --------------------------------------------------
+
+
+// Popover, dropdown-menu
+
+.popover,
+.dropdown-menu {
+  display: none;
+
+  .display > & {
+    display: block;
+  }
+}
+
+.modal,
+.popover,
+.dropdown-menu {
+  max-height: 100%;
+  overflow-y: auto;
+  &:extend(.layer all);
+}
+
+.dropdown-menu {min-width: (120*@rem);}
+
+
+// Messager
+
+.messager {
+  margin: @space;
+}
+
+
+// Modal
+
+.modal {
+  display: flex;
+  flex-direction: column;
+
+  > .heading, > .footer {
+    flex: none;
+    z-index: 1;
+  }
+
+  > .content {
+    flex: auto;
+    overflow-y: auto;
+  }
+
+  &.in-scroll {
+    > .heading {
+      border: none;
+      .shadow-1();
+    }
+  }
+
+  &.can-scroll:not(.scroll-over) {
+    > .footer {
+      .shadow-1-top();
+    }
+  }
+}

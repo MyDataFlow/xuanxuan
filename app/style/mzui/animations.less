@@ -1,0 +1,68 @@
+//
+// Animations
+// --------------------------------------------------
+
+
+// Transitions
+
+.fade {
+  .transition-fast();
+  opacity: 0;
+
+  &.in {opacity: 1;}
+}
+
+.scale {
+  .transition-fast();
+  transform: scale(.8);
+
+  &.in {transform: scale(1);}
+}
+
+.collapse {
+  display: none;
+
+  &.in {display: block;}
+}
+
+.collapsing {
+  position: relative;
+  overflow: hidden;
+  transition: ease height @animation-speed-fast;
+}
+
+
+// enter-from-* and scale-from-*
+
+[class^="scale-from-"],
+[class*=" scale-from-"],
+[class^="enter-from-"],
+[class*=" enter-from-"] {
+  .transition-fast();
+  &.in {
+    opacity: 1;
+    transform: scale(1) translate(0%, 0%);
+  }
+}
+
+.scale-from-top    {opacity: 0; transform: scale(.8) translate(0, -30%);}
+.scale-from-bottom {opacity: 0; transform: scale(.8) translate(0, 30%);}
+.scale-from-left   {opacity: 0; transform: scale(.8) translate(-30%, 0);}
+.scale-from-right  {opacity: 0; transform: scale(.8) translate(30%, 0);}
+.scale-from-center {opacity: 0; transform: scale(.8);}
+.enter-from-top    {transform: translate(0, -105%);}
+.enter-from-bottom {transform: translate(0, 105%);}
+.enter-from-left   {transform: translate(-105%, 0);}
+.enter-from-right  {transform: translate(105%, 0);}
+.enter-from-center {opacity: 0; transform: scale(.8) translate(0, 50%);}
+
+
+// Spin animation
+
+@keyframes spin {
+  0%   {transform: rotate(0deg);}
+  100% {transform: rotate(359deg);}
+}
+
+.spin      {animation: spin 2s infinite linear;}
+.spin-fast {animation: spin 1s infinite linear;}

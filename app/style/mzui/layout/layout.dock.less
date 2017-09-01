@@ -1,0 +1,55 @@
+.dock     {position: absolute!important;}
+.affix    {position: fixed!important;}
+.relative {position: relative!important;}
+.static   {position: static!important;}
+
+.affix,
+.dock,
+.dock-top,
+.dock-bottom,
+.dock-left,
+.dock-right {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: @zindex-affix;
+  transform: translate(0%,0%);
+  .transition-normal();
+}
+
+.dock-top    {bottom: auto;}
+.dock-bottom {top: auto;}
+.dock-left   {right: auto}
+.dock-right  {left: auto}
+
+.affix.dock-top    {.shadow-divider();}
+.affix.dock-bottom {.shadow-divider-top();}
+
+.in-scroll {
+  .affix.dock-top    {.shadow-2()}
+  .affix.dock-bottom {.shadow-2-top()}
+
+  &.scroll-down {
+    .affix.dock-top.dock-auto {
+      // Yes, not 100%! The magic 99% to prevent bug in safari
+      transform: translate(0, -99%);
+      .shadow-0();
+    }
+
+    .affix.dock-bottom.dock-auto {
+      // Yes, not 100%! The magic 99% to prevent bug in safari
+      transform: translate(0, 99%);
+      .shadow-0();
+    }
+  }
+}
+
+.listen-scroll {
+  .transition-normal(box-shadow);
+
+  &.in-scroll {
+    box-shadow: inset rgba(0, 0, 0, .05) 0 (1*@rem) (5*@rem), inset rgba(0, 0, 0, .08) 0 (1*@rem) (2*@rem);
+  }
+}

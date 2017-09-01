@@ -1,0 +1,115 @@
+//
+// Typography
+// --------------------------------------------------
+
+
+// Headings
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: @headings-font-family;
+  font-weight: @headings-font-weight;
+  line-height: @headings-line-height;
+  color: @headings-color;
+  margin: 0 0 @space-sm 0;
+}
+
+
+h1 { font-size: @font-size-h1; }
+h2 { font-size: @font-size-h2; }
+h3 { font-size: @font-size-h3; }
+h4 { font-size: @font-size-h4; }
+h5 { font-size: @font-size-h5; }
+h6 { font-size: @font-size-h6; }
+
+.lead {
+  font-size: @font-size-title;
+  font-weight: 300;
+}
+
+
+// Emphasis
+
+small, .small {font-size: @small-font-size;}
+.large {font-size: 150%}
+
+strong, .strong {font-weight: bolder;}
+.thin {font-weight: lighter;}
+
+mark, .mark {
+  background-color: @color-warning-pale;
+  padding: (2*@rem);
+}
+
+
+// Link
+
+.text-link {color: @color-primary}
+
+
+// Alignment
+
+.text-left     {text-align: left;}
+.text-right    {text-align: right;}
+.text-center   {text-align: center;}
+// .text-justify  {text-align: justify;}
+.text-nowrap   {white-space: nowrap;}
+.text-ellipsis {
+  .text-nowrap();
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+// Transformation
+
+.text-lowercase      { text-transform: lowercase; }
+.text-uppercase      { text-transform: uppercase; }
+.text-capitalize     { text-transform: capitalize; }
+
+
+// Decoration
+
+.text-line-through {text-decoration: line-through;}
+
+
+// Misc
+
+.text-hide {.text-hide();}
+
+
+// Horizontal rules
+
+hr {
+  border: 0;
+  border-top: @divider-width solid @divider-color;
+  margin-top: @space-sm;
+  margin-bottom: @space-sm;
+}
+
+hr.space {
+  border-color: transparent;
+  margin-bottom: @space-sm;
+}
+
+
+// Blockquotes
+
+blockquote {
+  padding: @padding-base-vertical @padding-base-horizontal;
+  border-left: (5*@rem) solid @border-color;
+  margin: @space-sm;
+}
+
+
+// List 
+
+ul, ol {
+  padding-left: @space;
+  margin: @space-sm;
+}
+
+
+// Margins
+
+p, ul, ol, blockquote, pre, table,
+img, video, iframe, object, embed {margin: 0 0 @space-sm 0}
