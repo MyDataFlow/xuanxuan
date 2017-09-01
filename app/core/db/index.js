@@ -1,5 +1,5 @@
-import Platfrom, {Database} from 'Platform';
-import profile from './profile';
+import Database from './database';
+import profile from '../profile';
 
 let db = null;
 
