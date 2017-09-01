@@ -1,6 +1,6 @@
 import Chat from '../../models/chat';
 import ChatMessage from '../../models/chat-message';
-import profile from '../user-profile';
+import profile from '../profile';
 import Events from '../events';
 import members from '../members';
 import db from '../db';

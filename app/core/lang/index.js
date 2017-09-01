@@ -1,5 +1,5 @@
-import DefaultLang from '../resource/lang/zh-cn.json';
-import StringHelper from '../utils/string-helper';
+import DefaultLang from './zh-cn.json';
+import StringHelper from '../../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 

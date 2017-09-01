@@ -1,8 +1,8 @@
-import Member from '../models/member';
-import UserConfig from '../user-config';
+import Member from '../../models/member';
+import UserConfig from './user-config';
 import Platfrom from 'Platform';
-import DelayAction from '../utils/delay-action';
-import Events from './events';
+import DelayAction from '../../utils/delay-action';
+import Events from '../events';
 
 const PASSWORD_WITH_MD5_FLAG = '%%%PWD_FLAG%%% ';
 const EVENT = {

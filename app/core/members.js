@@ -1,5 +1,5 @@
 import Member from '../models/member';
-import profile from './user-profile';
+import profile from './profile';
 import Events from './events';
 
 let members = null;

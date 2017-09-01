@@ -1,5 +1,5 @@
-import DEFAULT from '../resources/config/user-default.json';
-import DelayAction from '../utils/delay-action';
+import DEFAULT from './user-default-config';
+import DelayAction from '../../utils/delay-action';
 
 class UserConfig {
 

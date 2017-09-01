@@ -1,4 +1,4 @@
-import profile from './user-profile';
+import profile from './profile';
 import members from './members';
 import im from './im';
 import db from './db';
