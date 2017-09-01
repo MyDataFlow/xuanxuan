@@ -1,6 +1,6 @@
 import Socket from '../models/Socket';
 import serverHandlers from './server-handlers';
-import profile from './profile';
+import profile from '../profile';
 
 const socket = new Socket();
 socket.setHandler(serverHandlers);

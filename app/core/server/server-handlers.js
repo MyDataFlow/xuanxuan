@@ -1,7 +1,7 @@
-import members from './members';
-import Lang from '../resource/lang';
+import members from '../members';
+import Lang from '../lang';
 import Member from '../models/Member';
-import Events from './events';
+import Events from '../events';
 
 const chatLogin = (msg, socket) => {
     if(msg.isSuccess) {
