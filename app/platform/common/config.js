@@ -1,5 +1,4 @@
 import Store from '../../utils/store';
-import User from '../../models/user';
 
 const KEY_USER_PREFIX = 'USER::';
 const KEY_USER_LIST = 'USER_LIST';
@@ -10,8 +9,7 @@ const allUsers = () => {
 
 const getUser = (identify) => {
     if(identify) {
-        let user = Storage.get(`${KEY_USER_PREFIX}${identify}`);
-        return user ? new User(user) : null;
+        return Storage.get(`${KEY_USER_PREFIX}${identify}`);
     } else {
         let users = allUsers();
         let maxTime = 0, maxTimeIndentify = null;

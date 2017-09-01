@@ -1,8 +1,8 @@
 import Dexie from 'dexie';
-import Entity from '../../models/entity';
-import Member from '../../models/member';
-import Chat from '../../models/chat';
-import Message from '../../models/chat-message';
+import Entity from '../models/entity';
+import Member from '../models/member';
+import Chat from '../models/chat';
+import Message from '../models/chat-message';
 
 const DB_VERSION = 1;
 let lastCreateDb = null;

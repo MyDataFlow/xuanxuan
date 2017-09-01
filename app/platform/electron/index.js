@@ -1,6 +1,5 @@
 
 import fs from 'fs-extra';
-import Database from '../common/database'
 import config from '../common/config'
 import sound from '../common/sound'
 import env from './env';
@@ -42,6 +41,5 @@ export default {
     sound,
     net,
     crypto,
-    Database,
     Socket
 };
