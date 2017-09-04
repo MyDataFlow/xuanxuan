@@ -1,0 +1,46 @@
+.app-chats-search {
+  position: relative;
+
+  .input:not(:focus) {
+    border-color: transparent;
+  }
+
+  width: calc(100% - (40*@rem));
+  transition: width @animation-type @animation-speed-fast;
+
+  &:not(.empty),
+  &.focus {
+    width: 100%;
+  }
+}
+
+.app-chats-create-btn {
+  position: absolute;
+  right: (10*@rem);
+  top: (10*@rem);
+  transition: transform @animation-type @animation-speed-fast, opacity @animation-type @animation-speed-fast;
+
+  .app-chats-search:not(.empty) + &,
+  .app-chats-search.focus + & {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.app-chats-menu-list {
+  top: (50*@rem);
+
+  > .item {
+    height: (40*@rem);
+    padding-top: 0;
+    padding-bottom: 0;
+
+    &.active {
+      background-color: #fff;
+
+      &:after {
+        background-color: transparent;
+      }
+    }
+  }
+}

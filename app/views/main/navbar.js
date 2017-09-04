@@ -1,0 +1,64 @@
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import HTML from '../../utils/html-helper';
+import {
+    HashRouter as Router,
+    Route,
+    Link,
+    Redirect,
+    withRouter
+} from 'react-router-dom';
+import Lang from '../../lang';
+import Avatar from '../../components/avatar';
+import Config from 'Config';
+import App from '../../core';
+import UserAvatar from '../common/user-avatar';
+import StatusDot from '../common/status-dot';
+import ROUTES from '../common/routes';
+
+const navbarItems = [
+    {to: ROUTES.chats.recents.__, label: Lang['navbar.chats.label'], icon: 'comment-outline', activeIcon: 'comment-processing'},
+    {to: ROUTES.chats.groups.__, label: Lang['navbar.groups.label'], icon: 'pound', activeIcon: 'pound-box'},
+    {to: ROUTES.chats.contacts.__, label: Lang['navbar.contacts.label'], icon: 'account-multiple-outline', activeIcon: 'account-multiple'},
+];
+
+const NavLink = ({item}) => (
+    <Route path={item.to} children={({match}) => (
+        <Link className={"block" + (match ? ' active' : '')} to={item.to}><Avatar size={Config.ui['navbar.width']} icon={match ? item.activeIcon : item.icon}/></Link>
+    )}/>
+);
+
+class MainView extends Component {
+
+    onProfileAvatarClick = () => {
+        App.profile.openUserProfileMenu();
+    }
+
+    render() {
+        let {
+            className,
+            children,
+            ...other
+        } = this.props;
+
+        return <div className={HTML.classes('app-navbar', className)} {...other}>
+            <nav className="dock-top app-nav-main">
+            {
+                navbarItems.map(item => {
+                    return <div key={item.to} className="hint--right" data-hint={item.label}><NavLink item={item}/></div>
+                })
+            }
+            </nav>
+            <nav className="dock-bottom app-nav-profile">
+                <div className="hint--right" data-hint={App.profile.summaryText}>
+                    <a className="block relative app-profile-avatar" onClick={this.onProfileAvatarClick}>
+                        <UserAvatar className="avatar-lg relative" style={{margin: HTML.rem((Config.ui['navbar.width'] - 36)/2)}} size={36} user={App.profile.user}/>
+                        <StatusDot status={App.profile.userStatus}/>
+                    </a>
+                </div>
+            </nav>
+        </div>;
+    }
+}
+
+export default MainView;

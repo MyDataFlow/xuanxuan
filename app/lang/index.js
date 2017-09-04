@@ -21,7 +21,11 @@ const string = (name, defaultValue) => {
 const format = (name, ...args) => {
     let str = string(name);
     if(args && args.length) {
-        return StringHelper.format(str, ...args);
+        try {
+            return StringHelper.format(str, ...args);
+        } catch(e) {
+            throw new Error(`Cannot format lang string with key '${name}', the lang string is '${str}'.`)
+        }
     }
     return str;
 };
