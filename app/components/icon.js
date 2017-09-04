@@ -35,7 +35,7 @@ class MDIcon extends Component {
             style.height = style.fontSize;
             style.width = style.fontSize;
         }
-        return <i style={style} {...other} className={HTML.classes(`mdi mdi-${name}`, className)}>{children}</i>;
+        return <i style={style} {...other} className={HTML.classes(`icon mdi mdi-${name}`, className)}>{children}</i>;
     }
 }
 
