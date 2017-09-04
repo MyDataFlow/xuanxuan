@@ -180,6 +180,12 @@
   }
 
   &:not(:last-child) {margin-bottom: (@space/2);}
+
+
+}
+
+::-webkit-input-placeholder {
+  font-size: (12*@rem);
 }
 
 .control {
@@ -272,6 +278,65 @@
   .help-text       {color: @color-warning;}
 }
 
+
+// Search control
+.control.search {
+  position: relative;
+
+  > label {
+    position: absolute;
+    height: (30*@rem);
+    min-width: (30*@rem);
+    padding: 0;
+    line-height: (30*@rem);
+    text-align: center;
+    opacity: .6;
+    transition: transform @animation-speed-fast @animation-type, opacity @animation-speed-fast @animation-type;
+  }
+
+  > .input {
+    padding-left: (30*@rem);
+    padding-right: (30*@rem);
+    transition: all @animation-speed-fast @animation-type;
+  }
+
+  > .close {
+    display: block;
+    position: absolute;
+    height: (30*@rem);
+    min-width: (30*@rem);
+    line-height: (30*@rem);
+    text-align: center;
+    right: 0;
+    top: 0;
+    opacity: 0.6;
+    transform: scale(1);
+    transition: transform @animation-speed-fast @animation-type, opacity @animation-speed-fast @animation-type;
+    cursor: pointer;
+  }
+
+  &:not(.empty),
+  &.focus {
+    > .input {
+      padding-left: (5*@rem);
+    }
+
+    > label {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+
+  &.empty {
+    > .close {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+}
+
+
+// Flex control group
 
 .control.flex {
   flex-direction: row;
