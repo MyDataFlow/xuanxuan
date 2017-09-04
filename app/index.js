@@ -1,20 +1,11 @@
-import './style/less/app.less';
+import './style/app.less';
 import './utils/debug';
-import App                    from 'App';
-import React                  from 'react';
-import ReactDOM               from 'react-dom';
-import injectTapEventPlugin   from 'react-tap-event-plugin';
-import {ThemeProvider}        from 'Theme';
-import AppContainer           from 'Views/app-container';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import IndexView from './views/index';
 
-injectTapEventPlugin();
-
-let appElement = document.getElementById('appContainer');
-ReactDOM.render(
-    (<ThemeProvider>
-        <AppContainer />
-    </ThemeProvider>),
-appElement);
-
-let loadingElement = document.getElementById('loading');
-loadingElement.parentNode.removeChild(loadingElement);
+const appElement = document.getElementById('appContainer');
+ReactDOM.render(<IndexView/>, appElement, () => {
+    const loadingElement = document.getElementById('loading');
+    loadingElement.parentNode.removeChild(loadingElement);
+});

@@ -16,10 +16,13 @@
     </script>
   </head>
   <body>
-    <div class="spinner-main" id="loading">
-      <div class="dot1"></div><div class="dot2"></div>
+    <div class="page" id="appContainer"></div>
+    <div class="page flex flex-center flex-middle" id="loading">
+      <div class="text-center">
+        <div class="icon mdi-loading spin icon-3x text-secondary inline-block"></div>
+        <div class="muted small">正在加载...</div>
+      </div>
     </div>
-    <div id="appContainer" class="fix-full"></div>
     <script>
       {
         const script = document.createElement('script');
