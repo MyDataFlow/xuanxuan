@@ -1,4 +1,4 @@
-const start = new Date().getTime() - 1502280129090;
+let start = new Date().getTime() - 1504504705755;
 
 export default () => {
     return start++;
