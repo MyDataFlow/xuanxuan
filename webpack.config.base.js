@@ -34,17 +34,9 @@ export default validate({
     extensions: ['', '.js', '.jsx', '.json'],
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
     alias: {
-        Theme: 'theme.js',
-        App: 'app.js',
-        Resource: 'resource.js',
-        Lang: 'lang.js',
-        Events: 'event-center.js',
-        Helper: 'utils/helper.js',
-        Components: 'views/components',
-        Views: 'views',
-        Utils: 'utils',
-        Models: 'models',
-        WebSocket: 'ws'
+        Platform: 'platform/electron',
+        App: 'core/index.js',
+        Config: 'config/index.js',
     },
     root: path.join(__dirname, 'app')
   },
