@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import HTML from '../utils/html-helper';
+import timeSequence from '../utils/time-sequence';
 
 class InputControl extends Component {
 
@@ -14,7 +15,8 @@ class InputControl extends Component {
         helpText: null,
         onChange: null,
         disabled: false,
-        inputClassName: 'rounded'
+        inputClassName: 'rounded',
+        name: `control${timeSequence()}`,
     };
 
     constructor(props) {
@@ -24,14 +26,17 @@ class InputControl extends Component {
     }
 
     handleChange(event) {
-        this.setState({value: event.target.value});
-        this.props.onChange && this.props.onChange(event.target.value, event);
+        const value = this.input.value;
+        if(this.state.value !== value) {
+            this.setState({value: value});
+            this.props.onChange && this.props.onChange(value, event);
+        }
     }
 
     componentDidMount() {
         if(this.props.autoFocus) {
             this.autoFocusTask = setTimeout(() => {
-                this.control.focus();
+                this.focus();
                 this.autoFocusTask = null;
             }, 100);
         }
@@ -44,13 +49,24 @@ class InputControl extends Component {
         }
     }
 
+    focus() {
+        this.input.focus();
+    }
+
+    setValue(value = '') {
+        this.input.value = value;
+        this.handleChange();
+    }
+
     render() {
         let {
+            name,
             label,
             placeholder,
             autoFocus,
             style,
             inputType,
+            inputStyle,
             defaultValue,
             helpText,
             onChange,
@@ -63,7 +79,16 @@ class InputControl extends Component {
 
         return <div className={HTML.classes('control', className, {disabled})} {...other}>
             <label htmlFor={name}>{label}</label>
-            <input disabled={!!disabled} ref={e => {this.control = e}} value={this.state.value} name={name} type={inputType} className={HTML.classes('input', inputClassName)} placeholder={placeholder} onChange={this.handleChange}/>
+            <input
+                disabled={!!disabled}
+                ref={e => {this.input = e}}
+                value={this.state.value}
+                id={name}
+                type={inputType}
+                className={HTML.classes('input', inputClassName)} placeholder={placeholder}
+                onChange={this.handleChange}
+                style={inputStyle}
+            />
             {helpText ? <p className="help-text">{helpText}</p> : null}
             {children}
         </div>;
