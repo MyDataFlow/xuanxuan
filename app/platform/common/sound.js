@@ -1,4 +1,5 @@
 import 'ion-sound';
+import Config from 'Config';
 
 const init = soundPath => {
     window.ion.sound({
@@ -21,7 +22,8 @@ const play = sound => {
     window.ion.sound.play(sound);
 };
 
+init(Config.media['sound.path']);
+
 export default {
-    init,
     play
 };

@@ -3,7 +3,7 @@ import {desktopCapturer, screen as Screen, Remote} from 'electron';
 import ui from './ui';
 import Image from './image';
 import env from './env';
-import Lang from 'Lang';
+import Lang from '../../lang';
 import RemoteEvents from './remote';
 
 /* This is NEEDED because RecordRTC is badly written */
@@ -271,5 +271,5 @@ export default {
     captureVideo,
     takeAllScreenshots,
     saveScreenshotImage,
-    openCaptureScreenWindow
+    openCaptureWindow
 };

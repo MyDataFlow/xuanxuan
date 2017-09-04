@@ -40,12 +40,18 @@ class Socket {
         this.url = url;
         this._status.change(STATUS.UNCONNECT);
 
-        if(options.connect && this.url) {
-            this.connect();
-        }
-
         if(this.onInit) {
             this.onInit();
+        }
+
+        if(DEBUG) {
+            console.collapse('SOCKET init', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
+            console.trace('socket', this);
+            console.groupEnd();
+        }
+
+        if(options.connect && this.url) {
+            this.connect();
         }
     }
 
@@ -66,7 +72,7 @@ class Socket {
     }
 
     isStatus(status) {
-        return this._status.isStatus(status);
+        return this._status.is(status);
     }
 
     updateStatusFromClient() {
@@ -83,6 +89,12 @@ class Socket {
         this.status = STATUS.CONNECTING;
         this.client = new WS(this.url);
 
+        if(DEBUG) {
+            console.collapse('SOCKET connect', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
+            console.log('socket', this);
+            console.groupEnd();
+        }
+
         this.client.on('open', this.handleConnect.bind(this));
         this.client.on('message', this.handleData.bind(this));
         this.client.on('close', this.handleClose.bind(this));
@@ -98,7 +110,7 @@ class Socket {
         this.updateStatusFromClient();
 
         if(DEBUG) {
-            console.collapse('SOCKET Connected', 'greenBg', this.url, 'greenPale');
+            console.collapse('SOCKET Connected', 'indigoBg', this.url, 'indigoPale');
             console.log('socket', this);
             console.groupEnd();
         }
@@ -118,7 +130,7 @@ class Socket {
         this.client = null;
 
         if(DEBUG) {
-            console.collapse('SOCKET Closed', 'greenBg', this.url, 'greenPale');
+            console.collapse('SOCKET Closed', 'indigoBg', this.url, 'indigoPale');
             console.log('socket', this);
             console.log('code', code);
             console.log('reason', reason);
@@ -165,14 +177,6 @@ class Socket {
             }
         }
 
-        if(DEBUG) {
-            console.collapse('SOCKET Data', 'greenBg', this.url, 'greenPale');
-            console.log('socket', this);
-            console.log('rawdata', rawdata);
-            console.log('data', data);
-            console.groupEnd();
-        }
-
         if(this.options.onData) {
             this.options.onData(this, data, flags);
         }
@@ -185,7 +189,7 @@ class Socket {
     send(rawdata, callback) {
         let data = null;
         if(this.options.encryptEnable) {
-            data = crypto.encrypt(rawdata);
+            data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
             if(DEBUG) {
                 console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
                 console.log('data', data);
@@ -196,14 +200,7 @@ class Socket {
 
         this.client.send(data, {
             binary: this.options.encryptEnable
-        }, () => {
-            if(DEBUG) {
-                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'greenPale');
-                console.log('rawdata', rawdata);
-                console.groupEnd();
-                callback && callback();
-            }
-        });
+        }, callback);
     }
 
     close() {

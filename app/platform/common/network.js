@@ -1,19 +1,44 @@
 import limitTimePromise from '../../utils/limit-time-promise';
 
 const TIMEOUT_DEFAULT = 15*1000;
+let fetch = window.fetch;
+let optionsFilter = null;
+const getOptions = options => {
+    return optionsFilter ? optionsFilter(options) : options;
+};
 
 const request = (url, options) => {
     return new Promise((resolve, reject) => {
+        options = getOptions(options);
         fetch(url, options).then(response => {
             if(response.ok) {
+                if(DEBUG) {
+                    console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', 'OK', 'greenPale');
+                    console.log('options', options);
+                    console.log('response', response);
+                    console.log('body', response.body);
+                    console.groupEnd();
+                }
                 resolve(response);
             } else {
                 let error = new Error('Status code is not 200.');
-                error = 'WRONG_STATUS';
+                error.code = 'WRONG_STATUS';
+                if(DEBUG) {
+                    console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', error.code || 'ERROR', 'redPale');
+                    console.log('options', options);
+                    console.log('error', error);
+                    console.groupEnd();
+                }
                 reject(error);
             }
         }).catch(error => {
             error.code = 'WRONG_CONNECT';
+            if(DEBUG) {
+                console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', error.code || 'ERROR', 'redPale');
+                console.log('options', options);
+                console.log('error', error);
+                console.groupEnd();
+            }
             reject(error);
         });
     });
@@ -25,9 +50,27 @@ const getText = (url, options) => {
     });
 };
 
+const postText = (url, options) => {
+    if(options instanceof FormData) {
+        options = {body: options};
+    }
+    return request(url, Object.assign({method: 'POST'}, options)).then(response => {
+        return response.text();
+    });
+};
+
 
 const getJSON = (url, options) => {
     return request(url, options).then(response => {
+        return response.json();
+    });
+};
+
+const postJSON = (url, options) => {
+    if(options instanceof FormData) {
+        options = {body: options};
+    }
+    return request(url, Object.assign({method: 'POST'}, options)).then(response => {
         return response.json();
     });
 };
@@ -58,8 +101,6 @@ const postJSONData = (url, options) => {
         method: 'POST',
     }, options));
 };
-
-
 
 const downloadFile = (url, beforeSend, onprogress) => {
     return new Promise((resolve, reject) => {
@@ -178,13 +219,25 @@ const timeout = (promise, timeout = TIMEOUT_DEFAULT, errorText = 'timeout') => {
     return limitTimePromise(promise, timeout, errorText);
 };
 
+const setFetchObject = fObj => {
+    fetch = fObj;
+};
+
+const setOptionsFileter = filter => {
+    optionsFilter = filter;
+};
+
 export default {
     request,
     getText,
+    postText,
     getJSON,
+    postJSON,
     getJSONData,
     postJSONData,
     downloadFile,
     uploadFile,
-    timeout
+    timeout,
+    setFetchObject,
+    setOptionsFileter,
 };

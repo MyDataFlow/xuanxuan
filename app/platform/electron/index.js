@@ -9,10 +9,10 @@ import remote from './remote';
 import EventEmitter from './event-emitter';
 import image from './image';
 import ui from './ui';
-import notify from '../notify';
-import shortcut from '../shortcut';
-import dialog from '../dialog';
-import net from '../net';
+import notify from './notify';
+import shortcut from './shortcut';
+import dialog from './dialog';
+import net from './net';
 import crypto from './crypto';
 import Socket from './socket';
 
@@ -20,14 +20,7 @@ if(process.type !== 'renderer') {
     throw new Error('platform/electron/index.js must run in renderer process.');
 }
 
-const init = () => {
-    // Init sound
-    sound.init('sound/');
-};
-
-init();
-
-export default {
+const platform = {
     type: 'electron',
     env,
     screenshot,
@@ -43,3 +36,9 @@ export default {
     crypto,
     Socket
 };
+
+if(DEBUG) {
+    global.$.Platform = platform;
+}
+
+export default platform;

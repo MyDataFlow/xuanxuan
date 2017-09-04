@@ -11,6 +11,7 @@ remote.call('appRoot').then(path => {
     _appRoot = path;
 });
 
+const userDataPath = Remote.app.getPath('userData');
 const browserWindow = Remote.getCurrentWindow();
 
 const makeFileUrl = url => {
@@ -52,7 +53,6 @@ const showAndFocusWindow = () => {
 
 export default {
     userDataPath,
-    desktopPath,
     browserWindow,
     makeFileUrl,
     openExternal: shell.openExternal,

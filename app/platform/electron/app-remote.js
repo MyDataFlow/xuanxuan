@@ -1,7 +1,9 @@
 import electron, { BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
-import fse                from 'fs-extra';
-import Lang               from '../../core/lang';
-import EVENT              from './remote-events';
+import fse from 'fs-extra';
+import Lang from '../../lang';
+import Config from '../../config';
+import EVENT from './remote-events';
+
 
 const IS_MAC_OSX = process.platform === 'darwin';
 
@@ -113,7 +115,7 @@ class AppRemote {
             this.tray.destroy();
         }
         // Make tray icon
-        let tray = new Tray(`${this.entryPath}/resource/img/tray-icon-16.png`);
+        let tray = new Tray(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`);
         let trayContextMenu = Menu.buildFromTemplate([
             {
                 label: Lang.common.open,

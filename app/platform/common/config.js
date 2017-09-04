@@ -1,4 +1,5 @@
 import Store from '../../utils/store';
+import plainObject from '../../utils/plain';
 
 const KEY_USER_PREFIX = 'USER::';
 const KEY_USER_LIST = 'USER_LIST';
@@ -9,9 +10,12 @@ const allUsers = () => {
 
 const getUser = (identify) => {
     if(identify) {
-        return Storage.get(`${KEY_USER_PREFIX}${identify}`);
+        return Store.get(`${KEY_USER_PREFIX}${identify}`);
     } else {
         let users = allUsers();
+        if(!users) {
+            return null;
+        }
         let maxTime = 0, maxTimeIndentify = null;
         Object.keys(users).forEach(identify => {
             let time = users[identify];
@@ -31,8 +35,13 @@ const userList = () => {
 
 const saveUser = (user) => {
     const identify = user.identify;
+    if(!identify) {
+        throw new Error('Cannot save user, because user.indentify property is not defined.');
+    }
 
-    Store.set(`${KEY_USER_PREFIX}${identify}`, user.plain());
+    const userData = typeof user.plain === 'function' ? user.plain() : plainObject(user);
+
+    Store.set(`${KEY_USER_PREFIX}${identify}`, userData);
 
     let users = allUsers();
     users[identify] = new Date().getTime();
@@ -41,6 +50,11 @@ const saveUser = (user) => {
 
 const removeUser = (user) => {
     const identify = typeof user === 'object' ? user.identify : user;
+
+    if(!identify) {
+        throw new Error('Cannot remove user, because user.indentify property is not defined.');
+    }
+
     Store.remove(`${KEY_USER_PREFIX}${identify}`);
 
     let users = allUsers();

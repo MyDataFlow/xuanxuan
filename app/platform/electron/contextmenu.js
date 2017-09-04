@@ -1,5 +1,4 @@
 import {remote} from 'electron';
-import Lang from 'Lang';
 
 const Menu     = remote.Menu;
 const MenuItem = remote.MenuItem;
