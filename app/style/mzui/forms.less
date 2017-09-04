@@ -17,10 +17,17 @@
   -webkit-appearance: none;
   border-radius: 0; // reset safari style
   min-height: (30*@rem);
+  transition: border @animation-speed-fast @animation-type, box-shadow @animation-speed-fast @animation-type;
+  box-shadow: none;
+
+  &:hover {
+    border-color: darken(@input-border-color, 20%);
+  }
 
   &:focus {
     border-color: @color-focus;
     outline: none;
+    box-shadow: 0 0 0 (2*@rem) fade(@color-focus, 30%);
   }
 
   &[readonly],
@@ -137,8 +144,8 @@
 
 .checkbox > input {
   + label:after {
-    .icon-zenicon();
-    content: @icon-check;
+    .mdi();
+    content: @mdi-check;
     border: none;
   }
 
@@ -167,8 +174,9 @@
 .control {
   > label {
     display: block;
-    font-weight: bold;
+    // font-weight: bold;
     padding: @padding-small-vertical 0;
+    font-size: @font-size-small;
   }
 
   &:not(:last-child) {margin-bottom: (@space/2);}
@@ -281,6 +289,7 @@
     font-weight: normal;
     width: (60*@rem);
     align-self: flex-start;
+    font-size: @font-size-base;
   }
 
   > label,
