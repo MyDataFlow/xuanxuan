@@ -20,10 +20,7 @@ const setItem = (key, value) => {
 
 const getItem = (key, defaultValue) => {
     const val = deserialize(storage.getItem(key));
-    if(typeof val === 'undefined') {
-        return defaultValue;
-    }
-    return val;
+    return val === null ? defaultValue : val;
 };
 
 const remove = key => {
