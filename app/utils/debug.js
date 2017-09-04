@@ -150,6 +150,12 @@ if(global.DEBUG) {
         console.expand = (...args) => {
             console.group(...formatOutput(args));
         };
+
+        const showHashPath = () => {
+            console.color('➜', 'orangeBg', window.location.hash.substr(1), 'orangePale');
+        };
+        window.addEventListener("hashchange", showHashPath, false);
+        showHashPath();
     }
 
     global.$ = {};
