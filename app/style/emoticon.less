@@ -1,0 +1,25 @@
+.emoticon-list {
+  .emoticon-item {
+    transition: border @animation-type @animation-speed-normal, transform @animation-type @animation-speed-normal;
+    cursor: pointer;
+  }
+
+  .emojione, .emojione:hover, .emoticon-item:hover, .emojione svg {
+    cursor: pointer;
+  }
+
+  .emoticon-item:hover {
+    background: @color-back;
+    border-color: @color-focus!important;
+    transform: scale(2);
+  }
+}
+
+.emojione {
+  max-width: 64px;
+  max-height: 64px;
+
+  img& {
+    filter: drop-shadow(0 0 1px rgba(0,0,0,.8));
+  }
+}

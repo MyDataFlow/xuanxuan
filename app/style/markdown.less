@@ -1,0 +1,78 @@
+.markdown-content {
+  p {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  ul, ol {
+    margin: 0 0 8px 0;
+    padding-left: 16px;
+  }
+
+  pre {
+    font-size: .9em;
+    background: rgba(0,0,0,.05);
+    margin: 4px 0 8px;
+    white-space: pre-wrap;
+
+    + pre {margin-top: -3px;}
+
+    code {background: none;}
+  }
+
+  h1, h2, h3 {
+    margin: 4px 0 16px 0;
+  }
+
+  h4, h5, h6 {
+    margin: 4px 0 8px;
+  }
+
+  h1 {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+  }
+
+  blockquote {
+    margin: 8px 0;
+    padding: 0 8px 0 16px;
+    color: #777;
+    border-left: 4px solid rgba(0,0,0,.1);
+  }
+
+  table {
+    margin: 4px 0 8px;
+    max-width: 100%;
+    border: 1px solid rgba(0,0,0,.1);
+
+    > thead > tr > td,
+    > thead > tr > th,
+    > tbody > tr > td,
+    > tbody > tr > th,
+    > tfoot > tr > td,
+    > tfoot > tr > th {
+      border: 1px solid rgba(0,0,0,.1);
+      padding: 4px 8px;
+    }
+
+    > thead,
+    > tfoot {
+      > tr > td,
+      > tr > th {
+        background-color: @color-gray-lighter;
+      }
+    }
+  }
+
+  hr {
+    margin: 4px 0 8px;
+    border: none;
+    border-top: 1px solid rgba(0,0,0,.1);
+  }
+
+  p > code {
+    padding: 0 .5em;
+    display: inline-block;
+    background: rgba(0,0,0,.05);
+  }
+}
