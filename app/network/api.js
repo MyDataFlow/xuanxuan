@@ -18,7 +18,7 @@ const requestServerInfo = user => {
             ''
         ]
     }));
-    return Platform.net.postJSONData(user.webServerInfoUrl, form).then(data => {
+    return Platform.net.postJSON(user.webServerInfoUrl, form).then(data => {
         if(data) {
             user.socketPort     = data.chatPort;
             user.token          = data.token;

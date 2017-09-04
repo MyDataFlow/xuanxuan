@@ -1,5 +1,6 @@
-import Platform, {Socket} from 'Platform';
+import {Socket} from 'Platform';
 import SocketMessage from './socket-message';
+import Events from '../core/events';
 
 const PING_INTERVAL = 1000 * 60 * 5;
 const LISTEN_TIMEOUT = 1000 * 15;
@@ -23,7 +24,14 @@ class AppSocket extends Socket {
             if(!msg.userID) {
                 msg.userID = this.user.id;
             }
-            super.send(msg.json, resolve);
+            super.send(msg.json, () => {
+                if(DEBUG) {
+                    console.collapse('Socket send ⬆︎', 'indigoBg', msg.pathname, 'indigoPale');
+                    console.log('msg', msg);
+                    console.groupEnd();
+                }
+                resolve(msg);
+            });
         });
     }
 
@@ -57,6 +65,13 @@ class AppSocket extends Socket {
             this.lastOkTime = this.lastHandTime;
         }
 
+        if(DEBUG) {
+            console.collapse('SOCKET Data ⬇︎', 'purpleBg', msg.pathname, 'purplePale', msg.isSuccess ? 'OK' : 'FAILED', msg.isSuccess ? 'greenPale' : 'dangerPale');
+            console.log('msg', msg);
+            console.log('socket', this);
+            console.groupEnd();
+        }
+
         let handler = this.getHandler(msg.module, msg.method);
         let result;
         if(handler) {
@@ -70,7 +85,7 @@ class AppSocket extends Socket {
         if(result === undefined) {
             result = msg.isSuccess;
         }
-        Platform.events.emit(EVENT.message, msg, result);
+        Events.emit(EVENT.message, msg, result);
     }
 
     listenMessage(moduleName, methodName, timeout = LISTEN_TIMEOUT) {
@@ -78,17 +93,17 @@ class AppSocket extends Socket {
             let listenHandler = null;
             const listenTimer = setTimeout(() => {
                 if(listenHandler) {
-                    Platform.events.off(listenHandler);
+                    Events.off(listenHandler);
                 }
                 reject();
             }, timeout);
-            listenHandler = Platform.events.on(EVENT.message, (msg, result) => {
+            listenHandler = Events.on(EVENT.message, (msg, result) => {
                 if(msg.module === moduleName && msg.method === methodName) {
                     if(listenTimer) {
                         clearTimeout(listenTimer);
                     }
                     if(listenHandler) {
-                        Platform.events.off(listenHandler);
+                        Events.off(listenHandler);
                     }
                     resolve(result, msg);
                 }
@@ -118,10 +133,6 @@ class AppSocket extends Socket {
         this.lastOkTime   = 0;
     }
 
-    onConnect() {
-        this.login();
-    }
-
     onClose(code, reason, unexpected) {
         this.stopPing();
         if(this.user) {
@@ -134,7 +145,7 @@ class AppSocket extends Socket {
     }
 
     onData(data, flags) {
-        const msg = SocketMessage.create(data);
+        const msg = SocketMessage.fromJSON(data);
         this.lastHandTime = new Date().getTime();
         if(Array.isArray(msg)) {
             msg.forEach(x => {
@@ -178,6 +189,7 @@ class AppSocket extends Socket {
             this.init(user.socketUrl, {
                 userToken: user.token,
                 cipherIV: user.cipherIV,
+                connect: true,
                 onConnect
             });
         });
