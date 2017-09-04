@@ -1,0 +1,26 @@
+{
+    "app.title": "喧喧",
+
+    "login.serverUrl.label": "服务器",
+    "login.serverUrl.hint": "https://xuanxuan.chat",
+    "login.account.label": "账号",
+    "login.account.hint": "用户名/邮箱",
+    "login.password.label": "密码",
+    "login.btn.label": "登录",
+    "login.btn.logining": "正在登录...",
+
+    "navbar.chats.label": "最近聊天",
+    "navbar.contacts.label": "联系人",
+    "navbar.groups.label": "讨论组",
+
+    "member.status.unverified":   "未登录",
+    "member.status.loginFailed":  "登录失败",
+    "member.status.waitReconnect":"等待重连",
+    "member.status.logining":     "正在登录",
+    "member.status.reconnecting": "正在重连",
+    "member.status.disconnect":   "掉线了",
+    "member.status.logined":      "登录成功",
+    "member.status.online":       "在线",
+    "member.status.busy":         "忙碌",
+    "member.status.away":         "离开"
+}

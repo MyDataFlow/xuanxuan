@@ -1,10 +1,11 @@
-import DefaultLang from './zh-cn.json';
-import StringHelper from '../../utils/string-helper';
+import DefaultLang from './default.json';
+import ZhcnLang from './zh-cn.json';
+import StringHelper from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
-let langData = Object.assign({}, DefaultLang);
-let lang = DEFAULT_LANG;
+let langData = Object.assign({}, DefaultLang, ZhcnLang);
+let currentLangName = DEFAULT_LANG;
 
 /**
  * Get language setting and return string
@@ -13,15 +14,7 @@ let lang = DEFAULT_LANG;
  * @return {string}
  */
 const string = (name, defaultValue) => {
-    let value;
-    if(langData[name] === undefined && name.indexOf('.') > -1) {
-        value = langData;
-        name.split('.').forEach(n => {
-            value = value[n];
-        });
-    } else {
-        value = langData[name];
-    }
+    let value = langData[name];
     return value === undefined ? defaultValue : value;
 };
 
@@ -59,10 +52,18 @@ const error = err => {
     return message;
 };
 
-langData.string = string;
-langData.format = format;
-langData.error = error;
+const lang = {
+    format,
+    string,
+    error,
 
-if(DEBUG) global.Lang = langData;
+    get name() {
+        return currentLangName;
+    }
+};
 
-export default langData;
+Object.assign(lang, langData);
+
+if(DEBUG) global.Lang = lang;
+
+export default lang;
