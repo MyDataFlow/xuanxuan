@@ -26,7 +26,7 @@ class AppSocket extends Socket {
             }
             super.send(msg.json, () => {
                 if(DEBUG) {
-                    console.collapse('Socket send ⬆︎', 'indigoBg', msg.pathname, 'indigoPale');
+                    console.collapse('Socket Send ⬆︎', 'indigoBg', msg.pathname, 'indigoPale');
                     console.log('msg', msg);
                     console.groupEnd();
                 }
