@@ -22,6 +22,10 @@ class Entity {
         this._entityType = entityType;
     }
 
+    assign(...data) {
+        Object.assign(this, ...data);
+    }
+
     ensureGid() {
         if(!this.$.gid) {
             this.$.gid = UUID();
@@ -83,7 +87,7 @@ class Entity {
         if(value !== undefined) {
             let scheam = this.scheam;
             if(scheam) {
-                value = scheam.convertValue(key, val);
+                value = scheam.convertValue(key, value);
             }
         } else {
             value = defaultValue;

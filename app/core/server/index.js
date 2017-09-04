@@ -1,6 +1,7 @@
-import Socket from '../models/Socket';
+import Socket from '../../network/socket';
 import serverHandlers from './server-handlers';
 import profile from '../profile';
+import API from '../../network/api';
 
 const socket = new Socket();
 socket.setHandler(serverHandlers);
@@ -10,10 +11,17 @@ profile.onSwapUser(user => {
 });
 
 const login = user => {
+    user = profile.createUser(user);
+
     if(user) {
-        profile.setUser(user);
+        user = profile.setUser(user);
     } else {
-        user = this.user;
+        user = profile.user;
+    }
+    if(DEBUG) {
+        console.collapse('Server.login', 'tealBg', user.identify, 'tealPale');
+        console.log('user', user);
+        console.groupEnd();
     }
     if(!user) {
         let error = new Error('User is not set.');
@@ -27,8 +35,8 @@ const login = user => {
     }
 
     user.beginLogin();
-    return requestServerInfo(user).then(user => {
-        return this.socket.login(user);
+    return API.requestServerInfo(user).then(user => {
+        return socket.login(user);
     }).then(user => {
         user.endLogin(true);
         return Promise.resolve(user);

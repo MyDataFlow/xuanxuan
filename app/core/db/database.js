@@ -1,11 +1,12 @@
 import Dexie from 'dexie';
-import Entity from '../models/entity';
-import Member from '../models/member';
-import Chat from '../models/chat';
-import Message from '../models/chat-message';
+import {Entity, Member, Chat, ChatMessage as Message} from '../models';
 
 const DB_VERSION = 1;
 let lastCreateDb = null;
+
+if(DEBUG) {
+    global.$.Dexie = Dexie;
+}
 
 class Database {
 
@@ -16,7 +17,8 @@ class Database {
             userIdentify = userIdentify.identify;
         }
         this._userIdentify = userIdentify;
-        this._db = Dexie.version(DB_VERSION).stores({
+        this._db = new Dexie(userIdentify);
+        this._db.version(DB_VERSION).stores({
             // [Entity.NAME]: Entity.SCHEMA.dexieFormat,
             // [Member.NAME]: Member.SCHEMA.dexieFormat,
             // [Chat.NAME]: Chat.SCHEMA.dexieFormat,

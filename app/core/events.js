@@ -94,7 +94,7 @@ class Events extends EventEmitter {
                         if(this.isMainProcess) {
                             console.log('OFF EVENT', event.name);
                         } else {
-                            console.log('OFF EVENT', 'orangeBg', event.name, 'orangePale');
+                            console.collapse('OFF EVENT', 'orangeBg', event.name, 'orangePale');
                             console.trace('event', event);
                             console.groupEnd();
                         }
@@ -145,7 +145,7 @@ class Events extends EventEmitter {
             clearTimeout(this.delayEmitDataChangeEventTimer);
         }
         this.delayEmitDataChangeEventTimer = setTimeout(() => {
-            const data = this.delayEmitData;
+            const data = Object.assign({}, this.delayEmitData);
             this.emit(EVENT.data_change, data);
             this.delayEmitData = null;
             this.delayEmitDataChangeEventTimer = null;

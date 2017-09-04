@@ -1,4 +1,4 @@
-import Member from '../models/member';
+import Member from './models/member';
 import profile from './profile';
 import Events from './events';
 

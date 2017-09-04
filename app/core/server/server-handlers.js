@@ -1,6 +1,6 @@
 import members from '../members';
-import Lang from '../lang';
-import Member from '../models/Member';
+import Lang from '../../lang';
+import Member from '../models/member';
 import Events from '../events';
 
 const chatLogin = (msg, socket) => {
@@ -8,7 +8,6 @@ const chatLogin = (msg, socket) => {
         const user = socket.user;
         if(user.isLogging || msg.data.id === user.id) {
             user.$set(msg.data);
-
             return true;
         } else {
             let member = members.get(msg.data.id);

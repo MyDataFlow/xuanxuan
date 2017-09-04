@@ -99,7 +99,10 @@ class EntitySchema {
                 this.primaryKey = name;
             }
         });
-        if(primaryKeyNumber) {
+        if(primaryKeyNumber !== 1) {
+            if(DEBUG) {
+                console.trace('schema', schema);
+            }
             throw new Error(`Cannot create scheam, because there has ${primaryKeyNumber} primary key(s).`);
         }
         this.schema = schema;
@@ -137,7 +140,7 @@ class EntitySchema {
     }
 
     extend(newSchema) {
-        return EntitySchema.extend(this.schema, newSchema);
+        return EntitySchema.extend(this, newSchema);
     }
 
     get dexieFormat() {

@@ -1,6 +1,6 @@
 import Entity from './entity';
-import Pinyin from '../utils/pinyin';
-import Status from '../utils/status';
+import Pinyin from '../../utils/pinyin';
+import Status from '../../utils/status';
 
 const STATUS = new Status({
     unverified: 0,    // 未登录
@@ -23,7 +23,7 @@ class Member extends Entity {
         account: {type: 'string', unique: true},
         email: {type: 'string', indexed: true},
         phone: {type: 'string', indexed: true},
-        realName: {type: 'string', indexed: true},
+        realname: {type: 'string', indexed: true},
     });
 
     constructor(data, entityType = Member.NAME) {
@@ -71,8 +71,8 @@ class Member extends Entity {
         return this.admin === 'super';
     }
 
-    get realName() {
-        return this.$get('realName');
+    get realname() {
+        return this.$get('realname');
     }
 
     get account() {
@@ -163,4 +163,5 @@ class Member extends Entity {
     }
 }
 
+export {STATUS};
 export default Member;

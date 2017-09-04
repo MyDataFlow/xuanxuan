@@ -1,11 +1,11 @@
-import Chat from '../../models/chat';
-import ChatMessage from '../../models/chat-message';
+import Chat from '../models/chat';
+import ChatMessage from '../models/chat-message';
 import profile from '../profile';
 import Events from '../events';
 import members from '../members';
 import db from '../db';
 import notice from '../notice';
-import DelayAction from '../utils/delay-action';
+import DelayAction from '../../utils/delay-action';
 import StringHelper from '../../utils/string-helper';
 
 const CHATS_LIMIT_DEFAULT = 100;
@@ -483,7 +483,6 @@ export default {
     forEach,
     query,
     remove,
-    getChatMessages,
     getChatFiles,
     deleteLocalMessage,
     loadChatMessages,

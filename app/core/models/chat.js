@@ -1,7 +1,7 @@
 import Entity from './entity';
-import Status from '../utils/status';
-import Lang from '../resource/lang';
-import Pinyin from '../utils/pinyin';
+import Status from '../../utils/status';
+import Lang from '../../lang';
+import Pinyin from '../../utils/pinyin';
 
 const STATUS = new Status({
     local: 0,
@@ -29,7 +29,6 @@ class Chat extends Entity {
     static NAME = 'Chat';
     static STATUS = STATUS;
     static TYPES = TYPES;
-    static CONTENT_TYPES = CONTENT_TYPES;
     static SCHEMA = Entity.SCHEMA.extend({
         user: {type: 'int', indexed: true},
         type: {type: 'string', indexed: true},
@@ -38,7 +37,7 @@ class Chat extends Entity {
         lastActiveTime: {type: 'timestamp', indexed: true},
         createdBy: {type: 'int', indexed: true},
         star: {type: 'boolean', indexed: true},
-        lastActiveTime: {type: 'timestramp', indexed: true},
+        lastActiveTime: {type: 'timestamp', indexed: true},
         mute: {type: 'boolean', indexed: true},
         public: {type: 'boolean', indexed: true},
         admins: {type: 'set'},

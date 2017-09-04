@@ -5,10 +5,9 @@ import db from './db';
 import server from './server';
 import notice from './notice';
 import theme from './theme';
-import lang from './lang';
 import events from './events';
 
-export default {
+const app = {
     profile,
     members,
     im,
@@ -16,10 +15,15 @@ export default {
     server,
     notice,
     theme,
-    lang,
     events,
 
     get user() {
         return profile.user
     }
 };
+
+if(DEBUG) {
+    global.$.App = app;
+}
+
+export default app;

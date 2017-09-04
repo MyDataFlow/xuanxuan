@@ -1,8 +1,9 @@
-import Member from '../../models/member';
+import Member from '../models/member';
 import UserConfig from './user-config';
 import Platfrom from 'Platform';
 import DelayAction from '../../utils/delay-action';
 import Events from '../events';
+import Md5 from 'md5';
 
 const PASSWORD_WITH_MD5_FLAG = '%%%PWD_FLAG%%% ';
 const EVENT = {
@@ -35,15 +36,15 @@ class User extends Member {
             Platfrom.config.saveUser(this);
         });
 
-        this._status.onChnage = (status, oldStatus) => {
-            if(!this.markDestory) {
+        this._status.onChange = (status, oldStatus) => {
+            if(this.isEventsEnable) {
                 Events.emit(EVENT.status_change, status, oldStatus, this);
             }
 
             clearTimeout(this.statusChangeCallTimer);
             if(this._status.is(Member.STATUS.logined)) {
                 this.$set('lastLoginTime', new Date().getTime());
-                if(oldStatus === Member.status.reconnecting) {
+                if(oldStatus === Member.STATUS.reconnecting) {
                     this._status.change(Member.STATUS.online);
                 } else {
                     this.statusChangeCallTimer = setTimeout(() => {
@@ -54,7 +55,7 @@ class User extends Member {
             } else if(
                 (
                     this._status.is(Member.STATUS.disconnect) ||
-                    (this._status.is(Member.status.loginFailed) && oldStatus === Member.status.reconnecting)
+                    (this._status.is(Member.STATUS.loginFailed) && oldStatus === Member.STATUS.reconnecting)
                 ) && this.config.autoReconnect
             ) {
                 this.reconnect();
@@ -66,8 +67,16 @@ class User extends Member {
         return User.SCHEMA;
     }
 
+    get isEventsEnable() {
+        return this.eventsEnable;
+    }
+
+    enableEvents() {
+        this.eventsEnable = true;
+    }
+
     destroy() {
-        this.markDestory = true;
+        this.eventsEnable = false;
     }
 
     plain() {
@@ -88,7 +97,7 @@ class User extends Member {
                 this.save();
 
                 // Emit user config change event
-                if(!this.markDestory) {
+                if(this.isEventsEnable) {
                     Events.emit(EVENT.config_change, change, config, this);
                 }
             };
@@ -182,28 +191,33 @@ class User extends Member {
         if(!server.startsWith('https://') && !server.startsWith('http://')) {
             server = 'https://' + server;
         }
-        this._server = new URL(server);
+        const url = new URL(server);
+        if(!url.port) {
+            url.port = 11443;
+        }
         this.$set('server', url.toString());
+        this._server = url;
     }
 
     get server() {
         if(!this._server) {
-            this._server = new URL(this.$get('server'));
+            this.server = this.$get('server');
         }
         return this._server;
     }
 
     get serverUrl() {
-        return this.server && this.server.toString();
+        const server = this.server;
+        return server && server.toString();
     }
 
     get webServerPort() {
-        let server = this.server;
+        const server = this.server;
         return server ? server.port : '';
     }
 
     get serverName() {
-        let server = this.server;
+        const server = this.server;
         if(server) {
             return server.username ? server.username : (server.pathname ? server.pathname.substr(1) : '');
         }
@@ -211,7 +225,7 @@ class User extends Member {
     }
 
     get webServerInfoUrl() {
-        let server = this.server;
+        const server = this.server;
         return server ? `${server.origin}/serverInfo` : '';
     }
 
@@ -228,7 +242,7 @@ class User extends Member {
             return this._socketUrl;
         }
         let serverUrl = this.serverUrl;
-        if(server) {
+        if(serverUrl) {
             let url = new URL(serverUrl);
             url.protocol = 'ws:';
             url.pathname = '/ws';
@@ -277,18 +291,18 @@ class User extends Member {
     }
 
     get identify() {
-        let serverUrl = this.serverUrl;
-        if(!serverUrl) {
+        let server = this.server;
+        if(!server) {
             return '';
         }
-        let pathname = url.pathname;
+        let pathname = server.pathname;
         if(pathname && pathname.length) {
             if(pathname === '/') {
                 pathname = '';
             }
             pathname = pathname.replace(/\//g, '_');
         }
-        let hostname = url.host.replace(':', '__');
+        let hostname = server.host.replace(':', '__');
         return `${this.account}@${hostname}${pathname}`;
     }
 
@@ -301,7 +315,11 @@ class User extends Member {
     }
 
     get cipherIV() {
-        return this.$get('cipherIV');
+        let cipherIV = this.$get('cipherIV');
+        if(!cipherIV) {
+            cipherIV = this.token.substr(0, 16);
+        }
+        return cipherIV;
     }
 
     set cipherIV(cipherIV) {
@@ -366,6 +384,8 @@ class User extends Member {
         let password = this.password;
         if(password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
             password = password.substr(PASSWORD_WITH_MD5_FLAG.length);
+        } else {
+            password = Md5(password)
         }
         return password;
     }
@@ -375,6 +395,13 @@ class User extends Member {
             newPassword = PASSWORD_WITH_MD5_FLAG + Md5(newPassword);
         }
         this.$set('password', newPassword);
+    }
+
+    static create(user) {
+        if(user instanceof User) {
+            return user;
+        }
+        return new User(user);
     }
 }
 

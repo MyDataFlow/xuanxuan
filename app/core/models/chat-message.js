@@ -1,9 +1,9 @@
 import Entity from './entity';
-import Status from '../utils/status';
+import Status from '../../utils/status';
 import Member from './member';
-import Markdown from '../utils/markdown';
-import Emojione from '../resource/emojione';
-import TimeSequence from '../utils/time-sequence';
+import Markdown from '../../utils/markdown';
+import Emojione from '../../components/emojione';
+import TimeSequence from '../../utils/time-sequence';
 
 const STATUS = new Status({
     draft: 0,
