@@ -16,6 +16,7 @@ const update = (memberArr) => {
         member.isMe = profile.user && member.id === profile.user.id;
         newMembers[member.id] = member;
     });
+
     Object.assign(members, newMembers);
     Events.emitDataChange({members: newMembers});
 };
@@ -119,12 +120,6 @@ const remove = member => {
 
 profile.onSwapUser(user => {
     init();
-});
-
-Events.onDataChange(data => {
-    if(data.members) {
-        update(data.members);
-    }
 });
 
 export default {

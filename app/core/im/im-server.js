@@ -4,7 +4,7 @@ import Events from '../events';
 import profile from '../profile';
 import chats from './im-chats';
 import PKG from '../../package.json';
-import SystemConfig from '../../resource/config/system.json';
+import Config from 'Config';
 
 const EVENT = {
     history: 'im.chats.history'
@@ -33,7 +33,6 @@ const updateChatHistory = (cgid, messages, pager, socket) => {
         chats.updateChatMessages(messages);
     }
 
-    const pager = msg.pager;
     pager.isFetchOver = pager.pageID * pager.recPerPage >= pager.recTotal;
     if(pager.continued && !pager.isFetchOver) {
         fetchChatHistory(cgid, {
@@ -148,7 +147,7 @@ const sendChatMessage = (messages, chat) => {
                     renameChat(chat.gid, command.name);
                 }, 500);
             } else if(command.action === 'version') {
-                message.content = '```\n$$version = "' + `v${PKG.version}${SystemConfig.specialVersion ? (' for ' + SystemConfig.specialVersion) : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
+                message.content = '```\n$$version = "' + `v${PKG.version}${Config.system.specialVersion ? (' for ' + Config.system.specialVersion) : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
             }
         }
     });

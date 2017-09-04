@@ -53,7 +53,7 @@ class Entity {
         this.$set('id', newId);
     }
 
-    get scheam() {
+    get schema() {
         return Entity.SCHEMA;
     }
 
@@ -68,9 +68,9 @@ class Entity {
                 this.$set(k, key[k]);
             });
         } else {
-            let scheam = this.scheam;
-            if(scheam) {
-                val = scheam.convertValue(key, val);
+            let schema = this.schema;
+            if(schema) {
+                val = schema.convertValue(key, val);
             }
             this.$[key] = val;
         }
@@ -84,12 +84,11 @@ class Entity {
      */
     $get(key, defaultValue) {
         let value = this.$[key];
-        if(value !== undefined) {
-            let scheam = this.scheam;
-            if(scheam) {
-                value = scheam.convertValue(key, value);
-            }
-        } else {
+        let schema = this.schema;
+        if(schema) {
+            value = schema.convertValue(key, value);
+        }
+        if(value === undefined) {
             value = defaultValue;
         }
         return value;

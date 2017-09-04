@@ -39,6 +39,7 @@ const login = user => {
         return socket.login(user);
     }).then(user => {
         user.endLogin(true);
+        user.save();
         return Promise.resolve(user);
     }).catch(error => {
         user.endLogin(false);

@@ -34,10 +34,10 @@ class Chat extends Entity {
         type: {type: 'string', indexed: true},
         name: {type: 'string', indexed: true},
         createdDate: {type: 'timestamp', indexed: true},
-        lastActiveTime: {type: 'timestamp', indexed: true},
         createdBy: {type: 'int', indexed: true},
-        star: {type: 'boolean', indexed: true},
+        editedDate: {type: 'timestamp'},
         lastActiveTime: {type: 'timestamp', indexed: true},
+        star: {type: 'boolean', indexed: true},
         mute: {type: 'boolean', indexed: true},
         public: {type: 'boolean', indexed: true},
         admins: {type: 'set'},
@@ -59,7 +59,7 @@ class Chat extends Entity {
 
     ensureGid() {
         if(this.isOne2One) {
-            this.$.gid = Array.from(data.members).sort().join('&');
+            this.$.gid = Array.from(this.members).sort().join('&');
         } else {
             super.ensureGid();
         }
@@ -95,7 +95,8 @@ class Chat extends Entity {
     get type() {
         let type = this.$get('type');
         if(!type) {
-            type = this.members.size === 2 ? TYPES.one2one : TYPES.group;
+            const members = this.members;
+            type = (members && members.size === 2) ? TYPES.one2one : TYPES.group;
         }
         return type;
     }
@@ -120,25 +121,25 @@ class Chat extends Entity {
         this.$set('name', newName);
     }
 
-    getDisplayName(app, includeMemberCount = true) {
+    getDisplayName(app, includeMemberCount = false) {
         let name = this.name;
         if(this.isOne2One) {
             let otherOne = this.getTheOtherOne(app);
-            return otherOne ? otherOne.displayName : Lang.chat.tempChat;
+            return otherOne ? otherOne.displayName : Lang.string('chat.tempChat.name');
         } else if(this.isSystem) {
             if(includeMemberCount) {
-                return Lang.format('chat.groupNameFormat', name || Lang.chat.systemGroup, Lang.chat.allMembers);
+                return Lang.format('chat.groupName.format', name || Lang.string('chat.systemGroup.name'), Lang.string('chat.all'));
             } else {
-                return name || Lang.chat.systemGroup;
+                return name || Lang.string('chat.systemGroup.name');
             }
         } else if(name !== undefined && name !== '') {
             if(includeMemberCount) {
-                return Lang.format('chat.groupNameFormat', name, this.membersCount);
+                return Lang.format('chat.groupName.format', name, this.membersCount);
             } else {
                 return name;
             }
         } else {
-            return `${Lang.chat.chatGroup}${this.id || ('(' + Lang.chat.tempChat + ')')}`;
+            return `${Lang.string('chat.group.name')}${this.id || ('(' + Lang.string('chat.tempChat.name') + ')')}`;
         }
     }
 
@@ -369,7 +370,7 @@ class Chat extends Entity {
 
     get membersCount() {
         let members = this.members;
-        return members ? members.size : 0;
+        return members ? members.length : 0;
     }
 
     isMember(memberId) {
@@ -402,7 +403,9 @@ class Chat extends Entity {
     }
 
     updateMembersSet(appMembers) {
-        this._membersSet = Array.from(this.members).map(memberId => appMembers.get);
+        this._membersSet = Array.from(this.members).map(memberId => {
+            return appMembers.get(memberId);
+        });
     }
 
     getMembersSet(appMembers) {
@@ -561,7 +564,7 @@ class Chat extends Entity {
     }
 
     static create(chat) {
-        if(chat instanceof chat) {
+        if(chat instanceof Chat) {
             return chat;
         }
         return new Chat(chat);
@@ -575,7 +578,10 @@ class Chat extends Entity {
      * @return {array}
      */
     static sort(chats, orders, app) {
-        if(!orders || orders === 'default') {
+        if(typeof orders === 'function') {
+            return chats.sort(orders);
+        }
+        if(!orders || orders === 'default' || orders === true) {
             orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id']; // namePinyin
         } else if(typeof orders === 'string') {
             orders = orders.split(' ');

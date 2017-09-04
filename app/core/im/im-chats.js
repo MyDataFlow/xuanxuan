@@ -19,6 +19,13 @@ const SEARCH_SCORE_MAP = {
 let chats = null;
 let publicChats = null;
 
+const app = {
+    members,
+    get user() {
+        return profile.user;
+    }
+};
+
 const forEach = (callback) => {
     if(chats) {
         Object.keys(chats).forEach(gid => {
@@ -30,10 +37,10 @@ const forEach = (callback) => {
 const get = (gid) => {
     let chat = chats[gid];
     if(!chat && gid.includes('&')) {
-        const members = gid.split('&').map(x => Number.parseInt(x));
+        const chatMembers = gid.split('&').map(x => Number.parseInt(x));
         chat = new Chat({
             gid,
-            members,
+            members: chatMembers,
             createdBy: profile.user.account,
             type: Chat.TYPES.one2one
         });
@@ -69,7 +76,7 @@ const updateChatMessages = (messages, muted) => {
         }
     });
 
-    let chats = {};
+    const updatedChats = {};
     Object.keys(chatsMessages).forEach(cgid => {
         const chat = get(cgid);
         if(chat) {
@@ -77,9 +84,11 @@ const updateChatMessages = (messages, muted) => {
             if(muted) {
                 chat.muted();
             }
-            chats[cgid] = chat;
+            updatedChats[cgid] = chat;
         }
     });
+
+    update(updatedChats);
 
     updateChatNotice.do();
 
@@ -104,7 +113,7 @@ const deleteLocalMessage = (message) => {
 const loadChatMessages = (chat, queryObject, limit = CHATS_LIMIT_DEFAULT) => {
     const gid = chat.gid;
     queryObject = queryObject ? Object.assign({gid}, queryObject) : {gid};
-    const collection =  db.database.chatMessages.where(queryObject);
+    let collection =  db.database.chatMessages.where(queryObject);
     if(limit) {
         collection = collection.limit(limit);
     }
@@ -126,21 +135,30 @@ const update = (chatArr) => {
     if(!chatArr) return;
 
     if(!Array.isArray(chatArr)) {
-        chatArr = [chatArr];
+        if(chatArr instanceof Chat) {
+            chatArr = [chatArr];
+        }
     }
 
-    if(!chatArr.length) return;
+    let newchats = null;
+    if(Array.isArray(chatArr) && chatArr.length) {
+        newchats = {};
+        chatArr.forEach(chat => {
+            chat = Chat.create(chat);
+            newchats[chat.gid] = chat;
+        });
+    } else {
+        newchats = chatArr;
+    }
 
-    let newchats = {};
-    chatArr.forEach(chat => {
-        chat = Chat.create(chat);
-        newchats[chat.gid] = chat;
-    });
-    Object.assign(chats, newchats);
-    Events.emitDataChange({chats: newchats});
+    if(newchats && Object.keys(newchats).length) {
+        Object.assign(chats, newchats);
+        Events.emitDataChange({chats: newchats});
+    }
 };
 
 const init = (chatArr) => {
+    publicChats = null;
     chats = {};
     if(chatArr && chatArr.length) {
         update(chatArr);
@@ -156,7 +174,7 @@ const getAll = () => {
     return chats ? Object.keys(chats).map(x => chats[x]) : [];
 };
 
-const query = (condition, sortList, app) => {
+const query = (condition, sortList) => {
     if(!chats) {
         return [];
     }
@@ -198,15 +216,22 @@ const query = (condition, sortList, app) => {
 };
 
 
-const getRecents = (includeStar = true) => {
+const getRecents = (includeStar = true, sortList = true) => {
     const all = getAll();
-    if(all.length < 2) {
+    if(all.length < 4) {
         return all;
     }
     const now = new Date().getTime();
-    return all.filter(chat => {
+    let recents = all.filter(chat => {
         return chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
     });
+    if(!recents.length) {
+        recents = all.filter(chat => chat.isSystem);
+    }
+    if(sortList) {
+        Chat.sort(recents, sortList, app);
+    }
+    return recents;
 };
 
 const getContactChat = (member) => {
@@ -226,19 +251,22 @@ const getContactChat = (member) => {
     return chat;
 };
 
-const getContactsChats = () => {
+const getContactsChats = (sortList = true) => {
     let contactsChats = [];
     members.forEach(member => {
         if(member.id !== profile.user.id) {
             contactsChats.push(getContactChat(member, true));
         }
     });
+    if(sortList) {
+        Chat.sort(contactsChats, sortList, app);
+    }
     update(contactsChats);
     return contactsChats;
 };
 
-const getGroups = () => {
-    return query(chat => chat.isGroupOrSystem);
+const getGroups = (sortList = true) => {
+    return query(chat => chat.isGroupOrSystem, sortList);
 };
 
 const search = (search, chatType) => {
@@ -251,8 +279,10 @@ const search = (search, chatType) => {
     }
 
     const hasChatType = !!chatType;
+    const isContactsType = chatType === 'contacts';
+    const isGroupsType = chatType === 'groups';
 
-    if(!hasChatType || chatType === 'contact') {
+    if(!hasChatType || isContactsType) {
         getContactsChats();
     }
 
@@ -271,7 +301,7 @@ const search = (search, chatType) => {
     return query(chat => {
         const chatGid = chat.gid.toLowerCase();
         if(hasChatType) {
-            if((chatType === 'contact' && !chat.isOne2One) || (chatType === 'group' && !chat.isGroupOrSystem)) {
+            if((isContactsType && !chat.isOne2One) || (isGroupsType && !chat.isGroupOrSystem)) {
                 return;
             }
         }
@@ -324,61 +354,6 @@ const search = (search, chatType) => {
         chat.score = score;
         return score > 0;
     }, ((x, y) => x.score - y.score));
-
-    Object.keys(this.dao.chats).forEach(gid => {
-        let chat = this.dao.chats[gid];
-
-        if(hasChatType)
-        {
-            if((chatType === 'contact' && !chat.isOne2One) || (chatType === 'group' && !chat.isGroupOrSystem)) return;
-        }
-
-        let score = 0;
-        let chatGid = chat.gid.toLowerCase();
-        let chatName = chat.getDisplayName(this.$app, false).toLowerCase();
-        let pinYin = chat.getPinYin(this.$app);
-        let theOtherOneAccount = '';
-        let theOtherOneContactInfo = '';
-        if(chat.isOne2One) {
-            let theOtherOne = chat.getTheOtherOne(this.user);
-            if(theOtherOne) {
-                theOtherOneAccount = theOtherOne.account;
-                theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');
-            } else {
-                if(DEBUG) console.warn('Cannot get the other one of chat', chat);
-            }
-        }
-        search.forEach(s => {
-            if(!s.length) return;
-            if(s.length > 1) {
-                if(s[0] === '#') { // id
-                    s = s.substr(1);
-                    score += 2*caculateScore(s, chatGid);
-                    if(chat.isSystem || chat.isGroup) {
-                        score += 2*caculateScore(s, chatName);
-                        if(chat.isSystem) {
-                            score += 2*caculateScore(s, 'system');
-                        }
-                    }
-                } else if(s[0] === '@') { // account or username
-                    s = s.substr(1);
-                    if(chat.isOne2One) {
-                        score += 2*caculateScore(s, theOtherOneAccount);
-                    }
-                }
-            }
-            score += caculateScore(s, chatName);
-            score += caculateScore(s, pinYin);
-            if(theOtherOneContactInfo) {
-                score += caculateScore(s, theOtherOneContactInfo);
-            }
-        });
-        chat.$.score = score;
-        if(score > 0) {
-            result.push(chat);
-        }
-    });
-    return result.sort((x, y) => x.$.score - y.$.score);
 };
 
 const remove = gid => {
@@ -468,12 +443,6 @@ profile.onSwapUser(user => {
     init();
 });
 
-Events.onDataChange(data => {
-    if(data.chats) {
-        update(data.chats);
-    }
-});
-
 export default {
     init,
     update,
@@ -483,6 +452,7 @@ export default {
     forEach,
     query,
     remove,
+    search,
     getChatFiles,
     deleteLocalMessage,
     loadChatMessages,
@@ -490,4 +460,7 @@ export default {
     getPublicChats,
     updatePublicChats,
     createWithMembers,
+    getContactsChats,
+    getGroups,
+    getRecents,
 };

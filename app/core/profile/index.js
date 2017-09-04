@@ -13,6 +13,9 @@ const createUser = userData => {
     if(!(userData instanceof User)) {
         const user = new User(userData);
         user.$set(Object.assign({}, Platform.config.getUser(user.identify), userData));
+        if(userData.password) {
+            user.password = userData.password;
+        }
         return user;
     } else {
         return userData;
@@ -59,7 +62,7 @@ const getLastSavedUser = () => {
 };
 
 const openUserProfileMenu = () => {
-
+    console.warn('todo: profile.openUserProfileMenu');
 };
 
 export default {

@@ -4,7 +4,7 @@ import DelayAction from '../../utils/delay-action';
 class UserConfig {
 
     constructor(config) {
-        if(config.version !== DEFAULT.version) {
+        if(config && config.version !== DEFAULT.version) {
             config = null;
         }
         this.$ = Object.assign({}, DEFAULT, config);

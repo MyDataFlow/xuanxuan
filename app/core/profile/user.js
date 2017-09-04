@@ -315,11 +315,12 @@ class User extends Member {
     }
 
     get cipherIV() {
-        let cipherIV = this.$get('cipherIV');
-        if(!cipherIV) {
-            cipherIV = this.token.substr(0, 16);
-        }
-        return cipherIV;
+        return this.token.substr(0, 16);
+        // let cipherIV = this.$get('cipherIV');
+        // if(!cipherIV) {
+        //     cipherIV = this.token.substr(0, 16);
+        // }
+        // return cipherIV;
     }
 
     set cipherIV(cipherIV) {

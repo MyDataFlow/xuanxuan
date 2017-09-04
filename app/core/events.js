@@ -131,22 +131,24 @@ class Events extends EventEmitter {
         if(typeof data === 'object') {
             if(this.delayEmitData && data) {
                 Object.keys(data).forEach(dataKey => {
-                    this.delayEmitData[dataKey] = Object.assign(this.delayEmitData[dataKey], data[dataKey]);
+                    this.delayEmitData[dataKey] = Object.assign(this.delayEmitData[dataKey] || {}, data[dataKey]);
                 });
             } else {
                 this.delayEmitData = data;
             }
         } else {
             if(DEBUG) {
-                console.warn('Events.emitDataChange  error, because the data param is not object.');
+                console.warn('Events.emitDataChange error, because the data param is not object.');
             }
         }
         if(this.delayEmitDataChangeEventTimer) {
             clearTimeout(this.delayEmitDataChangeEventTimer);
         }
         this.delayEmitDataChangeEventTimer = setTimeout(() => {
-            const data = Object.assign({}, this.delayEmitData);
-            this.emit(EVENT.data_change, data);
+            if(this.delayEmitData && Object.keys(this.delayEmitData).length) {
+                const data = Object.assign({}, this.delayEmitData);
+                this.emit(EVENT.data_change, data);
+            }
             this.delayEmitData = null;
             this.delayEmitDataChangeEventTimer = null;
         }, delay);

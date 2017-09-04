@@ -130,11 +130,13 @@ class EntitySchema {
 
     convertValue(name, value) {
         let meta = this.of(name);
-        if(meta && meta.type && defaultValuesConveter[meta.type]) {
-            return defaultValuesConveter[meta.type](value);
-        }
-        if(value === undefined && meta.defaultValue !== undefined) {
-            value = meta.defaultValue;
+        if(meta) {
+            if(meta.type && defaultValuesConveter[meta.type]) {
+                return defaultValuesConveter[meta.type](value);
+            }
+            if(value === undefined && meta.defaultValue !== undefined) {
+                value = meta.defaultValue;
+            }
         }
         return value;
     }

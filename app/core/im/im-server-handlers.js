@@ -1,10 +1,10 @@
-import Events from './events';
+import Events from '../events';
 import chats from './im-chats';
 import Chat from '../models/chat';
 import ChatMessage from '../models/chat-message';
-import profile from './profile';
-import Lang from './lang';
-import members from './members';
+import profile from '../profile';
+import Lang from '../../lang';
+import members from '../members';
 import imServer from './im-server';
 import imUI from './im-ui';
 
@@ -174,7 +174,7 @@ const chatGetpubliclist = (msg, socket) => {
     if(msg.isSuccess) {
         publicChats = msg.data.map(x => {
             let chat = new Chat(x);
-            chat.updateMembersSet(this);
+            chat.updateMembersSet(members);
             return chat;
         });
     } else {
