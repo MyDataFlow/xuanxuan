@@ -45,7 +45,7 @@ class Socket {
         }
 
         if(DEBUG) {
-            console.collapse('SOCKET init', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
+            console.collapse('SOCKET Init', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
             console.trace('socket', this);
             console.groupEnd();
         }
@@ -90,7 +90,7 @@ class Socket {
         this.client = new WS(this.url);
 
         if(DEBUG) {
-            console.collapse('SOCKET connect', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
+            console.collapse('SOCKET Connect', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
             console.log('socket', this);
             console.groupEnd();
         }
@@ -191,7 +191,7 @@ class Socket {
         if(this.options.encryptEnable) {
             data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
             if(DEBUG) {
-                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
+                console.collapse('ENCRYPT Data', 'blueBg', `length: ${data.length}`, 'bluePale');
                 console.log('data', data);
                 console.log('rawdata', rawdata);
                 console.groupEnd();
