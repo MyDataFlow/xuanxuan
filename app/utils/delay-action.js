@@ -6,17 +6,21 @@ class DelayAction {
         this.callback = callback;
     }
 
-    do() {
+    do(...params) {
         if(this.actionCallTask) {
             clearTimeout(this.actionCallTask);
         }
         this.actionCallTask = setTimeout(() => {
-            this.action();
+            const actionResult = this.action(...params);
             this.actionCallTask = null;
             if(typeof this.callback === 'function') {
-                this.callback();
+                this.callback(actionResult);
             }
         }, this.delay);
+    }
+
+    destroy() {
+        clearTimeout(this.actionCallTask);
     }
 }
 
