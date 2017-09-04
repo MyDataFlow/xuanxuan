@@ -4,7 +4,9 @@ import electron, {
 import DEBUG        from './utils/debug';
 import application  from './platform/electron/app-remote';
 import PKG          from './package.json';
-import Lang         from './core/lang';
+import Lang         from './lang';
+
+ElectronApp.commandLine.appendSwitch('ignore-certificate-errors');
 
 application.init(__dirname);
 
