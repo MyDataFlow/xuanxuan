@@ -45,7 +45,7 @@ class MenuList extends Component {
 
         const chats = this.loadChats(filter, search);
 
-        return <div className={HTML.classes('app-chats-menu-list list scroll-y scrollbar-thin scrollbar-hover', className)} style={style} {...other}>
+        return <div className={HTML.classes('app-chats-menu-list list scroll-y scrollbar-thin', className)} style={style} {...other}>
             {
                 chats.map(chat => {
                     return <ChatListItem key={chat.gid} filterType={filter} chat={chat} className="item"/>;
