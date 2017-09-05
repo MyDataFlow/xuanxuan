@@ -12,7 +12,7 @@
     "login.btn.logining": "正在登录...",
 
     "chats.create.label": "新建聊天...",
-    "chats.search.common": "搜索",
+    "chats.search.recents": "搜索",
     "chats.search.groups": "搜索讨论组",
     "chats.search.contacts": "搜索联系人",
     "chat.groupName.format": "{0}（{1}人）",

@@ -8,12 +8,16 @@ import Menu from './menu';
 class IndexView extends Component {
 
     render() {
+        const {
+            match
+        } = this.props;
+
+        console.log('Chat.IndexView', this.props);
+
         const menuWidth = HTML.rem(Config.ui['menu.width']);
 
-        console.log('chats index', this.props);
-
-        return <div className="dock">
-            <Menu className="dock-left" style={{width: menuWidth}}/>
+        return <div className="dock app-chats">
+            <Menu className="dock-left" filter={match.params.filterType} style={{width: menuWidth}}/>
         </div>;
     }
 }

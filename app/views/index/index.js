@@ -5,6 +5,7 @@ import {
     Route,
     Link,
     Redirect,
+    Switch,
     withRouter
 } from 'react-router-dom';
 import AppView from './app';
@@ -13,7 +14,7 @@ class IndexView extends Component {
 
     render() {
         return <Router>
-            <Route path="/" component={AppView}/>
+            <Route path="/:app?" component={AppView}/>
         </Router>
     }
 }
