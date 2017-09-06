@@ -186,11 +186,10 @@
     "react-dom": "^15.4.2",
     "react-event-listener": "^0.4.0",
     "react-router-dom": "^4.2.2",
-    "react-tap-event-plugin": "^2.0.1",
+    "react-split-pane": "^0.1.66",
     "recordrtc": "^5.4.0",
     "request": "^2.81.0",
     "source-map-support": "^0.4.8",
-    "split.js": "^1.2.0",
     "uuid": "^3.1.0",
     "wolfy87-eventemitter": "^5.2.2",
     "ws": "^2.2.3"
