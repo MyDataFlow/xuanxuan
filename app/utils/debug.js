@@ -5,14 +5,14 @@ if(typeof DEBUG === 'undefined') {
 }
 
 if(global.DEBUG) {
-    // // Mute react warning.
-    // console._error = console.error;
-    // console.error = (errMessage, ...args) => {
-    //     if(typeof errMessage === 'string' && errMessage.indexOf('Warning: Unknown prop') === 0) {
-    //         return;
-    //     }
-    //     return console._error(errMessage, ...args);
-    // };
+    // Mute react router warning.
+    console._error = console.error;
+    console.error = (errMessage, ...args) => {
+        if(typeof errMessage === 'string' && errMessage.indexOf('Warning: Hash history cannot PUSH the same path;') === 0) {
+            return;
+        }
+        return console._error(errMessage, ...args);
+    };
 
     if(process.type === 'renderer') {
         const STYLE = {
