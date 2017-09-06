@@ -1,7 +1,7 @@
 const classes = (...args) => {
     return args.map(arg => {
         if(Array.isArray(arg)) {
-            return cssClass(arg);
+            return classes(arg);
         } else if(typeof arg === 'object') {
             return Object.keys(arg).filter(className => {
                 let condition = arg[className];
