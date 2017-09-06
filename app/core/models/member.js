@@ -112,6 +112,9 @@ class Member extends Entity {
      * @return {array}
      */
     static sort(members, orders, userMe) {
+        if(members.length < 2) {
+            return members;
+        }
         if(typeof orders === 'function') {
             return members.sort(orders);
         }

@@ -586,6 +586,9 @@ class Chat extends Entity {
      * @return {array}
      */
     static sort(chats, orders, app) {
+        if(chats.length < 2) {
+            return chats;
+        }
         if(typeof orders === 'function') {
             return chats.sort(orders);
         }

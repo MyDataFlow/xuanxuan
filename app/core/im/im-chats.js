@@ -236,15 +236,17 @@ const query = (condition, sortList) => {
 
 const getRecents = (includeStar = true, sortList = true) => {
     const all = getAll();
+    let recents = null;
     if(all.length < 4) {
-        return all;
-    }
-    const now = new Date().getTime();
-    let recents = all.filter(chat => {
-        return chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
-    });
-    if(!recents.length) {
-        recents = all.filter(chat => chat.isSystem);
+        recents = all;
+    } else {
+        const now = new Date().getTime();
+        recents = all.filter(chat => {
+            return chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
+        });
+        if(!recents.length) {
+            recents = all.filter(chat => chat.isSystem);
+        }
     }
     if(sortList) {
         Chat.sort(recents, sortList, app);
