@@ -92,7 +92,7 @@ class User extends Member {
     get config() {
         if(!this._config) {
             this._config = new UserConfig(this.$get('config'));
-            this._config.onChnage = (change, config) => {
+            this._config.onChange = (change, config) => {
                 // Save user to config file
                 this.save();
 
