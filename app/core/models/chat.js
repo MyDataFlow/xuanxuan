@@ -516,18 +516,22 @@ class Chat extends Entity {
         let newMessageCount = 0;
         let lastActiveTime = this.lastActiveTime;
         messages.forEach(message => {
-            let checkMessage = this._messages.find(x => x.gid === message.gid);
-            if(checkMessage) {
-                checkMessage.reset(message);
-            } else {
-                this._messages.push(message);
-                newMessageCount++;
-                if(message.unread) {
-                    noticeCount++;
+            if(message.date) {
+                let checkMessage = this._messages.find(x => x.gid === message.gid);
+                if(checkMessage) {
+                    checkMessage.reset(message);
+                } else {
+                    this._messages.push(message);
+                    newMessageCount++;
+                    if(message.unread) {
+                        noticeCount++;
+                    }
                 }
-            }
-            if(lastActiveTime < message.date) {
-                lastActiveTime = message.date;
+                if(lastActiveTime < message.date) {
+                    lastActiveTime = message.date;
+                }
+            } else if(DEBUG) {
+                console.warn('The message date is not defined.', message);
             }
         });
         this.lastActiveTime = lastActiveTime;
