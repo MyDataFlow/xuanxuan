@@ -10,7 +10,7 @@
   font-size: @font-size-small;
   height: (20*@rem);
   min-width: (20*@rem);
-  line-height: (20*@rem) - 2 * @border-width;
+  line-height: ((20*@rem) - (2 * @border-width));
   padding: 0 @padding-small-horizontal;
   background-color: @color-gray-lighter;
   border: @border-width solid transparent;
@@ -22,6 +22,13 @@
     border-radius: (10*@rem);
     padding: (1*@rem) (5*@rem);
   }
+}
+
+.label-sm {
+  height: (18*@rem);
+  min-width: (18*@rem);
+  line-height: ((18*@rem) - (2 * @border-width));
+  padding: 0 (@padding-small-horizontal/2);
 }
 
 
