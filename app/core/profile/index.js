@@ -96,5 +96,13 @@ export default {
             return `${user.displayName} [${Lang.string('member.status.' + user.statusName)}]`;
         }
         return '';
+    },
+
+    get userConfig() {
+        return user ? user.config : {};
+    },
+
+    get userAccount() {
+        return user ? user.account : {};
     }
 };

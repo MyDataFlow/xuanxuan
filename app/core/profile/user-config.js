@@ -82,6 +82,24 @@ class UserConfig {
         }
         return this.set('lastSaveTime', time);
     }
+
+    get showMessageTip() {
+        return this.get('ui.chat.showMessageTip');
+    }
+
+    set showMessageTip(flag) {
+        return this.set('showMessageTip', flag);
+    }
+
+    get sendHDEmoticon() {
+        return this.get('ui.chat.sendHDEmoticon');
+    }
+
+    set sendHDEmoticon(flag) {
+        return this.set('sendHDEmoticon', flag);
+    }
+
+
 }
 
 export default UserConfig;
