@@ -374,7 +374,7 @@ class Chat extends Entity {
 
     get membersCount() {
         let members = this.members;
-        return members ? members.length : 0;
+        return members ? (members.length || members.size) : 0;
     }
 
     isMember(memberId) {
