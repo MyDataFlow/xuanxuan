@@ -41,21 +41,19 @@ class ChatListItem extends Component {
             badge = <Icon name="star" className="icon-sm muted"/>;
         }
 
-        return <Route path={ROUTES.chats.chat.id(chat.gid)} children={({match}) => (
-            <Link
-                to={ROUTES.chats.chat.id(chat.gid, filterType)}
-                className={HTML.classes('app-chat-item has-padding flex-middle', className, {active: match})}
-                style={style}
-                {...other}
-            >
-                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
-                <div className="title text-ellipsis">
-                    {name}
-                    {subname && <small className="muted">&nbsp; {subname}</small>}
-                </div>
-                {badge && <div className="flex-none">{badge}</div>}
-            </Link>
-        )}/>;
+        return <Link
+            to={ROUTES.chats.chat.id(chat.gid, filterType)}
+            className={HTML.classes('app-chat-item has-padding flex-middle', className, {active: App.im.ui.isActiveChat(chat.gid)})}
+            style={style}
+            {...other}
+        >
+            <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
+            <div className="title text-ellipsis">
+                {name}
+                {subname && <small className="muted">&nbsp; {subname}</small>}
+            </div>
+            {badge && <div className="flex-none">{badge}</div>}
+        </Link>;
     }
 }
 

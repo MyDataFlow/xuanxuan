@@ -20,7 +20,7 @@ const statusColors = {
 class StatusDot extends Component {
 
     static defaultProps = {
-        size: 12,
+        size: 14,
         className: 'circle'
     };
 
@@ -37,6 +37,7 @@ class StatusDot extends Component {
         status = STATUS.getName(status);
         style = Object.assign({
             backgroundColor: statusColors[status],
+            border: '1px solid #fff'
         }, style);
 
         if(size) {

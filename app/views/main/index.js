@@ -12,6 +12,7 @@ import {
 } from 'react-router-dom';
 import ChatsView from '../chats';
 import ROUTES from '../common/routes';
+import App from '../../core';
 
 const mainViews = [
     {path: ROUTES.chats.__, view: ChatsView},
@@ -36,8 +37,17 @@ class MainView extends Component {
                     return <Route key={item.path} path={item.path} component={item.view}/>
                 })
             }
-            <Route path="/:app?" exact render={() => {
-                return <Redirect to='/chats/recents'/>
+            <Route path="/:app?" exact render={(props) => {
+                if(props.match.url === '/' || props.match.url === '/index' || props.match.url === '/chats') {
+                    const activeChatId = App.im.ui.currentActiveChatId;
+                    if(activeChatId) {
+                        return <Redirect to={`/chats/recents/${activeChatId}`}/>
+                    } else {
+                        return <Redirect to='/chats/recents'/>;
+                    }
+                } else {
+                    return  null;
+                }
             }}/>
             </div>
         </div>;

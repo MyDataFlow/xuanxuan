@@ -57,7 +57,7 @@ class ChatMessage extends Entity {
         }
     }
 
-    get plainServer() {
+    plainServer() {
         return {
             gid: this.gid,
             cgid: this.cgid,
@@ -146,8 +146,16 @@ class ChatMessage extends Entity {
         this.$set('unread', unread);
     }
 
-    get sendTime() {
+    get date() {
         return this.$get('date');
+    }
+
+    set date(date) {
+        this.$set('date', date);
+    }
+
+    get sendTime() {
+        return this.date;
     }
 
     get senderId() {
@@ -189,6 +197,18 @@ class ChatMessage extends Entity {
         this.$set('contentType', type);
     }
 
+    get isFileContent() {
+        return this.contentType === CONTENT_TYPES.file;
+    }
+
+    get isTextContent() {
+        return this.contentType === CONTENT_TYPES.text;
+    }
+
+    get isImageContent() {
+        return this.contentType === CONTENT_TYPES.image;
+    }
+
     get type() {
         return this.$get('type', TYPES.normal);
     }
@@ -219,13 +239,16 @@ class ChatMessage extends Entity {
         }
     }
 
-    get renderedTextContent() {
-        if(typeof this._renderedTextContent === 'undefined') {
+    renderedTextContent(callback) {
+        if(this._renderedTextContent === undefined) {
             let content = this.content;
             if(typeof content === 'string' && content.length) {
                 content = content.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
                 content = Markdown(content);
                 content = Emojione.toImage(content);
+                if(callback) {
+                    content = callback(content);
+                }
                 this._renderedTextContent = content;
                 this._isBlockContent = content && (content.includes('<h1 id="') || content.includes('<h2 id="') || content.includes('<h3 id="'));
             } else {
@@ -303,7 +326,7 @@ class ChatMessage extends Entity {
     }
 
     static create(chatMessage) {
-        if(chatMessage instanceof chatMessage) {
+        if(chatMessage instanceof ChatMessage) {
             return chatMessage;
         }
         return new ChatMessage(chatMessage);

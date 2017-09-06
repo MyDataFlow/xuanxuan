@@ -16,8 +16,12 @@ const SEARCH_SCORE_MAP = {
     include    : 50,
     similar    : 10
 };
+const EVENT = {
+    init: 'chats.init'
+};
 let chats = null;
 let publicChats = null;
+
 
 const app = {
     members,
@@ -35,6 +39,9 @@ const forEach = (callback) => {
 };
 
 const get = (gid) => {
+    if(!chats) {
+        return null;
+    }
     let chat = chats[gid];
     if(!chat && gid.includes('&')) {
         const chatMembers = gid.split('&').map(x => Number.parseInt(x));
@@ -47,6 +54,16 @@ const get = (gid) => {
         chat.updateMembersSet(members);
     }
     return chat;
+};
+
+const getLastActiveChat = () => {
+    let lastChat = null;
+    forEach(chat => {
+        if(!lastChat || lastChat.lastActiveTime < chat.lastActiveTime) {
+            lastChat = chat;
+        }
+    });
+    return lastChat;
 };
 
 const updateChatNotice = new DelayAction(() => {
@@ -111,8 +128,8 @@ const deleteLocalMessage = (message) => {
 };
 
 const loadChatMessages = (chat, queryObject, limit = CHATS_LIMIT_DEFAULT) => {
-    const gid = chat.gid;
-    queryObject = queryObject ? Object.assign({gid}, queryObject) : {gid};
+    const cgid = chat.gid;
+    queryObject = queryObject ? Object.assign({cgid}, queryObject) : {cgid};
     let collection =  db.database.chatMessages.where(queryObject);
     if(limit) {
         collection = collection.limit(limit);
@@ -120,10 +137,10 @@ const loadChatMessages = (chat, queryObject, limit = CHATS_LIMIT_DEFAULT) => {
     return collection.toArray(chatMessages => {
         if(chatMessages && chatMessages.length) {
             const result = chatMessages.map(ChatMessage.create);
-            if(!queryObject) {
+            // if(!queryObject) {
                 chat.addMessages(result, true);
-                Events.emitDataChange({chats: {[chat.gid]: chat}});
-            }
+                Events.emitDataChange({chats: {[cgid]: chat}});
+            // }
             return Promise.resolve(result);
         } else {
             return Promise.resolve([]);
@@ -167,6 +184,7 @@ const init = (chatArr) => {
                 loadChatMessages(chat);
             }
         });
+        Events.emit(EVENT.init, chats);
     }
 };
 
@@ -261,7 +279,6 @@ const getContactsChats = (sortList = true) => {
     if(sortList) {
         Chat.sort(contactsChats, sortList, app);
     }
-    update(contactsChats);
     return contactsChats;
 };
 
@@ -439,6 +456,10 @@ const createWithMembers = (chatMembers, chatSetting) => {
     return chat;
 };
 
+const onChatsInit = listener => {
+    return Events.on(EVENT.init, listener);
+};
+
 profile.onSwapUser(user => {
     init();
 });
@@ -450,6 +471,7 @@ export default {
     getAll,
     getRecents,
     forEach,
+    getLastActiveChat,
     query,
     remove,
     search,
@@ -463,4 +485,5 @@ export default {
     getContactsChats,
     getGroups,
     getRecents,
+    onChatsInit,
 };

@@ -3,6 +3,10 @@
 
     "common.search": "搜索",
 
+    "time.today": "今天",
+    "time.yestoday": "昨天",
+
+
     "login.serverUrl.label": "服务器",
     "login.serverUrl.hint": "https://xuanxuan.chat",
     "login.account.label": "账号",
@@ -21,6 +25,20 @@
     "chat.membersCount.format": "{0}人",
     "chat.tempChat.name": "临时会话",
     "chat.group.name": "讨论组",
+    "chat.public.label": "公开",
+    "chat.toolbor.star": "收藏",
+    "chat.toolbor.unstar": "取消收藏",
+    "chat.toolbor.invite": "邀请其他人",
+    "chat.toolbor.history": "消息记录",
+    "chat.toolbor.sidebar": "打开侧边栏",
+    "chat.toolbor.more": "更多",
+    "chat.sendbox.toolbar.send": "发送消息",
+    "chat.sendbox.toolbar.emoticon": "表情",
+    "chat.sendbox.toolbar.image": "图片",
+    "chat.sendbox.toolbar.file": "文件",
+    "chat.sendbox.toolbar.captureScreen": "截取屏幕",
+    "chat.sendbox.toolbar.setFontSize": "设置字体大小",
+    "chat.sendbox.toolbar.tips": "小技巧",
 
     "navbar.chats.label": "最近聊天",
     "navbar.contacts.label": "联系人",

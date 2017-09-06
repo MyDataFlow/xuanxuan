@@ -31,6 +31,10 @@
   }
 }
 
+.app-chats-menu {
+  z-index: 1040;
+}
+
 .app-chats-menu-list {
   top: (50*@rem);
 
@@ -47,4 +51,157 @@
       }
     }
   }
+}
+
+.app-chat-header {
+  background-color: lighten(@color-pale, 3%);
+  height: (50*@rem);
+  padding: (5*@rem);
+  z-index: 1035;
+
+  > .heading {
+    > .avatar {
+      margin-right: (5*@rem);
+    }
+
+    > .title {
+      padding: (5*@rem);
+    }
+
+    > .label {
+      margin-left: (5*@rem);
+    }
+  }
+
+  > .toolbar {
+    margin-left: (10*@rem);
+    background-color: lighten(@color-pale, 3%);
+  }
+}
+
+.app-chat-drafteditor {
+  bottom: (40*@rem);
+}
+
+.app-chat-sendbox-toolbar {
+  height: (40*@rem);
+  background-color: lighten(@color-pale, 3%);
+}
+
+.app-chat-messages {
+  top: (50*@rem);
+}
+
+.app-message-divider {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding: (10*@rem) 0;
+  position: relative;
+
+  &:before {
+    display: block;
+    content: ' ';
+    border-bottom: 1px solid #ddd;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: (20*@rem);
+    z-index: 0;
+  }
+
+  > .content {
+    position: relative;
+    line-height: (20*@rem);
+    background-color: #fff;
+    font-size: (12*@rem);
+    color: @color-gray;
+    z-index: 1;
+    padding: 0 (10*@rem);
+  }
+}
+
+.app-message-item {
+  position: relative;
+  padding: (2*@rem) (10*@rem);
+}
+
+.app-message-item-header {
+  position: relative;
+  padding-left: (40*@rem);
+
+  > .avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  > header {
+    padding: 0;
+    height: (20*@rem);
+    line-height: (20*@rem);
+
+    > .title {
+      font-weight: bold;
+      display: inline-block;
+      margin-right: (5*@rem);
+    }
+
+    > small {
+      opacity: .6;
+      font-size: (12*@rem);
+    }
+  }
+}
+
+.app-message-content {
+  padding-left: (40*@rem);
+  line-height: (20*@rem);
+}
+
+.app-message-item-time-label {
+  position: absolute;
+  font-size: (10*@rem);
+  width: (34*@rem);
+  line-height: (14*@rem);
+  height: (14*@rem);
+  text-align: center;
+  border-radius: (3*@rem);
+  color: @color-gray;
+  top: (5*@rem);
+  left: (8*@rem);
+  transition: all @animation-type @animation-speed-fast 1s;
+
+  &.as-dot {
+    background-color: @color-gray-lighter;
+    width: (8*@rem);
+    height: (8*@rem);
+    border-radius: (5*@rem);
+    color: transparent;
+    left: (21*@rem);
+    top: (8*@rem);
+
+    &:hover {
+      top: (5*@rem);
+      left: (8*@rem);
+      border-radius: (3*@rem);
+      color: @color-gray;
+      width: (34*@rem);
+      height: (14*@rem);
+    }
+  }
+}
+
+.app-message-content-text {
+  p {
+    margin: 0;
+  }
+
+  &.is-content-block {
+    background-color: @color-pale;
+  }
+}
+
+.app-message-list > .app-message-item:last-child {
+  margin-bottom: (10*@rem);
 }

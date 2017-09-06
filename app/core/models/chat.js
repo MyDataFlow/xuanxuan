@@ -74,6 +74,10 @@ class Chat extends Entity {
         this._status.change(remoteId ? STATUS.ok : STATUS.fail);
     }
 
+    get id() {
+        return this.$get('id');
+    }
+
     // Chat status
 
     get status() {
