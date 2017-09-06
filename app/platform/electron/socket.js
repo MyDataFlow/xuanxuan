@@ -206,7 +206,9 @@ class Socket {
     close() {
         if(this.client) {
             this.status = STATUS.CLOSING;
+            this.client.removeAllListeners();
             this.client.close();
+            this.status = STATUS.CLOSED;
         }
     }
 }
