@@ -199,9 +199,30 @@
 
   &.is-content-block {
     background-color: @color-pale;
+    padding: (15*@rem) (25*@rem);
   }
 }
 
-.app-message-list > .app-message-item:last-child {
-  margin-bottom: (10*@rem);
+.app-message-content {
+  .emojione {
+    max-width: (20*@rem);
+    max-height: (20*@rem);
+    vertical-align: middle;
+    position: relative;
+    top: (-2*@rem);
+    margin: 0 (2*@rem);
+  }
+
+  .emojione-hd .emojione {
+    max-width: (64*@rem);
+    max-height: (64*@rem);
+  }
+
+  .at-me {
+    display: inline-block;
+    color: @color-red;
+    padding: 0 (5*@rem);
+    background-color: @color-red-pale;
+    border-radius: (2*@rem);
+  }
 }

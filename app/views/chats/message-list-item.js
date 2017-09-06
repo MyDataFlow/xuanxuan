@@ -47,7 +47,7 @@ class MessageListItem extends Component {
             headerView = <div className="app-message-item-header">
                 <UserAvatar className="state" user={sender}/>
                 <header>
-                    <a className="title rounded text-primary">{sender.displayName}</a>
+                    <span className="title rounded text-primary">{sender.displayName}</span>
                     <small className="time">{DateHelper.formatDate(message.date, 'hh:mm')}</small>
                 </header>
             </div>;
