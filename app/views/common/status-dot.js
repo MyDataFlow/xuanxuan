@@ -4,12 +4,12 @@ import HTML from '../../utils/html-helper';
 import {STATUS} from '../../core/models/member';
 
 const statusColors = {
-    unverified: 'gray',
-    loginFailed: 'gray',
-    waitReconnect: 'gray',
-    logining: 'gray',
-    reconnecting: 'gray',
-    disconnect: 'gray',
+    unverified: '#ccc',
+    loginFailed: '#ccc',
+    waitReconnect: '#ccc',
+    logining: '#ccc',
+    reconnecting: '#ccc',
+    disconnect: '#ccc',
     logined: '#2979ff',
     online: '#76ff03',
     busy: '#ffea00',

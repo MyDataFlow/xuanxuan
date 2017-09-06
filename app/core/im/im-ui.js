@@ -46,7 +46,7 @@ const activeAndMapCacheChats = (chat, callback) => {
     return mapCacheChats(callback);
 };
 
-const createChatToolbarItems = (chat, showSidebarIcon) => {
+const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
     const items = [{
         id: 'star',
         icon: chat.star ? 'star text-red' : 'star-outline',
@@ -67,11 +67,17 @@ const createChatToolbarItems = (chat, showSidebarIcon) => {
         icon: 'history',
         label: Lang.string('chat.toolbor.history')
     });
+    if(showSidebarIcon === 'auto') {
+        showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid);
+    }
     if(showSidebarIcon) {
         items.push({
             id: 'sidebar',
             icon: 'book-open',
-            label: Lang.string('chat.toolbor.sidebar')
+            label: Lang.string('chat.toolbor.sidebar'),
+            click: () => {
+                profile.userConfig.setChatSidebarHidden(chat.gid, false);
+            }
         });
     }
     if(chat.isGroupOrSystem) {

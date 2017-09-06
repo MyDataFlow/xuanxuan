@@ -25,6 +25,12 @@ class ChatView extends Component {
         App.events.off(this.dataChangeHandler);
     }
 
+    // handleSplitPaneChange = size => {
+    //     if(size < 150) {
+    //         App.profile.userConfig.setChatSidebarHidden(this.props.chat.gid, true);
+    //     }
+    // }
+
     render() {
         let {
             chat,
@@ -35,12 +41,12 @@ class ChatView extends Component {
             ...other
         } = this.props;
 
-        console.info('Render chat', chat);
+        const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid);
 
         return <div {...other}
-            className={HTML.classes('app-chat', className, {hidden})}
+            className={HTML.classes('app-chat dock', className, {hidden})}
         >
-            <SplitPane split="vertical" primary="second" maxSize={360} minSize={100} defaultSize={200}>
+            <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200}>
                 <SplitPane split="horizontal" primary="second" maxSize={500} minSize={80} defaultSize={100}>
                     <div>
                         <ChatHeader chat={chat} className="dock-top"/>

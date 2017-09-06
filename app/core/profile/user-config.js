@@ -41,7 +41,9 @@ class UserConfig {
     get(key, defaultValue) {
         if(this.$) {
             let val = this.$[key];
-            if(val !== undefined) return val;
+            if(val !== undefined) {
+                return val;
+            }
         }
         if(defaultValue === undefined) {
             defaultValue = DEFAULT[key];
@@ -54,8 +56,8 @@ class UserConfig {
             Object.assign(this.$, keyOrObj);
             this.makeChange(keyOrObj);
         } else {
-            this.$[key] = value;
-            this.makeChange({[key]: value});
+            this.$[keyOrObj] = value;
+            this.makeChange({[keyOrObj]: value});
         }
     }
 
@@ -99,7 +101,13 @@ class UserConfig {
         return this.set('sendHDEmoticon', flag);
     }
 
+    isChatSidebarHidden(cgid) {
+        return this.get(`ui.chat.hideSidebar.${cgid}`);
+    }
 
+    setChatSidebarHidden(cgid, flag) {
+        return this.set(`ui.chat.hideSidebar.${cgid}`, flag);
+    }
 }
 
 export default UserConfig;

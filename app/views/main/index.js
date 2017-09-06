@@ -20,6 +20,16 @@ const mainViews = [
 
 class MainView extends Component {
 
+    componentDidMount() {
+        this.onUserConfigChange = App.profile.onUserConfigChange(() => {
+            this.forceUpdate();
+        });
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.onUserConfigChange);
+    }
+
     render() {
         let {
             className,

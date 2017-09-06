@@ -43,8 +43,28 @@
   border-right: 5px solid rgba(0, 0, 0, 0.5);
 }
 .Resizer.disabled {
-cursor: not-allowed;
+  cursor: not-allowed;
 }
 .Resizer.disabled:hover {
-border-color: transparent;
+  border-color: transparent;
+}
+
+.SplitPane.soloPane1.vertical > .Pane2,
+.SplitPane.soloPane2.vertical > .Pane1 {
+  display: none!important;
+}
+
+.SplitPane.soloPane1.vertical > .Pane1,
+.SplitPane.soloPane2.vertical > .Pane2 {
+  width: 100% !important;
+}
+
+.SplitPane.soloPane1.horizontal > .Pane2,
+.SplitPane.soloPane2.horizontal > .Pane1 {
+  display: none!important;
+}
+
+.SplitPane.soloPane1.horizontal > .Pane1,
+.SplitPane.soloPane2.horizontal > .Pane2 {
+  height: 100% !important;
 }

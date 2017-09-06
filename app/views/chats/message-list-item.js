@@ -33,9 +33,6 @@ class MessageListItem extends Component {
 
         if(showDateDivider === 0) {
             showDateDivider = !lastMessage || !DateHelper.isSameDay(message.date, lastMessage.date);
-            if(showDateDivider) {
-                console.info('message divider', message)
-            }
         }
         if(hideHeader === 0) {
             hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId;

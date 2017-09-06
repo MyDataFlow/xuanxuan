@@ -40,6 +40,10 @@
     "chat.sendbox.toolbar.setFontSize": "设置字体大小",
     "chat.sendbox.toolbar.tips": "小技巧",
 
+    "chat.sidebar.tab.peoples.label": "成员",
+    "chat.sidebar.tab.files.label": "文件",
+    "chat.sidebar.close": "关闭侧边栏",
+
     "navbar.chats.label": "最近聊天",
     "navbar.contacts.label": "联系人",
     "navbar.groups.label": "讨论组",
