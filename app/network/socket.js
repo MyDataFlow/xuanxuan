@@ -136,11 +136,7 @@ class AppSocket extends Socket {
     onClose(code, reason, unexpected) {
         this.stopPing();
         if(this.user) {
-            if(unexpected) {
-                this.user.markDisconnect();
-            } else {
-                this.user.markUnverified();
-            }
+            this.user.markUnverified();
         }
     }
 
@@ -229,6 +225,7 @@ class AppSocket extends Socket {
     ping() {
         const now = new Date().getTime();
         if((now - this.lastHandTime) > PING_INTERVAL * 2) {
+            this.terminate();
             this.user.markDisconnect();
         } else {
             return this.send('ping');

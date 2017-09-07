@@ -74,12 +74,18 @@ const chatUserchange = (msg, socket) => {
         const user = socket.user;
         if(!msg.data.id || msg.data.id === user.id) {
             user.$set(msg.data);
+            if(msg.data.status) {
+                user.status = msg.data.status;
+            }
         }
 
         if(msg.data.id) {
             let member = members.get(msg.data.id);
             if(member) {
                 member.$set(msg.data);
+                if(msg.data.status) {
+                    member.status = msg.data.status;
+                }
                 members.update(member);
             }
         }

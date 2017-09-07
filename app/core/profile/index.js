@@ -61,10 +61,6 @@ const getLastSavedUser = () => {
     return Platform.config.getUser();
 };
 
-const openUserProfileMenu = () => {
-    console.warn('todo: profile.openUserProfileMenu');
-};
-
 export default {
     EVENT,
     createUser,
@@ -73,7 +69,6 @@ export default {
     onUserStatusChange,
     onUserConfigChange,
     getLastSavedUser,
-    openUserProfileMenu,
 
     get user() {
         return user;

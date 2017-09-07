@@ -45,10 +45,10 @@ class User extends Member {
             if(this._status.is(Member.STATUS.logined)) {
                 this.$set('lastLoginTime', new Date().getTime());
                 if(oldStatus === Member.STATUS.reconnecting) {
-                    this._status.change(Member.STATUS.online);
+                    this.status = Member.STATUS.online;
                 } else {
                     this.statusChangeCallTimer = setTimeout(() => {
-                        this._status.change(Member.STATUS.online);
+                        this.status = Member.STATUS.online;
                     }, 1000);
                 }
                 this.reconnectTimes = 0;
@@ -126,20 +126,20 @@ class User extends Member {
     }
 
     markDisconnect() {
-        this._status.change(Member.STATUS.disconnect);
+        this.status = Member.STATUS.disconnect;
     }
 
     markUnverified() {
-        this._status.change(Member.STATUS.unverified);
+        this.status = Member.STATUS.unverified;
     }
 
     beginLogin() {
         const reconnect = this.isWaitReconnect;
-        this._status.change(reconnect ? Member.STATUS.reconnecting : Member.STATUS.logining);
+        this.status = reconnect ? Member.STATUS.reconnecting : Member.STATUS.logining;
     }
 
     endLogin(result) {
-        this._status.change(result ? Member.STATUS.logined : Member.STATUS.loginFailed);
+        this.status = result ? Member.STATUS.logined : Member.STATUS.loginFailed;
     }
 
     reconnect(delay = 'auto') {
@@ -170,7 +170,7 @@ class User extends Member {
             }
         };
 
-        this._status.change(Member.STATUS.waitReconnect);
+        this.status = Member.STATUS.waitReconnect;
         if(delay) {
             clearDelayTimer();
             this.waitReconnectTime = new Date().getTime();

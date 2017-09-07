@@ -203,11 +203,15 @@ class Socket {
         }, callback);
     }
 
-    close() {
+    close(terminateOrReason = '') {
         if(this.client) {
             this.status = STATUS.CLOSING;
             this.client.removeAllListeners();
-            this.client.close();
+            if(terminateOrReason === true) {
+                this.client.terminate();
+            } else {
+                this.client.close(terminateOrReason);
+            }
             this.status = STATUS.CLOSED;
         }
     }

@@ -47,7 +47,17 @@ const login = user => {
     });
 };
 
+const changeUserStatus = status => {
+    return socket.changeUserStatus(status);
+};
+
+const logout = () => {
+    socket.logout();
+};
+
 export default {
     login,
-    socket
+    logout,
+    socket,
+    changeUserStatus
 };
