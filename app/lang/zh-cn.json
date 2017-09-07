@@ -48,6 +48,12 @@
     "navbar.contacts.label": "联系人",
     "navbar.groups.label": "讨论组",
 
+    "usermenu.openProfile": "个人资料",
+    "usermenu.about": "关于",
+    "usermenu.setting": "设置",
+    "usermenu.logout": "注销",
+    "usermenu.exit": "退出",
+
     "member.status.unverified":   "未登录",
     "member.status.loginFailed":  "登录失败",
     "member.status.waitReconnect":"等待重连",

@@ -96,7 +96,7 @@
   display: flex;
   justify-content: center;
   align-content: center;
-  padding: (10*@rem) 0;
+  padding: (10*@rem) 0 0;
   position: relative;
 
   &:before {
@@ -129,10 +129,11 @@
 .app-message-item-header {
   position: relative;
   padding-left: (40*@rem);
+  margin-top: (10*@rem);
 
   > .avatar {
     position: absolute;
-    top: 0;
+    top: (4*@rem);
     left: 0;
   }
 
