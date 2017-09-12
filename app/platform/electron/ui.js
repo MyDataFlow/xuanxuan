@@ -14,6 +14,8 @@ remote.call('appRoot').then(path => {
 const userDataPath = Remote.app.getPath('userData');
 const browserWindow = Remote.getCurrentWindow();
 
+let onRequestQuitListener = null;
+
 const makeFileUrl = url => {
     return url;
 };
@@ -51,6 +53,30 @@ const showAndFocusWindow = () => {
     focusWindow();
 };
 
+const quit = (delay = 1000) => {
+    if(delay !== true && onRequestQuitListener) {
+        if(onRequestQuitListener() === false) {
+            return;
+        }
+    }
+    hideWindow();
+    if(delay) {
+        setTimeout(() => {
+            remote.call('quit');
+        }, delay);
+    } else {
+        remote.call('quit');
+    }
+};
+
+const onRequestQuit = listener => {
+    onRequestQuitListener = listener;
+};
+
+remote.onRequestQuit(() => {
+    quit();
+});
+
 export default {
     userDataPath,
     browserWindow,
@@ -62,11 +88,13 @@ export default {
     setShowInTaskbar,
     setTrayTooltip,
     flashTrayIcon,
+    onRequestQuit,
 
     showWindow,
     hideWindow,
     focusWindow,
     showAndFocusWindow,
+    quit,
 
     get isWindowsFocus() {
         return browserWindow.isFocused();

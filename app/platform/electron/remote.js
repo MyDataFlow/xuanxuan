@@ -127,7 +127,7 @@ const sendToWindow = (windowName, eventName, ...args) => {
 * Send event to main window
 */
 const sendToMainWindow = (eventName, ...args) => {
-    return this.sendToWindow('main', eventName, ...args);
+    return sendToWindow('main', eventName, ...args);
 };
 
 const remoteOff = (...names) => {
@@ -156,6 +156,10 @@ const remoteOff = (...names) => {
     });
 };
 
+const onRequestQuit = listener => {
+    return ipcOn(EVENT.remote_app_quit, listener);
+};
+
 
 export default {
     EVENT,
@@ -167,5 +171,6 @@ export default {
     ipcSend,
     ipcOnce,
     sendToWindow,
-    sendToMainWindow
+    sendToMainWindow,
+    onRequestQuit
 };
