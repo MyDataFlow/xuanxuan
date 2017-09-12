@@ -23,7 +23,14 @@ class Member extends Entity {
         account: {type: 'string', unique: true},
         email: {type: 'string', indexed: true},
         phone: {type: 'string', indexed: true},
+        mobile: {type: 'string', indexed: true},
         realname: {type: 'string', indexed: true},
+        site: {type: 'string'},
+        avatar: {type: 'string', indexed: true},
+        role: {type: 'string'},
+        gender: {type: 'string'},
+        dept: {type: 'int', indexed: true},
+        admin: {type: 'string'},
     });
 
     constructor(data, entityType = Member.NAME) {
@@ -68,8 +75,16 @@ class Member extends Entity {
         return this.account === account;
     }
 
+    get gender() {
+        return this.$get('gender');
+    }
+
     get isSuperAdmin() {
-        return this.admin === 'super';
+        return this.$get('admin') === 'super';
+    }
+
+    get isAdmin() {
+        return this.$get('admin') !== 'no';;
     }
 
     get realname() {
@@ -78,6 +93,38 @@ class Member extends Entity {
 
     get account() {
         return this.$get('account');
+    }
+
+    get avatar() {
+        return this.$get('avatar');
+    }
+
+    get phone() {
+        return this.$get('phone');
+    }
+
+    get mobile() {
+        return this.$get('mobile');
+    }
+
+    get email() {
+        return this.$get('email');
+    }
+
+    getAvatar(serverUrl) {
+        let avatar = this.avatar;
+        if(serverUrl && avatar && !avatar.startsWith('https://') && !avatar.startsWith('http://')) {
+            if(!(serverUrl instanceof URL)) {
+                serverUrl = new URL(serverUrl);
+            }
+            const serverUrlRoot = `${serverUrl.protocol}//${serverUrl.hostname}/`;
+            avatar = serverUrlRoot + avatar;
+        }
+        return avatar;
+    }
+
+    get role() {
+        return this.$get('role');
     }
 
     get displayName() {

@@ -225,7 +225,7 @@ class AppSocket extends Socket {
     ping() {
         const now = new Date().getTime();
         if((now - this.lastHandTime) > PING_INTERVAL * 2) {
-            this.terminate();
+            this.close(true);
             this.user.markDisconnect();
         } else {
             return this.send('ping');

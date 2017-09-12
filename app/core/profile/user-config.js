@@ -108,6 +108,14 @@ class UserConfig {
     setChatSidebarHidden(cgid, flag) {
         return this.set(`ui.chat.hideSidebar.${cgid}`, flag);
     }
+
+    get showMeOnMenu() {
+        return this.get('ui.chat.menu.showMe');
+    }
+
+    set showMeOnMenu(flag) {
+        return this.set('ui.chat.menu.showMe', flag);
+    }
 }
 
 export default UserConfig;
