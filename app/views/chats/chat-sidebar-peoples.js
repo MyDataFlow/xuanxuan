@@ -31,7 +31,7 @@ class ChatSidebarPeoples extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-sidebar-peoples has-padding', className)}
         >
-            <MemberList className="white rounded" members={members} listItemProps={{avatarSize: 20}}/>
+            <MemberList className="white rounded compact" members={members} listItemProps={{avatarSize: 20}}/>
             {children}
         </div>;
     }

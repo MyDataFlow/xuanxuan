@@ -7,6 +7,8 @@ import Lang from '../../lang';
 import App from '../../core';
 import StatusDot from '../common/status-dot';
 import User from '../../core/profile/user';
+import UserProfileDialog from '../common/user-profile-dialog';
+import AboutDialog from '../common/about-dialog';
 
 const allStatus = [
     User.STATUS.getName(User.STATUS.online),
@@ -26,9 +28,23 @@ class UserMenu extends Component {
         this.requestClose();
     }
 
+    handleExitClick = () => {
+        App.platform.quit();
+    }
+
     requestClose() {
         this.props.onRequestClose && this.props.onRequestClose();
     }
+
+    handleUserProfileItemClick = () => {
+        UserProfileDialog.show();
+        this.requestClose();
+    }
+
+    handleAboutItemClick = () => {
+        AboutDialog.show();
+        this.requestClose();
+    };
 
     render() {
         let {
@@ -55,12 +71,12 @@ class UserMenu extends Component {
                 })
             }
             <div className="divider"></div>
-            <a className="item"><div className="title">{Lang.string('usermenu.openProfile')}</div></a>
+            <a className="item" onClick={this.handleUserProfileItemClick}><div className="title">{Lang.string('usermenu.openProfile')}</div></a>
             <div className="divider"></div>
-            <a className="item"><div className="title">{Lang.string('usermenu.about')}</div></a>
+            <a className="item" onClick={this.handleAboutItemClick}><div className="title">{Lang.string('usermenu.about')}</div></a>
             <a className="item"><div className="title">{Lang.string('usermenu.setting')}</div></a>
             <a className="item" onClick={this.handleLogoutClick}><div className="title">{Lang.string('usermenu.logout')}</div></a>
-            <a className="item"><div className="title">{Lang.string('usermenu.exit')}</div></a>
+            {App.platform.quit && <a className="item" onClick={this.handleExitClick}><div className="title">{Lang.string('usermenu.exit')}</div></a>}
         </ClickOutsideWrapper>;
     }
 }

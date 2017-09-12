@@ -2,6 +2,10 @@
     "app.title": "喧喧",
 
     "common.search": "搜索",
+    "common.confirm": "确定",
+    "common.cancel": "取消",
+    "common.about": "关于",
+    "common.copyrightFormat": "版权所有 ©️ {year} {name}",
 
     "time.today": "今天",
     "time.yestoday": "昨天",
@@ -65,6 +69,34 @@
     "member.status.busy":         "忙碌",
     "member.status.away":         "离开",
     "member.status.offline":      "离线",
+
+    "member.gender.f":            "女",
+    "member.gender.m":            "男",
+
+    "member.role.dev": "研发",
+    "member.role.po": "产品经理",
+    "member.role.pm": "项目经理",
+    "member.role.qa": "测试",
+    "member.role.qd": "测试经理",
+    "member.role.market": "市场",
+    "member.role.sale": "销售",
+    "member.role.office": "行政",
+
+    "member.profile.sendMessage": "开聊",
+    "member.profile.contactInfo": "联系方式",
+    "member.profile.phone": "电话",
+    "member.profile.email": "邮箱",
+    "member.profile.mobile": "手机",
+    "member.profile.site": "网站",
+
+    "dev": "研发",
+    "po": "产品经理",
+    "pm": "项目经理",
+    "qa": "测试",
+    "qd": "测试经理",
+    "market": "市场",
+    "sale": "销售",
+    "office": "行政",
 
     "debug.inspectElement": "审查元素"
 }

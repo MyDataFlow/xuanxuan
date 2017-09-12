@@ -5,6 +5,8 @@ import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import ChatListItem from './chat-list-item';
+import MemberListItem from '../common/member-list-item';
+import UserProfileDialog from '../common/user-profile-dialog';
 
 class MenuList extends Component {
 
@@ -33,6 +35,10 @@ class MenuList extends Component {
         App.events.off(this.dataChangeHandler);
     }
 
+    handleUserItemClick = () => {
+        UserProfileDialog.show();
+    }
+
     render() {
         let {
             search,
@@ -44,8 +50,10 @@ class MenuList extends Component {
         } = this.props;
 
         const chats = this.loadChats(filter, search);
+        const user = App.user;
 
         return <div className={HTML.classes('app-chats-menu-list list scroll-y scrollbar-thin', className)} style={style} {...other}>
+            {user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={20} showStatusDot={false} onClick={this.handleUserItemClick}/>}
             {
                 chats.map(chat => {
                     return <ChatListItem key={chat.gid} filterType={filter} chat={chat} className="item"/>;

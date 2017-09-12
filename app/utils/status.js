@@ -98,6 +98,10 @@ class Status {
         return value === undefined ? defaultValue : value;
     }
 
+    isSame(status1, status2) {
+        return this.getValue(status1) === this.getValue(status2);
+    }
+
     /**
      * Create a status keeper instance
      *
