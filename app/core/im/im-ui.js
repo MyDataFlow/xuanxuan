@@ -87,6 +87,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             label: Lang.string('chat.toolbor.more')
         });
     }
+    items[items.length - 1].hintPosition = 'bottom-left';
     return items;
 };
 

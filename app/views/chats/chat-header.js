@@ -35,7 +35,7 @@ class ChatHeader extends Component {
             <div className="toolbar flex flex-middle text-rigth rounded">
             {
                 App.im.ui.createChatToolbarItems(chat, showSidebarIcon).map(item => {
-                    return <div key={item.id} className="hint--bottom has-padding-sm" data-hint={item.label} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon className="icon-2x" name={item.icon}/></button></div>
+                    return <div key={item.id} className={`hint--${item.hintPosition || 'bottom'} has-padding-sm`} data-hint={item.label} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon className="icon-2x" name={item.icon}/></button></div>
                 })
             }
             </div>
