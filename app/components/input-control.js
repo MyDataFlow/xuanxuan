@@ -62,11 +62,13 @@ class InputControl extends Component {
         let {
             name,
             label,
+            labelStyle,
             placeholder,
             autoFocus,
             style,
             inputType,
             inputStyle,
+            inputProps,
             defaultValue,
             helpText,
             onChange,
@@ -78,7 +80,7 @@ class InputControl extends Component {
         } = this.props;
 
         return <div className={HTML.classes('control', className, {disabled})} {...other}>
-            <label htmlFor={name}>{label}</label>
+            {label !== false && <label htmlFor={name} style={labelStyle}>{label}</label>}
             <input
                 disabled={!!disabled}
                 ref={e => {this.input = e}}
@@ -88,6 +90,7 @@ class InputControl extends Component {
                 className={HTML.classes('input', inputClassName)} placeholder={placeholder}
                 onChange={this.handleChange}
                 style={inputStyle}
+                {...inputProps}
             />
             {helpText ? <p className="help-text">{helpText}</p> : null}
             {children}
