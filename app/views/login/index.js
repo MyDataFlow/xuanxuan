@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import HTML from '../../utils/html-helper';
 import Config from 'Config';
 import LoginForm from './form';
+import BuildInfo from '../common/build-info';
 
 class IndexView extends Component {
 
@@ -22,6 +23,7 @@ class IndexView extends Component {
                 <LoginForm className="rounded layer has-padding-xl"/>
                 {children}
             </section>
+            <BuildInfo className="dock-right dock-bottom small has-padding text-white muted"/>
         </div>;
     }
 }
