@@ -2,7 +2,7 @@ const classes = (...args) => {
     return args.map(arg => {
         if(Array.isArray(arg)) {
             return classes(arg);
-        } else if(typeof arg === 'object') {
+        } else if(arg !== null && typeof arg === 'object') {
             return Object.keys(arg).filter(className => {
                 let condition = arg[className];
                 if(typeof condition === 'function') {
