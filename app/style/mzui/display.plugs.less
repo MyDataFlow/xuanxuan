@@ -14,10 +14,12 @@
 
     > .title {
       font-size: (14*@rem);
+      padding-left: @space;
     }
   }
 
   > .content {
+    overflow-y: auto;
     flex: auto;
     padding: 0 @space;
   }
@@ -28,10 +30,31 @@
 
     .btn {
       min-width: (80*@rem);
+
+      + .btn {
+        margin-left: @space-sm;
+      }
     }
   }
 
   .os-mac & > .footer {
     text-align: right;
+  }
+}
+
+
+// Messager
+
+.messager {
+  display: flex;
+  flex-direction: row;
+
+  > .content {
+    flex: auto;
+    padding: @space-sm;
+  }
+
+  > nav {
+    flex: none;
   }
 }

@@ -4,7 +4,7 @@
   height: @size;
   font-size: @font-size;
   padding: 0 @space-sm;
-  line-height: @size;
+  line-height: (@size - 2*@border-width);
 
   &.circle,
   &.circle:after {border-radius: (@size/2) !important}
