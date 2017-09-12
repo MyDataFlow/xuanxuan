@@ -8,23 +8,27 @@
 .display-backdrop,
 .display-layer,
 {
-  z-index: @zindex-display-backdrop;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #000;
 }
 
-.display-backdrop.in {opacity: .5}
-.display-backdrop.loading:before {
-  width: (30*@rem);
-  height: (30*@rem);
-  margin-top: -(15*@rem);
-  margin-left: -(15*@rem);
-  border-width: (5*@rem);
+.display-backdrop {
+  background-color: #000;
+  opacity: 0;
+  pointer-events: auto;
+
+  .display-stage-shown > & {
+    opacity: .5;
+  }
+
+  .has-animation > & {
+    transition: opacity @animation-type @animation-speed-fast;
+  }
 }
+
 
 .display-layer {
   z-index: @zindex-display-layer;
@@ -37,17 +41,8 @@
 }
 
 .display {
+  position: relative;
   pointer-events: auto;
-
-  &.invisible {.transition-none()!important;}
-}
-
-
-// Hide scrollbars on shown display targets
-
-body[class^="display-show-"],
-body[class*=" display-show-"] {
-  overflow-y: hidden;
 }
 
 
@@ -67,7 +62,7 @@ body[class*=" display-show-"] {
   left: 50%;
   margin-left: -@arrow-size;
   border-width: 0 @arrow-size @arrow-size @arrow-size;
-  border-color: transparent transparent #fff transparent;  
+  border-color: transparent transparent #fff transparent;
 }
 
 .arrow-bottom:before {
@@ -75,7 +70,7 @@ body[class*=" display-show-"] {
   left: 50%;
   margin-left: -@arrow-size;
   border-width: @arrow-size @arrow-size 0 @arrow-size;
-  border-color: #fff transparent transparent transparent;  
+  border-color: #fff transparent transparent transparent;
 }
 
 .arrow-right:before {
@@ -83,7 +78,7 @@ body[class*=" display-show-"] {
   left: 100%;
   margin-top: -@arrow-size;
   border-width: @arrow-size 0 @arrow-size @arrow-size;
-  border-color: transparent transparent transparent #fff;  
+  border-color: transparent transparent transparent #fff;
 }
 
 .arrow-left:before {
@@ -92,4 +87,9 @@ body[class*=" display-show-"] {
   margin-top: -@arrow-size;
   border-width: @arrow-size @arrow-size @arrow-size 0;
   border-color: transparent #fff transparent transparent;
+}
+
+#display-container {
+  pointer-events: none;
+  z-index: 1100;
 }

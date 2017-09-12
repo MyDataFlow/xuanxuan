@@ -3,61 +3,35 @@
 // --------------------------------------------------
 
 
-// Popover, dropdown-menu
-
-.popover,
-.dropdown-menu {
-  display: none;
-
-  .display > & {
-    display: block;
-  }
-}
-
-.modal,
-.popover,
-.dropdown-menu {
-  max-height: 100%;
-  overflow-y: auto;
-  &:extend(.layer all);
-}
-
-.dropdown-menu {min-width: (120*@rem);}
-
-
-// Messager
-
-.messager {
-  margin: @space;
-}
-
-
 // Modal
 
 .modal {
   display: flex;
   flex-direction: column;
 
-  > .heading, > .footer {
+  > .heading {
     flex: none;
-    z-index: 1;
+
+    > .title {
+      font-size: (14*@rem);
+    }
   }
 
   > .content {
     flex: auto;
-    overflow-y: auto;
+    padding: 0 @space;
   }
 
-  &.in-scroll {
-    > .heading {
-      border: none;
-      .shadow-1();
+  > .footer {
+    flex: none;
+    padding: @space;
+
+    .btn {
+      min-width: (80*@rem);
     }
   }
 
-  &.can-scroll:not(.scroll-over) {
-    > .footer {
-      .shadow-1-top();
-    }
+  .os-mac & > .footer {
+    text-align: right;
   }
 }
