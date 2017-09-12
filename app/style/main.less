@@ -38,6 +38,10 @@
   > .status-dot + .title {
     margin-left: (5*@rem);
   }
+
+  > .title {
+    font-size: (13*@rem);
+  }
 }
 
 .app-member-status {
@@ -52,5 +56,27 @@
 .app-about {
   > section > img {
     max-width: (140*@rem);
+  }
+}
+
+.app-user-setting {
+  min-width: (400*@rem);
+
+  > section {
+    > .heading > .title {
+      padding-left: (5*@rem);
+      font-size: (13*@rem);
+    }
+    > .items {
+      margin-left: (30*@rem);
+
+      .control:not(:last-child) {
+        margin-bottom: @space-xs;
+      }
+
+      > .level-2 {
+        margin-left: (25*@rem);
+      }
+    }
   }
 }
