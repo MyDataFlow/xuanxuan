@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import HTML from '../../utils/html-helper';
 import {STATUS} from '../../core/models/member';
+import Lang from '../../lang';
 
 const statusColors = {
     unverified: '#ccc',
@@ -31,6 +32,7 @@ class StatusDot extends Component {
             style,
             children,
             status,
+            label,
             ...other
         } = this.props;
 
@@ -46,7 +48,16 @@ class StatusDot extends Component {
             style.height = size;
         }
 
-        return <span className={HTML.classes('inline-block status-dot', className, `status-${status}`)} style={style} {...other}>{children}</span>;
+        const dotView = <span className={HTML.classes('inline-block status-dot', className, `status-${status}`)} style={style} {...other}>{children}</span>;
+
+        if(label) {
+            if(label === true) {
+                label = Lang.string(`member.status.${status}`);
+            }
+            return <div className="app-member-status">{dotView} &nbsp; <span className="status-label muted">{label}</span></div>;
+        } else {
+            return dotView;
+        }
     }
 }
 

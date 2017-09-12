@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Avatar from '../../components/avatar';
 import HTML from '../../utils/html-helper';
 import StatusDot from './status-dot';
+import App from '../../core';
 
 const getCodeFromString = (str) => {
     if(!str) {
@@ -37,8 +38,9 @@ class UserAvatar extends Component {
             return <Avatar className={HTML.classes('circle', className)} icon="account" style={style} {...other}>{statusDot}</Avatar>;
         }
 
-        const avatarImageSrc = user.avatar;
-        if(avatarImageSrc) {
+        let avatarImageSrc = user.getAvatar(App.user && App.user.server);
+        if(avatarImageSrc && App.user) {
+            avatarImageSrc = avatarImageSrc + '?' + App.user.loginSessionId;
             return <Avatar className={HTML.classes('circle', className)} image={avatarImageSrc} style={style} {...other}>{statusDot}</Avatar>;
         }
         const name = user.realname || user.account;
