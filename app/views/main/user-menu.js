@@ -9,6 +9,7 @@ import StatusDot from '../common/status-dot';
 import User from '../../core/profile/user';
 import UserProfileDialog from '../common/user-profile-dialog';
 import AboutDialog from '../common/about-dialog';
+import UserSettingDialog from '../common/user-setting-dialog';
 
 const allStatus = [
     User.STATUS.getName(User.STATUS.online),
@@ -46,6 +47,11 @@ class UserMenu extends Component {
         this.requestClose();
     };
 
+    handleSettingItemClick = () => {
+        UserSettingDialog.show();
+        this.requestClose();
+    }
+
     render() {
         let {
             onRequestClose,
@@ -74,7 +80,7 @@ class UserMenu extends Component {
             <a className="item" onClick={this.handleUserProfileItemClick}><div className="title">{Lang.string('usermenu.openProfile')}</div></a>
             <div className="divider"></div>
             <a className="item" onClick={this.handleAboutItemClick}><div className="title">{Lang.string('usermenu.about')}</div></a>
-            <a className="item"><div className="title">{Lang.string('usermenu.setting')}</div></a>
+            <a className="item" onClick={this.handleSettingItemClick}><div className="title">{Lang.string('usermenu.setting')}</div></a>
             <a className="item" onClick={this.handleLogoutClick}><div className="title">{Lang.string('usermenu.logout')}</div></a>
             {App.platform.quit && <a className="item" onClick={this.handleExitClick}><div className="title">{Lang.string('usermenu.exit')}</div></a>}
         </ClickOutsideWrapper>;

@@ -1,0 +1,46 @@
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import Modal from '../../components/modal';
+import UserSetting from './user-setting';
+import Lang from '../../lang';
+import App from '../../core';
+import DEFAULT_USER_CONFIG from '../../core/profile/user-default-config';
+import Messager from '../../components/messager';
+
+
+const show = (member, callback) => {
+    let userSetting = null;
+    return Modal.show({
+        title: Lang.string('common.setting'),
+        id: 'app-user-setting-dialog',
+        actions: [
+            {
+                type: 'submit',
+                label: Lang.string('common.save'),
+                click: () => {
+                    if(userSetting) {
+                        App.user.config.set(userSetting.getSettings())
+                    }
+                }
+            }, {
+                type: 'cancel',
+            }, {
+                type: 'secondary',
+                className: 'text-danger pull-left',
+                label: Lang.string('setting.btn.reset'),
+                click: () => {
+                    if(userSetting) {
+                        userSetting.setSettings(DEFAULT_USER_CONFIG);
+                        Messager.show('已重置为默认，保存后生效。');
+                    }
+                    return false;
+                }
+            }
+        ],
+        content: <UserSetting ref={e => userSetting = e} settings={App.profile.userConfig.plain()}/>
+    }, callback);
+};
+
+export default {
+    show,
+};

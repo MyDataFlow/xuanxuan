@@ -3,6 +3,8 @@ import DelayAction from '../../utils/delay-action';
 
 class UserConfig {
 
+    static DEFAULT = DEFAULT;
+
     constructor(config) {
         if(config && config.version !== DEFAULT.version) {
             config = null;
@@ -62,7 +64,7 @@ class UserConfig {
     }
 
     reset(newConfig) {
-        this.$ = Object.assign({}, newConfig, DEFAULT);
+        this.$ = Object.assign({}, DEFAULT, newConfig);
         this.makeChange(this.$);
     }
 
@@ -102,7 +104,7 @@ class UserConfig {
     }
 
     isChatSidebarHidden(cgid) {
-        return this.get(`ui.chat.hideSidebar.${cgid}`);
+        return !!this.get(`ui.chat.hideSidebar.${cgid}`);
     }
 
     setChatSidebarHidden(cgid, flag) {
@@ -110,7 +112,7 @@ class UserConfig {
     }
 
     get showMeOnMenu() {
-        return this.get('ui.chat.menu.showMe');
+        return !!this.get('ui.chat.menu.showMe');
     }
 
     set showMeOnMenu(flag) {
