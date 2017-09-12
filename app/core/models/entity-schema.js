@@ -46,7 +46,7 @@ const defaultValuesConveter = {
     },
     boolean: val => {
         if(typeof(val) === 'string') {
-            return val === '1' || val === 'true';
+            return val === '1' || val === 'true' || val === 'yes';
         }
         return !!val;
     },
