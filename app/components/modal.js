@@ -16,12 +16,14 @@ const DEFAULT_CLASS_NAMES = {
     'cancel': 'primary-pale text-primary'
 };
 
-const show = (props, callback) => {
+const show = (props = {}, callback = null) => {
     let {
         title,
         closeButton,
         actions,
         onAction,
+        onSubmit,
+        onCancel,
         className,
     } = props;
 
@@ -79,6 +81,12 @@ const show = (props, callback) => {
             if(onAction) {
                 actionResult = onAction(action, e);
             }
+            if(onSubmit && action.type === 'submit') {
+                actionResult = onSubmit(action, e);
+            }
+            if(onCancel && action.type === 'cancel') {
+                actionResult = onCancel(action, e);
+            }
             if(action.click) {
                 actionResult = action.click(action, e);
             }
@@ -108,6 +116,8 @@ const show = (props, callback) => {
     delete props.closeButton;
     delete props.actions;
     delete props.onAction;
+    delete props.onSubmit;
+    delete props.onCancel;
 
     return DisplayLayer.show(props, callback);
 };

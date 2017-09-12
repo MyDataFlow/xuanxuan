@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import DisplayLayer from './display-layer';
 import HTML from '../utils/html-helper';
 
-const show = (position, content, props, callback) => {
+const show = (position, content, props = {}, callback = null) => {
     let {
         className,
         arrow,

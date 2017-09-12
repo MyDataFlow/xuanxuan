@@ -4,7 +4,7 @@ import DisplayLayer from './display-layer';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 
-const show = (position, menus, props, callback) => {
+const show = (position, menus, props = {}, callback = null) => {
     let {
         className,
         onItemClick,

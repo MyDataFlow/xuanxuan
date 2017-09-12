@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import DisplayLayer from './display-layer';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
+import timeSequence from '../utils/time-sequence';
 
-const show = (message, props, callback) => {
+const show = (message, props = {}, callback = null) => {
     let {
         type,
         content,
@@ -13,6 +14,7 @@ const show = (message, props, callback) => {
         actions,
         onAction,
         className,
+        position,
     } = props;
 
     if(!props.id) {
@@ -24,9 +26,9 @@ const show = (message, props, callback) => {
     }
 
     if(!type) {
-        type = 'primary';
+        type = 'info';
     }
-    className = HTML.classes('messager layer', className, type);
+    className = HTML.classes('messager layer', className || 'rounded', type, `position-${position}`);
 
     content = content ? <div>
         <h5>{message}</h5>
@@ -59,7 +61,7 @@ const show = (message, props, callback) => {
             }
         };
 
-        footer = <nav>
+        footer = <nav className="nav">
         {
             actions.map((action, actionIndex) => {
                 return <a onClick={handleActionClick.bind(null, action)} key={actionIndex} title={action.label}>{action.icon ? <Icon name={action.icon}/> : action.label}</a>
@@ -68,6 +70,9 @@ const show = (message, props, callback) => {
         </nav>;
     }
 
+    if(autoHide === undefined) {
+        autoHide = true;
+    }
     if(autoHide) {
         if(typeof autoHide !== 'number') {
             autoHide = 5000;
@@ -82,6 +87,7 @@ const show = (message, props, callback) => {
     delete props.autoHide;
     delete props.closeButton;
     delete props.actions;
+    delete props.position;
     delete props.onAction;
 
     return DisplayLayer.show(props, callback);
