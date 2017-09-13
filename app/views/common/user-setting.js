@@ -191,7 +191,7 @@ class UserSetting extends Component {
         if(item.getConverter) {
             value = item.getConverter(value);
         }
-        return <HotkeyInputControl defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes("flex", item.className)}/>
+        return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes("flex", item.className)}/>
         return <div className={HTML.classes("control flex", item.className)} key={item.name}>
             <div>{item.caption}</div>
         </div>;
@@ -208,7 +208,7 @@ class UserSetting extends Component {
                 <select className="rounded" value={value} onChange={this.changeConfig.bind(this, item)}>
                 {
                     item.options.map(option => {
-                        return <option value={option.value}>{option.label}</option>
+                        return <option key={option.value} value={option.value}>{option.label}</option>
                     })
                 }
                 </select>
@@ -254,6 +254,7 @@ class UserSetting extends Component {
                         {
                             section.items.map(item => {
                                 return this.renderConfigItem(item);
+
                             })
                         }
                         </div>
