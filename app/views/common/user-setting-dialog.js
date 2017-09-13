@@ -31,7 +31,7 @@ const show = (member, callback) => {
                 click: () => {
                     if(userSetting) {
                         userSetting.setSettings(DEFAULT_USER_CONFIG);
-                        Messager.show('已重置为默认，保存后生效。');
+                        Messager.show(Lang.string('setting.message.reset'), {autoHide: true});
                     }
                     return false;
                 }

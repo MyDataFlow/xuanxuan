@@ -120,6 +120,7 @@
     "setting.windows.quitApp": "关闭窗口并退出应用",
     "setting.hotkeys.globalCaptureScreen": "全局截图快捷键",
     "setting.btn.reset": "重置为默认设置",
+    "setting.message.reset": "已重置为默认，保存后生效。",
 
     "debug.inspectElement": "审查元素"
 }
