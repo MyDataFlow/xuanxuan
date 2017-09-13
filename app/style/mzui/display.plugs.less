@@ -48,6 +48,11 @@
 .messager {
   display: flex;
   flex-direction: row;
+  margin: @space-sm;
+
+  + .messager {
+    margin-top: 0;
+  }
 
   > .content {
     flex: auto;
@@ -56,5 +61,36 @@
 
   > nav {
     flex: none;
+  }
+}
+
+.display-layer-messager {
+  &.position-top {
+    justify-content: flex-start;
+  }
+  &.position-top-left {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  &.position-top-right {
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+  &.position-bottom {
+    justify-content: flex-end;
+  }
+  &.position-bottom-left {
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+  &.position-bottom-right {
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+  &.position-left {
+    align-items: flex-start;
+  }
+  &.position-right {
+    align-items: flex-end;
   }
 }

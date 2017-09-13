@@ -14,6 +14,7 @@ const show = (message, props = {}, callback = null) => {
         actions,
         onAction,
         className,
+        rootClassName,
         position,
     } = props;
 
@@ -25,10 +26,15 @@ const show = (message, props = {}, callback = null) => {
         closeButton = true;
     }
 
+    if(position === undefined) {
+        position = 'top';
+    }
+
     if(!type) {
         type = 'info';
     }
-    className = HTML.classes('messager layer', className || 'rounded', type, `position-${position}`);
+    rootClassName = HTML.classes(rootClassName, `position-${position}`);
+    className = HTML.classes('messager layer', className || 'rounded', type);
 
     content = content ? <div>
         <h5>{message}</h5>
@@ -70,9 +76,6 @@ const show = (message, props = {}, callback = null) => {
         </nav>;
     }
 
-    if(autoHide === undefined) {
-        autoHide = true;
-    }
     if(autoHide) {
         if(typeof autoHide !== 'number') {
             autoHide = 5000;
@@ -82,7 +85,7 @@ const show = (message, props = {}, callback = null) => {
         }, autoHide);
     }
 
-    props = Object.assign({backdropClassName: 'transparent'}, props, {className, content, footer, closeButton, plugName: 'messager'});
+    props = Object.assign({backdropClassName: 'clean'}, props, {rootClassName, className, content, footer, closeButton, plugName: 'messager'});
     delete props.type;
     delete props.autoHide;
     delete props.closeButton;
