@@ -13,6 +13,9 @@ export default {
         },
         contacts: {
             __: '/chats/contacts',
+            id: (id) => {
+                return `/chats/contacts/${id}`;
+            }
         },
         groups: {
             __: '/chats/groups',

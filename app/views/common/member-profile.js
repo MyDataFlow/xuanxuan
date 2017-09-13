@@ -8,6 +8,7 @@ import Member from '../../core/models/member';
 import UserAvatar from './user-avatar';
 import Avatar from '../../components/avatar';
 import StatusDot from './status-dot';
+import ROUTES from '../common/routes';
 
 class MemberProfile extends Component {
 
@@ -16,6 +17,7 @@ class MemberProfile extends Component {
             member,
             className,
             children,
+            onRequestClose,
             ...other
         } = this.props;
 
@@ -32,7 +34,7 @@ class MemberProfile extends Component {
                         <span>{Lang.string(`member.role.${member.role}`)}</span>
                     </div>
                 </div>
-                {member.account !== App.profile.userAccount && <button type="btn" className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline"/> {Lang.string('member.profile.sendMessage')}</button>}
+                {member.account !== App.profile.userAccount && <a href={'#' + ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline"/> {Lang.string('member.profile.sendMessage')}</a>}
             </div>
             <div className="divider"></div>
             <div className="heading">

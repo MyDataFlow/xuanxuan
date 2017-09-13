@@ -5,10 +5,13 @@ import App from '../../core';
 import MemberProfile from './member-profile';
 
 const show = (member, callback) => {
+    const modalId = `member-${member.id}`;
     return Modal.show({
         actions: false,
-        id: `member-${member.id}`,
-        content: <MemberProfile member={member}/>
+        id: modalId,
+        content: <MemberProfile member={member} onRequestClose={() => {
+            Modal.hide(modalId);
+        }}/>
     }, callback);
 };
 
