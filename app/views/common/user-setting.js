@@ -204,8 +204,8 @@ class UserSetting extends Component {
         }
         return <div className={HTML.classes("control flex", item.className)} key={item.name}>
             <div>{item.caption}</div>
-            <div className="select rounded">
-                <select value={value} onChange={this.changeConfig.bind(this, item)}>
+            <div className="select">
+                <select className="rounded" value={value} onChange={this.changeConfig.bind(this, item)}>
                 {
                     item.options.map(option => {
                         return <option value={option.value}>{option.label}</option>
