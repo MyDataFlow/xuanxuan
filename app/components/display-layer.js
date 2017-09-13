@@ -274,8 +274,9 @@ class DisplayContainer extends Component {
         const item = all[id];
         if(!item) {
             if(DEBUG) {
-                console.error(`Cannot find display layer with id ${id}.`);
+                console.warn(`Cannot find display layer with id ${id}.`);
             }
+            callback && callback(false);
             return;
         }
         if(remove === 'auto') {
