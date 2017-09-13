@@ -7,7 +7,20 @@ import App from '../../core';
 import MemberList from '../common/member-list';
 import Member from '../../core/models/member';
 
+
 class ChatSidebarPeoples extends Component {
+
+    componentWillUnmount() {
+        App.events.off(this.dataChangeEventHandler);
+    }
+
+    componentDidMount() {
+        this.dataChangeEventHandler = App.events.onDataChange(data => {
+            if(data && data.members) {
+                this.forceUpdate();
+            }
+        });
+    }
 
     render() {
         let {
