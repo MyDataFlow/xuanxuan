@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import DisplayLayer from './display-layer';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
+import timeSequence from '../utils/time-sequence';
 
 const show = (position, menus, props = {}, callback = null) => {
     let {
@@ -39,6 +40,9 @@ const show = (position, menus, props = {}, callback = null) => {
     content = <div className={HTML.classes("list dropdown-menu", menuClassName)}>
         {
             menus.map((item, idx) => {
+                if(item === '-' || item === 'divider' || item === 'separator') {
+                    item = {type: 'divider'};
+                }
                 let {
                     id,
                     className,
@@ -48,7 +52,7 @@ const show = (position, menus, props = {}, callback = null) => {
                 } = item;
                 if(render) {
                     return render(item);
-                } else if(item.type === 'divider') {
+                } else if(item.type === 'divider' || item.type === 'separator') {
                     return <div key={id || idx} className={HTML.classes('divider', className)} {...other}></div>;
                 } else {
                     return <a onClick={handleItemClick.bind(null, item)} key={id || idx} className={HTML.classes('item', itemClassName, className)} {...other}>
@@ -66,9 +70,9 @@ const show = (position, menus, props = {}, callback = null) => {
     const y = position.y || 0;
     style = Object.assign({maxWidth: window.innerWidth, maxHeight: window.innerHeight, left: x, top: y}, style);
 
-    className = HTML.classes('contextmenu layer', className, `placement-${placement}`);
+    className = HTML.classes('contextmenu layer', className);
 
-    props = Object.assign({backdropClassName: 'transparent'}, props, {className, style, content, plugName: 'contextmenu'});
+    props = Object.assign({backdropClassName: 'clean', animation: 'fade'}, props, {className, style, content, plugName: 'contextmenu'});
     delete props.menuClassName;
     delete props.itemClassName;
     delete props.onItemClick;
@@ -78,7 +82,7 @@ const show = (position, menus, props = {}, callback = null) => {
         const newX = Math.max(0, Math.min(window.innerWidth - ele.clientWidth, x));
         const newY = Math.max(0, Math.min(window.innerHeight - ele.clientHeight, y));
         if(newX !== x || newY !== y) {
-            display.setStyle({top: y, left: x});
+            display.setStyle({top: newY, left: newX});
         }
     });
 };

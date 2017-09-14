@@ -193,10 +193,6 @@ class DisplayLayer extends Component {
             ...other
         } = this.props;
 
-        if(DEBUG) {
-            console.log('Render Display Layer', {props: this.props, state: this.state});
-        }
-
         if(loadingContent === true) {
             loadingContent = <Spinner/>;
         }

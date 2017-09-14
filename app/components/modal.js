@@ -135,10 +135,11 @@ const confirm = (content, props, callback) => {
         show(Object.assign({
             closeButton: false,
             modal: true,
-            content: content,
+            content,
             actions: true,
             onAction: action => {
                 if(!resolved) {
+                    resolved = true;
                     resolve(action.type === 'submit');
                 }
             },
@@ -152,25 +153,30 @@ const confirm = (content, props, callback) => {
 };
 
 const prompt = (title, defaultValue, props, callback) => {
+    let inputProps = props && props.inputProps;
+    if(inputProps) {
+        delete props.inputProps;
+    }
     return new Promise(resolve => {
         let resolved = false;
         let value = defaultValue;
         show(Object.assign({
             closeButton: false,
             modal: true,
-            header: title,
+            title,
             content: <InputControl defaultValue={defaultValue} onChange={newValue => {
                 value = newValue;
-            }}/>,
+            }} {...inputProps}/>,
             actions: true,
             onAction: action => {
-                if(!resolved) {
-                    resolve(value, value !== defaultValue);
+                if(action.type === 'submit') {
+                    resolved = true;
+                    resolve(value);
                 }
             },
             onHidden: () => {
                 if(!resolved) {
-                    resolve(value, false);
+                    resolve(defaultValue);
                 }
             }
         }, props), callback)
