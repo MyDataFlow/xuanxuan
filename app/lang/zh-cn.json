@@ -7,6 +7,7 @@
     "common.about": "关于",
     "common.setting": "设置",
     "common.save": "保存",
+    "common.rename": "重命名",
     "common.copyrightFormat": "版权所有 ©️ {year} {name}",
 
     "time.today": "今天",
@@ -31,6 +32,8 @@
     "chat.membersCount.format": "{0}人",
     "chat.tempChat.name": "临时会话",
     "chat.group.name": "讨论组",
+    "chat.rename.title": "重命名会话",
+    "chat.rename.newTitle": "新的会话名称",
     "chat.public.label": "公开",
     "chat.committers.setCommitters": "设置白名单",
     "chat.committers.setCommittersFormat": "设置会话【{0}】的白名单",
@@ -40,6 +43,8 @@
     "chat.committers.type.whitelist": "仅指定的成员",
     "chat.committers.blocked": "已禁言",
     "chat.committers.blockedTip": "该会话设置为只读，暂时你无法发送消息。",
+    "chat.group.exit": "退出讨论组",
+    "chat.group.exitConfirm": "确定退出讨论组【{0}】？",
     "chat.toolbor.star": "收藏",
     "chat.toolbor.unstar": "取消收藏",
     "chat.toolbor.invite": "邀请其他人",
@@ -98,6 +103,7 @@
     "member.profile.email": "邮箱",
     "member.profile.mobile": "手机",
     "member.profile.site": "网站",
+    "member.profile.view": "查看资料",
 
     "setting.section.chats": "聊天",
     "setting.section.notification": "通知",

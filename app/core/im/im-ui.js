@@ -6,6 +6,10 @@ import Server from './im-server';
 import ChatMessage from '../models/chat-message';
 import members from '../members';
 import StringHelper from '../../utils/string-helper';
+import MemberProfileDialog from '../../views/common/member-profile-dialog';
+import Modal from '../../components/modal';
+import ContextMenu from '../../components/context-menu';
+import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -84,7 +88,10 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
         items.push({
             id: 'more',
             icon: 'dots-horizontal',
-            label: Lang.string('chat.toolbor.more')
+            label: Lang.string('chat.toolbor.more'),
+            click: e => {
+                ContextMenu.show({x: e.pageX, y: e.pageY}, createChatToolbarMoreContextMenuItems(chat));
+            }
         });
     }
     items[items.length - 1].hintPosition = 'bottom-left';
@@ -142,6 +149,112 @@ const createSendboxToolbarItems = chat => {
     return items;
 };
 
+const chatRenamePrompt = chat => {
+    Modal.prompt(Lang.string('chat.rename.title'), chat.name, {
+        placeholder: Lang.string('chat.rename.newTitle'),
+    }).then(newName => {
+        if(chat.name !== newName) {
+            Server.renameChat(chat, newName);
+        }
+    });
+};
+
+const chatExitConfirm = chat => {
+    Modal.confirm(Lang.format('chat.group.exitConfirm', chat.getDisplayName({members, user: profile.user}))).then(result => {
+        if(result) {
+            Server.exitChat(chat);
+        }
+    });
+};
+
+const createChatContextMenuItems = (chat) => {
+    let menu = [];
+    if(chat.isOne2One) {
+        menu.push({
+            label: Lang.string('member.profile.view'),
+            click: () => {
+                MemberProfileDialog.show(chat.getTheOtherOne({members, user: profile.user}));
+            }
+        }, {type: 'separator'});
+    }
+
+    menu.push({
+        label: Lang.string(chat.star ? 'chat.toolbor.unstar' : 'chat.toolbor.star'),
+        click: () => {
+            Server.toggleChatStar(chat);
+        }
+    });
+
+    if(chat.canRename(profile.user)) {
+        menu.push({
+            label: Lang.string('common.rename'),
+            click: () => {
+                chatRenamePrompt(chat);
+            }
+        });
+    }
+
+    if(chat.canMakePublic(profile.user)) {
+        menu.push({
+            label: Lang.string(chat.public ? 'chat.public.setPrivate' : 'chat.public.setPublic'),
+            click: () => {
+                Server.toggleChatPublic(chat);
+            }
+        });
+    }
+
+    if(chat.canExit) {
+        menu.push({type: 'separator'}, {
+            label: Lang.string('chat.group.exit'),
+            click: () => {
+                chatExitConfirm(chat);
+            }
+        });
+    }
+    return menu;
+};
+
+const createChatToolbarMoreContextMenuItems = chat => {
+    if(chat.isOne2One) return [];
+    let menu = [];
+    if(chat.canRename(profile.user)) {
+        menu.push({
+            label: Lang.string('common.rename'),
+            click: () => {
+                chatRenamePrompt(chat);
+            }
+        });
+    }
+
+    if(chat.canMakePublic(profile.user)) {
+        menu.push({
+            label: Lang.string(chat.public ? 'chat.public.setPrivate' : 'chat.public.setPublic'),
+            click: () => {
+                Server.toggleChatPublic(chat);
+            }
+        });
+    }
+
+    if(chat.canSetCommitters(profile.user)) {
+        menu.push({
+            label: Lang.string('chat.committers.setCommitters'),
+            click: () => {
+                ChatCommittersSettingDialog.show(chat);
+            }
+        })
+    }
+
+    if(chat.canExit) {
+        menu.push({type: 'separator'}, {
+            label: Lang.string('chat.group.exit'),
+            click: () => {
+                chatExitConfirm(chat);
+            }
+        });
+    }
+    return menu;
+};
+
 const sendTextMessage = (message, chat) => {
     return Server.sendChatMessage(new ChatMessage({
         content: message,
@@ -192,6 +305,10 @@ export default {
     sendTextMessage,
     sendEmojiMessage,
     linkMembersInText,
+    createChatContextMenuItems,
+    chatExitConfirm,
+    chatRenamePrompt,
+    createChatToolbarMoreContextMenuItems,
 
     get currentActiveChatId() {
         return activedChatId;

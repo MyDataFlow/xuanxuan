@@ -7,6 +7,7 @@ import App from '../../core';
 import ChatListItem from './chat-list-item';
 import MemberListItem from '../common/member-list-item';
 import UserProfileDialog from '../common/user-profile-dialog';
+import ContextMenu from '../../components/context-menu';
 
 class MenuList extends Component {
 
@@ -39,6 +40,11 @@ class MenuList extends Component {
         UserProfileDialog.show();
     }
 
+    handleItemContextMenu(chat, e) {
+        const menuItems = App.im.ui.createChatContextMenuItems(chat);
+        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
+    }
+
     render() {
         let {
             search,
@@ -56,7 +62,7 @@ class MenuList extends Component {
             {user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={20} showStatusDot={false} onClick={this.handleUserItemClick}/>}
             {
                 chats.map(chat => {
-                    return <ChatListItem key={chat.gid} filterType={filter} chat={chat} className="item"/>;
+                    return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item"/>;
                 })
             }
             {children}

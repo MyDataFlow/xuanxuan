@@ -5,4 +5,5 @@ import ui from './im-ui';
 export default {
     chats,
     ui,
+    server,
 };

@@ -1,5 +1,6 @@
 .app-chats-menu-header {
   z-index: 1040;
+  padding: @space-sm;
 }
 
 .app-chats-search {
@@ -246,6 +247,13 @@
       box-shadow: inset 0 (-2*@rem) 0 0 @color-focus;
     }
   }
+
+  .list > .item .side-icon {
+    position: relative;
+    z-index: 11;
+  }
+}
+
 .app-chat-committers-setting {
   .checkbox-list {
     > .checkbox {
