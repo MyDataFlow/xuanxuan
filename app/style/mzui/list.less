@@ -119,3 +119,21 @@
 .list > .list {
   margin-left: @list-nested-group-margin;
 }
+
+
+.dropdown-menu {
+  padding: @space-xs 0;
+
+  > .divider {
+    margin: @space-xs 0!important;
+  }
+
+  > .item {
+    padding: 0 @space-sm;
+    font-size: (13*@rem);
+
+    > .title {
+      margin-left: (@space-sm);
+    }
+  }
+}
