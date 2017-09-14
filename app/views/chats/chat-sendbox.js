@@ -51,7 +51,7 @@ class ChatSendbox extends Component {
                 content.content = Emojione.toShort(content.content);
                 let trimContent = App.profile.userConfig.sendHDEmoticon ? content.content.trim() : false;
                 if(trimContent && Emojione.emojioneList[trimContent]) {
-                    App.im.ui.sendEmojiMessage(trimContent);
+                    App.im.ui.sendEmojiMessage(trimContent, this.props.chat);
                 } else {
                     App.im.ui.sendTextMessage(content.content, this.props.chat);
                 }
