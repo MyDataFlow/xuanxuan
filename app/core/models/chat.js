@@ -29,6 +29,7 @@ class Chat extends Entity {
     static NAME = 'Chat';
     static STATUS = STATUS;
     static TYPES = TYPES;
+    static COMMITTERS_TYPES = COMMITTERS_TYPES;
     static SCHEMA = Entity.SCHEMA.extend({
         user: {type: 'int', indexed: true},
         type: {type: 'string', indexed: true},
@@ -42,7 +43,7 @@ class Chat extends Entity {
         public: {type: 'boolean', indexed: true},
         admins: {type: 'set'},
         members: {type: 'set'},
-        committers: {type: 'set'},
+        committers: {type: 'string'},
     });
 
     constructor(data, entityType = Chat.NAME) {
@@ -230,7 +231,11 @@ class Chat extends Entity {
     }
 
     get committers() {
-        return this.$get('committers');
+        let committers = this.$get('committers');
+        if(!committers || committers === '$ADMINS') {
+            return [];
+        }
+        return new Set(committers.split(','));
     }
 
     set committers(committers) {
@@ -238,20 +243,20 @@ class Chat extends Entity {
     }
 
     get committersType() {
-        return this.$get('committersType', COMMITTERS_TYPES.all);
-    }
-
-    set committersType(type) {
-        if(COMMITTERS_TYPES[type]) {
-            this.$set('committersType', type);
+        if((this.isSystem || this.isGroup) && this.committers && this.committers !== '$ALL') {
+            if(this.committers === '$ADMINS') {
+                return COMMITTERS_TYPES.admins;
+            }
+            return COMMITTERS_TYPES.whitelist;
         }
+        return COMMITTERS_TYPES.all;
     }
 
     isCommitter(member) {
         switch(this.committersType) {
-            case 'admins':
+            case COMMITTERS_TYPES.admins:
                 return this.isAdmin(member);
-            case 'whitelist':
+            case COMMITTERS_TYPES.whitelist:
                 if(typeof member === 'object') {
                     member = member.id;
                 }
