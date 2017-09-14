@@ -49,6 +49,7 @@ class Tabs extends Component {
             navClassName,
             tabPaneClass,
             activeClassName,
+            contentClassName,
             onPaneChange,
             className,
             children,
@@ -63,7 +64,7 @@ class Tabs extends Component {
                 })
             }
             </nav>
-            <div className="content">
+            <div className={HTML.classes('content', contentClassName)}>
             {
                 children.map(item => {
                     if(item.key === this.state.activePaneKey) {
