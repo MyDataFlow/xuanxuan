@@ -35,7 +35,7 @@ class Chat extends Entity {
         type: {type: 'string', indexed: true},
         name: {type: 'string', indexed: true},
         createdDate: {type: 'timestamp', indexed: true},
-        createdBy: {type: 'int', indexed: true},
+        createdBy: {type: 'string', indexed: true},
         editedDate: {type: 'timestamp'},
         lastActiveTime: {type: 'timestamp', indexed: true},
         star: {type: 'boolean', indexed: true},
