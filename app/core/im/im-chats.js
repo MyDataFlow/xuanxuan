@@ -22,7 +22,6 @@ const EVENT = {
 let chats = null;
 let publicChats = null;
 
-
 const app = {
     members,
     get user() {
@@ -390,6 +389,7 @@ const search = (search, chatType) => {
 const remove = gid => {
     const removeChat = chats[gid];
     if(removeChat) {
+        removeChat['delete'] = true;
         delete chats[gid];
         Events.emitDataChange({chats: {[gid]: removeChat}});
         return true;

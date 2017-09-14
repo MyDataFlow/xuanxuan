@@ -41,6 +41,10 @@ class ChatView extends Component {
             ...other
         } = this.props;
 
+        if(chat['delete']) {
+            return <div key={chat.gid} className="box muted">请选择一个聊天会话。</div>
+        }
+
         const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid);
 
         return <div {...other}

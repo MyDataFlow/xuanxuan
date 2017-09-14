@@ -59,6 +59,7 @@ class ChatCreateGroups extends Component {
     handleJoinBtnClick = () => {
         const {choosed} = this.state;
         App.im.server.joinChat(choosed).then(chat => {
+            window.location.hash = '#' + ROUTES.chats.groups.id(chat.gid);
             this.props.onRequestClose && this.props.onRequestClose();
         }).catch(error => {
             if(error) {
