@@ -26,7 +26,7 @@ class ChatHeader extends Component {
             className={HTML.classes('app-chat-header flex flex-wrap space-between shadow-divider', className)}
         >
             <div className="flex flex-middle heading" onClick={theOtherOne ? MemberProfileDialog.show.bind(null, theOtherOne, null) : null}>
-                <ChatAvatar chat={chat} size={24}/>
+                <ChatAvatar chat={chat} size={24} className="state"/>
                 {theOtherOne && <StatusDot status={theOtherOne.status}/>}
                 {
                     theOtherOne ? <a className="strong rounded title text-primary">{chatName}</a> : <strong className="title">{chatName}</strong>
