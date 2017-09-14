@@ -16,6 +16,8 @@ class MemberList extends Component {
             children,
             listItemProps,
             itemRender,
+            onItemClick,
+            onItemContextMenu,
             ...other
         } = this.props;
 
@@ -24,7 +26,7 @@ class MemberList extends Component {
         >
         {
             members.map(member => {
-                return <MemberListItem {...listItemProps} key={member.account} member={member}>{itemRender && itemRender(member)}</MemberListItem>;
+                return <MemberListItem onContextMenu={onItemContextMenu && onItemContextMenu.bind(null, member)} onClick={onItemClick && onItemClick.bind(null, member)} {...listItemProps} key={member.account} member={member}>{itemRender && itemRender(member)}</MemberListItem>;
             })
         }
         </div>;

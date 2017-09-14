@@ -15,7 +15,8 @@ let activedChatId = null;
 let activeCaches = {};
 
 const EVENT = {
-    activeChat: 'im.chats.activeChat'
+    activeChat: 'im.chats.activeChat',
+    sendContentToChat: 'im.chats.sendContentToChat',
 };
 
 const activeChat = chat => {
@@ -37,6 +38,17 @@ const isActiveChat = chatId => {
 
 const onActiveChat = listener => {
     return Events.on(EVENT.activeChat, listener);
+};
+
+const sendContentToChat = (content, type = 'text', cgid = null) => {
+    if(!cgid) {
+        cgid = activedChatId;
+    }
+    return Events.emit(`${EVENT.activeChat}.${cgid}`, {content, type});
+};
+
+const onSendContentToChat = (cgid, listener) => {
+    return Events.on(`${EVENT.activeChat}.${cgid}`, listener);
 };
 
 const mapCacheChats = callback => {
@@ -255,6 +267,33 @@ const createChatToolbarMoreContextMenuItems = chat => {
     return menu;
 };
 
+const createChatMemberContextMenuItems = member => {
+    let menu = [];
+    if(member.account !== profile.userAccount) {
+        const gid = chats.getOne2OneChatGid([member, profile.user]);
+        if(gid !== activedChatId) {
+            menu.push({
+                label: Lang.string('chat.atHim'),
+                click: () => {
+                    sendContentToChat(`@${member.displayName} `);
+                }
+            }, {
+                label: Lang.string('chat.sendMessage'),
+                click: () => {
+                    window.location.hash = `#/chats/contacts/${gid}`;
+                }
+            });
+        }
+    }
+    menu.push({
+        label: Lang.string('member.profile.view'),
+        click: () => {
+            MemberProfileDialog.show(member);
+        }
+    });
+    return menu;
+};
+
 const sendTextMessage = (message, chat) => {
     return Server.sendChatMessage(new ChatMessage({
         content: message,
@@ -272,7 +311,7 @@ const sendEmojiMessage = (emojicon, chat) => {
     }), chat);
 };
 
-const linkMembersInText = (text, format = '<a class="link-app {className}" href="#Member/{id}">@{displayName}</a>') => {
+const linkMembersInText = (text, format = '<a class="link-app {className}" data-url="@Member/{id}">@{displayName}</a>') => {
     if(text.indexOf('@') > -1) {
         const userAccount = profile.userAccount;
         members.forEach(m => {
@@ -322,6 +361,9 @@ export default {
     chatRenamePrompt,
     createChatToolbarMoreContextMenuItems,
     createGroupChat,
+    sendContentToChat,
+    onSendContentToChat,
+    createChatMemberContextMenuItems,
 
     get currentActiveChatId() {
         return activedChatId;

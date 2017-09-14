@@ -8,6 +8,8 @@ import App from '../../core';
 import MessageContentFile from './message-content-file';
 import MessageContentImage from './message-content-image';
 import MessageContentText from './message-content-text';
+import MemberProfileDialog from '../common/member-profile-dialog';
+import ContextMenu from '../../components/context-menu';
 
 const showTimeLabelInterval = 1000*60*5;
 
@@ -18,6 +20,15 @@ class MessageListItem extends Component {
         showDateDivider: 0,
         hideHeader: 0,
     };
+
+    handleSenderNameClick(sender, message) {
+        App.im.ui.sendContentToChat(`@${sender.displayName} `);
+    }
+
+    handleUserContextMenu(sender, e) {
+        const items = App.im.ui.createChatMemberContextMenuItems(sender);
+        ContextMenu.show({x: e.pageX, y: e.pageY}, items);
+    }
 
     render() {
         let {
@@ -42,9 +53,9 @@ class MessageListItem extends Component {
         if(!hideHeader) {
             const sender = message.getSender(App.members);
             headerView = <div className="app-message-item-header">
-                <UserAvatar className="state" user={sender}/>
+                <UserAvatar className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)}/>
                 <header>
-                    <span className="title rounded text-primary">{sender.displayName}</span>
+                    <a className="title rounded text-primary" onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
                     <small className="time">{DateHelper.formatDate(message.date, 'hh:mm')}</small>
                 </header>
             </div>;

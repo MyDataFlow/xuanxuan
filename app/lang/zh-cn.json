@@ -77,6 +77,8 @@
     "chat.sendbox.toolbar.captureScreen": "截取屏幕",
     "chat.sendbox.toolbar.setFontSize": "设置字体大小",
     "chat.sendbox.toolbar.tips": "小技巧",
+    "chat.atHim": "@她/他",
+    "chat.sendMessage": "发送消息",
 
     "chat.sidebar.tab.peoples.label": "成员",
     "chat.sidebar.tab.files.label": "文件",

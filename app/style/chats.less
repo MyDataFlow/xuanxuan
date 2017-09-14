@@ -147,6 +147,10 @@
       font-weight: bold;
       display: inline-block;
       margin-right: (5*@rem);
+
+      &:hover:before {
+        content: '@';
+      }
     }
 
     > small {
@@ -247,6 +251,12 @@
   .list > .item .side-icon {
     position: relative;
     z-index: 11;
+  }
+}
+
+.app-chat-sidebar-peoples .app-member-list-item {
+  &:hover > .title:before {
+    content: '@';
   }
 }
 

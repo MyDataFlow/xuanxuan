@@ -6,7 +6,8 @@ import Lang from '../../lang';
 import App from '../../core';
 import MemberList from '../common/member-list';
 import Member from '../../core/models/member';
-
+import MemberProfileDialog from '../common/member-profile-dialog';
+import ContextMenu from '../../components/context-menu';
 
 class ChatSidebarPeoples extends Component {
 
@@ -38,6 +39,15 @@ class ChatSidebarPeoples extends Component {
         }
     }
 
+    handleMemberItemClick(member) {
+        App.im.ui.sendContentToChat(`@${member.displayName} `);
+    }
+
+    handleItemContextMenu = (member, e) => {
+        const items = App.im.ui.createChatMemberContextMenuItems(member);
+        ContextMenu.show({x: e.pageX, y: e.pageY}, items);
+    }
+
     render() {
         let {
             chat,
@@ -60,7 +70,7 @@ class ChatSidebarPeoples extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-sidebar-peoples has-padding', className)}
         >
-            <MemberList itemRender={this.handleItemRender} className="white rounded compact" members={members} listItemProps={{avatarSize: 20}}/>
+            <MemberList onItemClick={this.handleMemberItemClick.bind(this)} onItemContextMenu={this.handleItemContextMenu} itemRender={this.handleItemRender} className="white rounded compact" members={members} listItemProps={{avatarSize: 20}}/>
             {children}
         </div>;
     }

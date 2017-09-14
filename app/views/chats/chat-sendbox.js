@@ -104,6 +104,19 @@ class ChatSendbox extends Component {
         // }
     }
 
+    componentWillUnmount() {
+        App.events.off(this.onSendContentToChatHandler);
+    }
+
+    componentDidMount() {
+        this.onSendContentToChatHandler = App.im.ui.onSendContentToChat(this.props.chat.gid, content => {
+            switch(content.type) {
+                default:
+                    this.editbox.appendContent(content.content);
+            }
+        });
+    }
+
     render() {
         let {
             chat,
