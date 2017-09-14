@@ -6,6 +6,8 @@ import HotkeyInputControl from '../../components/hotkey-input-control';
 import Lang from '../../lang';
 import Config from 'Config';
 import Platform from 'Platform';
+import Checkbox from '../../components/checkbox';
+import SelectBox from '../../components/select-box';
 
 const isNotificationOff = state => {
     return !state['ui.notify.enableSound'];
@@ -192,9 +194,6 @@ class UserSetting extends Component {
             value = item.getConverter(value);
         }
         return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes("flex", item.className)}/>
-        return <div className={HTML.classes("control flex", item.className)} key={item.name}>
-            <div>{item.caption}</div>
-        </div>;
     }
 
     renderSelectItem(item) {
@@ -204,15 +203,7 @@ class UserSetting extends Component {
         }
         return <div className={HTML.classes("control flex", item.className)} key={item.name}>
             <div>{item.caption}</div>
-            <div className="select">
-                <select className="rounded" value={value} onChange={this.changeConfig.bind(this, item)}>
-                {
-                    item.options.map(option => {
-                        return <option key={option.value} value={option.value}>{option.label}</option>
-                    })
-                }
-                </select>
-            </div>
+            <SelectBox options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded"/>
         </div>;
     }
 
@@ -223,10 +214,7 @@ class UserSetting extends Component {
         }
         const checked = !!value;
         return <div className={HTML.classes("control", item.className)} key={item.name}>
-            <div className={"checkbox" + (checked ? ' checked' : '')}>
-                <input checked={checked} type="checkbox" onChange={this.changeConfig.bind(this, item)} />
-                <label>{item.caption}</label>
-            </div>
+            <Checkbox checked={checked} label={item.caption} onChange={this.changeConfig.bind(this, item)}/>
         </div>;
     }
 
