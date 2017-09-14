@@ -506,7 +506,7 @@ class Chat extends Entity {
         return !!this._messages;
     }
 
-    addMessages(messages, limitSize) {
+    addMessages(messages, limitSize = true) {
         if(!Array.isArray(messages)) {
             messages = [messages];
         }
