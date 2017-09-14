@@ -15,10 +15,9 @@ let chatJoinTask = null;
 
 Server.socket.setHandler(imServerHandlers);
 
-const fetchChatHistory = (cgid, pager, socket) => {
-    socket = socket || server.socket;
+const fetchChatHistory = (cgid, pager) => {
     pager = Object.assign({
-        recPerPage: 20,
+        recPerPage: 50,
         pageID: 1,
         recTotal: 0,
         continued: true
@@ -34,6 +33,7 @@ const updateChatHistory = (cgid, messages, pager, socket) => {
         chats.updateChatMessages(messages);
     }
 
+    pager.gid = cgid;
     pager.isFetchOver = pager.pageID * pager.recPerPage >= pager.recTotal;
     if(pager.continued && !pager.isFetchOver) {
         fetchChatHistory(cgid, {

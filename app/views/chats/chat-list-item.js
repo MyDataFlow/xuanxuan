@@ -44,8 +44,8 @@ class ChatListItem extends Component {
 
         if(notUserLink) {
             return <a
-                href={'#' + ROUTES.chats.chat.id(chat.gid, filterType)}
-                className={HTML.classes('app-chat-item flex-middle', className, {active: App.im.ui.isActiveChat(chat.gid)})}
+                href={notUserLink === 'disabled' ? null : ('#' + ROUTES.chats.chat.id(chat.gid, filterType))}
+                className={HTML.classes('app-chat-item flex-middle', className, {active: notUserLink !== 'disabled' && App.im.ui.isActiveChat(chat.gid)})}
                 style={style}
                 {...other}
             >

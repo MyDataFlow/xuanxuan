@@ -78,6 +78,10 @@ class ChatMessage extends Entity {
         this._status.change(remoteId ? STATUS.ok : STATUS.sendFail);
     }
 
+    get id() {
+        return this.$get('id', 0);
+    }
+
     get order() {
         return this.$.order;
     }

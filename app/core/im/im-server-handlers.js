@@ -114,7 +114,7 @@ const chatHistory = (msg, socket) => {
         }
     }
 
-    imServer.updateChatHistory(messages.cgid, messages, msg.pager, socket);
+    imServer.updateChatHistory((messages && messages.length) ? messages[0].cgid : null, messages, msg.pager, socket);
 };
 
 const chatStar = (msg, socket) => {

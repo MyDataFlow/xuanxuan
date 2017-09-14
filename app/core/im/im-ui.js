@@ -10,6 +10,7 @@ import MemberProfileDialog from '../../views/common/member-profile-dialog';
 import Modal from '../../components/modal';
 import ContextMenu from '../../components/context-menu';
 import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
+import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -81,7 +82,10 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
     items.push({
         id: 'history',
         icon: 'history',
-        label: Lang.string('chat.toolbor.history')
+        label: Lang.string('chat.toolbor.history'),
+        click: () => {
+            ChatsHistoryDialog.show(chat);
+        }
     });
     if(showSidebarIcon === 'auto') {
         showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid);
@@ -305,7 +309,7 @@ const sendTextMessage = (message, chat) => {
 const sendEmojiMessage = (emojicon, chat) => {
     return Server.sendChatMessage(new ChatMessage({
         contentType: 'image',
-        content: JSON.stringify({type: 'emoji', content: emoticon}),
+        content: JSON.stringify({type: 'emoji', content: emojicon}),
         user: profile.userId,
         cgid: chat.gid,
     }), chat);
