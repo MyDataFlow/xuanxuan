@@ -138,20 +138,29 @@ const deleteLocalMessage = (message) => {
     return db.database.chatMessages.delete(gid);
 };
 
-const loadChatMessages = (chat, queryObject, limit = CHATS_LIMIT_DEFAULT) => {
+const countChatMessages = cgid => {
+    return db.database.chatMessages.where({cgid}).count();
+};
+
+const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true) => {
     const cgid = chat.gid;
-    queryObject = queryObject ? Object.assign({cgid}, queryObject) : {cgid};
-    let collection =  db.database.chatMessages.where(queryObject);
+    let collection =  db.database.chatMessages.orderBy('id').and(x => {
+        return x.cgid === cgid && (!queryCondition || queryCondition(x));
+    });
+    if(reverse) {
+        collection = collection.reverse();
+    }
+    if(offset) {
+        collection = collection.offset(offset);
+    }
     if(limit) {
         collection = collection.limit(limit);
     }
     return collection.toArray(chatMessages => {
         if(chatMessages && chatMessages.length) {
             const result = chatMessages.map(ChatMessage.create);
-            // if(!queryObject) {
-                chat.addMessages(result, true);
-                Events.emitDataChange({chats: {[cgid]: chat}});
-            // }
+            chat.addMessages(result, true);
+            Events.emitDataChange({chats: {[cgid]: chat}});
             return Promise.resolve(result);
         } else {
             return Promise.resolve([]);
@@ -470,4 +479,5 @@ export default {
     getRecents,
     onChatsInit,
     getOne2OneChatGid,
+    countChatMessages,
 };
