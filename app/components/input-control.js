@@ -65,7 +65,6 @@ class InputControl extends Component {
             labelStyle,
             placeholder,
             autoFocus,
-            style,
             inputType,
             inputStyle,
             inputProps,
