@@ -22,6 +22,17 @@ class ChatSidebarPeoples extends Component {
         });
     }
 
+    handleItemRender = member => {
+        const {chat} = this.props;
+        if(!chat.isCommitter(member)) {
+            return <div data-hint={Lang.string('chat.committers.blocked')} className="hint--top side-icon text-gray"><Icon name="lock-outline"/></div>;
+        }
+        if(chat.isAdmin(member)) {
+            return <div data-hint={Lang.string('chat.role.admin')} className="hint--top side-icon text-primary"><Icon name="account-circle"/></div>;
+        }
+        return null;
+    }
+
     render() {
         let {
             chat,
@@ -44,7 +55,7 @@ class ChatSidebarPeoples extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-sidebar-peoples has-padding', className)}
         >
-            <MemberList className="white rounded compact" members={members} listItemProps={{avatarSize: 20}}/>
+            <MemberList itemRender={this.handleItemRender} className="white rounded compact" members={members} listItemProps={{avatarSize: 20}}/>
             {children}
         </div>;
     }

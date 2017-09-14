@@ -15,6 +15,7 @@ class MemberList extends Component {
             className,
             children,
             listItemProps,
+            itemRender,
             ...other
         } = this.props;
 
@@ -23,7 +24,7 @@ class MemberList extends Component {
         >
         {
             members.map(member => {
-                return <MemberListItem {...listItemProps} key={member.account} member={member}/>;
+                return <MemberListItem {...listItemProps} key={member.account} member={member}>{itemRender && itemRender(member)}</MemberListItem>;
             })
         }
         </div>;

@@ -33,6 +33,7 @@ class MemberListItem extends Component {
             <UserAvatar className={avatarClassName} size={avatarSize} user={member}/>
             {showStatusDot && <StatusDot status={member.status}/>}
             <div className="title">{member.displayName}</div>
+            {children}
         </a>;
     }
 }
