@@ -72,7 +72,7 @@ const guess = (search) => {
 
 const query = (condition, sortList) => {
     let result = null;
-    if(typeof condition === 'object') {
+    if(typeof condition === 'object' && condition !== null) {
         let conditionObj = condition;
         let conditionKeys = Object.keys(conditionObj);
         condition = member => {
