@@ -23,7 +23,7 @@ class Spinner extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('spinner', className)} {...other}>
+        return <div className={HTML.classes('spinner spin', className)} {...other}>
             <Icon name={iconName} className={iconClassName} size={iconSize}/>
             {label && <div className="muted small title">{label}</div>}
             {children}
