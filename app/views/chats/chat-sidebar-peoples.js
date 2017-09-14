@@ -25,10 +25,10 @@ class ChatSidebarPeoples extends Component {
     handleItemRender = member => {
         const {chat} = this.props;
         if(!chat.isCommitter(member)) {
-            return <div data-hint={Lang.string('chat.committers.blocked')} className="hint--top side-icon text-gray"><Icon name="lock-outline"/></div>;
+            return <div data-hint={Lang.string('chat.committers.blocked')} className="hint--left side-icon text-gray"><Icon name="lock-outline"/></div>;
         }
         if(chat.isAdmin(member)) {
-            return <div data-hint={Lang.string('chat.role.admin')} className="hint--top side-icon text-primary"><Icon name="account-circle"/></div>;
+            return <div data-hint={Lang.string('chat.role.admin')} className="hint--left side-icon text-primary"><Icon name="account-circle"/></div>;
         }
         return null;
     }

@@ -280,7 +280,19 @@ const linkMembersInText = (text, format = '<a class="link-app {className}" href=
         });
     }
     return text;
-}
+};
+
+const createGroupChat = (members) => {
+    return Modal.prompt(Lang.string('chat.create.newChatNameTip'), '', {
+        placeholder: Lang.string('chat.rename.newTitle'),
+    }).then(newName => {
+        if(newName) {
+            return Server.createChatWithMembers(members, {name: newName});
+        } else {
+            return Promise.reject(false);
+        }
+    });
+};
 
 profile.onSwapUser(user => {
     activedChatId = null;
@@ -309,6 +321,7 @@ export default {
     chatExitConfirm,
     chatRenamePrompt,
     createChatToolbarMoreContextMenuItems,
+    createGroupChat,
 
     get currentActiveChatId() {
         return activedChatId;

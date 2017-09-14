@@ -21,7 +21,10 @@
   > .content {
     overflow-y: auto;
     flex: auto;
-    padding: 0 @space;
+    padding: @space @space 0 @space;
+  }
+  > .heading + .content {
+    padding-top: 0;
   }
 
   > .footer {
@@ -93,4 +96,11 @@
   &.position-right {
     align-items: flex-end;
   }
+}
+
+
+// Contextmenu
+.contextmenu {
+  position: absolute;
+  min-width: (120*@rem);
 }

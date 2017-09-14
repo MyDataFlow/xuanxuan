@@ -56,6 +56,18 @@ const get = (gid) => {
     return chat;
 };
 
+const getOne2OneChatGid = members => {
+    if(members instanceof Set) {
+        members = Array.from(members);
+    }
+    if(members.length > 2 || !members.length) {
+        throw new Error(`Cannot build gid for members count with ${members.length}.`);
+    } else if(members.length === 1) {
+        members.push(profile.userId);
+    }
+    return members.map(x => x.id || x).sort().join('&');
+};
+
 const getLastActiveChat = () => {
     let lastChat = null;
     forEach(chat => {
@@ -376,8 +388,10 @@ const search = (search, chatType) => {
 };
 
 const remove = gid => {
-    if(chats[gid]) {
+    const removeChat = chats[gid];
+    if(removeChat) {
         delete chats[gid];
+        Events.emitDataChange({chats: {[gid]: removeChat}});
         return true;
     } else {
         return false;
@@ -424,39 +438,7 @@ const updatePublicChats = (serverPublicChats) => {
     Events.emitDataChange({publicChats});
 };
 
-const createWithMembers = (chatMembers, chatSetting) => {
-    if(!Array.isArray(chatMembers)) {
-        chatMembers = [chatMembers];
-    }
-    const userMeId = profile.user.id;
-    chatMembers = chatMembers.map(member => {
-        if(typeof member === 'object') {
-            return member.id;
-        } else {
-            return member;
-        }
-    });
-    if(!chatMembers.find(memberId => memberId === userMeId)) {
-        chatMembers.push(userMeId);
-    }
-    let chat = null;
-    if(chatMembers.length === 2) {
-        const gid = chatMembers.sort().join('&');
-        chat = get(gid);
-        if(!chat) {
-            chat= new Chat(Object.assign({
-                members: chatMembers,
-                createdBy: profile.user.account
-            }, chatSetting));
-        }
-    } else {
-        chat= new Chat(Object.assign({
-            members: chatMembers,
-            createdBy: profile.user.account
-        }, chatSetting));
-    }
-    return chat;
-};
+
 
 const onChatsInit = listener => {
     return Events.on(EVENT.init, listener);
@@ -483,9 +465,9 @@ export default {
     updateChatMessages,
     getPublicChats,
     updatePublicChats,
-    createWithMembers,
     getContactsChats,
     getGroups,
     getRecents,
     onChatsInit,
+    getOne2OneChatGid,
 };

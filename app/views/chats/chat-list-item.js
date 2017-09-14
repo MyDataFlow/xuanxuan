@@ -17,6 +17,7 @@ class ChatListItem extends Component {
             className,
             style,
             children,
+            notUserLink,
             ...other
         } = this.props;
 
@@ -41,19 +42,37 @@ class ChatListItem extends Component {
             badge = <Icon name="star" className="icon-sm muted"/>;
         }
 
-        return <Link
-            to={ROUTES.chats.chat.id(chat.gid, filterType)}
-            className={HTML.classes('app-chat-item has-padding flex-middle', className, {active: App.im.ui.isActiveChat(chat.gid)})}
-            style={style}
-            {...other}
-        >
-            <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
-            <div className="title text-ellipsis">
-                {name}
-                {subname && <small className="muted">&nbsp; {subname}</small>}
-            </div>
-            {badge && <div className="flex-none">{badge}</div>}
-        </Link>;
+        if(notUserLink) {
+            return <a
+                href={'#' + ROUTES.chats.chat.id(chat.gid, filterType)}
+                className={HTML.classes('app-chat-item flex-middle', className, {active: App.im.ui.isActiveChat(chat.gid)})}
+                style={style}
+                {...other}
+            >
+                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
+                <div className="title text-ellipsis">
+                    {name}
+                    {subname && <small className="muted">&nbsp; {subname}</small>}
+                </div>
+                {badge && <div className="flex-none">{badge}</div>}
+                {children}
+            </a>;
+        } else {
+            return <Link
+                to={ROUTES.chats.chat.id(chat.gid, filterType)}
+                className={HTML.classes('app-chat-item flex-middle', className, {active: App.im.ui.isActiveChat(chat.gid)})}
+                style={style}
+                {...other}
+            >
+                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
+                <div className="title text-ellipsis">
+                    {name}
+                    {subname && <small className="muted">&nbsp; {subname}</small>}
+                </div>
+                {badge && <div className="flex-none">{badge}</div>}
+                {children}
+            </Link>;
+        }
     }
 }
 

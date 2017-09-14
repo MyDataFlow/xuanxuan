@@ -76,7 +76,9 @@ const chatGetlist = (msg, socket) => {
 
 const chatCreate = (msg, socket) => {
     if(msg.isSuccess) {
-        chats.update(new Chat(msg.data));
+        const chat = new Chat(msg.data);
+        chats.update(chat);
+        return chat;
     }
 };
 
@@ -132,7 +134,7 @@ const chatJoinchat = (msg, socket) => {
     if(msg.data.gid) {
         let chat = chats.get(msg.data.gid);
         if(chat) {
-            chat.assign(msg.data);
+            chat.$set(msg.data);
         } else {
             chat = new Chat(msg.data);
         }
@@ -142,8 +144,9 @@ const chatJoinchat = (msg, socket) => {
             if(chat.public && imServer.chatJoinTask) {
                 imUI.activeChat(chat);
             }
+            return chat;
         } else {
-            chats.remove(chat);
+            chats.remove(chat.gid);
         }
     }
     imServer.chatJoinTask = false;
@@ -177,6 +180,7 @@ const chatGetpubliclist = (msg, socket) => {
             chat.updateMembersSet(members);
             return chat;
         });
+        return publicChats;
     } else {
         publicChats = [];
     }
@@ -195,4 +199,5 @@ export default {
     'chat/joinchat': chatJoinchat,
     'chat/hide': chatHide,
     'chat/changepublic': chatChangepublic,
+    'chat/getpubliclist': chatGetpubliclist,
 };

@@ -10,6 +10,9 @@ export default {
         },
         recents: {
             __: '/chats/recents',
+            id: (id) => {
+                return `/chats/recents/${id}`;
+            }
         },
         contacts: {
             __: '/chats/contacts',
@@ -19,6 +22,9 @@ export default {
         },
         groups: {
             __: '/chats/groups',
+            id: (id) => {
+                return `/chats/groups/${id}`;
+            }
         }
     }
 };

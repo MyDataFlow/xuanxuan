@@ -5,6 +5,7 @@ import profile from '../profile';
 import chats from './im-chats';
 import PKG from '../../package.json';
 import Config from 'Config';
+import Chat from '../models/chat';
 
 const EVENT = {
     history: 'im.chats.history'
@@ -63,8 +64,44 @@ const createChat = chat => {
     });
 };
 
+const createLocalChatWithMembers = (chatMembers, chatSetting) => {
+    if(!Array.isArray(chatMembers)) {
+        chatMembers = [chatMembers];
+    }
+    const userMeId = profile.user.id;
+    chatMembers = chatMembers.map(member => {
+        if(typeof member === 'object') {
+            return member.id;
+        } else {
+            return member;
+        }
+    });
+    if(!chatMembers.find(memberId => memberId === userMeId)) {
+        chatMembers.push(userMeId);
+    }
+    let chat = null;
+    if(chatMembers.length === 2) {
+        const gid = chatMembers.sort().join('&');
+        chat = get(gid);
+        if(!chat) {
+            chat= new Chat(Object.assign({
+                members: chatMembers,
+                createdBy: profile.userAccount,
+                type: Chat.TYPES.one2one
+            }, chatSetting));
+        }
+    } else {
+        chat = new Chat(Object.assign({
+            members: chatMembers,
+            createdBy: profile.user.account,
+            type: Chat.TYPES.group
+        }, chatSetting));
+    }
+    return chat;
+};
+
 const createChatWithMembers = (chatMembers, chatSettings) => {
-    let chat = chats.createWithMembers(chatMembers, chatSettings);
+    let chat = createLocalChatWithMembers(chatMembers, chatSettings);
     if(chat.id) {
         return Promise.resolve(chat);
     } else {
@@ -73,7 +110,7 @@ const createChatWithMembers = (chatMembers, chatSettings) => {
 };
 
 const fetchPublicChats = () => {
-    return Server.socket.send('getPublicList');
+    return Server.socket.sendAndListen('getpubliclist');
 };
 
 const setCommitters = (chat, committers) => {
@@ -115,7 +152,7 @@ const sendSocketMessageForChat = (socketMessage, chat) => {
 
 const renameChat = (chat, newName) => {
     if(chat && chat.canRename(profile.user)) {
-        if(chat.remoteId) {
+        if(chat.id) {
             sendSocketMessageForChat({
                 'method': 'changeName',
                 'params': [chat.gid, newName]
@@ -178,7 +215,7 @@ const inviteMembersToChat = (chat, chatMembers, newChatSetting) => {
 
 const joinChat = (chat, join = true) => {
     chatJoinTask = true;
-    return Server.socket.send({
+    return Server.socket.sendAndListen({
         'method': 'joinchat',
         'params': [chat.gid, join]
     });
@@ -203,6 +240,7 @@ export default {
     joinChat,
     exitChat,
     inviteMembersToChat,
+    fetchPublicChats,
 
     get chatJoinTask() {
         return chatJoinTask;
