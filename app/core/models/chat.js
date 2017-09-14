@@ -243,8 +243,9 @@ class Chat extends Entity {
     }
 
     get committersType() {
-        if((this.isSystem || this.isGroup) && this.committers && this.committers !== '$ALL') {
-            if(this.committers === '$ADMINS') {
+        const committers = this.$get('committers');
+        if((this.isSystem || this.isGroup) && committers && committers !== '$ALL') {
+            if(committers === '$ADMINS') {
                 return COMMITTERS_TYPES.admins;
             }
             return COMMITTERS_TYPES.whitelist;
