@@ -4,9 +4,7 @@ import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
-import ChatAvatar from './chat-avatar';
-import StatusDot from '../common/status-dot';
-import MemberProfileDialog from '../common/member-profile-dialog';
+import ChatTitle from './chat-title';
 
 class ChatHeader extends Component {
 
@@ -25,14 +23,7 @@ class ChatHeader extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-header flex flex-wrap space-between shadow-divider', className)}
         >
-            <div className="flex flex-middle heading" onClick={theOtherOne ? MemberProfileDialog.show.bind(null, theOtherOne, null) : null}>
-                <ChatAvatar chat={chat} size={24} className="state"/>
-                {theOtherOne && <StatusDot status={theOtherOne.status}/>}
-                {
-                    theOtherOne ? <a className="strong rounded title text-primary">{chatName}</a> : <strong className="title">{chatName}</strong>
-                }
-                {chat.public && <small className="label rounded green label-sm">{Lang.string('chat.public.label')}</small>}
-            </div>
+            <ChatTitle chat={chat} className="flex flex-middle"/>
             <div className="toolbar flex flex-middle text-rigth rounded">
             {
                 App.im.ui.createChatToolbarItems(chat, showSidebarIcon).map(item => {
