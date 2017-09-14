@@ -25,12 +25,12 @@ class ChatSidebar extends Component {
         } = this.props;
 
         return <div {...other}
-            className={HTML.classes('app-chat-sidebar')}
+            className={HTML.classes('app-chat-sidebar dock')}
         >
             {closeButton !== false && <div className="dock-right dock-top has-padding app-chat-sidebar-close hint--bottom-left dock" data-hint={Lang.string('chat.sidebar.close')}>
               <button className="iconbutton btn rounded" type="button" onClick={this.handleCloseBtnClick}><Icon name="close"/></button>
             </div>}
-            <Tabs defaultActivePaneKey="peoples" navClassName="shadow-divider">
+            <Tabs className="dock column single" defaultActivePaneKey="peoples" navClassName="shadow-divider flex-none" contentClassName="flex-auto scroll-y">
                 <TabPane key="peoples" label={`${Lang.string('chat.sidebar.tab.peoples.label')}(${chat.membersCount})`}>
                     <ChatSidebarPeoples chat={chat}/>
                 </TabPane>
