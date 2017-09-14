@@ -105,7 +105,7 @@ class AppSocket extends Socket {
                     if(listenHandler) {
                         Events.off(listenHandler);
                     }
-                    resolve(result, msg);
+                    resolve(result);
                 }
             });
         });
@@ -114,12 +114,12 @@ class AppSocket extends Socket {
     sendAndListen(msg, check) {
         return new Promise((resolve, reject) => {
             msg = SocketMessage.create(msg);
-            this.listenMessage(msg.module, msg.method).then((result, serverMsg) => {
+            this.listenMessage(msg.module, msg.method).then((result) => {
                 if(check) {
-                    result = check(serverMsg, result);
+                    result = check(result);
                 }
                 if(result) {
-                    resolve();
+                    resolve(result);
                 } else {
                     reject();
                 }
