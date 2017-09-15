@@ -113,6 +113,7 @@ class ChatSendbox extends Component {
             switch(content.type) {
                 default:
                     this.editbox.appendContent(content.content);
+                    this.editbox.focus();
             }
         });
     }
