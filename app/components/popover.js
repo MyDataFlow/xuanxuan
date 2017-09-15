@@ -38,14 +38,15 @@ const show = (position, content, props = {}, callback = null) => {
         arrowSize = {width: 0, height: 0};
     }
 
+    width = width || 200;
+    height = height || 100;
     const windowHeight = window.innerHeight,
           windowWidth = window.innerWidth,
-          x = position.x || 0,
-          y = position.y || 0,
-          width = width || 200,
-          height = height || 100,
-          placement = position.placement || 'auto',
-          align = position.align || 'center';
+          target = position.target;
+    let x = position.x === undefined ? (position.pageX || 0) : position.x,
+        y = position.y === undefined ? (position.pageY || 0) : position.y,
+        placement = position.placement || 'auto',
+        align = position.align || 'center';
     if(placement === 'auto') {
         const sideSize = [
             {name: 'top', size: y},
@@ -61,6 +62,27 @@ const show = (position, content, props = {}, callback = null) => {
             }
         }
         placement = bestSide;
+    }
+    if(target && target.getBoundingClientRect) {
+        const bounds = target.getBoundingClientRect();
+        switch(placement) {
+            case 'top':
+                x = bounds.left + Math.floor(bounds.width/2);
+                y = bounds.top;
+                break;
+            case 'right':
+                x = bounds.left + bounds.width;
+                y = bounds.top + Math.floor(bounds.height/2);
+                break;
+            case 'bottom':
+                x = bounds.left + Math.floor(bounds.width/2);
+                y = bounds.top + bounds.height;
+                break;
+            case 'left':
+                x = bounds.left;
+                y = bounds.top + Math.floor(bounds.height/2);
+                break;
+        }
     }
     let left = 0, top = 0, arrowStyle = {};
     switch(placement) {
@@ -117,8 +139,9 @@ const show = (position, content, props = {}, callback = null) => {
     style = Object.assign({width, height, top, left}, style);
 
     className = HTML.classes('popover layer', className, `placement-${placement}`);
-    const footer = arrow ? <div style={arrowStyle} className={`arrow-${placement}`}></div> : null;
-    props = Object.assign({backdropClassName: 'transparent'}, props, {className, style, content, footer, plugName: 'popover'});
+    const arrowPlacementMap = {left: 'right', right: 'left', top: 'bottom', bottom: 'top'};
+    const footer = arrow ? <div style={arrowStyle} className={`display-arrow arrow-${arrowPlacementMap[placement]}`}></div> : null;
+    props = Object.assign({backdropClassName: 'clean'}, props, {className, style, content, footer, plugName: 'popover'});
     delete props.width;
     delete props.height;
     delete props.arrow;
