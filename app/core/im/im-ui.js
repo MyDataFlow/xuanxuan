@@ -12,6 +12,7 @@ import ContextMenu from '../../components/context-menu';
 import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
 import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
 import ChatInvitePopover from '../../views/chats/chat-invite-popover';
+import EmojiPopover from '../../views/common/emoji-popover';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -123,8 +124,10 @@ const createSendboxToolbarItems = chat => {
         id: 'emoticon',
         icon: 'emoticon',
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
-        click: () => {
-            console.warn('TODO: App.im.ui.createSendboxToolbarItems.emoticon');
+        click: e => {
+            EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target}, emoji => {
+                sendContentToChat(emoji.shortname + ' ');
+            });
         }
     }, {
         id: 'image',
