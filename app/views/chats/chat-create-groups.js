@@ -59,7 +59,7 @@ class ChatCreateGroups extends Component {
         } else {
             App.im.ui.createGroupChat(members).then(newChat => {
                 if(newChat) {
-                    window.location.hash = `#${ROUTES.chats.contacts.id(newChat.gid)}`;
+                    window.location.hash = `#${ROUTES.chats.groups.id(newChat.gid)}`;
                 }
                 this.props.onRequestClose && this.props.onRequestClose();
             }).catch(error => {

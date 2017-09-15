@@ -11,6 +11,7 @@ import Modal from '../../components/modal';
 import ContextMenu from '../../components/context-menu';
 import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
 import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
+import ChatInvitePopover from '../../views/chats/chat-invite-popover';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -76,7 +77,10 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
         items.push({
             id: 'invite',
             icon: 'account-multiple-plus',
-            label: Lang.string('chat.toolbor.invite')
+            label: Lang.string('chat.toolbor.invite'),
+            click: e => {
+                ChatInvitePopover.show({x :e.pageX, y: e.pageY, target: e.target}, chat);
+            }
         });
     }
     items.push({

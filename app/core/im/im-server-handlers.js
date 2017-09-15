@@ -46,7 +46,7 @@ const chatAddmember = (msg, socket) => {
             const membersNames = newMembers.map(x => members.get(x)).join(',');
             const broadcast = ChatMessage.create({
                 type: 'broadcast',
-                content: Lang.format('chat.someoneJoinChat', membersNames),
+                content: Lang.format('chat.someOneJoinChat.format', membersNames),
                 cgid: chat.gid,
                 sendTime: new Date(),
                 sender: profile.user
@@ -54,8 +54,9 @@ const chatAddmember = (msg, socket) => {
             chats.updateChatMessages(broadcast);
         }
 
-        chat.$set(msg.data);
+        chat.resetMembers(Array.from(serverChatMembers).map(x => members.get(x)));
         chats.update(chat);
+        return chat;
     } else {
         chat = new Chat(msg.data);
         chats.update(chat);

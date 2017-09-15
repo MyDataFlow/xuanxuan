@@ -202,7 +202,7 @@ const sendChatMessage = (messages, chat) => {
 const inviteMembersToChat = (chat, chatMembers, newChatSetting) => {
     if(chat.canInvite(profile.user)) {
         if(!chat.isOne2One) {
-            return Server.socket.send({
+            return Server.socket.sendAndListen({
                 'method': 'addmember',
                 'params': [chat.gid, chatMembers.map(x => x.id), true]
             });

@@ -276,7 +276,6 @@
 .app-chat-create-groups-member-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: flex-start;
   align-content: flex-start;
 
@@ -312,5 +311,17 @@
 .app-chat-history {
   .chat-title {
     > .avatar {margin-right: @space-xs}
+  }
+}
+
+.app-chat-invite .list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  > .item {
+    width: (160*@rem);
+    align-items: center;
   }
 }

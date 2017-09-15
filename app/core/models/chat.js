@@ -271,7 +271,7 @@ class Chat extends Entity {
     }
 
     canInvite(user) {
-        return this.isCommitter(user) && (!this.isSystem);
+        return (this.isAdmin(user) || this.isCommitter(user)) && (!this.isSystem);
     }
 
     canMakePublic(user) {
