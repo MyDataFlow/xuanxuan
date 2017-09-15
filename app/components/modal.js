@@ -164,7 +164,7 @@ const prompt = (title, defaultValue, props, callback) => {
             closeButton: false,
             modal: true,
             title,
-            content: <InputControl defaultValue={defaultValue} onChange={newValue => {
+            content: <InputControl autoFocus={true} defaultValue={defaultValue} onChange={newValue => {
                 value = newValue;
             }} {...inputProps}/>,
             actions: true,
