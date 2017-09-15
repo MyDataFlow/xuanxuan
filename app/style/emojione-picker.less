@@ -70,7 +70,7 @@
 .emoji-dialog .emoji-row .emoji:hover {
   transform: scale(1.5);
   z-index: 1;
-  border-color: @color-focus;
+  border-color: @color-gray;
   background: #fff;
 }
 
@@ -126,12 +126,16 @@
   content: "";
   display: block;
   position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 10px;
-  border: 2px solid #fff;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid #fff!important;
+  box-shadow: none!important;
+  background-color: transparent!important;
   top: 2px;
   left: 2px;
+  transform: scale(1);
+  opacity: 1;
 }
 
 .emoji-dialog .modifiers li:hover {
@@ -175,4 +179,17 @@
   position: relative;
   z-index: 0;
   outline: none;
+}
+
+.emoji-dialog {
+  .ReactVirtualized__Grid.ReactVirtualized__List {
+    .scrollbar-hover;
+    .scrollbar-thin;
+    width: 280px!important;
+    height: 218px!important;
+    .emoji {
+      width: 32px;
+      height: 32px;
+    }
+  }
 }

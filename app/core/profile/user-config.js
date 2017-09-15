@@ -118,6 +118,14 @@ class UserConfig {
     set showMeOnMenu(flag) {
         return this.set('ui.chat.menu.showMe', flag);
     }
+
+    get enableSearchInEmojionePicker() {
+        return this.get('ui.chat.enableSearchInEmojionePicker');
+    }
+
+    set enableSearchInEmojionePicker(flag) {
+        return this.set('ui.chat.enableSearchInEmojionePicker', flag);
+    }
 }
 
 export default UserConfig;

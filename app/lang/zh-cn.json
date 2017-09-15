@@ -176,5 +176,14 @@
     "setting.btn.reset": "重置为默认设置",
     "setting.message.reset": "已重置为默认，保存后生效。",
 
+    "emoji.category.people": "表情与人物",
+    "emoji.category.nature": "动物与自然",
+    "emoji.category.food": "食物与饮料",
+    "emoji.category.activity": "活动",
+    "emoji.category.travel": "旅行与地点",
+    "emoji.category.objects": "物体",
+    "emoji.category.symbols": "符号",
+    "emoji.category.flags": "旗帜",
+
     "debug.inspectElement": "审查元素"
 }
