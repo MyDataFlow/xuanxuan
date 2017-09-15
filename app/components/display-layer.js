@@ -8,9 +8,10 @@ import timeSequence from '../utils/time-sequence';
 import Status from '../utils/status';
 
 const STAGE = new Status({
-    ready: 0,
-    shown: 1,
-    hidden: 2
+    init: 0,
+    ready: 1,
+    shown: 2,
+    hidden: 3
 }, 0);
 
 let zIndexSeed = 1100;
@@ -34,7 +35,8 @@ class DisplayLayer extends Component {
         rootClassName: '',
         backdrop: true,
         backdropClassName: '',
-        loadingContent: true
+        loadingContent: true,
+        cache: false,
     };
 
     constructor(props) {
@@ -82,15 +84,22 @@ class DisplayLayer extends Component {
     }
 
     show(callback) {
-        this.changeStage(STAGE.shown);
-        if(this.props.animation) {
-            setTimeout(() => {
+        if(this.state.stage === STAGE.init) {
+            this.changeStage(STAGE.ready);
+            this.showTimerTask = setTimeout(() => {
+                this.show(callback);
+            }, 50);
+        } else {
+            this.changeStage(STAGE.shown);
+            if(this.props.animation) {
+                setTimeout(() => {
+                    this.props.onShown && this.props.onShown(this);
+                    callback && callback(this);
+                }, 400);
+            } else {
                 this.props.onShown && this.props.onShown(this);
                 callback && callback(this);
-            }, 400);
-        } else {
-            this.props.onShown && this.props.onShown(this);
-            callback && callback(this);
+            }
         }
     }
 
@@ -98,10 +107,16 @@ class DisplayLayer extends Component {
         this.changeStage(STAGE.hidden);
         if(this.props.animation) {
             setTimeout(() => {
+                if(this.props.cache) {
+                    this.reset();
+                }
                 this.props.onHidden && this.props.onHidden(this);
                 callback && callback(this);
             }, 400);
         } else {
+            if(this.props.cache) {
+                this.reset();
+            }
             this.props.onHidden && this.props.onHidden(this);
             callback && callback(this);
         }
@@ -154,15 +169,17 @@ class DisplayLayer extends Component {
 
     componentDidMount() {
         if(this.props.show) {
-            this.showTimerTask = setTimeout(() => {
-                this.show();
-                this.loadContent();
-            }, 50);
+            this.show();
+            this.loadContent();
         }
 
         if(this.props.hotkey) {
             window.addEventListener('keyup', this.handleWindowKeyup);
         }
+    }
+
+    reset() {
+        this.setState({stage: STAGE.init});
     }
 
     handleBackdropClick = () => {
@@ -187,6 +204,7 @@ class DisplayLayer extends Component {
             header,
             footer,
             hotkey,
+            cache,
             loadingContent,
             children,
             style,
@@ -218,6 +236,7 @@ class DisplayLayer extends Component {
 }
 
 class DisplayContainer extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -231,11 +250,15 @@ class DisplayContainer extends Component {
 
     show(props, callback) {
         const all = this.state.all;
-        if(typeof props === 'object') {
-            if(!props.id) {
-                props.id = timeSequence();
-            }
-            const id = props.id;
+        if(typeof props !== 'object') {
+            props = {id: props};
+        }
+        if(!props.id) {
+            props.id = timeSequence();
+        }
+        const {id} = props;
+        const item = all[id];
+        if(!item) {
             if(!props.cache) {
                 let userOnHidden = props.onHidden;
                 props.onHidden = (ref) => {
@@ -252,14 +275,6 @@ class DisplayContainer extends Component {
             all[id] = {props};
             this.setState({all});
         } else {
-            const id = props;
-            const item = all[id];
-            if(!item) {
-                if(DEBUG) {
-                    console.error(`Cannot find display layer with id ${id}.`);
-                }
-                return;
-            }
             item.ref.show(callback);
             return item.ref;
         }
