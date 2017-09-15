@@ -298,15 +298,7 @@ class User extends Member {
         if(!server) {
             return '';
         }
-        let pathname = server.pathname;
-        if(pathname && pathname.length) {
-            if(pathname === '/') {
-                pathname = '';
-            }
-            pathname = pathname.replace(/\//g, '_');
-        }
-        let hostname = server.host.replace(':', '__');
-        return `${this.account}@${hostname}${pathname}`;
+        return User.createIdentify(server, this.account);
     }
 
     get token() {
@@ -406,6 +398,27 @@ class User extends Member {
             return user;
         }
         return new User(user);
+    }
+
+    static createIdentify(server, account) {
+        if(!(server instanceof URL)) {
+            if(!server.startsWith('https://') && !server.startsWith('http://')) {
+                server = `https://${server}`;
+            }
+            server = new URL(server);
+        }
+        if(!server.port) {
+            server.port = 11443;
+        }
+        let pathname = server.pathname;
+        if(pathname && pathname.length) {
+            if(pathname === '/') {
+                pathname = '';
+            }
+            pathname = pathname.replace(/\//g, '_');
+        }
+        let hostname = server.host.replace(':', '__');
+        return `${account}@${hostname}${pathname}`;
     }
 }
 

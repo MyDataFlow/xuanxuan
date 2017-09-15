@@ -10,7 +10,9 @@ const allUsers = () => {
 
 const getUser = (identify) => {
     if(identify) {
-        return Store.get(`${KEY_USER_PREFIX}${identify}`);
+        const user = Store.get(`${KEY_USER_PREFIX}${identify}`);
+        user.identify = identify;
+        return user;
     } else {
         let users = allUsers();
         if(!users) {

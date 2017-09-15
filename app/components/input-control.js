@@ -74,6 +74,7 @@ class InputControl extends Component {
             className,
             inputClassName,
             disabled,
+            value,
             children,
             ...other
         } = this.props;
@@ -83,7 +84,7 @@ class InputControl extends Component {
             <input
                 disabled={!!disabled}
                 ref={e => {this.input = e}}
-                value={this.state.value}
+                value={value !== undefined ? value : this.state.value}
                 id={name}
                 type={inputType}
                 className={HTML.classes('input', inputClassName)} placeholder={placeholder}

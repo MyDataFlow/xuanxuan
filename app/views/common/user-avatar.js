@@ -39,8 +39,8 @@ class UserAvatar extends Component {
         }
 
         let avatarImageSrc = user.getAvatar(App.user && App.user.server);
-        if(avatarImageSrc && App.user) {
-            avatarImageSrc = avatarImageSrc + '?' + App.user.loginSessionId;
+        if(avatarImageSrc) {
+            avatarImageSrc = avatarImageSrc + '?' + (App.user ? App.user.loginSessionId : '');
             return <Avatar className={HTML.classes('circle', className)} image={avatarImageSrc} style={style} {...other}>{statusDot}</Avatar>;
         }
         const name = user.realname || user.account;

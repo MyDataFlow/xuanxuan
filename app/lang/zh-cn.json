@@ -11,6 +11,7 @@
     "common.selectAll": "全选",
     "common.selectInverse": "反选",
     "common.refresh": "刷新",
+    "common.remove": "移除",
     "common.copyrightFormat": "版权所有 ©️ {year} {name}",
 
     "time.today": "今天",
@@ -26,6 +27,7 @@
     "login.password.label": "密码",
     "login.btn.label": "登录",
     "login.btn.logining": "正在登录...",
+    "login.swapUser": "切换用户",
 
     "chats.create.label": "新建聊天...",
     "chats.search.recents": "搜索",

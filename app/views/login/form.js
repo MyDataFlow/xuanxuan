@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import InputControl from '../../components/input-control';
+import Icon from '../../components/icon';
 import Lang from '../../lang';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import StringHelper from '../../utils/string-helper';
+import SwapUserDialog from './swap-user-dialog';
+import User from '../../core/profile/user';
 
 class FormView extends Component {
 
@@ -61,6 +64,18 @@ class FormView extends Component {
             });
         }
 
+        handleSwapUserBtnClick = () => {
+            const {serverUrl, account} = this.state;
+            const identify = (serverUrl && account) ? User.createIdentify(serverUrl, account) : null;
+            SwapUserDialog.show(identify, user => {
+                this.setState({
+                    serverUrl: user.serverUrl,
+                    account: user.account,
+                    password: user.passwordMD5WithFlag,
+                });
+            });
+        }
+
         componentDidMount() {
             if(DEBUG && this.state.submitable) {
                 this.login();
@@ -77,22 +92,25 @@ class FormView extends Component {
             return <div className={HTML.classes('app-login-form', className)}>
                 {this.state.message && <div className="app-login-message danger box">{this.state.message}</div>}
                 <InputControl
-                    defaultValue={this.state.serverUrl}
+                    value={this.state.serverUrl}
                     autoFocus={true}
                     disabled={this.state.logining}
                     label={Lang['login.serverUrl.label']}
                     placeholder={Lang['login.serverUrl.hint']}
                     onChange={this.handleInputFieldChange.bind(this, 'serverUrl')}
-                />
+                    className="relative app-login-server-control"
+                >
+                    <div data-hint={Lang.string('login.swapUser')} className="hint--top app-login-swap-user-btn dock-right dock-top"><button onClick={this.handleSwapUserBtnClick} type="button" className="btn iconbutton rounded"><Icon name="account-switch"/></button></div>
+                </InputControl>
                 <InputControl
-                    defaultValue={this.state.account}
+                    value={this.state.account}
                     disabled={this.state.logining}
                     label={Lang['login.account.label']}
                     placeholder={Lang['login.account.hint']}
                     onChange={this.handleInputFieldChange.bind(this, 'account')}
                 />
                 <InputControl
-                    defaultValue={this.state.password}
+                    value={this.state.password}
                     disabled={this.state.logining}
                     className="space"
                     label={Lang['login.password.label']}
