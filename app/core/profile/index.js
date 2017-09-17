@@ -2,6 +2,7 @@ import Events from '../events';
 import User from './user';
 import Platform from 'Platform';
 import Lang from '../../lang';
+import timeSequence from '../../utils/time-sequence';
 
 const EVENT = {
     swap: 'profile.user.swap',
@@ -33,6 +34,7 @@ const setUser = newUser => {
     }
     user = newUser;
     user.enableEvents();
+    user.sessionId = timeSequence();
 
     if(DEBUG) {
         console.collapse('Profile.setUser', 'tealBg', user.identify, 'tealPale');
@@ -99,5 +101,9 @@ export default {
 
     get userAccount() {
         return user ? user.account : {};
+    },
+
+    get sessionId() {
+        return user ? user.sessionId : timeSequence();
     }
 };

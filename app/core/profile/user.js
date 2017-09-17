@@ -4,7 +4,6 @@ import Platfrom from 'Platform';
 import DelayAction from '../../utils/delay-action';
 import Events from '../events';
 import Md5 from 'md5';
-import timeSequence from '../../utils/time-sequence';
 
 const PASSWORD_WITH_MD5_FLAG = '%%%PWD_FLAG%%% ';
 const EVENT = {
@@ -140,9 +139,6 @@ class User extends Member {
 
     endLogin(result) {
         this.status = result ? Member.STATUS.logined : Member.STATUS.loginFailed;
-        if(result) {
-            this.loginSessionId = timeSequence();
-        }
     }
 
     reconnect(delay = 'auto') {
