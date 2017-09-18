@@ -6,6 +6,7 @@ import Lang from '../../lang';
 import Emojione from '../../components/emojione';
 import API from '../../network/api';
 import Avatar from '../../components/avatar';
+import ImageViewer from '../../components/image-viewer';
 
 class MessageContentImageView extends Component {
 
@@ -28,10 +29,11 @@ class MessageContentImageView extends Component {
             </div>;
         }
         if(image.type === 'base64') {
-            return <img src={image.content} />;
+            return <img onDoubleClick={ImageViewer.show.bind(this, image.content, null, null)} src={image.content} />;
         }
         if(image.id && image.send === true) {
-            return <img src={API.createFileDownloadUrl(App.profile.user, image)}/>;
+            const imageUrl = API.createFileDownloadUrl(App.profile.user, image);
+            return <img onDoubleClick={ImageViewer.show.bind(this, imageUrl, null, null)} src={imageUrl}/>;
         }
         if(typeof image.send === 'number') {
             const percent = Math.floor(image.send);
