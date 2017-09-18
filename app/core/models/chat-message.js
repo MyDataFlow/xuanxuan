@@ -36,10 +36,10 @@ class ChatMessage extends Entity {
         cgid: {type: 'string', indexed: true},
         user: {type: 'int', indexed: true},
         date: {type: 'timestamp', indexed: true},
-        type: {type: 'string', indexed: true},
-        contentType: {type: 'string', indexed: true},
-        content: {type: 'string'},
-        unread: {type: 'boolean', indexed: true},
+        type: {type: 'string', indexed: true, defaultValue: TYPES.normal},
+        contentType: {type: 'string', indexed: true, defaultValue: CONTENT_TYPES.text},
+        content: {type: 'string', defaultValue: null},
+        unread: {type: 'boolean', indexed: true, defaultValue: false},
         status: {type: 'int', indexed: true},
     });
 
@@ -54,6 +54,15 @@ class ChatMessage extends Entity {
         };
         if(!this.$.order) {
             this.$.order = TimeSequence();
+        }
+        if(!this.$.contentType) {
+            this.$.contentType = CONTENT_TYPES.text;
+        }
+        if(!this.$.type) {
+            this.$.type = TYPES.normal;
+        }
+        if(!this.$.date) {
+            this.$.date = new Date().getTime();
         }
     }
 

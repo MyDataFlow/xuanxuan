@@ -183,7 +183,7 @@ const sendChatMessage = (messages, chat) => {
     }
 
     messages.forEach(message => {
-        let command = message.getCommand();
+        const command = message.getCommand();
         if(command) {
             if(command.action === 'rename') {
                 setTimeout(() => {
@@ -194,6 +194,8 @@ const sendChatMessage = (messages, chat) => {
             }
         }
     });
+
+    console.info('send messages', messages);
 
     chats.updateChatMessages(messages);
 

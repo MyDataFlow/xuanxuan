@@ -39,7 +39,7 @@ const defaultValuesConveter = {
         return val;
     },
     string: val => {
-        if(typeof val !== 'string') {
+        if(val !== null  && val !== undefined && typeof val !== 'string') {
             return val + '';
         }
         return val;
@@ -129,7 +129,7 @@ class EntitySchema {
     }
 
     convertValue(name, value) {
-        let meta = this.of(name);
+        const meta = this.of(name);
         if(meta) {
             if(meta.type && defaultValuesConveter[meta.type]) {
                 return defaultValuesConveter[meta.type](value);

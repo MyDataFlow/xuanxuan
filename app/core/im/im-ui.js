@@ -81,7 +81,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             icon: 'account-multiple-plus',
             label: Lang.string('chat.toolbor.invite'),
             click: e => {
-                ChatInvitePopover.show({x :e.pageX, y: e.pageY, target: e.target}, chat);
+                ChatInvitePopover.show({x :e.pageX, y: e.pageY, target: e.target, placement: 'bottom'}, chat);
             }
         });
     }
@@ -126,7 +126,7 @@ const createSendboxToolbarItems = chat => {
         icon: 'emoticon',
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
         click: e => {
-            EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target}, emoji => {
+            EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, emoji => {
                 sendContentToChat(emoji.shortname + ' ');
             });
         }
