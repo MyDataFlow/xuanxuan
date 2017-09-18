@@ -22,7 +22,7 @@ class MemberProfile extends Component {
         } = this.props;
 
         return <div {...other}
-            className={HTML.classes('app-member-profile list space', className)}
+            className={HTML.classes('app-member-profile list space user-selectable', className)}
         >
             <div className="item flex-middle space-sm">
                 <UserAvatar className="avatar-xl" user={member}/>

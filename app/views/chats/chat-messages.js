@@ -17,7 +17,7 @@ class ChatMessages extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-messages white', className)}
         >
-            <MessageList className="dock scroll-y" messages={chat.messages}/>
+            <MessageList className="dock scroll-y user-selectable" messages={chat.messages}/>
         </div>;
     }
 }
