@@ -329,10 +329,8 @@ class ChatMessage extends Entity {
 
     getCommand() {
         if(this.contentType === 'text') {
-            let content = this.content.trim();
-            if(content.length > 8 && content.startsWith('$$name=')) {
-                return {action: 'rename', name: content.substr(7)};
-            } else if(content === '$$version') {
+            const content = this.content.trim();
+            if(content === '$$version') {
                 return {action: 'version'};
             }
         }
