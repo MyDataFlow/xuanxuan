@@ -88,4 +88,10 @@
     font-size: (13*@rem);
     font-weight: bolder;
   }
+
+  .app-file-list > & {
+    + .app-file-list-item {
+      border-top: @border-width solid @border-color;
+    }
+  }
 }

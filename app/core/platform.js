@@ -10,7 +10,6 @@ if(Platform.ui.quit) {
     platform.quit = Platform.ui.quit;
     Platform.ui.onRequestQuit(() => {
         Server.logout();
-
         // return false; // cancel quit;
     });
 }

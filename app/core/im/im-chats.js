@@ -408,7 +408,7 @@ const remove = gid => {
 };
 
 const getChatFiles = (chat, includeFailFile = false) => {
-    return loadChatMessages(chat, {contentType: 'file'}, 0).then(fileMessages => {
+    return loadChatMessages(chat, (x => x.contentType === 'file'), 0).then(fileMessages => {
         let files = null;
         if(fileMessages && fileMessages.length) {
             if(includeFailFile) {

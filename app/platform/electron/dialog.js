@@ -5,6 +5,7 @@ import Path from 'path';
 import Lang from '../../lang';
 import ui from './ui';
 import openFileButton from '../common/open-file-button';
+import Net from './net';
 
 let lastFileSavePath = '';
 
@@ -28,8 +29,8 @@ const showSaveDialog = (options, callback) => {
         });
     }
 
-    let filename = options.fileName || '';
-    delete options.fileName;
+    let filename = options.filename || '';
+    delete options.filename;
 
     options = Object.assign({
         title: Lang.string('dialog.fileSaveTo'),
@@ -55,8 +56,29 @@ const showRemoteOpenDialog = (options, callback) => {
     Remote.dialog.showOpenDialog(ui.browserWindow, options, callback);
 };
 
+const downloadAndSaveFile = (options, onProgress) => {
+    return new Promise((resolve, reject) => {
+        showSaveDialog({
+            buttonLabel: Lang.string('common.download'),
+            filename: options.name
+        }, filename => {
+            if(filename) {
+                Net.downloadFile(options.url, filename, null, onProgress).then(() => {
+                    resolve({
+                        filename,
+                        save: true
+                    });
+                }).catch(reject);
+            } else {
+                reject(false);
+            }
+        });
+    });
+};
+
 export default {
     showRemoteOpenDialog,
     showSaveDialog,
-    showOpenDialog: openFileButton.showOpenDialog
+    showOpenDialog: openFileButton.showOpenDialog,
+    downloadAndSaveFile
 };

@@ -8,6 +8,7 @@ import ui from './ui';
 window.process = {type: 'renderer'};
 
 export default {
+    type: 'browser',
     Socket,
     clipboard,
     crypto,

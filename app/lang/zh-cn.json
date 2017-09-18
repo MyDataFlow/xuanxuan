@@ -12,6 +12,7 @@
     "common.selectInverse": "反选",
     "common.refresh": "刷新",
     "common.remove": "移除",
+    "common.download": "下载",
     "common.copyrightFormat": "版权所有 ©️ {year} {name}",
 
     "time.today": "今天",
@@ -20,7 +21,11 @@
     "pager.prev": "上一页",
     "pager.next": "下一页",
 
+    "file.download": "下载",
     "file.uploadFailed": "上传失败",
+    "file.fileSavedAt.format": "文件已保存至 {0}",
+    "file.open": "打开",
+    "file.openFolder": "打开文件夹",
 
     "error.UNSUPPORT_VERSION": "此服务器版本不受支持。",
     "error.WRONG_CONNECT": "无法连接到服务器，请检查网络连接是否通畅。",
