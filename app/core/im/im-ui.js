@@ -12,6 +12,7 @@ import ContextMenu from '../../components/context-menu';
 import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
 import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
 import ChatInvitePopover from '../../views/chats/chat-invite-popover';
+import ChatTipPopover from '../../views/chats/chat-tip-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
 import Platform from 'Platform';
 
@@ -177,8 +178,8 @@ const createSendboxToolbarItems = chat => {
             id: 'tips',
             icon: 'comment-question-outline',
             label: Lang.string('chat.sendbox.toolbar.tips'),
-            click: () => {
-                console.warn('TODO: App.im.ui.createSendboxToolbarItems.tips');
+            click: e => {
+                ChatTipPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
             }
         });
     }

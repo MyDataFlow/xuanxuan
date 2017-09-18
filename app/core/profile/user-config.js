@@ -126,6 +126,14 @@ class UserConfig {
     set enableSearchInEmojionePicker(flag) {
         return this.set('ui.chat.enableSearchInEmojionePicker', flag);
     }
+
+    get showMessageTip() {
+        return this.get('ui.chat.showMessageTip');
+    }
+
+    set showMessageTip(flag) {
+        return this.set('ui.chat.showMessageTip', flag);
+    }
 }
 
 export default UserConfig;

@@ -52,14 +52,14 @@ class ChatView extends Component {
         return <div {...other}
             className={HTML.classes('app-chat dock', className, {hidden})}
         >
-            <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200} paneStyle={{userSelect: 'none'}}>
+            <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200} paneStyle={{'userSelect': 'none'}}>
                 {
                     isReadOnly ? <div className="column single dock">
                         <ChatHeader chat={chat} className="flex-none"/>
                         <ChatMessages chat={chat} className="flex-auto relative"/>
                         <div className="flex-none gray text-gray heading"><Avatar icon="lock-outline"/><div className="title">{Lang.string('chat.committers.blockedTip')}</div></div>
                     </div> :
-                    <SplitPane split="horizontal" primary="second" maxSize={500} minSize={80} defaultSize={100} paneStyle={{userSelect: 'none'}}>
+                    <SplitPane split="horizontal" primary="second" maxSize={500} minSize={80} defaultSize={100} paneStyle={{'userSelect': 'none'}}>
                         <div className="column single dock">
                             <ChatHeader chat={chat} className="flex-none"/>
                             <ChatMessages chat={chat} className="flex-auto relative"/>
