@@ -2,6 +2,9 @@ import {remote as Remote} from 'electron';
 import fs from 'fs-extra';
 import env from './env';
 import Path from 'path';
+import Lang from '../../lang';
+import ui from './ui';
+import openFileButton from '../common/open-file-button';
 
 let lastFileSavePath = '';
 
@@ -29,10 +32,10 @@ const showSaveDialog = (options, callback) => {
     delete options.fileName;
 
     options = Object.assign({
-        title: Lang.dialog.fileSaveTo,
+        title: Lang.string('dialog.fileSaveTo'),
         defaultPath: Path.join(lastFileSavePath || env.desktopPath, filename)
     }, options);
-    Remote.dialog.showSaveDialog(this.browserWindow, options, filename => {
+    Remote.dialog.showSaveDialog(ui.browserWindow, options, filename => {
         if(filename) {
             lastFileSavePath = filename;
         }
@@ -43,16 +46,17 @@ const showSaveDialog = (options, callback) => {
 /**
  * Show open dialog
  */
-const showOpenDialog = (options, callback) => {
+const showRemoteOpenDialog = (options, callback) => {
     options = Object.assign({
-        title: Lang.dialog.openFile,
-        defaultPath: this.desktopPath,
+        title: Lang.string('dialog.openFile'),
+        defaultPath: env.desktopPath,
         properties: ['openFile']
     }, options);
-    Remote.dialog.showOpenDialog(this.browserWindow, options, callback);
+    Remote.dialog.showOpenDialog(ui.browserWindow, options, callback);
 };
 
 export default {
+    showRemoteOpenDialog,
     showSaveDialog,
-    showOpenDialog
+    showOpenDialog: openFileButton.showOpenDialog
 };

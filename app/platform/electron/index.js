@@ -29,6 +29,7 @@ const platform = {
     remote,
     image,
     ui,
+    dialog,
     fs,
     config,
     sound,
