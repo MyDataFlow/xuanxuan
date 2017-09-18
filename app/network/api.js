@@ -45,9 +45,20 @@ const checkUploadFileSize = (user, size) => {
     return uploadFileSize && size <= uploadFileSize;
 };
 
+const uploadFile = (user, file, data = {}, onProgress = null) => {
+    return Platform.net.uploadFile(user, file, data, onProgress);
+};
+
+const createFileDownloadUrl = (user, file) => {
+    return user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}`);
+};
+
+
 export default {
+    uploadFile,
     requestServerInfo,
     checkUploadFileSize,
+    createFileDownloadUrl,
 };
 
 

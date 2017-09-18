@@ -289,6 +289,10 @@ class User extends Member {
         return this.serverUrlRoot + path;
     }
 
+    get uploadUrl() {
+        return this.makeServerUrl('upload');
+    }
+
     get identify() {
         let server = this.server;
         if(!server) {

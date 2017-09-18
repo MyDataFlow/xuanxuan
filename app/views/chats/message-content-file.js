@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
+import FileListItem from '../common/file-list-item';
 
 class MessageContentFileView extends Component {
 
@@ -9,20 +10,12 @@ class MessageContentFileView extends Component {
         let {
             message,
             className,
-            children,
             ...other
         } = this.props;
 
-        const content = message.renderedTextContent(App.im.ui.linkMembersInText);
+        const content = message.fileContent;
 
-        return <div {...other}
-            className={HTML.classes('app-message-content-text', className, {
-                'is-content-block': message.isBlockContent
-            })}
-            dangerouslySetInnerHTML={{__html: content}}
-        >
-        {children}
-        </div>;
+        return <FileListItem className="app-message-content-file layer rounded flex-inline shadow-2 list-item" file={content} {...other}/>;
     }
 }
 

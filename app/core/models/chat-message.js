@@ -173,7 +173,7 @@ class ChatMessage extends Entity {
     get sender() {
         if(!this._sender) {
             return new Member({
-                id: senderId
+                id: this.senderId
             });
         }
         return this._sender;
@@ -281,8 +281,13 @@ class ChatMessage extends Entity {
         delete content.path;
 
         this.contentType = CONTENT_TYPES.image;
-        this.content = JSON.stringify(content);
         this._imageContent = content;
+        this.content = JSON.stringify(content);
+    }
+
+    updateImageContent(content) {
+        this._imageContent = Object.assign({}, this.imageContent, content);
+        this.content = JSON.stringify(this._imageContent);
     }
 
     get fileContent() {
@@ -315,6 +320,11 @@ class ChatMessage extends Entity {
             time: content.time
         });
         this._fileContent = content;
+    }
+
+    updateFileContent(content) {
+        this._fileContent = Object.assign({}, this.fileContent, content);
+        this.content = JSON.stringify(this._fileContent);
     }
 
     getCommand() {

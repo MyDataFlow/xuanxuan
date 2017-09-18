@@ -56,7 +56,7 @@ class ChatSendbox extends Component {
                     App.im.ui.sendTextMessage(content.content, this.props.chat);
                 }
             } else if(content.type === 'image') {
-                this.handleSelectImageFile(content.image);
+                App.im.server.sendImageMessage(content.image, this.props.chat);
             }
         });
 
@@ -79,10 +79,6 @@ class ChatSendbox extends Component {
             return 'handled';
         }
         return 'not-handled';
-    }
-
-    handleSelectImageFile = e => {
-        this.appendImages(e.target.files);
     }
 
     handleOnPaste = e => {
@@ -111,10 +107,13 @@ class ChatSendbox extends Component {
     componentDidMount() {
         this.onSendContentToChatHandler = App.im.ui.onSendContentToChat(this.props.chat.gid, content => {
             switch(content.type) {
+                case 'image':
+                    this.editbox.appendImage(content.content);
+                    break;
                 default:
                     this.editbox.appendContent(content.content);
-                    this.editbox.focus();
             }
+            this.editbox.focus();
         });
     }
 

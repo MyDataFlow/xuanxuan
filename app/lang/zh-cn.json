@@ -20,6 +20,28 @@
     "pager.prev": "上一页",
     "pager.next": "下一页",
 
+    "file.uploadFailed": "上传失败",
+
+    "error.UNSUPPORT_VERSION": "此服务器版本不受支持。",
+    "error.WRONG_CONNECT": "无法连接到服务器，请检查网络连接是否通畅。",
+    "error.LOGIN_FAILED": "暂时无法登录到服务器。",
+    "error.WRONG_ACCOUNT": "账号或密码错误。",
+    "error.WRONG_DATA": "服务器返回的数据不正确。",
+    "error.WRONG_STATUS": "服务器操作失败。",
+    "error.SOCKET_CLOSE": "服务器连接已断开，请重新登录。",
+    "error.SOCKET_ERROR": "服务器连接失败，发生了未知错误。",
+    "error.SOCKET_TIMEOUT": "服务器连接超时。",
+    "error.NET_OFFLINE": "互联网连接已断开。",
+    "error.KICKOFF": "当前账号已在其他地方登录。如果不是本人操作，请及时修改密码",
+    "error.USER_DATA_PATH_DENY": "暂时无法使用用户目录，请重试。",
+    "error.USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。",
+    "error.IMAGE_NOT_FIND": "无法打开图片，找不到图片或图片已损坏。位置 {0}。",
+    "error.UPLOAD_FILE_IS_TOO_LARGE": "文件上传失败，只支持发送小于 {0} 的文件",
+    "error.SERVER_DISABLED_UPLOAD": "文件上传失败，因为服务器禁止了文件上传功能",
+    "error.NETWORK_TIMEOUT": "网络连接超时。",
+    "error.SERVER_IS_BUSY": "服务器正忙，请稍后重试。",
+    "error.USER_INFO_REQUIRED": "用户信息不可用。",
+
     "login.serverUrl.label": "服务器",
     "login.serverUrl.hint": "https://xuanxuan.chat",
     "login.account.label": "账号",
@@ -184,6 +206,9 @@
     "emoji.category.objects": "物体",
     "emoji.category.symbols": "符号",
     "emoji.category.flags": "旗帜",
+
+    "dialog.fileSaveTo": "保存文件",
+    "dialog.openFile": "打开文件",
 
     "debug.inspectElement": "审查元素"
 }

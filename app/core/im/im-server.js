@@ -6,6 +6,12 @@ import chats from './im-chats';
 import PKG from '../../package.json';
 import Config from 'Config';
 import Chat from '../models/chat';
+import API from '../../network/api';
+import Messager from '../../components/messager';
+import StringHelper from '../../utils/string-helper';
+import ChatMessage from '../../core/models/chat-message';
+
+const MAX_BASE64_IMAGE_SIZE = 1024*10;
 
 const EVENT = {
     history: 'im.chats.history'
@@ -199,6 +205,98 @@ const sendChatMessage = (messages, chat) => {
     }, chat);
 };
 
+const sendImageAsBase64 = (imageFile, chat) => {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const message = new ChatMessage({
+                user: profile.userId,
+                cgid: chat.gid,
+                date: new Date(),
+                contentType: ChatMessage.CONTENT_TYPES.image
+            });
+            message.imageContent = {
+                content: e.target.result,
+                time: new Date().getTime(),
+                name: imageFile.name,
+                size: imageFile.size,
+                send: true,
+                type: 'base64'
+            };
+            sendChatMessage(message, chat);
+            resolve();
+        };
+        reader.readAsDataURL(imageFile);
+    });
+};
+
+const sendImageMessage = (imageFile, chat) => {
+    if(imageFile.size < MAX_BASE64_IMAGE_SIZE) {
+        return sendImageAsBase64(imageFile, chat);
+    }
+    if(API.checkUploadFileSize(profile.user, imageFile.size)) {
+        const message = new ChatMessage({
+            user: profile.userId,
+            cgid: chat.gid,
+            date: new Date(),
+            contentType: ChatMessage.CONTENT_TYPES.image
+        });
+        message.attatchFile = imageFile;
+        message.imageContent = {
+            time: new Date().getTime(),
+            name: imageFile.name,
+            size: imageFile.size,
+            send: 0,
+            type: imageFile.type
+        };
+        sendChatMessage(message, chat);
+        API.uploadFile(profile.user, imageFile, {gid: chat.gid}, progress => {
+            message.updateImageContent({send: progress});
+            sendChatMessage(message, chat);
+        }).then(data => {
+            message.updateImageContent(Object.assign({}, data, {send: true}));
+            sendChatMessage(message, chat);
+        }).catch(error => {
+            message.updateImageContent({send: false, error: error && Lang.error(error)});
+            sendChatMessage(message, chat);
+        });
+    } else {
+        Messager.show(Lang.from('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)));
+    }
+};
+
+const sendFileMessage = (file, chat) => {
+    if(API.checkUploadFileSize(profile.user, file.size)) {
+        const message = new ChatMessage({
+            user: profile.userId,
+            cgid: chat.gid,
+            date: new Date(),
+            contentType: ChatMessage.CONTENT_TYPES.file
+        });
+        message.attatchFile = file;
+        message.fileContent = {
+            time: new Date().getTime(),
+            name: file.name,
+            size: file.size,
+            send: 0,
+            type: file.type
+        };
+        sendChatMessage(message, chat);
+        API.uploadFile(profile.user, file, {gid: chat.gid}, progress => {
+            message.updateFileContent({send: progress});
+            sendChatMessage(message, chat);
+        }).then(data => {
+            message.updateFileContent(Object.assign({}, data, {send: true}));
+            sendChatMessage(message, chat);
+        }).catch(error => {
+            message.updateFileContent({send: false, error: error && Lang.error(error)});
+            sendChatMessage(message, chat);
+        });
+    } else {
+        Messager.show(Lang.from('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(file.size)));
+    }
+};
+
 const inviteMembersToChat = (chat, chatMembers, newChatSetting) => {
     if(chat.canInvite(profile.user)) {
         if(!chat.isOne2One) {
@@ -241,6 +339,8 @@ export default {
     exitChat,
     inviteMembersToChat,
     fetchPublicChats,
+    sendImageMessage,
+    sendFileMessage,
 
     get chatJoinTask() {
         return chatJoinTask;

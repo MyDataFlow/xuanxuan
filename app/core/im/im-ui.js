@@ -13,6 +13,7 @@ import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setti
 import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
 import ChatInvitePopover from '../../views/chats/chat-invite-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
+import Platform from 'Platform';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -47,11 +48,11 @@ const sendContentToChat = (content, type = 'text', cgid = null) => {
     if(!cgid) {
         cgid = activedChatId;
     }
-    return Events.emit(`${EVENT.activeChat}.${cgid}`, {content, type});
+    return Events.emit(`${EVENT.sendContentToChat}.${cgid}`, {content, type});
 };
 
 const onSendContentToChat = (cgid, listener) => {
-    return Events.on(`${EVENT.activeChat}.${cgid}`, listener);
+    return Events.on(`${EVENT.sendContentToChat}.${cgid}`, listener);
 };
 
 const mapCacheChats = callback => {
@@ -134,14 +135,26 @@ const createSendboxToolbarItems = chat => {
         icon: 'image',
         label: Lang.string('chat.sendbox.toolbar.image'),
         click: () => {
-            console.warn('TODO: App.im.ui.createSendboxToolbarItems.image');
+            Platform.dialog.showOpenDialog({
+                filters: [
+                    {name: 'Images', extensions: ['jpg', 'png', 'gif']},
+                ]
+            }, files => {
+                if(files && files.length) {
+                    sendContentToChat(files[0], 'image', chat.gid);
+                }
+            });
         }
     }, {
         id: 'file',
         icon: 'file-outline',
         label: Lang.string('chat.sendbox.toolbar.file'),
         click: () => {
-            console.warn('TODO: App.im.ui.createSendboxToolbarItems.file');
+            Platform.dialog.showOpenDialog(null, files => {
+                if(files && files.length) {
+                    Server.sendFileMessage(files[0], chat);
+                }
+            });
         }
     }, {
         id: 'captureScreen',
