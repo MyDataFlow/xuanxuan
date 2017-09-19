@@ -8,7 +8,7 @@ if(global.DEBUG) {
     // Mute react router warning.
     console._error = console.error;
     console.error = (errMessage, ...args) => {
-        if(typeof errMessage === 'string' && errMessage.indexOf('Warning: Hash history cannot PUSH the same path;') === 0) {
+        if(typeof errMessage === 'string' && (errMessage.indexOf('Warning: Hash history cannot PUSH the same path;') === 0 || errMessage.startsWith('Warning: Failed prop type: Prop paneStyle passed to SplitPane. Has invalid keys userSelect') || errMessage.startsWith('Warning: Failed prop type: Prop style passed'))) {
             return;
         }
         return console._error(errMessage, ...args);
