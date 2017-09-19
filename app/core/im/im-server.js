@@ -214,7 +214,6 @@ const sendImageAsBase64 = (imageFile, chat) => {
             const message = new ChatMessage({
                 user: profile.userId,
                 cgid: chat.gid,
-                date: new Date(),
                 contentType: ChatMessage.CONTENT_TYPES.image
             });
             message.imageContent = {
