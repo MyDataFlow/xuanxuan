@@ -52,11 +52,6 @@ const nodeFetch = (url, options) => {
                 response.text = () => {
                     return Promise.resolve(body);
                 };
-                if(DEBUG) {
-                    console.log('Request.options', options);
-                    console.log('Request.response', response);
-                    console.log('Request.body', body);
-                }
                 resolve(response);
             }
         });
