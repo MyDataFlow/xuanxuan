@@ -23,6 +23,9 @@ class Selectbox extends Component {
             <select className={selectClassName} value={value} onChange={this.handleSelectChange} {...selectProps}>
             {
                 options && options.map(option => {
+                    if(!option) {
+                        return null;
+                    }
                     if(typeof option !== 'object') {
                         option = {value: option, label: option};
                     }
