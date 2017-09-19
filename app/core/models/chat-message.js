@@ -252,15 +252,15 @@ class ChatMessage extends Entity {
         }
     }
 
-    renderedTextContent(callback) {
+    renderedTextContent(converter) {
         if(this._renderedTextContent === undefined) {
             let content = this.content;
             if(typeof content === 'string' && content.length) {
                 content = content.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
                 content = Markdown(content);
                 content = Emojione.toImage(content);
-                if(callback) {
-                    content = callback(content);
+                if(converter) {
+                    content = converter(content);
                 }
                 this._renderedTextContent = content;
                 this._isBlockContent = content && (content.includes('<h1 id="') || content.includes('<h2 id="') || content.includes('<h3 id="'));

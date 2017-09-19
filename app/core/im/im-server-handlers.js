@@ -100,8 +100,6 @@ const chatMessage = (msg, socket) => {
     }
 };
 
-
-
 const chatHistory = (msg, socket) => {
     if(!msg.isSuccess) {
         return;
