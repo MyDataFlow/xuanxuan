@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Popover from '../../components/popover';
+import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import Config from 'Config';
@@ -14,10 +15,10 @@ const show = (position, chat, callback) => {
         <div className="heading">
             <div className="title strong">消息框小技巧</div>
             <nav className="nav">
-                <a onClick={e => {
+                <a className="text-gray small" onClick={e => {
                     App.profile.userConfig.showMessageTip = false;
                     onRequestClose();
-                }}>关闭并不再提示</a>
+                }}><Icon name="close"/> 关闭并不再提示</a>
             </nav>
         </div>
         <div className="box">
@@ -25,12 +26,11 @@ const show = (position, chat, callback) => {
                 <li>拖拽图片和文件到消息框来发送；</li>
                 <li>使用 Markdown 语法来发送富文本；</li>
                 <li>你可以直接粘贴剪切板中的图片进行发送；</li>
-                {Config.system.screenCaptureDisabled ? null : <li>从截图按钮右键菜单上使用截图高级功能；</li>}
-                <li>发送 “<strong>$$version</strong>” 查询当前客户端版本。</li>
+                {Config.system.screenCaptureDisabled ? null : <li>从截图按钮右键菜单上使用截图高级功能。</li>}
             </ul>
         </div>
     </div>;
-    return Popover.show(position, content, {id: popoverId, width: 320, height: 160}, callback);
+    return Popover.show(position, content, {id: popoverId, width: 320, height: 140}, callback);
 };
 
 export default {
