@@ -35,7 +35,8 @@ const platform = {
     sound,
     net,
     crypto,
-    Socket
+    Socket,
+    notify
 };
 
 if(DEBUG) {

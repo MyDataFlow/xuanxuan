@@ -19,7 +19,7 @@ const init = soundPath => {
 };
 
 const play = sound => {
-    window.ion.sound.play(sound);
+    window.ion.sound.play(typeof sound === 'string' ? sound : null);
 };
 
 init(Config.media['sound.path']);

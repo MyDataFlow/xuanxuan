@@ -73,6 +73,10 @@ const onRequestQuit = listener => {
     onRequestQuitListener = listener;
 };
 
+const onWindowFocus = listener => {
+    browserWindow.on('focus', listener);
+};
+
 remote.onRequestQuit(() => {
     quit();
 });
@@ -89,6 +93,7 @@ export default {
     setTrayTooltip,
     flashTrayIcon,
     onRequestQuit,
+    onWindowFocus,
 
     showWindow,
     hideWindow,

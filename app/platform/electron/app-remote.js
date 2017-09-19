@@ -371,9 +371,6 @@ class AppRemote {
     dockBadgeLabel(label) {
         if(IS_MAC_OSX) {
             ElectronApp.dock.setBadge(label);
-            if(label) {
-                this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
-            }
         }
     }
 
