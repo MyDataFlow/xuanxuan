@@ -119,6 +119,10 @@ class ChatSendbox extends Component {
     }
 
     handlePreviewBtnClick = e => {
+        if(this.state.sendButtonDisabled) {
+            return;
+        }
+
         const messages = [];
         const {chat} = this.props;
         this.editbox.getContentList().forEach(content => {
