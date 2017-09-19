@@ -37,7 +37,7 @@ class ChatListItem extends Component {
         let badge = null;
         const noticeCount = chat.noticeCount;
         if(noticeCount) {
-            badge = <div className="label circle red">{noticeCount > 99 ? '99+' : noticeCount}</div>;
+            badge = <div className="label circle red label-sm">{noticeCount > 99 ? '99+' : noticeCount}</div>;
         } else if(chat.star) {
             badge = <Icon name="star" className="icon-sm muted"/>;
         }

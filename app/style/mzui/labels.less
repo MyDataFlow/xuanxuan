@@ -6,15 +6,17 @@
 // Base style
 
 .label {
-  display: inline-block;
+  display: inline-flex;
   font-size: @font-size-small;
   height: (20*@rem);
   min-width: (20*@rem);
-  line-height: ((20*@rem) - (2 * @border-width));
   padding: 0 @padding-small-horizontal;
   background-color: @color-gray-lighter;
   border: @border-width solid transparent;
-  vertical-align: middle;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  line-height: 1;
 
   > .icon {line-height: 1}
 
@@ -27,8 +29,12 @@
 .label-sm {
   height: (18*@rem);
   min-width: (18*@rem);
-  line-height: ((18*@rem) - (2 * @border-width));
-  padding: 0 (@padding-small-horizontal/2);
+  padding: 0 (@padding-small-horizontal/4);
+
+  &.circle {
+    border-radius: (9*@rem);
+    padding: 0 (2*@rem);
+  }
 }
 
 
@@ -36,8 +42,8 @@
 
 .label.badge {
   position: absolute;
-  top: -(10*@rem);
-  right: -(10*@rem);
+  top: (-10*@rem);
+  right: (-10*@rem);
   z-index: 1;
 }
 
