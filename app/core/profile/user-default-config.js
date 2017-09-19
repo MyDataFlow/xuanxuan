@@ -23,7 +23,10 @@ export default {
     "ui.notify.playSoundCondition": "onWindowHide", // or "onWindowBlur", "
     "ui.notify.muteOnUserIsBusy": true,
     "ui.notify.flashTrayIcon": true,
-    "ui.notify.flashTrayIconCondition": "", // "onWindowBlur", "
+    "ui.notify.flashTrayIconCondition": "", // "onWindowBlur", ",
+    "ui.notify.enableWindowNotification": true,
+    "ui.notify.windowNotificationCondition": 'onWindowBlur',
+    "ui.notify.safeWindowNotification": false,
     "ui.app.hideWindowOnBlur": false,
     "ui.app.removeFromTaskbarOnHide": true,
     "ui.app.onClose": "ask", // or "close", "minimize"

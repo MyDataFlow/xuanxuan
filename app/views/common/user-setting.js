@@ -15,6 +15,10 @@ const isNotificationOff = state => {
 const isFlashTrayIconOff = state => {
     return !Platform.env.isWindowsOS || !state['ui.notify.flashTrayIcon'];
 };
+const isWindowNotificationOff = state => {
+    return !state['ui.notify.enableWindowNotification'];
+};
+
 const configs = [
     {
         name: 'chats',
@@ -39,7 +43,8 @@ const configs = [
             }, {
                 type: 'boolean',
                 name: 'ui.chat.enableAnimate',
-                caption: Lang.string('setting.chats.enableAnimate')
+                caption: Lang.string('setting.chats.enableAnimate'),
+                hidden: 'TODO: chats animate is not ready in current version.'
             }
         ]
     }, {
@@ -55,9 +60,9 @@ const configs = [
                 name: 'ui.notify.playSoundCondition',
                 className: 'level-2',
                 options: [
-                    {value: '', label: Lang.string('setting.notification.playSountOnNeed')},
-                    {value: 'onWindowBlur', label: Lang.string('setting.notification.playSountOnWindowBlur')},
-                    {value: 'onWindowHide', label: Lang.string('setting.notification.playSountOnWindowHide')},
+                    {value: '', label: Lang.string('setting.notification.onNeed')},
+                    {value: 'onWindowBlur', label: Lang.string('setting.notification.onWindowBlur')},
+                    {value: 'onWindowHide', label: Lang.string('setting.notification.onWindowHide')},
                 ],
                 hidden: isNotificationOff,
                 caption: Lang.string('setting.notification.playSoundCondition')
@@ -77,12 +82,33 @@ const configs = [
                 name: 'ui.notify.flashTrayIconCondition',
                 className: 'level-2',
                 options: [
-                    {value: '', label: Lang.string('setting.notification.playSountOnNeed')},
-                    {value: 'onWindowBlur', label: Lang.string('setting.notification.playSountOnWindowBlur')},
-                    {value: 'onWindowHide', label: Lang.string('setting.notification.playSountOnWindowHide')},
+                    {value: '', label: Lang.string('setting.notification.onNeed')},
+                    {value: 'onWindowBlur', label: Lang.string('setting.notification.onWindowBlur')},
+                    {value: 'onWindowHide', label: Lang.string('setting.notification.onWindowHide')},
                 ],
                 hidden: isFlashTrayIconOff,
                 caption: Lang.string('setting.notification.flashTrayIconCondition')
+            }, {
+                type: 'boolean',
+                name: 'ui.notify.enableWindowNotification',
+                caption: Lang.string('setting.notification.enableWindowNotification')
+            }, {
+                type: 'select',
+                name: 'ui.notify.windowNotificationCondition',
+                className: 'level-2',
+                options: [
+                    {value: '', label: Lang.string('setting.notification.onNeed')},
+                    {value: 'onWindowBlur', label: Lang.string('setting.notification.onWindowBlur')},
+                    {value: 'onWindowHide', label: Lang.string('setting.notification.onWindowHide')},
+                ],
+                hidden: isWindowNotificationOff,
+                caption: Lang.string('setting.notification.windowNotificationCondition')
+            }, {
+                type: 'boolean',
+                className: 'level-2',
+                hidden: isWindowNotificationOff,
+                name: 'ui.notify.safeWindowNotification',
+                caption: Lang.string('setting.notification.safeWindowNotificationTip')
             }
         ]
     }, {
@@ -203,7 +229,7 @@ class UserSetting extends Component {
         }
         return <div className={HTML.classes("control flex", item.className)} key={item.name}>
             <div>{item.caption}</div>
-            <SelectBox options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded"/>
+            <SelectBox value={value} options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded"/>
         </div>;
     }
 
