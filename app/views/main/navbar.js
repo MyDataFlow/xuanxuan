@@ -34,7 +34,8 @@ class MainView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showUserMenu: false
+            showUserMenu: false,
+            noticeBadge: 0,
         };
     }
 
@@ -44,6 +45,16 @@ class MainView extends Component {
 
     handleUserMenuRequestClose = () => {
         this.setState({showUserMenu: false});
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.noticeUpdateHandler);
+    }
+
+    componentDidMount() {
+        this.noticeUpdateHandler = App.notice.onNoticeUpdate(notice => {
+            this.setState({noticeBadge: notice.total});
+        });
     }
 
     render() {
@@ -59,7 +70,12 @@ class MainView extends Component {
             <nav className="dock-top app-nav-main">
             {
                 navbarItems.map(item => {
-                    return <div key={item.to} className="hint--right" data-hint={item.label}><NavLink item={item}/></div>
+                    return <div key={item.to} className="hint--right nav-item" data-hint={item.label}>
+                        <NavLink item={item}/>
+                        {
+                            (this.state.noticeBadge && item.to === ROUTES.chats.recents.__) ? <div className="label label-sm dock-right dock-top circle red badge">{this.state.noticeBadge}</div> : null
+                        }
+                    </div>;
                 })
             }
             </nav>
