@@ -26,6 +26,7 @@ class DisplayLayer extends Component {
         modal: false, // if modal set true, user cannot close layer by click backdrop(if backdrop set true too)
         show: true,   // Show on ready
         content: '',  // Content can be a function and return a promise to load lazy content
+        contentClassName: '',
         header: null,
         footer: null,
         onShown: null,
@@ -206,6 +207,7 @@ class DisplayLayer extends Component {
             hotkey,
             cache,
             loadingContent,
+            contentClassName,
             children,
             style,
             ...other
@@ -227,7 +229,7 @@ class DisplayLayer extends Component {
             {backdrop && <div onClick={this.handleBackdropClick} className={HTML.classes('display-backdrop', backdropClassName)}></div>}
             <div className={HTML.classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => this.displayElement = e}>
                 {header}
-                <div className="content">{this.state.loading ? loadingContent : this.state.content}</div>
+                <div className={HTML.classes('content', contentClassName)}>{this.state.loading ? loadingContent : this.state.content}</div>
                 {children}
                 {footer}
             </div>
