@@ -9,11 +9,13 @@ import Platform from 'Platform';
 import Checkbox from '../../components/checkbox';
 import SelectBox from '../../components/select-box';
 
+const isBrowser = Platform.type === 'browser';
+
 const isNotificationOff = state => {
     return !state['ui.notify.enableSound'];
 };
 const isFlashTrayIconOff = state => {
-    return !Platform.env.isWindowsOS || !state['ui.notify.flashTrayIcon'];
+    return isBrowser || !Platform.env.isWindowsOS || !state['ui.notify.flashTrayIcon'];
 };
 const isWindowNotificationOff = state => {
     return !state['ui.notify.enableWindowNotification'];
@@ -75,7 +77,7 @@ const configs = [
             }, {
                 type: 'boolean',
                 name: 'ui.notify.flashTrayIcon',
-                hidden: !Platform.env.isWindowsOS,
+                hidden: isBrowser || !Platform.env.isWindowsOS,
                 caption: Lang.string('setting.notification.flashTrayIcon')
             }, {
                 type: 'select',
@@ -97,9 +99,8 @@ const configs = [
                 name: 'ui.notify.windowNotificationCondition',
                 className: 'level-2',
                 options: [
-                    {value: '', label: Lang.string('setting.notification.onNeed')},
                     {value: 'onWindowBlur', label: Lang.string('setting.notification.onWindowBlur')},
-                    {value: 'onWindowHide', label: Lang.string('setting.notification.onWindowHide')},
+                    isBrowser ? null : {value: 'onWindowHide', label: Lang.string('setting.notification.onWindowHide')},
                 ],
                 hidden: isWindowNotificationOff,
                 caption: Lang.string('setting.notification.windowNotificationCondition')
@@ -129,6 +130,7 @@ const configs = [
         ]
     }, {
         name: 'windows',
+        hidden: isBrowser,
         title: Lang.string('setting.section.windows'),
         items: [
             {
@@ -152,6 +154,7 @@ const configs = [
         ]
     }, {
         name: 'hotkeys',
+        hidden: isBrowser,
         title: Lang.string('setting.section.hotkeys'),
         items: [
             {
