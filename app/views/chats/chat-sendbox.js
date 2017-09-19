@@ -6,6 +6,7 @@ import Lang from '../../lang';
 import App from '../../core';
 import DraftEditor from '../common/draft-editor';
 import Emojione from '../../components/emojione';
+import MessagesPreivewDialog from './messages-preview-dialog';
 
 class ChatSendbox extends Component {
 
@@ -117,6 +118,27 @@ class ChatSendbox extends Component {
         });
     }
 
+    handlePreviewBtnClick = e => {
+        const messages = [];
+        const {chat} = this.props;
+        this.editbox.getContentList().forEach(content => {
+            if(content.type === 'text') {
+                content.content = Emojione.toShort(content.content);
+                let trimContent = App.profile.userConfig.sendHDEmoticon ? content.content.trim() : false;
+                if(trimContent && Emojione.emojioneList[trimContent]) {
+                    messages.push(App.im.ui.createEmojiChatMessage(trimContent, chat));
+                } else {
+                    messages.push(App.im.ui.createTextChatMessage(content.content, chat));
+                }
+            } else if(content.type === 'image') {
+                messages.push(App.im.ui.createTextChatMessage(`![preview-image](${content.image.url || content.image.path})`, chat));
+            }
+        });
+        MessagesPreivewDialog.show(messages, {onHidden: () => {
+            this.editbox.focus();
+        }});
+    }
+
     render() {
         let {
             chat,
@@ -140,11 +162,12 @@ class ChatSendbox extends Component {
             />
             <div className="dock-bottom app-chat-sendbox-toolbar flex">
                 <div className="toolbar flex flex-middle flex-auto">
-                {
-                    App.im.ui.createSendboxToolbarItems(chat).map(item => {
-                        return <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon className="" name={item.icon}/></button></div>
-                    })
-                }
+                    {
+                        App.im.ui.createSendboxToolbarItems(chat, this.state.sendButtonDisabled).map(item => {
+                            return <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon className="" name={item.icon}/></button></div>
+                        })
+                    }
+                    <div className="hint--top has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.previewDraft')} onClick={this.handlePreviewBtnClick}><button disabled={this.state.sendButtonDisabled} className="btn iconbutton rounded" type="button"><Icon className="" name="file-document-box"/></button></div>
                 </div>
                 <div className="toolbar flex flex-none flex-middle">
                     <div className="hint--top-left has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.send')} onClick={this.handleSendButtonClick}>

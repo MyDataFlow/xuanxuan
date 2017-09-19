@@ -5,6 +5,10 @@ import MessageListItem from './message-list-item';
 
 class MessageList extends Component {
 
+    static defaultProps = {
+        showDateDivider: 0,
+    };
+
     scrollToBottom = (smooth) => {
         this.messageEndEle.scrollIntoView({block: 'end', behavior: smooth ? 'smooth' : 'instant'});
     }
@@ -40,6 +44,7 @@ class MessageList extends Component {
             messages,
             className,
             style,
+            showDateDivider,
             children,
             ...other
         } = this.props;
@@ -55,7 +60,7 @@ class MessageList extends Component {
         >
             {
                 messages && messages.map(message => {
-                    const messageListItem = <MessageListItem lastMessage={lastMessage} key={message.gid} message={message}/>;
+                    const messageListItem = <MessageListItem showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message}/>;
                     lastMessage = message;
                     return messageListItem;
                 })
