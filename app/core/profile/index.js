@@ -3,6 +3,7 @@ import User from './user';
 import Platform from 'Platform';
 import Lang from '../../lang';
 import timeSequence from '../../utils/time-sequence';
+import notice from '../notice';
 
 const EVENT = {
     swap: 'profile.user.swap',
@@ -42,6 +43,7 @@ const setUser = newUser => {
         console.groupEnd();
     }
     if(!oldUser || oldUser.identify !== user.identify) {
+        notice.update();
         Events.emit(EVENT.swap, user);
     }
     return user;

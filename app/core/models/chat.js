@@ -472,18 +472,13 @@ class Chat extends Entity {
 
     muteNotice() {
         this._noticeCount = 0;
+        this._messages.forEach(message => {
+            message.unread = false;
+        });
     }
 
     get messages() {
         return this._messages || [];
-    }
-
-    set messages(messages) {
-        this._messages = [];
-        this._noticeCount = 0;
-        if(messages) {
-            this.addMessages(messages, true);
-        }
     }
 
     get lastActiveTime() {
@@ -506,7 +501,7 @@ class Chat extends Entity {
         return !!this._messages;
     }
 
-    addMessages(messages, limitSize = true) {
+    addMessages(messages, userId, limitSize = true, localMessage = false) {
         if(!Array.isArray(messages)) {
             messages = [messages];
         }
@@ -529,9 +524,15 @@ class Chat extends Entity {
                 } else {
                     this._messages.push(message);
                     newMessageCount++;
-                    if(message.unread) {
+                    if(!localMessage && userId !== message.senderId) {
+                        message.unread = true;
                         noticeCount++;
+                    } else {
+                        message.unread = false;
                     }
+                    // if(message.unread) {
+                    //     noticeCount++;
+                    // }
                 }
                 if(lastActiveTime < message.date) {
                     lastActiveTime = message.date;
@@ -561,6 +562,10 @@ class Chat extends Entity {
         }
 
         return this;
+    }
+
+    get lastMessage() {
+        return this._messages && this._messages[this._messages.length - 1];
     }
 
     removeMessage(messageGid) {

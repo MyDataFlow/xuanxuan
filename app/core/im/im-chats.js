@@ -5,7 +5,6 @@ import Events from '../events';
 import members from '../members';
 import db from '../db';
 import notice from '../notice';
-import DelayAction from '../../utils/delay-action';
 import StringHelper from '../../utils/string-helper';
 
 const CHATS_LIMIT_DEFAULT = 100;
@@ -17,7 +16,8 @@ const SEARCH_SCORE_MAP = {
     similar    : 10
 };
 const EVENT = {
-    init: 'chats.init'
+    init: 'chats.init',
+    messages: 'chats.messages',
 };
 let chats = null;
 let publicChats = null;
@@ -77,17 +77,25 @@ const getLastActiveChat = () => {
     return lastChat;
 };
 
-const updateChatNotice = new DelayAction(() => {
-    let total = 0;
-    forEach(chat => {
-        if(chat.noticeCount) {
-            total += chat.noticeCount;
-        }
-    });
-    notice.emit({chats: total});
-});
+const saveChatMessages = (messages, chat) => {
+    if(!Array.isArray(messages)) {
+        messages = [messages];
+    }
 
-const updateChatMessages = (messages, muted) => {
+    Events.emit(EVENT.messages, messages);
+    if(chat) {
+        update(chat);
+    }
+
+    // Save messages to database
+    if(messages.length) {
+        return db.database.chatMessages.bulkPut(messages.map(x => x.plain()));
+    } else {
+        return Promise.resolve(0);
+    }
+};
+
+const updateChatMessages = (messages, muted = false) => {
     if(!Array.isArray(messages)) {
         messages = [messages];
     }
@@ -108,9 +116,9 @@ const updateChatMessages = (messages, muted) => {
     Object.keys(chatsMessages).forEach(cgid => {
         const chat = get(cgid);
         if(chat) {
-            chat.addMessages(chatsMessages[cgid]);
+            chat.addMessages(chatsMessages[cgid], profile.userId, true, muted);
             if(muted) {
-                chat.muted();
+                chat.muteNotice();
             }
             updatedChats[cgid] = chat;
         }
@@ -118,14 +126,7 @@ const updateChatMessages = (messages, muted) => {
 
     update(updatedChats);
 
-    updateChatNotice.do();
-
-    // Save messages to database
-    if(messagesForUpdate.length) {
-        return db.database.chatMessages.bulkPut(messagesForUpdate.map(x => x.plain()));
-    } else {
-        return Promise.resolve(0);
-    }
+    return saveChatMessages(messagesForUpdate);
 };
 
 const deleteLocalMessage = (message) => {
@@ -159,7 +160,7 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
     return collection.toArray(chatMessages => {
         if(chatMessages && chatMessages.length) {
             const result = chatMessages.map(ChatMessage.create);
-            chat.addMessages(result, true);
+            chat.addMessages(result, profile.userId, true, true);
             Events.emitDataChange({chats: {[cgid]: chat}});
             return Promise.resolve(result);
         } else {
@@ -448,9 +449,12 @@ const updatePublicChats = (serverPublicChats) => {
 };
 
 
-
 const onChatsInit = listener => {
     return Events.on(EVENT.init, listener);
+};
+
+const onChatMessages = listener => {
+    return Events.on(EVENT.messages, listener);
 };
 
 profile.onSwapUser(user => {
@@ -472,12 +476,14 @@ export default {
     deleteLocalMessage,
     loadChatMessages,
     updateChatMessages,
+    saveChatMessages,
     getPublicChats,
     updatePublicChats,
     getContactsChats,
     getGroups,
     getRecents,
     onChatsInit,
+    onChatMessages,
     getOne2OneChatGid,
     countChatMessages,
 };

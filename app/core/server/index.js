@@ -2,6 +2,7 @@ import Socket from '../../network/socket';
 import serverHandlers from './server-handlers';
 import profile from '../profile';
 import API from '../../network/api';
+import notice from '../notice';
 
 const socket = new Socket();
 socket.setHandler(serverHandlers);
@@ -52,6 +53,7 @@ const changeUserStatus = status => {
 };
 
 const logout = () => {
+    notice.update();
     socket.logout();
 };
 

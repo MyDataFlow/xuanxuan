@@ -134,6 +134,62 @@ class UserConfig {
     set showMessageTip(flag) {
         return this.set('ui.chat.showMessageTip', flag);
     }
+
+    get enableWindowNotification() {
+        return this.get('ui.notify.enableWindowNotification');
+    }
+
+    set enableWindowNotification(flag) {
+        return this.set('ui.notify.enableWindowNotification', flag);
+    }
+
+    get safeWindowNotification() {
+        return this.get('ui.notify.safeWindowNotification');
+    }
+
+    set safeWindowNotification(flag) {
+        return this.set('ui.notify.safeWindowNotification', flag);
+    }
+
+    get windowNotificationCondition() {
+        return this.get('ui.notify.windowNotificationCondition');
+    }
+
+    set windowNotificationCondition(condition) {
+        return this.set('ui.notify.windowNotificationCondition', condition);
+    }
+
+    get enableSound() {
+        return this.get('ui.notify.enableSound');
+    }
+
+    set enableSound(flag) {
+        return this.set('ui.notify.enableSound', flag);
+    }
+
+    get playSoundCondition() {
+        return this.get('ui.notify.playSoundCondition');
+    }
+
+    set playSoundCondition(condition) {
+        return this.set('ui.notify.playSoundCondition', condition);
+    }
+
+    get flashTrayIcon() {
+        return this.get('ui.notify.flashTrayIcon');
+    }
+
+    set flashTrayIcon(flag) {
+        return this.set('ui.notify.flashTrayIcon', flag);
+    }
+
+    get flashTrayIconCondition() {
+        return this.get('ui.notify.flashTrayIconCondition');
+    }
+
+    set flashTrayIconCondition(condition) {
+        return this.set('ui.notify.flashTrayIconCondition', condition);
+    }
 }
 
 export default UserConfig;

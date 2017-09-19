@@ -34,6 +34,10 @@ const activeChat = chat => {
             Events.emit(EVENT.activeChat, chat);
         }
         activeCaches[chat.gid] = true;
+        if(chat.noticeCount) {
+            chat.muteNotice();
+            chats.saveChatMessages(chat.messages);
+        }
     }
 };
 
