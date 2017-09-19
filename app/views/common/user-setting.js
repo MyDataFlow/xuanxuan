@@ -271,7 +271,6 @@ class UserSetting extends Component {
                         {
                             section.items.map(item => {
                                 return this.renderConfigItem(item);
-
                             })
                         }
                         </div>

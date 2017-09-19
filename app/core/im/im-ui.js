@@ -161,21 +161,25 @@ const createSendboxToolbarItems = chat => {
                 }
             });
         }
-    }, {
-        id: 'captureScreen',
-        icon: 'content-cut rotate-270 inline-block',
-        label: Lang.string('chat.sendbox.toolbar.captureScreen'),
-        click: () => {
-            console.warn('TODO: App.im.ui.createSendboxToolbarItems.captureScreen');
-        }
-    }, {
+    }];
+    if(Platform.screenshot) {
+        items.push({
+            id: 'captureScreen',
+            icon: 'content-cut rotate-270 inline-block',
+            label: Lang.string('chat.sendbox.toolbar.captureScreen'),
+            click: () => {
+                console.warn('TODO: App.im.ui.createSendboxToolbarItems.captureScreen');
+            }
+        });
+    }
+    items.push({
         id: 'setFontSize',
         icon: 'format-size',
         label: Lang.string('chat.sendbox.toolbar.setFontSize'),
         click: () => {
             console.warn('TODO: App.im.ui.createSendboxToolbarItems.setFontSize');
         }
-    }];
+    });
     let user = profile.user;
     if(user && user.config.showMessageTip) {
         items.push({
