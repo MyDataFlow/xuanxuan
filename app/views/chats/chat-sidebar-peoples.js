@@ -30,7 +30,7 @@ class ChatSidebarPeoples extends Component {
             committerIcon = <div data-hint={Lang.string('chat.committers.blocked')} className="hint--left side-icon text-gray inline-block"><Icon name="lock-outline"/></div>;
         }
         if(chat.isAdmin(member)) {
-            adminIcon = <div data-hint={Lang.string('chat.role.admin')} className="hint--left side-icon text-primary inline-block"><Icon name="account-circle"/></div>;
+            adminIcon = <div data-hint={Lang.string('chat.role.admin')} className="hint--left side-icon text-gray inline-block"><Icon name="account-circle"/></div>;
         }
         if(committerIcon && adminIcon) {
             return <div>{committerIcon}{adminIcon}</div>;
