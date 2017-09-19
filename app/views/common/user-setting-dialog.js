@@ -8,7 +8,7 @@ import DEFAULT_USER_CONFIG from '../../core/profile/user-default-config';
 import Messager from '../../components/messager';
 
 
-const show = (member, callback) => {
+const show = (callback) => {
     let userSetting = null;
     return Modal.show({
         title: Lang.string('common.setting'),
