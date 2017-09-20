@@ -195,8 +195,6 @@ const sendChatMessage = (messages, chat) => {
         }
     });
 
-    console.info('send messages', messages);
-
     chats.updateChatMessages(messages);
 
     return sendSocketMessageForChat({
@@ -209,15 +207,14 @@ const sendChatMessage = (messages, chat) => {
 
 const sendImageAsBase64 = (imageFile, chat) => {
     return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = e => {
+        const sendBase64 = base64Data => {
             const message = new ChatMessage({
                 user: profile.userId,
                 cgid: chat.gid,
                 contentType: ChatMessage.CONTENT_TYPES.image
             });
             message.imageContent = {
-                content: e.target.result,
+                content: base64Data,
                 time: new Date().getTime(),
                 name: imageFile.name,
                 size: imageFile.size,
@@ -227,7 +224,15 @@ const sendImageAsBase64 = (imageFile, chat) => {
             sendChatMessage(message, chat);
             resolve();
         };
-        reader.readAsDataURL(imageFile);
+        if(imageFile.base64) {
+            sendBase64(imageFile.base64);
+        } else {
+            const reader = new FileReader();
+            reader.onload = e => {
+                sendBase64(e.target.result);
+            };
+            reader.readAsDataURL(imageFile.blob || imageFile);
+        }
     });
 };
 
@@ -262,7 +267,7 @@ const sendImageMessage = (imageFile, chat) => {
             sendChatMessage(message, chat);
         });
     } else {
-        Messager.show(Lang.from('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)));
+        Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)));
     }
 };
 

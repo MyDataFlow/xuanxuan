@@ -168,7 +168,12 @@ const createSendboxToolbarItems = (chat, sendButtonDisabled) => {
             icon: 'content-cut rotate-270 inline-block',
             label: Lang.string('chat.sendbox.toolbar.captureScreen'),
             click: () => {
-                console.warn('TODO: App.im.ui.createSendboxToolbarItems.captureScreen');
+                Platform.screenshot.captureAndCutScreenImage().then(image => {
+                    if(image) {
+                        console.log('image', image);
+                        sendContentToChat(image, 'image');
+                    }
+                });
             }
         });
     }

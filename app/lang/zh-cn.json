@@ -226,5 +226,7 @@
     "dialog.fileSaveTo": "保存文件",
     "dialog.openFile": "打开文件",
 
+    "imageCutter.captureScreen": "截取屏幕",
+
     "debug.inspectElement": "审查元素"
 }
