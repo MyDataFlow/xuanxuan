@@ -82,9 +82,9 @@ class FileListItem extends Component {
         }
 
         return <div {...other}
-            className={HTML.classes('app-file-list-item item row flex-middle', className)}
+            className={HTML.classes('app-file-list-item item row flex-middle single', className)}
         >
-            <Avatar lightSkin={true} skin={ext} className="circle" icon={MDIFileIcon.getIcon(ext)}/>
+            <Avatar lightSkin={true} skin={ext} className="circle flex-none" icon={MDIFileIcon.getIcon(ext)}/>
             <div className="content">
                 <div className="title">{fileName}</div>
                 <div>{fileStatus}<span className="muted small">{StringHelper.formatBytes(file.size)}</span></div>
