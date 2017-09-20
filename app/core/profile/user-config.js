@@ -76,6 +76,14 @@ class UserConfig {
         return this.set('user.autoReconnect', flag);
     }
 
+    get avatarPosition() {
+        return this.get('ui.navbar.avatarPosition');
+    }
+
+    set avatarPosition(position) {
+        return this.set('ui.navbar.avatarPosition', position);
+    }
+
     get lastSaveTime() {
         return this.get('lastSaveTime');
     }
