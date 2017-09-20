@@ -125,6 +125,44 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
     return items;
 };
 
+const createCatureScreenContextMenuItems = (chat) => {
+    if(!Platform.screenshot) {
+        throw new Error(`The platform(${Platform.type}) not support take screenshots.`);
+    }
+    const items = [{
+        id: 'captureScreen',
+        label: Lang.string('chat.sendbox.toolbar.captureScreen'),
+        click: () => {
+            Platform.screenshot.captureAndCutScreenImage().then(image => {
+                if(image) {
+                    console.log('image', image);
+                    sendContentToChat(image, 'image');
+                }
+            });
+        }
+    }, {
+        id: 'hideAndCaptureScreen',
+        label: Lang.string('imageCutter.hideCurrentWindowAndCaptureScreen'),
+        click: () => {
+            Platform.screenshot.captureAndCutScreenImage(0, true).then(image => {
+                if(image) {
+                    console.log('image', image);
+                    sendContentToChat(image, 'image');
+                }
+            });
+        }
+    }, {
+        type: 'separator'
+    }, {
+        id: 'captureScreenHotSetting',
+        label: Lang.string('imageCutter.setGlobalHotkey'),
+        click: () => {
+            console.warn('TODO: App.im.ui.captureScreenHotSetting.captureScreenHotSetting');
+        }
+    }];
+    return items;
+};
+
 const createSendboxToolbarItems = (chat, sendButtonDisabled) => {
     const items = [{
         id: 'emoticon',
@@ -174,6 +212,9 @@ const createSendboxToolbarItems = (chat, sendButtonDisabled) => {
                         sendContentToChat(image, 'image');
                     }
                 });
+            },
+            contextMenu: e => {
+                ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chat));
             }
         });
     }

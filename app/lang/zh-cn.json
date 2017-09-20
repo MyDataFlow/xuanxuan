@@ -227,6 +227,8 @@
     "dialog.openFile": "打开文件",
 
     "imageCutter.captureScreen": "截取屏幕",
+    "imageCutter.hideCurrentWindowAndCaptureScreen": "隐藏当前窗口并截图",
+    "imageCutter.setGlobalHotkey": "设置截图全局快捷键",
 
     "debug.inspectElement": "审查元素"
 }

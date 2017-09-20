@@ -148,7 +148,7 @@ class ChatSendbox extends Component {
                 <div className="toolbar flex flex-middle flex-auto">
                     {
                         App.im.ui.createSendboxToolbarItems(chat, this.state.sendButtonDisabled).map(item => {
-                            return <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon className="" name={item.icon}/></button></div>
+                            return <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon className="" name={item.icon}/></button></div>
                         })
                     }
                     <div className="hint--top has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.previewDraft')} onClick={this.handlePreviewBtnClick}><button disabled={this.state.sendButtonDisabled} className="btn iconbutton rounded" type="button"><Icon className="" name="file-document-box"/></button></div>
