@@ -55,7 +55,7 @@ const ipcOn = (event, listener) => {
 const ipcOnce = (event, listener) => {
     const name = Symbol(event);
     let bindedListener = (...args) => {
-        this.off(name);
+        remoteOff(name);
         listener(...args);
     };
     ipcRenderer.once(event, bindedListener);
@@ -142,15 +142,11 @@ const remoteOff = (...names) => {
             }
             delete eventsMap[name];
             if(DEBUG) {
-                if(this.isMainProcess) {
-                    console.log('OFF EVENT', event.name);
-                } else {
-                    console.log('OFF EVENT', 'orangeBg', event.name, 'orangePale');
-                    if(event.ipc) console.log('ipc', true);
-                    if(event.remote) console.log('remote', true);
-                    console.trace('event', event);
-                    console.groupEnd();
-                }
+                console.collapse('OFF EVENT', 'orangeBg', event.name, 'orangePale');
+                if(event.ipc) console.log('ipc', true);
+                if(event.remote) console.log('remote', true);
+                console.trace('event', event);
+                console.groupEnd();
             }
         }
     });

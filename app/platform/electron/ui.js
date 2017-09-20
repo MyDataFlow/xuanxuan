@@ -5,9 +5,11 @@ import {
 } from 'electron';
 import remote from './remote';
 import env from './env';
+import uuid from 'uuid/v4';
+import Path from 'path';
 
 let _appRoot = null;
-remote.call('appRoot').then(path => {
+remote.call('entryPath').then(path => {
     _appRoot = path;
 });
 
@@ -18,6 +20,10 @@ let onRequestQuitListener = null;
 
 const makeFileUrl = url => {
     return url;
+};
+
+const makeTmpFilePath = (ext = '') => {
+    return Path.join(userDataPath, `tmp/${uuid()}${ext}`);
 };
 
 const setBadgeLabel = (label = '') => {
@@ -46,6 +52,10 @@ const hideWindow = () => {
 
 const focusWindow = () => {
     browserWindow.focus();
+};
+
+const closeWindow = () => {
+    browserWindow.close();
 };
 
 const showAndFocusWindow = () => {
@@ -85,6 +95,7 @@ export default {
     userDataPath,
     browserWindow,
     makeFileUrl,
+    makeTmpFilePath,
     openExternal: shell.openExternal,
     showItemInFolder: shell.showItemInFolder,
     openFileItem: shell.openItem,
@@ -94,6 +105,7 @@ export default {
     flashTrayIcon,
     onRequestQuit,
     onWindowFocus,
+    closeWindow,
 
     showWindow,
     hideWindow,

@@ -1,10 +1,11 @@
 import RecordRTC from "recordrtc";
-import {desktopCapturer, screen as Screen, Remote} from 'electron';
+import {desktopCapturer, screen as Screen, remote as Remote, clipboard} from 'electron';
 import ui from './ui';
 import Image from './image';
 import env from './env';
 import Lang from '../../lang';
 import RemoteEvents from './remote';
+import fs from 'fs-extra';
 
 /* This is NEEDED because RecordRTC is badly written */
 global.html2canvas = (canvas, obj) => {
@@ -162,7 +163,10 @@ const saveScreenshotImage = (options, filePath, hideCurrentWindow) => {
     if(!options) {
         options = {};
     }
-    let processImage = base64Image => {
+    if(!filePath) {
+        filePath = ui.makeTmpFilePath('.png');
+    }
+    const processImage = base64Image => {
         if(hideCurrentWindow) {
             ui.browserWindow.show();
         }
@@ -170,7 +174,7 @@ const saveScreenshotImage = (options, filePath, hideCurrentWindow) => {
     };
     if(hideCurrentWindow && ui.browserWindow.isVisible()) {
         if(env.isWindowsOS) {
-            let hideWindowTask = () => {
+            const hideWindowTask = () => {
                 ui.browserWindow.hide();
                 return new Promise((resolve, reject) => {
                     setTimeout(resolve, 600);
@@ -185,34 +189,35 @@ const saveScreenshotImage = (options, filePath, hideCurrentWindow) => {
     return takeScreenshot(options).then(processImage);
 };
 
-const openCaptureWindow = (filePath, screenSources = 0, hideCurrentWindow = false) => {
-    let openCaptureScreenWindow = (file, display) => {
-        return new Promise((resolve, reject) => {
-            let captureWindow = new Remote.BrowserWindow({
-                x: display ? display.bounds.x : 0,
-                y: display ? display.bounds.y : 0,
-                width: display ? display.bounds.width : screen.width,
-                height: display ? display.bounds.height : screen.height,
-                alwaysOnTop: !DEBUG,
-                fullscreen: true,
-                frame: true,
-                show: false,
-                title: Lang.string('chat.captureScreen') + ' - ' + display.id,
-                titleBarStyle: 'hidden',
-                resizable: false,
-            });
-            if (DEBUG) {
-                captureWindow.openDevTools();
-            }
-            captureWindow.loadURL(`file://${ui.appRoot}/capture-screen.html#` + encodeURIComponent(file.path));
-            captureWindow.webContents.on('did-finish-load', () => {
-                captureWindow.show();
-                captureWindow.focus();
-                resolve(captureWindow);
-            });
+const openCaptureScreenWindow = (file, display) => {
+    return new Promise((resolve, reject) => {
+        let captureWindow = new Remote.BrowserWindow({
+            x: display ? display.bounds.x : 0,
+            y: display ? display.bounds.y : 0,
+            width: display ? display.bounds.width : screen.width,
+            height: display ? display.bounds.height : screen.height,
+            alwaysOnTop: !DEBUG,
+            fullscreen: true,
+            frame: true,
+            show: false,
+            title: Lang.string('imageCutter.captureScreen') + ' - ' + display.id,
+            titleBarStyle: 'hidden',
+            resizable: false,
         });
-    };
-    if(screenSources === 'all') {
+        if (DEBUG) {
+            captureWindow.openDevTools();
+        }
+        captureWindow.loadURL(`file://${ui.appRoot}/index.html#image-cutter/` + encodeURIComponent(file.path));
+        captureWindow.webContents.on('did-finish-load', () => {
+            captureWindow.show();
+            captureWindow.focus();
+            resolve(captureWindow);
+        });
+    });
+};
+
+const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) => {
+    if(!screenSources || screenSources === 'all') {
         let displays = Screen.getAllDisplays();
         screenSources = displays.map(display => {
             display.sourceId = display.id;
@@ -236,6 +241,7 @@ const openCaptureWindow = (filePath, screenSources = 0, hideCurrentWindow = fals
                 ui.browserWindow.focus();
             }
             if(image) {
+                const filePath = ui.makeTmpFilePath('.png');
                 Image.saveImage(image.data, filePath).then(image => {
                     if(image && image.path) {
                         clipboard.writeImage(Image.createFromPath(image.path));
@@ -271,5 +277,5 @@ export default {
     captureVideo,
     takeAllScreenshots,
     saveScreenshotImage,
-    openCaptureWindow
+    captureAndCutScreenImage
 };

@@ -151,8 +151,20 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
                 }, DEBUG ? 5000 : 0);
             });
         };
-        const fileBufferData = fse.readFileSync(file.path);
-        onFileBufferData(fileBufferData);
+        if(file.path) {
+            const fileBufferData = fse.readFileSync(file.path);
+            onFileBufferData(fileBufferData);
+        } else if(file.blob) {
+            const fileReader = new FileReader();
+            fileReader.onload = e => {
+                onFileBufferData(fileReader.result);
+            };
+            fileReader.readAsArrayBuffer(file.blob);
+        } else {
+            if(DEBUG) {
+                throw new Error('Cannot upload file, becase file object is not valid.', file);
+            }
+        }
     });
 };
 
