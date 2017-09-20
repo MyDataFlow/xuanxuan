@@ -198,6 +198,14 @@ class UserConfig {
     set flashTrayIconCondition(condition) {
         return this.set('ui.notify.flashTrayIconCondition', condition);
     }
+
+    get captureScreenHotkey() {
+        return this.get('shortcut.captureScreen');
+    }
+
+    set captureScreenHotkey(shortcut) {
+        return this.set('shortcut.captureScreen', shortcut);
+    }
 }
 
 export default UserConfig;

@@ -163,7 +163,7 @@ const createCatureScreenContextMenuItems = (chat) => {
     return items;
 };
 
-const createSendboxToolbarItems = (chat, sendButtonDisabled) => {
+const createSendboxToolbarItems = (chat, config) => {
     const items = [{
         id: 'emoticon',
         icon: 'emoticon',
@@ -204,7 +204,7 @@ const createSendboxToolbarItems = (chat, sendButtonDisabled) => {
         items.push({
             id: 'captureScreen',
             icon: 'content-cut rotate-270 inline-block',
-            label: Lang.string('chat.sendbox.toolbar.captureScreen'),
+            label: Lang.string('chat.sendbox.toolbar.captureScreen') + (config ? ` (${config.captureScreenHotkey})` : ''),
             click: () => {
                 Platform.screenshot.captureAndCutScreenImage().then(image => {
                     if(image) {
