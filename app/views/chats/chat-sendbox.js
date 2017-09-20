@@ -82,25 +82,6 @@ class ChatSendbox extends Component {
         return 'not-handled';
     }
 
-    handleOnPaste = e => {
-        console.warn('TODO: ChatSendbox.handleOnPaste', e);
-        // let imageFile = App.getImageFromClipboard();
-        // let imageFileSize = imageFile.getSize();
-        // if(imageFileSize && imageFileSize.width * imageFileSize.height > 0) {
-        //     let filename = UUID.v4() + '.png';
-        //     let filePath = App.user.makeFilePath(filename);
-        //     Helper.saveImage(imageFile, filePath).then(image => {
-        //         image.width = imageFileSize.width;
-        //         image.height = imageFileSize.height;
-        //         image.filename = filename;
-        //         image.name = filename;
-        //         image.type = 'image/png';
-        //         this.appendImages(image);
-        //     });
-        //     e.preventDefault();
-        // }
-    }
-
     componentWillUnmount() {
         App.events.off(this.onSendContentToChatHandler);
     }
@@ -160,7 +141,6 @@ class ChatSendbox extends Component {
             <DraftEditor className="app-chat-drafteditor dock-top box scroll-y scrollbar-thin"
                 ref={e => {this.editbox = e;}}
                 placeholder={placeholder}
-                onPaste={this.handleOnPaste}
                 onChange={this.handleOnChange}
                 onReturnKeyDown={this.handleOnReturnKeyDown}
             />

@@ -12,7 +12,7 @@ import {
 } from 'draft-js';
 import Emojione from '../../components/emojione';
 import App from '../../core';
-
+import timeSequence from '../../utils/time-sequence';
 
 const AtomicComponent = props => {
     const key = props.block.getEntityAt(0)
@@ -121,10 +121,14 @@ class DraftEditor extends Component {
     appendImage(image, callback) {
         let {editorState} = this.state;
         const contentState = editorState.getCurrentContent();
+        let imageSrc = image.path || image.url;
+        if(!imageSrc && image.blob) {
+            imageSrc = URL.createObjectURL(image.blob);
+        }
         const contentStateWithEntity = contentState.createEntity(
             'image',
             'IMMUTABLE',
-            {src: image.path, alt: image.name || '', image: image}
+            {src: imageSrc, alt: image.name || '', image: image}
         );
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
         const newEditorState = EditorState.set(
@@ -197,7 +201,32 @@ class DraftEditor extends Component {
     }
 
     handlePastedText(text, html) {
-        this.appendContent(text);
+        if(this.props.onPastedText) {
+            this.props.onPastedText(text, html);
+        } else {
+            this.appendContent(text);
+        }
+        return 'handled';
+    }
+
+    handlePastedFiles(files) {
+        if(this.props.onPastedFiles) {
+            this.props.onPastedFiles(files);
+        } else {
+            const date = new Date();
+            files.forEach(blob => {
+                if(blob.type.startsWith('image/')) {
+                    this.appendImage({
+                        lastModified: date.getTime(),
+                        lastModifiedDate: date,
+                        name: `clipboard-image-${timeSequence()}.png`,
+                        size: blob.size,
+                        blob: blob,
+                        type: blob.type
+                    });
+                }
+            });
+        }
         return 'handled';
     }
 
@@ -219,6 +248,8 @@ class DraftEditor extends Component {
         let {
             placeholder,
             onReturnKeyDown,
+            onPastedFiles,
+            onPastedText,
             ...other
         } = this.props;
 
@@ -232,6 +263,7 @@ class DraftEditor extends Component {
                 handleReturn={this.handleReturn.bind(this)}
                 blockRendererFn={this.blockRendererFn.bind(this)}
                 handlePastedText={this.handlePastedText.bind(this)}
+                handlePastedFiles={this.handlePastedFiles.bind(this)}
             />
         </div>;
     }
