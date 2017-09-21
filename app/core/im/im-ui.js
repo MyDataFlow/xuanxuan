@@ -15,6 +15,7 @@ import ChatInvitePopover from '../../views/chats/chat-invite-popover';
 import ChatTipPopover from '../../views/chats/chat-tip-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
 import Platform from 'Platform';
+import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -157,7 +158,9 @@ const createCatureScreenContextMenuItems = (chat) => {
         id: 'captureScreenHotSetting',
         label: Lang.string('imageCutter.setGlobalHotkey'),
         click: () => {
-            console.warn('TODO: App.im.ui.captureScreenHotSetting.captureScreenHotSetting');
+            HotkeySettingDialog.show(Lang.string('imageCutter.setGlobalHotkey'), profile.userConfig.captureScreenHotkey, newHotKey => {
+                profile.userConfig.captureScreenHotkey = newHotKey;
+            });
         }
     }];
     return items;
