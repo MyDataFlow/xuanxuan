@@ -163,10 +163,10 @@
 .app-message-content {
   padding-left: (40*@rem);
   line-height: (20*@rem);
-}
 
-.app-file-list-item {
-  margin-bottom: @space-xs;
+  .app-file-list-item {
+    margin-bottom: @space-xs;
+  }
 }
 
 .app-message-item-time-label {
@@ -265,6 +265,11 @@
 .app-chat-sidebar-peoples .app-member-list-item {
   &:hover > .title:before {
     content: '@';
+  }
+}
+.app-chat-sidebar-files {
+  .app-file-list-item {
+    padding-right: @space-xs;
   }
 }
 
