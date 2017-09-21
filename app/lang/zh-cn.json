@@ -131,6 +131,8 @@
     "chat.sendbox.toolbar.setFontSize": "设置字体大小",
     "chat.sendbox.toolbar.tips": "小技巧",
     "chat.sendbox.toolbar.previewDraft": "预览草稿",
+    "chat.sendbox.placeholder.sendMessage": "发送消息",
+    "chat.sendbox.placeholder.memberIsOffline": "发送消息（{0}现在不在线，你发送的消息将在对方下次上线时送达）",
     "chat.atHim": "@她/他",
     "chat.sendMessage": "发送消息",
 

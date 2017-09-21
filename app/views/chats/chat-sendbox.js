@@ -133,7 +133,14 @@ class ChatSendbox extends Component {
             ...other
         } = this.props;
 
-        const placeholder = '发送消息';
+        let placeholder = null;
+        if(chat.isOne2One) {
+            const theOtherOne = chat.getTheOtherOne(App);
+            if(theOtherOne && theOtherOne.isOffline) {
+                placeholder = Lang.format('chat.sendbox.placeholder.memberIsOffline', theOtherOne.displayName);
+            }
+        }
+        placeholder = placeholder || Lang.string('chat.sendbox.placeholder.sendMessage');
 
         return <div {...other}
             className={HTML.classes('app-chat-sendbox', className)}
