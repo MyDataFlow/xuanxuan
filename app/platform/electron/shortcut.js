@@ -8,9 +8,13 @@ let shortcuts = {};
  * @return {void}
  */
 const unregisterGlobalShortcut = (name) => {
-    if(shortcuts[name]) {
-        remomte.globalShortcut.unregister(shortcuts[name]);
+    const accelerator = shortcuts[name];
+    if(accelerator) {
+        remote.globalShortcut.unregister(accelerator);
         delete shortcuts[name];
+        if(DEBUG) {
+            console.color(`GLOBAL HOTKEY REMOVE ${name}: ${accelerator}`, 'purpleOutline');
+        }
     }
 };
 
@@ -23,21 +27,26 @@ const unregisterGlobalShortcut = (name) => {
 const registerGlobalShortcut = (name, accelerator, callback) => {
     unregisterGlobalShortcut(name);
     shortcuts[name] = accelerator;
-    remomte.globalShortcut.register(accelerator, () => {
-        if(DEBUG) console.log("%cGLOBAL KEY ACTIVE " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #fff; border: 1px solid #673AB7; padding: 1px 5px; border-radius: 2px; background: #673AB7');
+    remote.globalShortcut.register(accelerator, () => {
+        if(DEBUG) {
+            console.color(`GLOBAL KEY ACTIVE ${name}: ${accelerator}`, 'redOutline');
+        }
         callback();
     });
-    if(DEBUG) console.log("%cGLOBAL KEY BIND " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #673AB7; border: 1px solid #673AB7; padding: 1px 5px; border-radius: 2px');
+    if(DEBUG) {
+        console.color(`GLOBAL HOTKEY BIND ${name}: ${accelerator}`, 'purpleOutline');
+    }
 };
 
 /**
  * Check a shortcu whether is registered
  */
 const isGlobalShortcutRegistered = (accelerator) => {
-    return remomte.globalShortcut.isRegistered(accelerator);
+    return remote.globalShortcut.isRegistered(accelerator);
 };
 
 export default {
+    unregisterAll: remote.globalShortcut.unregisterAll,
     unregisterGlobalShortcut,
     registerGlobalShortcut,
     isGlobalShortcutRegistered

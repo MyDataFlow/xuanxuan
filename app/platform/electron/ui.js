@@ -7,6 +7,7 @@ import remote from './remote';
 import env from './env';
 import uuid from 'uuid/v4';
 import Path from 'path';
+import shortcut from './shortcut';
 
 let _appRoot = null;
 remote.call('entryPath').then(path => {
@@ -69,7 +70,10 @@ const quit = (delay = 1000) => {
             return;
         }
     }
+
     hideWindow();
+    shortcut.unregisterAll();
+
     if(delay) {
         setTimeout(() => {
             remote.call('quit');
