@@ -128,7 +128,7 @@ class Color {
         this.b = 0;
         this.A = a;
 
-        const paramType = typeof a;
+        const paramType = typeof r;
         if(paramType === 'string') {
             const hex = r.toLowerCase();
             if(hex === 'transparent') {
@@ -207,6 +207,11 @@ class Color {
         if(isDefined(rgb.a)) this.A = rgb.a;
     }
 
+    setRgb(rgb) {
+        this.rbg = rbg;
+        return this;
+    }
+
     get hsl() {
         let r = this.r / 255,
             g = this.g / 255,
@@ -248,13 +253,38 @@ class Color {
         this.rgb = hslToRgb(hsl);
     }
 
-    get hue() {
+    setHsl(hsl) {
+        this.hsl = Object.assign(this.hsl, hsl);
+        return this;
+    }
+
+    get H() {
         return this.hsl.h;
     }
 
-    set hue(hue) {
+    set H(hue) {
         let hsl = this.hsl;
         hsl.h = clampNumber(hue, 360);
+        this.hsl = hsl;
+    }
+
+    get S() {
+        return this.hsl.s;
+    }
+
+    set S(s) {
+        let hsl = this.hsl;
+        hsl.s = clampNumber(s, 1);
+        this.hsl = hsl;
+    }
+
+    get L() {
+        return this.hsl.l;
+    }
+
+    set L(l) {
+        let hsl = this.hsl;
+        hsl.l = clampNumber(l, 1);
         this.hsl = hsl;
     }
 
@@ -279,7 +309,7 @@ class Color {
             if(this.a < 1) {
                 return 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.a + ')';
             } else {
-                return this.hex();
+                return this.hex;
             }
         } else {
             return 'transparent';
@@ -323,6 +353,16 @@ class Color {
         return this;
     }
 
+    lightness(amount) {
+        let hsl = this.hsl;
+
+        hsl.l += amount / 100;
+        hsl.l = clamp(hsl.l);
+
+        this.hsl = hsl;
+        return this;
+    }
+
     contrast(dark, light, threshold = 0.43) {
         if(isUndefined(light)) {
             light = new Color(255, 255, 255, 1);
@@ -347,15 +387,26 @@ class Color {
             threshold = number(threshold);
         }
 
-        if(this.luma < threshold) {
+        if(this.isDark(threshold)) {
             return light;
         } else {
             return dark;
         }
     }
 
+    isDark(threshold = 0.43) {
+        return this.luma < threshold;
+    }
+
     clone() {
         return new Color(this.r, this.g, this.b, this.a);
+    }
+
+    static create(r, g, b, a) {
+        if(r instanceof Color) {
+            return r;
+        }
+        return new Color(r, g, b, a);
     }
 }
 
