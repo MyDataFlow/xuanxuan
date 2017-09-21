@@ -16,6 +16,7 @@ import ChatTipPopover from '../../views/chats/chat-tip-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
 import Platform from 'Platform';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
+import Emojione from '../../components/emojione';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -173,7 +174,7 @@ const createSendboxToolbarItems = (chat, config) => {
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
         click: e => {
             EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, emoji => {
-                sendContentToChat(emoji.shortname + ' ');
+                sendContentToChat(Emojione.convert(emoji.unicode) + ' ');
             });
         }
     }, {

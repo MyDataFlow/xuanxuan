@@ -47,15 +47,16 @@ const findWithRegex = (regex, contentBlock, callback) => {
 };
 const draftDecorator = new CompositeDecorator([{
     strategy: (contentBlock, callback, contentState) => {
-        findWithRegex(/:[a-zA-Z0-9_]+:/g, contentBlock, callback);
+        findWithRegex(Emojione.regUnicode, contentBlock, callback);
     },
     component: (props) => {
-        let shortname = props.decoratedText.trim();
-        let emoji = Emojione.emojioneList[shortname];
+        const unicode = props.decoratedText.trim();
+        const map = Emojione.mapUnicodeCharactersToShort();
+        const emoji = Emojione.emojioneList[map[unicode]];
         if(emoji) {
             let emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.' + Emojione.imageType + Emojione.cacheBustParam;
             let backgroundImage = 'url(' + emojionePngPath + ') no-repeat left top';
-            return <span title={shortname} data-offset-key={props.offsetKey} style={{width: 16, height: 16, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', background: backgroundImage, backgroundSize: 'contain', textAlign: 'left', verticalAlign: 'bottom'}}><span style={{color: 'transparent'}}>{props.children}</span> </span>;
+            return <span title={unicode} data-offset-key={props.offsetKey} style={{width: 16, height: 16, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', background: backgroundImage, backgroundSize: 'contain', textAlign: 'right', verticalAlign: 'bottom', position: 'relative', top: -2, fontSize: '16px', color: 'transparent'}}>{props.children}</span>;
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
     }
