@@ -3,9 +3,15 @@ import serverHandlers from './server-handlers';
 import profile from '../profile';
 import API from '../../network/api';
 import notice from '../notice';
+import Events from '../events';
 
 const socket = new Socket();
 socket.setHandler(serverHandlers);
+
+const EVENT = {
+    login: 'server.user.login',
+    loginout: 'server.user.loginout',
+}
 
 profile.onSwapUser(user => {
     socket.close();
@@ -37,19 +43,31 @@ const login = user => {
 
     user.beginLogin();
     return API.requestServerInfo(user).then(user => {
-        return socket.login(user);
+        return socket.login(user, {onClose: () => {
+            Events.emit(EVENT.loginout, user);
+        }});
     }).then(user => {
         user.endLogin(true);
         user.save();
+        Events.emit(EVENT.login, user);
         return Promise.resolve(user);
     }).catch(error => {
         user.endLogin(false);
+        Events.emit(EVENT.login, false);
         return Promise.reject(error);
     });
 };
 
 const changeUserStatus = status => {
     return socket.changeUserStatus(status);
+};
+
+const onUserLogin = listener => {
+    return Events.on(EVENT.login, listener);
+};
+
+const onUserLoginout = listener => {
+    return Events.on(EVENT.loginout, listener);
 };
 
 const logout = () => {
@@ -61,5 +79,7 @@ export default {
     login,
     logout,
     socket,
+    onUserLogin,
+    onUserLoginout,
     changeUserStatus
 };
