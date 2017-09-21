@@ -301,17 +301,22 @@ class ChatMessage extends Entity {
 
     get fileContent() {
         if(this.contentType === CONTENT_TYPES.file) {
-            if(!this._fileContent) {
-                this._fileContent = JSON.parse(this.content);
+            let fileContent = this._fileContent;
+            if(!fileContent) {
+                fileContent = JSON.parse(this.content);
+                this._fileContent = fileContent;
             }
-            if(this._fileContent) {
-                this._fileContent.user = this.user;
-                this._fileContent.sender = this.sender;
-                this._fileContent.attachFile = this.attachFile;
-                this._fileContent.date = this.sendTime;
-                this._fileContent.gid = this.gid;
+            if(fileContent) {
+                fileContent.user = this.user;
+                if(this._sender) {
+                    fileContent.sender = this.sender;
+                }
+                fileContent.senderId = this.senderId;
+                fileContent.attachFile = this.attachFile;
+                fileContent.date = this.sendTime;
+                fileContent.gid = this.gid;
             }
-            return this._fileContent;
+            return fileContent;
         }
         return null;
     }
