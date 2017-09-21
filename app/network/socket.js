@@ -152,7 +152,7 @@ class AppSocket extends Socket {
         }
     }
 
-    login(user) {
+    login(user, options) {
         return new Promise((resolve, reject) => {
             if(user) {
                 this.user = user;
@@ -182,12 +182,12 @@ class AppSocket extends Socket {
                     ]
                 });
             };
-            this.init(user.socketUrl, {
+            this.init(user.socketUrl, Object.assign({
                 userToken: user.token,
                 cipherIV: user.cipherIV,
                 connect: true,
                 onConnect
-            });
+            }, options));
         });
     }
 

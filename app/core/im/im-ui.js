@@ -17,6 +17,7 @@ import EmojiPopover from '../../views/common/emoji-popover';
 import Platform from 'Platform';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
 import Emojione from '../../components/emojione';
+import CoreServer from '../server';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -127,6 +128,18 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
     return items;
 };
 
+const captureAndCutScreenImage = (hiddenWindows = false) => {
+    if(Platform.screenshot) {
+        Platform.screenshot.captureAndCutScreenImage(0, hiddenWindows).then(image => {
+            if(image) {
+                sendContentToChat(image, 'image');
+            }
+        });
+    } else {
+        throw new Error(`The platform(${Platform.env}) not support capture screenshot.`);
+    }
+};
+
 const createCatureScreenContextMenuItems = (chat) => {
     if(!Platform.screenshot) {
         throw new Error(`The platform(${Platform.type}) not support take screenshots.`);
@@ -135,23 +148,13 @@ const createCatureScreenContextMenuItems = (chat) => {
         id: 'captureScreen',
         label: Lang.string('chat.sendbox.toolbar.captureScreen'),
         click: () => {
-            Platform.screenshot.captureAndCutScreenImage().then(image => {
-                if(image) {
-                    console.log('image', image);
-                    sendContentToChat(image, 'image');
-                }
-            });
+            captureAndCutScreenImage();
         }
     }, {
         id: 'hideAndCaptureScreen',
         label: Lang.string('imageCutter.hideCurrentWindowAndCaptureScreen'),
         click: () => {
-            Platform.screenshot.captureAndCutScreenImage(0, true).then(image => {
-                if(image) {
-                    console.log('image', image);
-                    sendContentToChat(image, 'image');
-                }
-            });
+            captureAndCutScreenImage(true);
         }
     }, {
         type: 'separator'
@@ -210,12 +213,7 @@ const createSendboxToolbarItems = (chat, config) => {
             icon: 'content-cut rotate-270 inline-block',
             label: Lang.string('chat.sendbox.toolbar.captureScreen') + (config ? ` (${config.captureScreenHotkey})` : ''),
             click: () => {
-                Platform.screenshot.captureAndCutScreenImage().then(image => {
-                    if(image) {
-                        console.log('image', image);
-                        sendContentToChat(image, 'image');
-                    }
-                });
+                captureAndCutScreenImage();
             },
             contextMenu: e => {
                 ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chat));
@@ -435,6 +433,33 @@ chats.onChatsInit(initChats => {
         activedChatId = lastActiveChat && lastActiveChat.gid;
     }
 });
+
+if(Platform.screenshot && Platform.shortcut) {
+    const name = 'captureScreenShortcut';
+    let lastRegisterHotkey = null;
+    const registerShortcut = () => {
+        const userConfig = profile.userConfig;
+        if(userConfig) {
+            const captureScreenHotkey = userConfig.captureScreenHotkey;
+            if(captureScreenHotkey !== lastRegisterHotkey) {
+                lastRegisterHotkey = captureScreenHotkey;
+                Platform.shortcut.registerGlobalShortcut(name, lastRegisterHotkey, () => {
+                    captureAndCutScreenImage();
+                });
+            }
+        }
+    };
+    profile.onUserConfigChange(change => {
+        if(change['shortcut.captureScreen']) {
+            registerShortcut();
+        }
+    });
+    CoreServer.onUserLogin(registerShortcut);
+    CoreServer.onUserLoginout(() => {
+        lastRegisterHotkey = null;
+        Platform.shortcut.unregisterGlobalShortcut(name);
+    });
+}
 
 export default {
     activeChat,
