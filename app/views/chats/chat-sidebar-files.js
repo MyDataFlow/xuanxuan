@@ -37,7 +37,7 @@ class ChatSidebarFiles extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-sidebar-files has-padding', className)}
         >
-            <FileList className="white rounded" files={this.state.files}/>
+            <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={this.state.files}/>
             {children}
         </div>;
     }

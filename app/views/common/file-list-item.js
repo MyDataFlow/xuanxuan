@@ -10,6 +10,8 @@ import API from '../../network/api';
 import MDIFileIcon from '../../utils/mdi-file-icon';
 import StringHelper from '../../utils/string-helper';
 import Platform from 'Platform';
+import Skin from '../../utils/skin';
+import UserAvatar from './user-avatar';
 
 class FileListItem extends Component {
 
@@ -56,6 +58,8 @@ class FileListItem extends Component {
             file,
             className,
             children,
+            smallIcon,
+            showSender,
             ...other
         } = this.props;
 
@@ -81,13 +85,19 @@ class FileListItem extends Component {
             }
         }
 
+        const sender = showSender && file.senderId && App.members.get(file.senderId);
+
         return <div {...other}
             className={HTML.classes('app-file-list-item item row flex-middle single', className)}
         >
-            <Avatar lightSkin={true} skin={ext} className="circle flex-none" icon={MDIFileIcon.getIcon(ext)}/>
+            {smallIcon ? null : <Avatar skin={{code: ext, pale: true}} className="circle flex-none" icon={MDIFileIcon.getIcon(ext)}/>}
             <div className="content">
-                <div className="title">{fileName}</div>
-                <div>{fileStatus}<span className="muted small">{StringHelper.formatBytes(file.size)}</span></div>
+                <div className="title">{smallIcon ? <Icon style={Skin.text(ext, {dark: true})} name={MDIFileIcon.getIcon(ext)}/> : null}{fileName}</div>
+                <div className="sub-content">
+                    {fileStatus}
+                    {sender ? <span><UserAvatar size={16} user={sender}/> <small>{sender.displayName}</small></span> : null}
+                    <span className="muted small">{StringHelper.formatBytes(file.size)}</span>
+                </div>
             </div>
             {actions}
         </div>;

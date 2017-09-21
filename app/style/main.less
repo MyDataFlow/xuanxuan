@@ -104,6 +104,23 @@
   .title {
     font-size: (13*@rem);
     font-weight: bolder;
+    align-items: center;
+    display: flex;
+
+    > .icon {
+      margin-right: (4*@rem);
+      line-height: (20*@rem);
+      display: inline-flex;
+      width: (20*@rem);
+      text-align: center;
+    }
+  }
+
+  .sub-content {
+    > span + span {
+      margin-left: (10*@rem);
+      display: inline-block;
+    }
   }
 
   .app-file-list > & {
