@@ -19,10 +19,6 @@ export default validate(merge(baseConfig, {
         bundle: [
             'babel-polyfill',
             './app/index'
-        ],
-        "capture-screen": [
-            'babel-polyfill',
-            './app/views/windows/capture-screen'
         ]
     },
 
