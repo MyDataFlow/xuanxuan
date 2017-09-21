@@ -4,7 +4,7 @@ const EVENT = {
     data_change: 'data.change'
 };
 
-const DATA_CHANGE_DELAY = 50;
+const DATA_CHANGE_DELAY = 100;
 
 /**
  * Events emitter
