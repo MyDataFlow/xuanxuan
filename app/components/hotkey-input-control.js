@@ -54,10 +54,15 @@ class HotkeyInputControl extends Component {
         let {
             onChange,
             defaultValue,
+            inputProps,
             ...other
         } = this.props;
 
-        return <InputControl ref={e => this.inputControl = e} defaultValue={defaultValue} inputProps={{onKeyDown: this.handleKeyDownEvent}} {...other}/>;
+        return <InputControl {...other}
+            ref={e => this.inputControl = e}
+            defaultValue={defaultValue}
+            inputProps={Object.assign({onKeyDown: this.handleKeyDownEvent}, inputProps)}
+        />;
     }
 }
 
