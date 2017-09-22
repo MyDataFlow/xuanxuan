@@ -150,7 +150,7 @@ class ChatHistory extends Component {
                 <Avatar icon={this.state.loading ? 'loading spin' : 'information'}/>
                 <div className="title">{this.state.message}</div>
             </div>}
-            <div className="flex-auto scroll-y scroll-x fluid">
+            <div className="flex-auto user-selectable scroll-y scroll-x fluid">
                 <MessageList messages={this.state.messages}/>
             </div>
             {children}
