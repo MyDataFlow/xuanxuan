@@ -42,6 +42,7 @@ func StartXXD() error {
 	return nil
 }
 
+// 喧喧客户端第一次登录认证
 func VerifyLogin(body []byte) (bool, error) {
 	parseData := make(ParseData)
 	if err := json.Unmarshal(body, &parseData); err != nil {
@@ -68,6 +69,7 @@ func VerifyLogin(body []byte) (bool, error) {
 	return parseData.Result() == "success", nil
 }
 
+// 喧喧客户端上传文件时，与然之服务器进行数据交互
 func UploadFileInfo(serverName string, jsonData []byte) (string, error) {
 	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {
@@ -90,6 +92,7 @@ func UploadFileInfo(serverName string, jsonData []byte) (string, error) {
 		return "", err
 	}
 
+	// 然之服务器返回存储文件的id
 	return parseData.FileID(), nil
 }
 

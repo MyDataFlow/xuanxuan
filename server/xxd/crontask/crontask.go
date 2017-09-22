@@ -35,6 +35,7 @@ func CronTask() {
 		for util.Run {
 			select {
 			case <-logTicker.C:
+				// 定时处理log日志
 				util.CheckLog()
 
 			case <-userChangeTicker.C:

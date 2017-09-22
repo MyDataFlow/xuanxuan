@@ -1,8 +1,8 @@
 package hyperttp
 
 import (
-	"testing"
-	"xxd/api"
+    "testing"
+    "xxd/api"
 )
 
 // go test -v hyperttp*
@@ -13,16 +13,16 @@ import (
 // Content-Type:[application/x-www-form-urlencoded]
 // Accept-Encoding:[gzip]
 func TestClient(t *testing.T) {
-	addr := "http://192.168.1.221:80/ranzhi/xuanxuan.php"
-	//postData := []byte("123456789")
+    addr := "http://192.168.1.221:80/ranzhi/xuanxuan.php"
+    //postData := []byte("123456789")
 
-	postData := api.RepeatLogin()
-	body, err := RequestInfo(addr, postData)
-	if err != nil {
-		t.Error(err)
-	}
+    postData := api.RepeatLogin()
+    body, err := RequestInfo(addr, postData)
+    if err != nil {
+        t.Error(err)
+    }
 
-	t.Log("----------------")
-	//t.Error(string(body), postData)
-	t.Log(string(body), postData)
+    t.Log("----------------")
+    //t.Error(string(body), postData)
+    t.Log(string(body), postData)
 }

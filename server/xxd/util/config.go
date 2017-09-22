@@ -43,6 +43,7 @@ const configPath = "config/xxd.conf"
 var Config = ConfigIni{SiteType: "singleSite", RanzhiServer: make(map[string]RanzhiServer)}
 
 func init() {
+	// 初始化配置文件
 	data, err := goconfig.LoadConfigFile(configPath)
 	if err != nil {
 
@@ -65,6 +66,7 @@ func init() {
 		return
 	}
 
+	// 获取配置文件信息
 	getIP(data)
 	getChatPort(data)
 	getCommonPort(data)

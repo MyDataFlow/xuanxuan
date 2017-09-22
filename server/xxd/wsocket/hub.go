@@ -14,18 +14,14 @@ import "xxd/util"
 // hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
-	// Registered clients. map[ranzhiName][clientID]*Client
-	clients map[string]map[int64]*Client
+	clients map[string]map[int64]*Client // Registered clients. map[ranzhiName][clientID]*Client
 
 	// Inbound messages from the clients.
 	multicast chan SendMsg
 	broadcast chan SendMsg
 
-	// Register requests from the clients.
-	register chan *ClientRegister
-
-	// Unregister requests from clients.
-	unregister chan *Client
+	register   chan *ClientRegister // Register requests from the clients.
+	unregister chan *Client         // Unregister requests from clients.
 }
 
 func newHub() *Hub {

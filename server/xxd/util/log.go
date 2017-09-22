@@ -102,6 +102,7 @@ func Printf(format string, v ...interface{}) {
 	fmt.Printf(format, v...)
 }
 
+// 给定时任务调用的函数，管理日常记录的日志
 func CheckLog() {
 	fileName := fmt.Sprintf("%s_%s.log", Config.LogPath+GetProgramName(), GetYmd())
 	if IsNotExist(fileName) {

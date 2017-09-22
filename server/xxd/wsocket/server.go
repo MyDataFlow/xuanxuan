@@ -23,6 +23,7 @@ func InitWs() {
 	hub := newHub()
 	go hub.run()
 
+	// 初始化路由
 	http.HandleFunc(webSocket, func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
 	})
@@ -34,6 +35,7 @@ func InitWs() {
 	addr := util.Config.Ip + ":" + util.Config.ChatPort
 	util.LogInfo().Println("websocket start,listen addr:", addr, webSocket)
 
+	// 创建服务器
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		util.LogError().Println("websocket server listen err:", err)

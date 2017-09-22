@@ -54,6 +54,7 @@ type Stat interface {
 }
 
 func InitHttp() {
+	// 创建证书
 	crt, key, err := CreateSignedCertKey()
 	if err != nil {
 		util.LogError().Println("https server start error!")
@@ -65,6 +66,7 @@ func InitHttp() {
 		util.Exit("ranzhi server login error")
 	}
 
+	// 设置路由
 	http.HandleFunc(download, fileDownload)
 	http.HandleFunc(upload, fileUpload)
 	http.HandleFunc(sInfo, serverInfo)
@@ -78,6 +80,7 @@ func InitHttp() {
 	util.LogInfo().Println("file server start,listen addr:", addr, upload)
 	util.LogInfo().Println("http server start,listen addr: https://", addr, sInfo)
 
+	// 启动服务器
 	if err := http.ListenAndServeTLS(addr, crt, key, nil); err != nil {
 		util.LogError().Println("http server listen err:", err)
 		util.Exit("http server listen err")
@@ -190,7 +193,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 
 	x2rJson := `{"userID":` + userID + `,"module":"chat","method":"uploadFile","params":["` + fileName + `","` + savePath + `",` + util.Int642String(fileSize) + `,` + nowTimeStr + `,"` + gid + `"]}`
 
-	//util.Println(x2rJson)
+	// 告诉然之客户端上传文件的信息
 	fileID, err := api.UploadFileInfo(serverName, []byte(x2rJson))
 	if err != nil {
 		util.LogError().Println("Upload file info error:", err)
@@ -216,6 +219,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, x2cJson)
 }
 
+// 客户端第一次登录
 func serverInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		fmt.Fprintln(w, "not supported request")
@@ -245,6 +249,7 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 返回给喧喧客户端登录的信息
 	info := retCInfo{
 		Version:        util.Version,
 		Token:          string(util.Token),

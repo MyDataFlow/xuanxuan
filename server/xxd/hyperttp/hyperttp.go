@@ -20,11 +20,13 @@ import (
 const https = "https:"
 const requestCount = 3
 
+// http 请求
 func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	if postData == nil || addr == "" {
 		return nil, util.Errorf("%s", "post data or addr is null")
 	}
 
+	// 根据配置文件的不同创建 http 或者 https 的客户端
 	var client *http.Client
 	if addr[:6] != https {
 		client = httpRequest()
@@ -35,6 +37,7 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 	var i int = 0
 	var resp *http.Response
 
+	// 请求然之失败时，再进行三次尝试。
 	for i = 0; i < requestCount; i++ {
 		req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
 		if err != nil {
@@ -72,6 +75,7 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	// 返回然之服务器的数据
 	return body, nil
 }
 

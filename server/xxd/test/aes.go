@@ -10,66 +10,66 @@
 package main
 
 import (
-	"bytes"
-	"crypto/aes"
-	"crypto/cipher"
-	"fmt"
+    "bytes"
+    "crypto/aes"
+    "crypto/cipher"
+    "fmt"
 )
 
 func aesEncrypt(origData, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-	blockSize := block.BlockSize()
-	origData = pkcs5Padding(origData, blockSize)
-	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
-	crypted := make([]byte, len(origData))
-	// 根据CryptBlocks方法的说明，如下方式初始化crypted也可以
-	// crypted := origData
-	blockMode.CryptBlocks(crypted, origData)
-	return crypted, nil
+    block, err := aes.NewCipher(key)
+    if err != nil {
+        return nil, err
+    }
+    blockSize := block.BlockSize()
+    origData = pkcs5Padding(origData, blockSize)
+    blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
+    crypted := make([]byte, len(origData))
+    // 根据CryptBlocks方法的说明，如下方式初始化crypted也可以
+    // crypted := origData
+    blockMode.CryptBlocks(crypted, origData)
+    return crypted, nil
 }
 
 func aesDecrypt(crypted, key []byte) ([]byte, error) {
 
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
+    block, err := aes.NewCipher(key)
+    if err != nil {
+        return nil, err
+    }
 
-	blockSize := block.BlockSize()
-	cryptedSize := len(crypted)
-	if cryptedSize == 0 || cryptedSize%blockSize != 0 {
-		return nil, fmt.Errorf("%s\n", "input not full blocks")
-	}
+    blockSize := block.BlockSize()
+    cryptedSize := len(crypted)
+    if cryptedSize == 0 || cryptedSize%blockSize != 0 {
+        return nil, fmt.Errorf("%s\n", "input not full blocks")
+    }
 
-	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
-	origData := make([]byte, cryptedSize)
-	// origData := crypted
-	blockMode.CryptBlocks(origData, crypted)
-	origData = pkcs5UnPadding(origData)
-	if origData == nil {
-		return nil, fmt.Errorf("%s\n", "pkcs5 UnPadding error")
-	}
+    blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
+    origData := make([]byte, cryptedSize)
+    // origData := crypted
+    blockMode.CryptBlocks(origData, crypted)
+    origData = pkcs5UnPadding(origData)
+    if origData == nil {
+        return nil, fmt.Errorf("%s\n", "pkcs5 UnPadding error")
+    }
 
-	return origData, nil
+    return origData, nil
 }
 
 func pkcs5Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(ciphertext, padtext...)
+    padding := blockSize - len(ciphertext)%blockSize
+    padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+    return append(ciphertext, padtext...)
 }
 
 func pkcs5UnPadding(origData []byte) []byte {
-	length := len(origData)
-	// 去掉最后一个字节 unpadding 次
-	unpadding := int(origData[length-1])
-	if unpadding > length {
-		fmt.Println("aes unpadding len > data length")
-		return nil
-	}
+    length := len(origData)
+    // 去掉最后一个字节 unpadding 次
+    unpadding := int(origData[length-1])
+    if unpadding > length {
+        fmt.Println("aes unpadding len > data length")
+        return nil
+    }
 
-	return origData[:(length - unpadding)]
+    return origData[:(length - unpadding)]
 }
