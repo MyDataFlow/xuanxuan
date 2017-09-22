@@ -18,6 +18,7 @@ import Platform from 'Platform';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
 import Emojione from '../../components/emojione';
 import CoreServer from '../server';
+import ChatChangeFontPopover from '../../views/chats/chat-change-font-popover';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -224,8 +225,8 @@ const createSendboxToolbarItems = (chat, config) => {
         id: 'setFontSize',
         icon: 'format-size',
         label: Lang.string('chat.sendbox.toolbar.setFontSize'),
-        click: () => {
-            console.warn('TODO: App.im.ui.createSendboxToolbarItems.setFontSize');
+        click: e => {
+            ChatChangeFontPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
         }
     });
     let user = profile.user;

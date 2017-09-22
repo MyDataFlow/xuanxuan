@@ -36,8 +36,8 @@ class MessageListItem extends Component {
             lastMessage,
             showDateDivider,
             hideHeader,
+            font,
             className,
-            style,
             children,
             ...other
         } = this.props;
@@ -49,12 +49,21 @@ class MessageListItem extends Component {
             hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId;
         }
 
+        const basicFontStyle = font ? {
+            fontSize: font.size + 'px',
+            lineHeight: font.lineHeight,
+        } : null;
+        const titleFontStyle = font ? {
+            fontSize: font.title + 'px',
+            lineHeight: font.titleLineHeight,
+        } : null;
+
         let headerView = null;
         if(!hideHeader) {
             const sender = message.getSender(App.members);
             headerView = <div className="app-message-item-header">
                 <UserAvatar className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)}/>
-                <header>
+                <header style={titleFontStyle}>
                     <a className="title rounded text-primary" onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
                     <small className="time">{DateHelper.formatDate(message.date, 'hh:mm')}</small>
                 </header>
@@ -76,7 +85,7 @@ class MessageListItem extends Component {
         } else if(message.isImageContent) {
             contentView = <MessageContentImage message={message}/>;
         } else {
-            contentView = <MessageContentText message={message}/>;
+            contentView = <MessageContentText style={basicFontStyle} message={message}/>;
         }
 
         return <div {...other}

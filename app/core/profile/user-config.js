@@ -206,6 +206,14 @@ class UserConfig {
     set captureScreenHotkey(shortcut) {
         return this.set('shortcut.captureScreen', shortcut);
     }
+
+    get chatFontSize() {
+        return this.get('ui.chat.fontSize');
+    }
+
+    set chatFontSize(fontSize) {
+        return this.set('ui.chat.fontSize', fontSize);
+    }
 }
 
 export default UserConfig;
