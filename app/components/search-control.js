@@ -22,7 +22,7 @@ class SearchControl extends Component {
         if(this.props.onSearchChange) {
             this.delaySearchChangeTask = new DelayAction((searchValue) => {
                 this.props.onSearchChange(searchValue);
-            }, this.props.changeDelay || 500);
+            }, this.props.changeDelay || 100);
         }
     }
 
