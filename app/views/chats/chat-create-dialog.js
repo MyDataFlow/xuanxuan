@@ -17,6 +17,7 @@ const show = (chat, callback) => {
             top: 10
         },
         className: 'dock primary-pale',
+        animation: 'enter-from-bottom',
         actions: false,
         content: <ChatCreateView onRequestClose={() => {
             Modal.hide(modalId);
