@@ -84,6 +84,34 @@
   }
 }
 
+.app-chat-star-icon {
+  transition: color @animation-speed-fast @animation-type;
+
+  > .icon:after {
+    content: @mdi-star;
+    .mdi;
+    .icon-2x;
+    color: @color-accent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: all @animation-speed-normal @animation-type;
+    transform: scale(3);
+    opacity: 0;
+  }
+
+  &.stared {
+    color: transparent;
+
+    > .icon:after {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
 .app-chat-drafteditor {
   bottom: (40*@rem);
 }
