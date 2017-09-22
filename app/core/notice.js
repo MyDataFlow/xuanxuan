@@ -43,7 +43,7 @@ const update = info => {
 
 const isMatchWindowCondition = condition => {
     if(condition === 'onWindowHide') {
-        return PlatformUI.isWindowOpen;
+        return !PlatformUI.isWindowOpen;
     }
     if(condition === 'onWindowBlur') {
         return !PlatformUI.isWindowsFocus;

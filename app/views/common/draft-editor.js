@@ -150,7 +150,7 @@ class DraftEditor extends Component {
                 if(block.entityRanges && block.entityRanges.length) {
                     contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
                 }
-                if(thisTextContent.length) {
+                if(thisTextContent.length && thisTextContent.trim().length) {
                     contents.push({type: 'text', content: thisTextContent});
                     thisTextContent = '';
                 }
@@ -161,7 +161,7 @@ class DraftEditor extends Component {
                 thisTextContent += block.text;
             }
         });
-        if(thisTextContent.length) {
+        if(thisTextContent.length && thisTextContent.trim().length) {
             contents.push({type: 'text', content: thisTextContent});
             thisTextContent = '';
         }

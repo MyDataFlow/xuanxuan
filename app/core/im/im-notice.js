@@ -15,7 +15,7 @@ const getPlainTextOfChatMessage = (chatMessage, limitLength = 255, ignoreBreak =
     if(chatMessage.isImageContent) {
         return `[${Lang.string('file.image.title')}]`;
     }
-    let plainText = HTML.html2text(chatMessage.renderedTextContent());
+    let plainText = chatMessage.renderedTextContent().replace(/<(?:.|\n)*?>/gm, '');
     if(ignoreBreak) {
         plainText = plainText.trim().replace(/[\r\n]/g, ' ').replace(/\n[\s| | ]*\r/g,'\n');
     }
