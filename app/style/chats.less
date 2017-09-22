@@ -236,6 +236,42 @@
     background-color: @color-accent-pale;
     border-radius: (2*@rem);
   }
+
+  img.broken {
+    position: relative;
+    width: (70*@rem);
+    height: (70*@rem);
+    margin-bottom: 0;
+
+    &:before {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding-bottom: (20*@rem);
+      content: @mdi-image-broken-variant;
+      .center-content;
+      .mdi;
+      .icon-3x;
+      color: @color-yellow;
+      background-color: @color-yellow-pale;
+      display: inline-flex;
+    }
+
+    &:after {
+      content: attr(data-fail);
+      position: absolute;
+      z-index: 1;
+      font-size: (12*@rem);
+      color: @color-yellow;
+      bottom: (10*@rem);
+      left: 0;
+      right: 0;
+      text-align: center;
+    }
+  }
 }
 
 .app-chat-sidebar {

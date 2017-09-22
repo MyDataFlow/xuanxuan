@@ -29,11 +29,11 @@ class MessageContentImageView extends Component {
             </div>;
         }
         if(image.type === 'base64') {
-            return <img onDoubleClick={ImageViewer.show.bind(this, image.content, null, null)} src={image.content} />;
+            return <img data-fail={Lang.string('file.downloadFailed')} onError={e => e.target.classList.add('broken')} onDoubleClick={ImageViewer.show.bind(this, image.content, null, null)} src={image.content} />;
         }
         if(image.id && image.send === true) {
             const imageUrl = API.createFileDownloadUrl(App.profile.user, image);
-            return <img onDoubleClick={ImageViewer.show.bind(this, imageUrl, null, null)} src={imageUrl}/>;
+            return <img title={imageUrl} data-fail={Lang.string('file.downloadFailed')} onError={e => e.target.classList.add('broken')} onDoubleClick={ImageViewer.show.bind(this, imageUrl, null, null)} src={imageUrl}/>;
         }
         if(typeof image.send === 'number') {
             const percent = Math.floor(image.send);
@@ -42,7 +42,7 @@ class MessageContentImageView extends Component {
                 <div className="label info circle">{percent}%</div>
             </Avatar>;
         }
-        return <Avatar className="avatar-xl warning-pale text-warning app-message-image-placeholder" icon="image-broken-variant">
+        return <Avatar className="avatar-xl warning-pale text-warning app-message-image-placeholder" icon="image-broken">
             <div className="space-xs"></div>
             <div className="label clean circle">{Lang.string('file.uploadFailed')}</div>
         </Avatar>;

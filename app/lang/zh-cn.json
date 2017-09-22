@@ -24,6 +24,7 @@
 
     "file.download": "下载",
     "file.uploadFailed": "上传失败",
+    "file.downloadFailed": "下载失败",
     "file.fileSavedAt.format": "文件已保存至 {0}",
     "file.open": "打开",
     "file.openFolder": "打开文件夹",
