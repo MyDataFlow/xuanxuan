@@ -13,7 +13,7 @@ const STATUS = new Status({
 }, 0);
 
 const TYPES = {
-    boardcast: 'boardcast',
+    broadcast: 'broadcast',
     normal: 'normal',
 };
 
@@ -231,7 +231,7 @@ class ChatMessage extends Entity {
     }
 
     get isBroadcast() {
-        return this.type === TYPES.boardcast;
+        return this.type === TYPES.broadcast;
     }
 
     get content() {

@@ -10,6 +10,7 @@ import MessageContentImage from './message-content-image';
 import MessageContentText from './message-content-text';
 import MemberProfileDialog from '../common/member-profile-dialog';
 import ContextMenu from '../../components/context-menu';
+import MessageBroadcast from './message-broadcast';
 
 const showTimeLabelInterval = 1000*60*5;
 
@@ -49,6 +50,10 @@ class MessageListItem extends Component {
             hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId;
         }
 
+        let headerView = null;
+        let timeLabelView = null;
+        let contentView = null;
+
         const basicFontStyle = font ? {
             fontSize: font.size + 'px',
             lineHeight: font.lineHeight,
@@ -58,7 +63,6 @@ class MessageListItem extends Component {
             lineHeight: font.titleLineHeight,
         } : null;
 
-        let headerView = null;
         if(!hideHeader) {
             const sender = message.getSender(App.members);
             headerView = <div className="app-message-item-header">
@@ -70,22 +74,22 @@ class MessageListItem extends Component {
             </div>;
         }
 
-        let timeLabelView = null;
+        if(message.isBroadcast) {
+            contentView = <MessageBroadcast style={basicFontStyle} message={message}/>
+        } else if(message.isFileContent) {
+            contentView = <MessageContentFile message={message}/>;
+        } else if(message.isImageContent) {
+            contentView = <MessageContentImage message={message}/>;
+        } else {
+            contentView = <MessageContentText style={basicFontStyle} message={message}/>;
+        }
+
         if(!headerView) {
             let hideTimeLabel = false;
             if(hideHeader && !showDateDivider && lastMessage && message.date && (message.date - lastMessage.date) <= showTimeLabelInterval) {
                 hideTimeLabel = true;
             }
             timeLabelView = <span className={HTML.classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
-        }
-
-        let contentView = null;
-        if(message.isFileContent) {
-            contentView = <MessageContentFile message={message}/>;
-        } else if(message.isImageContent) {
-            contentView = <MessageContentImage message={message}/>;
-        } else {
-            contentView = <MessageContentText style={basicFontStyle} message={message}/>;
         }
 
         return <div {...other}

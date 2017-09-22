@@ -14,6 +14,7 @@ const chatChangename = (msg, socket) => {
         if(chat) {
             chat.name = msg.data.name;
             chats.update(chat);
+            return chat;
         }
     }
 };
@@ -34,25 +35,7 @@ const chatAddmember = (msg, socket) => {
     }
     const chat = chats.get(msg.data.gid);
     if(chat) {
-        let serverChatMembers = Chat.create(msg.data).members;
-        let newMembers = [];
-        serverChatMembers.forEach(x => {
-            if(!chat.members.has(x)) {
-                newMembers.push(x);
-            }
-        });
-
-        if(newMembers.length) {
-            const membersNames = newMembers.map(x => members.get(x)).join(',');
-            const broadcast = ChatMessage.create({
-                type: 'broadcast',
-                content: Lang.format('chat.someOneJoinChat.format', membersNames),
-                cgid: chat.gid,
-                sendTime: new Date(),
-                sender: profile.user
-            });
-            chats.updateChatMessages(broadcast);
-        }
+        const serverChatMembers = Chat.create(msg.data).members;
 
         chat.resetMembers(Array.from(serverChatMembers).map(x => members.get(x)));
         chats.update(chat);

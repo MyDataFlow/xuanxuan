@@ -2,6 +2,7 @@ import Server from '../server';
 import imServerHandlers from './im-server-handlers';
 import Events from '../events';
 import profile from '../profile';
+import members from '../members';
 import chats from './im-chats';
 import PKG from '../../package.json';
 import Config from 'Config';
@@ -68,6 +69,12 @@ const createChat = chat => {
             0,
             false
         ]
+    }).then(chat => {
+        if(chat) {
+           const groupUrl = `#/chats/groups/${chat.gid}`;
+           sendBoardChatMessage(Lang.format('chat.createNewChat.format', `@${profile.user.account}`, `[**[${chat.getDisplayName({members, user: profile.user})}](${groupUrl})**]`), chat);
+        }
+        return Promise.resolve(chat);
     });
 };
 
