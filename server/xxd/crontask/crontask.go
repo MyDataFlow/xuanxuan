@@ -10,36 +10,36 @@
 package crontask
 
 import (
-	"time"
-	"xxd/util"
+    "time"
+    "xxd/util"
 )
 
 const (
-	// check and create log 30 second
-	checkLog = 30 * time.Second
+    // check and create log 30 second
+    checkLog = 30 * time.Second
 
-	// check user change 10 second
-	userChange = 10 * time.Second
+    // check user change 10 second
+    userChange = 10 * time.Second
 )
 
 func CronTask() {
-	go func() {
-		logTicker := time.NewTicker(checkLog)
-		userChangeTicker := time.NewTicker(userChange)
+    go func() {
+        logTicker := time.NewTicker(checkLog)
+        userChangeTicker := time.NewTicker(userChange)
 
-		defer func() {
-			logTicker.Stop()
-			userChangeTicker.Stop()
-		}()
+        defer func() {
+            logTicker.Stop()
+            userChangeTicker.Stop()
+        }()
 
-		for util.Run {
-			select {
-			case <-logTicker.C:
-				util.CheckLog()
+        for util.Run {
+            select {
+            case <-logTicker.C:
+                util.CheckLog()
 
-			case <-userChangeTicker.C:
+            case <-userChangeTicker.C:
 
-			}
-		}
-	}()
+            }
+        }
+    }()
 }

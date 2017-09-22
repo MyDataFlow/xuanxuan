@@ -10,26 +10,26 @@
 package main
 
 import (
-	"xxd/crontask"
-	"xxd/hyperttp/server"
-	"xxd/util"
-	"xxd/wsocket"
+    "xxd/crontask"
+    "xxd/hyperttp/server"
+    "xxd/util"
+    "xxd/wsocket"
 )
 
 func main() {
 
-	crontask.CronTask()
+    crontask.CronTask()
 
-	go server.InitHttp()
-	go wsocket.InitWs()
+    go server.InitHttp()
+    go wsocket.InitWs()
 
-	exitServer()
+    exitServer()
 }
 
 func exitServer() {
 
-	for util.Run && util.GetNumGoroutine() > 2 {
-		//util.Println("sleep ...")
-		util.Sleep(3)
-	}
+    for util.Run && util.GetNumGoroutine() > 2 {
+        //util.Println("sleep ...")
+        util.Sleep(3)
+    }
 }

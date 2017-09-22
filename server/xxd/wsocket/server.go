@@ -10,33 +10,33 @@
 package wsocket
 
 import (
-	"net/http"
-	"xxd/util"
+    "net/http"
+    "xxd/util"
 )
 
 const (
-	webSocket = "/ws"
-	ownSocket = "/ownData"
+    webSocket = "/ws"
+    ownSocket = "/ownData"
 )
 
 func InitWs() {
-	hub := newHub()
-	go hub.run()
+    hub := newHub()
+    go hub.run()
 
-	http.HandleFunc(webSocket, func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
-	})
+    http.HandleFunc(webSocket, func(w http.ResponseWriter, r *http.Request) {
+        serveWs(hub, w, r)
+    })
 
-	http.HandleFunc(ownSocket, func(w http.ResponseWriter, r *http.Request) {
-		ownWs(hub, w, r)
-	})
+    http.HandleFunc(ownSocket, func(w http.ResponseWriter, r *http.Request) {
+        ownWs(hub, w, r)
+    })
 
-	addr := util.Config.Ip + ":" + util.Config.ChatPort
-	util.LogInfo().Println("websocket start,listen addr:", addr, webSocket)
+    addr := util.Config.Ip + ":" + util.Config.ChatPort
+    util.LogInfo().Println("websocket start,listen addr:", addr, webSocket)
 
-	err := http.ListenAndServe(addr, nil)
-	if err != nil {
-		util.LogError().Println("websocket server listen err:", err)
-		util.Exit("websocket server listen err")
-	}
+    err := http.ListenAndServe(addr, nil)
+    if err != nil {
+        util.LogError().Println("websocket server listen err:", err)
+        util.Exit("websocket server listen err")
+    }
 }
