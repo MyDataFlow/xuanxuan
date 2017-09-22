@@ -377,30 +377,7 @@ const createChatMemberContextMenuItems = member => {
     return menu;
 };
 
-const createTextChatMessage = (message, chat) => {
-    return new ChatMessage({
-        content: message,
-        user: profile.userId,
-        cgid: chat.gid,
-    });
-};
 
-const sendTextMessage = (message, chat) => {
-    return Server.sendChatMessage(createTextChatMessage(message, chat), chat);
-};
-
-const createEmojiChatMessage = (emojicon, chat) => {
-    return new ChatMessage({
-        contentType: 'image',
-        content: JSON.stringify({type: 'emoji', content: emojicon}),
-        user: profile.userId,
-        cgid: chat.gid,
-    });
-};
-
-const sendEmojiMessage = (emojicon, chat) => {
-    return Server.sendChatMessage(createEmojiChatMessage(emojicon, chat), chat);
-};
 
 const linkMembersInText = (text, format = '<a class="link-app {className}" data-url="@Member/{id}">@{displayName}</a>') => {
     if(text.indexOf('@') > -1) {
@@ -471,8 +448,6 @@ export default {
     activeAndMapCacheChats,
     createChatToolbarItems,
     createSendboxToolbarItems,
-    sendTextMessage,
-    sendEmojiMessage,
     linkMembersInText,
     createChatContextMenuItems,
     chatExitConfirm,
@@ -482,8 +457,6 @@ export default {
     sendContentToChat,
     onSendContentToChat,
     createChatMemberContextMenuItems,
-    createTextChatMessage,
-    createEmojiChatMessage,
 
     get currentActiveChatId() {
         return activedChatId;

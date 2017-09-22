@@ -20,9 +20,7 @@ class MessageContentTextView extends Component {
                 'is-content-block': message.isBlockContent
             })}
             dangerouslySetInnerHTML={{__html: content}}
-        >
-        {children}
-        </div>;
+        ></div>;
     }
 }
 

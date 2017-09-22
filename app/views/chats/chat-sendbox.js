@@ -52,9 +52,9 @@ class ChatSendbox extends Component {
                 content.content = Emojione.toShort(content.content);
                 let trimContent = App.profile.userConfig.sendHDEmoticon ? content.content.trim() : false;
                 if(trimContent && Emojione.emojioneList[trimContent]) {
-                    App.im.ui.sendEmojiMessage(trimContent, this.props.chat);
+                    App.im.server.sendEmojiMessage(trimContent, this.props.chat);
                 } else {
-                    App.im.ui.sendTextMessage(content.content, this.props.chat);
+                    App.im.server.sendTextMessage(content.content, this.props.chat);
                 }
             } else if(content.type === 'image') {
                 App.im.server.sendImageMessage(content.image, this.props.chat);
@@ -111,12 +111,12 @@ class ChatSendbox extends Component {
                 content.content = Emojione.toShort(content.content);
                 let trimContent = App.profile.userConfig.sendHDEmoticon ? content.content.trim() : false;
                 if(trimContent && Emojione.emojioneList[trimContent]) {
-                    messages.push(App.im.ui.createEmojiChatMessage(trimContent, chat));
+                    messages.push(App.im.server.createEmojiChatMessage(trimContent, chat));
                 } else {
-                    messages.push(App.im.ui.createTextChatMessage(content.content, chat));
+                    messages.push(App.im.server.createTextChatMessage(content.content, chat));
                 }
             } else if(content.type === 'image') {
-                messages.push(App.im.ui.createTextChatMessage(`![preview-image](${content.image.url || content.image.path})`, chat));
+                messages.push(App.im.server.createTextChatMessage(`![preview-image](${content.image.url || content.image.path})`, chat));
             }
         });
         MessagesPreivewDialog.show(messages, {onHidden: () => {

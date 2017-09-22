@@ -10,6 +10,7 @@ import API from '../../network/api';
 import Messager from '../../components/messager';
 import StringHelper from '../../utils/string-helper';
 import ChatMessage from '../../core/models/chat-message';
+import Lang from '../../lang';
 
 const MAX_BASE64_IMAGE_SIZE = 1024*10;
 
@@ -156,16 +157,65 @@ const sendSocketMessageForChat = (socketMessage, chat) => {
     }
 };
 
+const createBoardChatMessage = (message, chat) => {
+    return new ChatMessage({
+        content: message,
+        user: profile.userId,
+        cgid: chat.gid,
+        type: ChatMessage.TYPES.broadcast
+    });
+};
+
+const sendBoardChatMessage = (message, chat) => {
+    return sendChatMessage(createBoardChatMessage(message, chat), chat);
+};
+
+const createTextChatMessage = (message, chat) => {
+    return new ChatMessage({
+        content: message,
+        user: profile.userId,
+        cgid: chat.gid,
+    });
+};
+
+const sendTextMessage = (message, chat) => {
+    return sendChatMessage(createTextChatMessage(message, chat), chat);
+};
+
+const createEmojiChatMessage = (emojicon, chat) => {
+    return new ChatMessage({
+        contentType: 'image',
+        content: JSON.stringify({type: 'emoji', content: emojicon}),
+        user: profile.userId,
+        cgid: chat.gid,
+    });
+};
+
+const sendEmojiMessage = (emojicon, chat) => {
+    return sendChatMessage(createEmojiChatMessage(emojicon, chat), chat);
+};
+
 const renameChat = (chat, newName) => {
     if(chat && chat.canRename(profile.user)) {
         if(chat.id) {
-            sendSocketMessageForChat({
-                'method': 'changeName',
+            return Server.socket.sendAndListen({
+                'method': 'changename',
                 'params': [chat.gid, newName]
-            }, chat);
+            }).then(chat => {
+                if(chat) {
+                    sendBoardChatMessage(Lang.format('chat.rename.someRenameGroup.format', `@${profile.user.account}`, `**${newName}**`), chat);
+                }
+                return Promise.resolve(chat);
+            });
         } else {
             chat.name = newName;
+            if(DEBUG) {
+                console.error(`Cannot rename a local chat.`, chat);
+            }
+            return Promise.reject('Cannot rename a local chat.');
         }
+    } else {
+        return Promise.reject('You have no permission to rename the chat.');
     }
 };
 
@@ -347,6 +397,12 @@ export default {
     fetchPublicChats,
     sendImageMessage,
     sendFileMessage,
+    createBoardChatMessage,
+    sendBoardChatMessage,
+    createTextChatMessage,
+    createEmojiChatMessage,
+    sendTextMessage,
+    sendEmojiMessage,
 
     get chatJoinTask() {
         return chatJoinTask;
