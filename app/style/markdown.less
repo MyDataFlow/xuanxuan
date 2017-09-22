@@ -13,14 +13,60 @@
   }
 
   pre {
-    font-size: .9em;
+    font-size: 0.9230769231em;
     background: rgba(0,0,0,.05);
     margin: 4px 0 8px;
     white-space: pre-wrap;
+    position: relative;
 
     + pre {margin-top: -3px;}
 
-    code {background: none;}
+    code {
+      background: none;
+      &[data-lang] {
+        &:before {
+          content: attr(data-lang);
+          position: absolute;
+          right: 0;
+          top: 0;
+          line-height: (18*@rem);
+          overflow: hidden;
+          background-color: rgba(0,0,0,.2);
+          color: @color-white;
+          padding: 0 (4*@rem);
+          opacity: 0;
+          transition: opacity @animation-speed-slow @animation-type;
+          font-size: (12*@rem);
+        }
+      }
+    }
+
+    &:hover {
+      code[data-lang]:before {opacity: 1;}
+    }
+
+    &[data-name] {
+      padding-top: (25*@rem);
+      &::before {
+        content: attr(data-name);
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        line-height: (20*@rem);
+        background-color: rgba(0,0,0,.075);
+        font-size: (12*@rem);
+        padding: 0 (6*@rem);
+        color: @color-gray;
+        font-weight: bold;
+        border-bottom: @border-color @border-width dotted;
+      }
+
+      code[data-lang]:before {
+        opacity: 1;
+        line-height: (20*@rem);
+      }
+    }
   }
 
   h1, h2, h3 {
