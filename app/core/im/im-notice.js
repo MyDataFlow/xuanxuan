@@ -10,10 +10,10 @@ import HTML from '../../utils/html-helper';
 
 const getPlainTextOfChatMessage = (chatMessage, limitLength = 255, ignoreBreak = true) => {
     if(chatMessage.isFileContent) {
-        return `[${Lang.format('file.title.format', chatMessage.fileContent.name)}`;
+        return `[${Lang.format('file.title.format', chatMessage.fileContent.name)}]`;
     }
     if(chatMessage.isImageContent) {
-        return `[${Lang.string('file.image.title')}`;
+        return `[${Lang.string('file.image.title')}]`;
     }
     let plainText = HTML.html2text(chatMessage.renderedTextContent());
     if(ignoreBreak) {
