@@ -161,7 +161,7 @@ class ChatSendbox extends Component {
                     <div className="hint--top has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.previewDraft')} onClick={this.handlePreviewBtnClick}><button disabled={this.state.sendButtonDisabled} className="btn iconbutton rounded" type="button"><Icon name="file-document-box"/></button></div>
                 </div>
                 <div className="toolbar flex flex-none flex-middle">
-                    <div className="hint--top-left has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.send')} onClick={this.handleSendButtonClick}>
+                    <div className="hint--top-left has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.send') + ' (Enter)'} onClick={this.handleSendButtonClick}>
                         <button className={HTML.classes('btn iconbutton rounded', {
                             "disabled": this.state.sendButtonDisabled,
                             "text-primary": !this.state.sendButtonDisabled
