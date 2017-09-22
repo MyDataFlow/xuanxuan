@@ -78,7 +78,7 @@ const activeAndMapCacheChats = (chat, callback) => {
 const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
     const items = [{
         id: 'star',
-        icon: chat.star ? 'star text-red' : 'star-outline',
+        icon: chat.star ? 'star text-accent' : 'star-outline',
         label: Lang.string(chat.star ? 'chat.toolbor.unstar' : 'chat.toolbor.star'),
         click: () => {
             Server.toggleChatStar(chat);
