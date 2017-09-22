@@ -74,7 +74,18 @@ const draftDecorator = new CompositeDecorator([{
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
     }
-}]);
+}, /*{
+    strategy: (contentBlock, callback, contentState) => {
+        findWithRegex(Emojione.regAscii, contentBlock, callback);
+    },
+    component: (props) => {
+        let ascii = props.decoratedText;
+        if(ascii) {
+            return <span data-offset-key={props.offsetKey} className="code">{props.children}</span>;
+        }
+        return <span data-offset-key={props.offsetKey}>{props.children}</span>;
+    }
+}*/]);
 
 class DraftEditor extends Component {
 
