@@ -24,7 +24,7 @@ const getUser = (identify) => {
         Object.keys(users).forEach(identify => {
             let time = users[identify];
             if(time > maxTime) {
-                time = maxTime;
+                maxTime = time;
                 maxTimeIndentify = identify;
             }
         });
