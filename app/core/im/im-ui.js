@@ -379,7 +379,7 @@ const createChatMemberContextMenuItems = member => {
 
 
 
-const linkMembersInText = (text, format = '<a class="link-app {className}" data-url="@Member/{id}">@{displayName}</a>') => {
+const linkMembersInText = (text, format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>') => {
     if(text.indexOf('@') > -1) {
         const userAccount = profile.userAccount;
         members.forEach(m => {
