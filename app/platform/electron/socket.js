@@ -210,7 +210,7 @@ class Socket {
             if(terminateOrReason === true) {
                 this.client.terminate();
             } else {
-                this.client.close(terminateOrReason);
+                this.client.close((typeof terminateOrReason === 'number') ? terminateOrReason : undefined);
             }
             this.status = STATUS.CLOSED;
         }
