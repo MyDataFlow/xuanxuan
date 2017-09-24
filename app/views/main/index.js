@@ -13,7 +13,6 @@ import {
 import ChatsView from '../chats';
 import ROUTES from '../common/routes';
 import App from '../../core';
-import MemberProfileDialog from '../common/member-profile-dialog';
 
 const mainViews = [
     {path: ROUTES.chats.__, view: ChatsView},
@@ -25,13 +24,10 @@ class MainView extends Component {
         this.onUserConfigChange = App.profile.onUserConfigChange(() => {
             this.forceUpdate();
         });
-        this.onMemberLinkClickHandler = App.platform.onAppLinkClick('Member', target => {
-            MemberProfileDialog.show(target);
-        });
     }
 
     componentWillUnmount() {
-        App.events.off(this.onUserConfigChange, this.onMemberLinkClickHandler);
+        App.events.off(this.onUserConfigChange);
     }
 
     render() {

@@ -69,7 +69,7 @@ const draftDecorator = new CompositeDecorator([{
         if(guess) {
             let member = App.members.guess(guess);
             if(member) {
-                return <a className="link-app text-primary" href={'#Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
+                return <a className="app-link text-primary" href={'@Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
             }
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;

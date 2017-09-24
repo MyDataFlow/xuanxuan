@@ -7,6 +7,7 @@ import timeSequence from '../utils/time-sequence';
 
 const show = (message, props = {}, callback = null) => {
     let {
+        icon,
         type,
         content,
         autoHide,
@@ -36,9 +37,12 @@ const show = (message, props = {}, callback = null) => {
     rootClassName = HTML.classes(rootClassName, `position-${position}`);
     className = HTML.classes('messager layer', className || 'rounded', type);
 
-    content = content ? <div>
-        <h5>{message}</h5>
-        {content}
+    content = (content || icon) ? <div className="row single flex-middle">
+        {icon ? (typeof icon === 'string' ? <Icon className="flex-auto messager-icon" name={icon}/> : <div className="flex-none messager-icon">{icon}</div>) : null}
+        {content ? <div className="flex-auto messager-content">
+            <h5 className="messager-title">{message}</h5>
+            <div>{content}</div>
+        </div> : <div className="flex-auto messager-content">{message}</div>}
     </div> : message;
 
     if(!actions) {

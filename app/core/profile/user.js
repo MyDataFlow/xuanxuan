@@ -25,6 +25,7 @@ class User extends Member {
         server: {type: 'string'},
         serverVersion: {type: 'string'},
         uploadFileSize: {type: 'int'},
+        signed: {type: 'timestamp'},
     });
     static STATUS = Member.STATUS;
 
@@ -86,6 +87,14 @@ class User extends Member {
 
     save() {
         this.saveUserAction.do();
+    }
+
+    get signed() {
+        return this.$get('signed');
+    }
+
+    set signed(time) {
+        return this.$set('signed', time);
     }
 
     get config() {
@@ -179,7 +188,7 @@ class User extends Member {
                     const now = new Date().getTime();
                     const time = Math.max(0, this.waitReconnectTime + delay - now);
                     Events.emit(EVENT.reconnect, time, this);
-                }, 1000);
+                }, 1000 * this.reconnectTimes);
             }
         } else {
             requestReconnect();

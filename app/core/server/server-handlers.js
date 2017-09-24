@@ -93,8 +93,7 @@ const chatUserchange = (msg, socket) => {
 };
 
 const chatKickoff = (msg, socket) => {
-    Events.emit('ui.message', Lang.error('KICKOFF'));
-    socket.close();
+    socket.close(null, 'KICKOFF');
 };
 
 const chatUsergetlist = (msg, socket) => {

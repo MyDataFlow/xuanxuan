@@ -43,8 +43,8 @@ const login = user => {
 
     user.beginLogin();
     return API.requestServerInfo(user).then(user => {
-        return socket.login(user, {onClose: () => {
-            Events.emit(EVENT.loginout, user);
+        return socket.login(user, {onClose: (socket, code, reason, unexpected) => {
+            Events.emit(EVENT.loginout, user, code, reason, unexpected);
         }});
     }).then(user => {
         user.endLogin(true);

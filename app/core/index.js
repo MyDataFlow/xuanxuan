@@ -7,6 +7,7 @@ import notice from './notice';
 import theme from './theme';
 import events from './events';
 import platform from './platform';
+import ui from './ui';
 
 const app = {
     profile,
@@ -18,6 +19,7 @@ const app = {
     theme,
     events,
     platform,
+    ui,
 
     get user() {
         return profile.user

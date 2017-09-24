@@ -38,14 +38,14 @@ const format = (name, ...args) => {
  */
 const error = err => {
     if(typeof err === 'string') {
-        return string(`errors.${err}`, err);
+        return string(`error.${err}`, err);
     }
     let message = '';
     if(err.code) {
-        message += string(`errors.${err.code}`, `[Code: ${err.code}]`);
+        message += string(`error.${err.code}`, `[Code: ${err.code}]`);
     }
     if(err.message) {
-        message += string(`errors.${err.message}`, err.message);
+        message += string(`error.${err.message}`, err.message);
     }
     if(err.formats) {
         message = message.format(err.formats);

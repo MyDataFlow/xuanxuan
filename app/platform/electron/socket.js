@@ -203,16 +203,17 @@ class Socket {
         }, callback);
     }
 
-    close(terminateOrReason = '') {
+    close(code, reason) {
         if(this.client) {
             this.status = STATUS.CLOSING;
             this.client.removeAllListeners();
-            if(terminateOrReason === true) {
+            if(reason === true) {
                 this.client.terminate();
             } else {
-                this.client.close((typeof terminateOrReason === 'number') ? terminateOrReason : undefined);
+                this.client.close(code || 1000);
             }
             this.status = STATUS.CLOSED;
+            this.handleClose(code, reason);
         }
     }
 }
