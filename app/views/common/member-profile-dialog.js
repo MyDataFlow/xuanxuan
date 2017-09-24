@@ -5,6 +5,9 @@ import App from '../../core';
 import MemberProfile from './member-profile';
 
 const show = (member, callback) => {
+    if(typeof member !== 'object') {
+        member = App.members.get(member);
+    }
     const modalId = `member-${member.id}`;
     return Modal.show({
         actions: false,
