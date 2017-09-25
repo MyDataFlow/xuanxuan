@@ -27,7 +27,7 @@ document.addEventListener('click', e => {
             e.preventDefault();
         } else if(link.startsWith('@')) {
             const params = link.substr(1).split('/');
-            App.platform.emitAppLinkClick(params[0], params[1]);
+            App.ui.emitAppLinkClick(params[0], params[1]);
             e.preventDefault();
         }
     }

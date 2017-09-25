@@ -30,7 +30,7 @@ class UserMenu extends Component {
     }
 
     handleExitClick = () => {
-        App.platform.quit();
+        App.ui.quit();
     }
 
     requestClose() {
@@ -82,7 +82,7 @@ class UserMenu extends Component {
             <a className="item" onClick={this.handleAboutItemClick}><div className="title">{Lang.string('usermenu.about')}</div></a>
             <a className="item" onClick={this.handleSettingItemClick}><div className="title">{Lang.string('usermenu.setting')}</div></a>
             <a className="item" onClick={this.handleLogoutClick}><div className="title">{Lang.string('usermenu.logout')}</div></a>
-            {App.platform.quit && <a className="item" onClick={this.handleExitClick}><div className="title">{Lang.string('usermenu.exit')}</div></a>}
+            {App.ui.canQuit && <a className="item" onClick={this.handleExitClick}><div className="title">{Lang.string('usermenu.exit')}</div></a>}
         </ClickOutsideWrapper>;
     }
 }

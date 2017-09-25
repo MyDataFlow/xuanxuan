@@ -214,6 +214,14 @@ class UserConfig {
     set chatFontSize(fontSize) {
         return this.set('ui.chat.fontSize', fontSize);
     }
+
+    get appCloseOption() {
+        return this.get('ui.app.onClose');
+    }
+
+    set appCloseOption(option) {
+        return this.set('ui.app.onClose', option);
+    }
 }
 
 export default UserConfig;

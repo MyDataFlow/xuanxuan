@@ -24,6 +24,7 @@ class Events extends EventEmitter {
         super();
         this.eventsMap     = {};
         this.isMainProcess = process.type !== 'renderer';
+        this.setMaxListeners(20);
 
         if(!DEBUG) {
             this.setMaxListeners(0);

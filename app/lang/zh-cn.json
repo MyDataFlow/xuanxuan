@@ -236,6 +236,11 @@
 
     "dialog.fileSaveTo": "保存文件",
     "dialog.openFile": "打开文件",
+    "dialog.appClose.title": "你要做什么？",
+    "dialog.appClose.rememberOption": "记住我的选择，不再询问",
+    "dialog.appClose.minimizeMainWindow": "最小化窗口",
+    "dialog.appClose.quitApp": "关闭并退出",
+    "dialog.appClose.cancelAction": "取消本次操作",
 
     "imageCutter.captureScreen": "截取屏幕",
     "imageCutter.hideCurrentWindowAndCaptureScreen": "隐藏当前窗口并截图",

@@ -143,13 +143,13 @@ const configs = [
                 caption: Lang.string('setting.windows.removeFromTaskbarOnHide')
             }, {
                 type: 'select',
-                name: 'ui.app.onClickCloseButton',
+                name: 'ui.app.onClose',
                 options: [
                     {value: 'ask', label: Lang.string('setting.windows.askEveryTime')},
                     {value: 'minimize', label: Lang.string('setting.windows.minimizeMainWindow')},
                     {value: 'close', label: Lang.string('setting.windows.quitApp')},
                 ],
-                caption: Lang.string('setting.notification.flashTrayIconCondition')
+                caption: Lang.string('setting.windows.onClickCloseButton')
             }
         ]
     }, {

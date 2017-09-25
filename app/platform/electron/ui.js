@@ -8,6 +8,7 @@ import env from './env';
 import uuid from 'uuid/v4';
 import Path from 'path';
 import shortcut from './shortcut';
+import Lang from '../../lang';
 
 let _appRoot = null;
 remote.call('entryPath').then(path => {
@@ -48,7 +49,7 @@ const showWindow = () => {
 };
 
 const hideWindow = () => {
-    browserWindow.hide();
+    browserWindow.minimize();
 };
 
 const focusWindow = () => {
@@ -64,22 +65,24 @@ const showAndFocusWindow = () => {
     focusWindow();
 };
 
-const quit = (delay = 1000) => {
-    if(delay !== true && onRequestQuitListener) {
+const quitIM = () => {
+    remote.call('quit');
+};
+
+const quit = (delay = 1000, ignoreListener = false) => {
+    if(delay !== true && !ignoreListener && onRequestQuitListener) {
         if(onRequestQuitListener() === false) {
             return;
         }
     }
 
-    hideWindow();
+    browserWindow.hide();
     shortcut.unregisterAll();
 
-    if(delay) {
-        setTimeout(() => {
-            remote.call('quit');
-        }, delay);
+    if(delay && delay !== true) {
+        setTimeout(quitIM, delay);
     } else {
-        remote.call('quit');
+        quitIM();
     }
 };
 
@@ -94,6 +97,28 @@ const onWindowFocus = listener => {
 remote.onRequestQuit(() => {
     quit();
 });
+
+const showQuitConfirmDialog = (callback) => {
+    Remote.dialog.showMessageBox(browserWindow, {
+        type: 'question',
+        message: Lang.string('dialog.appClose.title'),
+        checkboxLabel: callback ? Lang.string('dialog.appClose.rememberOption') : undefined,
+        checkboxChecked: false,
+        cancelId: 2,
+        defaultId: 0,
+        buttons: [Lang.string('dialog.appClose.minimizeMainWindow'), Lang.string('dialog.appClose.quitApp'), Lang.string('dialog.appClose.cancelAction')],
+    }, (result, checked) => {
+        result = ['minimize', 'close', ''][result];
+        if(callback) {
+            result = callback(result, checked);
+        }
+        if(result === 'minimize') {
+            hideWindow();
+        } else if(result === 'close') {
+            quit(true);
+        }
+    });
+};
 
 export default {
     userDataPath,
@@ -115,6 +140,7 @@ export default {
     hideWindow,
     focusWindow,
     showAndFocusWindow,
+    showQuitConfirmDialog,
     quit,
 
     get isWindowsFocus() {
