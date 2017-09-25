@@ -199,7 +199,7 @@
     "setting.chats.showMeOnMenu": "在联系人列表上显示我自己",
     "setting.chats.sendHDEmoticon": "当消息只包含一个表情符时直接发送高清表情",
     "setting.chats.showMessageTip": "在消息发送框工具栏显示消息框小技巧按钮",
-    "setting.chats.enableSearchInEmojionePicker": "表情面板启用搜索",
+    "setting.chats.enableSearchInEmojionePicker": "表情面板启用搜索（重新载入后生效）",
     "setting.chats.enableAnimate": "启用动画效果",
     "setting.notification.enableSoundNotification": "启用声音提醒",
     "setting.notification.muteOnUserIsBusy": "当用户状态为忙碌时不使用声音提醒",
