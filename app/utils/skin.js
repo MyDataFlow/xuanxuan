@@ -10,7 +10,7 @@ const DEFAULT_OPTIONS = {
     textColor: '',
     darkText: '#fff',
     lightText: '#333',
-    hueSpace: 47,
+    hueSpace: 43,
     threshold: 0.43,
     darkLight: 0.4,
     paleLight: 0.92,

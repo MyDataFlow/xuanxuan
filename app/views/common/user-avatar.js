@@ -31,9 +31,9 @@ class UserAvatar extends Component {
         }
         const name = user.realname || user.account;
         if(name && name.length) {
-            return <Avatar skin={name} className={HTML.classes('circle', className)} label={name[0].toUpperCase()} {...other}>{statusDot}</Avatar>;
+            return <Avatar skin={{code: user.id || name, textColor: '#fff'}} className={HTML.classes('circle', className)} label={name[0].toUpperCase()} {...other}>{statusDot}</Avatar>;
         } else {
-            return <Avatar skin={user.id} className={HTML.classes('circle', className)} icon="account" {...other}>{statusDot}</Avatar>;
+            return <Avatar skin={{code: user.id, textColor: '#fff'}} className={HTML.classes('circle', className)} icon="account" {...other}>{statusDot}</Avatar>;
         }
     }
 }
