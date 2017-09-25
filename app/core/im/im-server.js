@@ -38,7 +38,7 @@ const fetchChatHistory = (cgid, pager) => {
 
 const updateChatHistory = (cgid, messages, pager, socket) => {
     if(messages && messages.length) {
-        chats.updateChatMessages(messages);
+        chats.updateChatMessages(messages, true);
     }
 
     pager.gid = cgid;
