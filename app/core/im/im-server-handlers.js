@@ -129,6 +129,7 @@ const chatJoinchat = (msg, socket) => {
             return chat;
         } else {
             chats.remove(chat.gid);
+            return chat;
         }
     }
     imServer.chatJoinTask = false;

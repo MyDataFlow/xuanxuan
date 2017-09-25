@@ -381,11 +381,21 @@ const joinChat = (chat, join = true) => {
     return Server.socket.sendAndListen({
         'method': 'joinchat',
         'params': [chat.gid, join]
+    }).then(theChat => {
+        if(theChat && theChat.isMember(profile.userId)) {
+            sendBoardChatMessage(Lang.format('chat.join.message', `@${profile.userAccount}`), theChat);
+        }
+        return Promise.resolve(theChat);
     });
 };
 
 const exitChat = (chat) => {
-    return joinChat(chat, false);
+    return joinChat(chat, false).then(theChat => {
+        if(theChat && !theChat.isMember(profile.userId)) {
+            sendBoardChatMessage(Lang.format('chat.exit.message', `@${profile.userAccount}`), theChat);
+        }
+        return Promise.resolve(theChat);
+    });
 };
 
 export default {
