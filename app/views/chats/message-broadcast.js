@@ -23,7 +23,7 @@ class MessageBroadcast extends Component {
         }
 
         return <div className={HTML.classes('app-message-broadcast has-padding-xs space-sm primary-pale flex-inline flex-middle row single', className)} {...other}>
-            <Avatar className="avatar-sm flex-none" icon="bell text-accent"/>
+            <Avatar className="avatar-sm flex-none" icon="bell text-secondary"/>
             <div
                 className="content markdown-content"
                 dangerouslySetInnerHTML={{__html: content}}
