@@ -53,7 +53,6 @@ const createFileDownloadUrl = (user, file) => {
     return user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}`);
 };
 
-
 export default {
     uploadFile,
     requestServerInfo,
