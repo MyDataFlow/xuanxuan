@@ -45,11 +45,15 @@ class MessageListItem extends Component {
     }
 
     componentDidUpdate() {
-        this.checkResendMessage();
+        if(!this.props.ignoreStatus) {
+            this.checkResendMessage();
+        }
     }
 
     componentDidMount() {
-        this.checkResendMessage();
+        if(!this.props.ignoreStatus) {
+            this.checkResendMessage();
+        }
     }
 
     componentWillUnmount() {
@@ -78,14 +82,15 @@ class MessageListItem extends Component {
             lastMessage,
             showDateDivider,
             hideHeader,
+            ignoreStatus,
             font,
             className,
             children,
             ...other
         } = this.props;
 
-        const needCheckResend = message.needCheckResend;
-        const needResend = needCheckResend && message.needResend;
+        const needCheckResend = !ignoreStatus && message.needCheckResend;
+        const needResend = !ignoreStatus && needCheckResend && message.needResend;
 
         if(showDateDivider === 0) {
             showDateDivider = !lastMessage || !DateHelper.isSameDay(message.date, lastMessage.date);
@@ -137,7 +142,7 @@ class MessageListItem extends Component {
             timeLabelView = <span className={HTML.classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
         }
 
-        if(needResend) {
+        if(!ignoreStatus && needResend) {
             resendButtonsView = <nav className="nav nav-sm app-message-item-actions">
                 <a onClick={this.handleResendBtnClick}><Icon name="refresh"/> {Lang.string('chat.message.resend')}</a>
                 <a onClick={this.handleDeleteBtnClick}><Icon name="delete"/> {Lang.string('common.delete')}</a>
@@ -146,8 +151,8 @@ class MessageListItem extends Component {
 
         return <div {...other}
             className={HTML.classes('app-message-item', className, {
-                'app-message-sending': needCheckResend && !needResend,
-                'app-message-send-fail': needResend,
+                'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
+                'app-message-send-fail': !ignoreStatus && needResend,
             })}
         >
             {showDateDivider && <MessageDivider date={message.date}/>}

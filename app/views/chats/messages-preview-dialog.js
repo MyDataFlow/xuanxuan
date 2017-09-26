@@ -20,7 +20,7 @@ const show = (messages, props, callback) => {
         },
         actions: false,
         contentClassName: 'box',
-        content: <MessagesList showDateDivider={false} messages={messages}/>
+        content: <MessagesList listItemProps={{ignoreStatus: true}} showDateDivider={false} messages={messages}/>
     }, props), callback);
 };
 

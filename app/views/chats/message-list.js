@@ -47,6 +47,7 @@ class MessageList extends Component {
             showDateDivider,
             font,
             children,
+            listItemProps,
             ...other
         } = this.props;
 
@@ -61,7 +62,7 @@ class MessageList extends Component {
         >
             {
                 messages && messages.map(message => {
-                    const messageListItem = <MessageListItem font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message}/>;
+                    const messageListItem = <MessageListItem font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps}/>;
                     lastMessage = message;
                     return messageListItem;
                 })
