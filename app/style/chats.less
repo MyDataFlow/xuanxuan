@@ -189,8 +189,9 @@
 }
 
 .app-message-content {
-  padding-left: (40*@rem);
+  margin-left: (40*@rem);
   line-height: (20*@rem);
+  transition: background-color @animation-type @animation-speed-fast, padding @animation-type @animation-speed-fast;
 
   .app-file-list-item {
     margin-bottom: @space-sm;
@@ -313,6 +314,28 @@
     margin-right: @space-xs;
     margin-left: @space-xs;
   }
+}
+
+.app-message-sending {
+  .app-message-content {
+    .animate-flash;
+  }
+}
+
+.app-message-send-fail {
+  .app-message-content {
+    background-color: @color-red-pale;
+    .has-padding-xs;
+
+    > *:last-child {
+      margin-bottom: 0!important;
+    }
+  }
+}
+
+.app-message-item-actions {
+  margin-left: (40*@rem);
+  font-size: (12*@rem);
 }
 
 .app-chat-sidebar {

@@ -12,6 +12,7 @@
     "common.selectInverse": "反选",
     "common.refresh": "刷新",
     "common.remove": "移除",
+    "common.delete": "删除",
     "common.download": "下载",
     "common.settings": "设置",
     "common.copyrightFormat": "版权所有 ©️ {year} {name}",
@@ -148,6 +149,8 @@
     "chat.sidebar.tab.peoples.label": "成员",
     "chat.sidebar.tab.files.label": "文件",
     "chat.sidebar.close": "关闭侧边栏",
+
+    "chat.message.resend": "重新发送",
 
     "navbar.chats.label": "最近聊天",
     "navbar.contacts.label": "联系人",

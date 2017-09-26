@@ -229,16 +229,19 @@ const renameChat = (chat, newName) => {
 };
 
 const sendChatMessage = (messages, chat) => {
+    if(!Array.isArray(messages)) {
+        messages = [messages];
+    }
+
     if(!chat) {
-        return Promise.reject('Chat is not set before send messages.');
+        chat = chats.get(messages[0].cgid);
+        if(!chat) {
+            return Promise.reject('Chat is not set before send messages.');
+        }
     }
 
     if(chat.isReadonly(profile.user)) {
         return Promise.reject(Lang.chat.blockedCommitterTip);
-    }
-
-    if(!Array.isArray(messages)) {
-        messages = [messages];
     }
 
     messages.forEach(message => {

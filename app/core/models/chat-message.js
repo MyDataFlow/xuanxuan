@@ -351,13 +351,6 @@ class ChatMessage extends Entity {
         return null;
     }
 
-    static create(chatMessage) {
-        if(chatMessage instanceof ChatMessage) {
-            return chatMessage;
-        }
-        return new ChatMessage(chatMessage);
-    }
-
     reset(newData) {
         if(newData instanceof ChatMessage) {
             newData = newData.plain();
@@ -369,6 +362,41 @@ class ChatMessage extends Entity {
         delete this._isBlockContent;
         delete this._renderedTextContent;
         delete this._sender;
+    }
+
+    /**
+     * Check the message whether need to check resend
+     * @return {boolean}
+     */
+    get needCheckResend() {
+        return !this.id;
+    }
+
+    /**
+     * Check the message whether need to resend
+     * @return {boolean}
+     */
+    get needResend() {
+        return this.needCheckResend && this.isSendFailed && !this.isFileContent && !this.isImageContent;
+    }
+
+    get isSendFailed() {
+        return this.needCheckResend && this.isOutdated;
+    }
+
+    /**
+     * Check the message whether is outdated
+     * @return {boolean}
+     */
+    get isOutdated() {
+        return (new Date().getTime() - this.date) > 10000;
+    }
+
+    static create(chatMessage) {
+        if(chatMessage instanceof ChatMessage) {
+            return chatMessage;
+        }
+        return new ChatMessage(chatMessage);
     }
 }
 

@@ -10,6 +10,7 @@ import MessageContentImage from './message-content-image';
 import MessageContentText from './message-content-text';
 import MemberProfileDialog from '../common/member-profile-dialog';
 import ContextMenu from '../../components/context-menu';
+import Icon from '../../components/icon';
 import MessageBroadcast from './message-broadcast';
 
 const showTimeLabelInterval = 1000*60*5;
@@ -31,6 +32,46 @@ class MessageListItem extends Component {
         ContextMenu.show({x: e.pageX, y: e.pageY}, items);
     }
 
+    checkResendMessage() {
+        const {message} = this.props;
+        if(message.needCheckResend) {
+            clearTimeout(this.checkResendTask);
+            this.checkResendTask = setTimeout(() => {
+                if(message.needResend) {
+                    this.forceUpdate();
+                }
+            }, 10500)
+        }
+    }
+
+    componentDidUpdate() {
+        this.checkResendMessage();
+    }
+
+    componentDidMount() {
+        this.checkResendMessage();
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.checkResendTask);
+    }
+
+    handleResendBtnClick = e => {
+        const message = this.props.message;
+        message.date = new Date().getTime();
+        if(message.needCheckResend) {
+            App.im.server.sendChatMessage(message);
+        }
+        this.forceUpdate();
+    }
+
+    handleDeleteBtnClick = e => {
+        const message = this.props.message;
+        if(message.needCheckResend) {
+            App.im.chats.deleteLocalMessage(this.props.message);
+        }
+    }
+
     render() {
         let {
             message,
@@ -43,6 +84,9 @@ class MessageListItem extends Component {
             ...other
         } = this.props;
 
+        const needCheckResend = message.needCheckResend;
+        const needResend = needCheckResend && message.needResend;
+
         if(showDateDivider === 0) {
             showDateDivider = !lastMessage || !DateHelper.isSameDay(message.date, lastMessage.date);
         }
@@ -53,6 +97,7 @@ class MessageListItem extends Component {
         let headerView = null;
         let timeLabelView = null;
         let contentView = null;
+        let resendButtonsView = null;
 
         const basicFontStyle = font ? {
             fontSize: font.size + 'px',
@@ -92,13 +137,24 @@ class MessageListItem extends Component {
             timeLabelView = <span className={HTML.classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
         }
 
+        if(needResend) {
+            resendButtonsView = <nav className="nav nav-sm app-message-item-actions">
+                <a onClick={this.handleResendBtnClick}><Icon name="refresh"/> {Lang.string('chat.message.resend')}</a>
+                <a onClick={this.handleDeleteBtnClick}><Icon name="delete"/> {Lang.string('common.delete')}</a>
+            </nav>
+        }
+
         return <div {...other}
-            className={HTML.classes('app-message-item', className)}
+            className={HTML.classes('app-message-item', className, {
+                'app-message-sending': needCheckResend && !needResend,
+                'app-message-send-fail': needResend,
+            })}
         >
             {showDateDivider && <MessageDivider date={message.date}/>}
             {headerView}
             {timeLabelView}
             {contentView && <div className="app-message-content">{contentView}</div>}
+            {resendButtonsView}
         </div>;
     }
 }
