@@ -3,15 +3,12 @@ import ReactDOM from 'react-dom';
 import HTML from '../../utils/html-helper';
 import {STATUS} from '../../core/models/member';
 import Lang from '../../lang';
+import App from '../../core';
 
 const statusColors = {
     unverified: '#ccc',
-    loginFailed: '#ccc',
-    waitReconnect: '#ccc',
-    logining: '#ccc',
-    reconnecting: '#ccc',
     disconnect: '#ccc',
-    logined: '#2979ff',
+    logined: '#18ffff',
     online: '#76ff03',
     busy: '#ffea00',
     away: '#ff1744',
@@ -36,7 +33,11 @@ class StatusDot extends Component {
             ...other
         } = this.props;
 
-        status = STATUS.getName(status);
+        if(App.profile.isUserOnline) {
+            status = STATUS.getName(status);
+        } else {
+            status = 'disconnect';
+        }
         style = Object.assign({
             backgroundColor: statusColors[status],
             border: '1px solid #fff'
