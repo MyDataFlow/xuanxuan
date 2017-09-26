@@ -2,7 +2,7 @@ import {Socket} from 'Platform';
 import SocketMessage from './socket-message';
 import Events from '../core/events';
 
-const PING_INTERVAL = 1000 * 60 * 5;
+const PING_INTERVAL = DEBUG ? (1000 * 10) : (1000 * 60 * 2);
 const LISTEN_TIMEOUT = 1000 * 15;
 
 const EVENT = {
@@ -135,7 +135,7 @@ class AppSocket extends Socket {
 
     onClose(code, reason, unexpected) {
         this.stopPing();
-        if(this.user) {
+        if(this.user && this.user.isOnline) {
             this.user.markUnverified();
         }
     }
@@ -153,6 +153,7 @@ class AppSocket extends Socket {
     }
 
     login(user, options) {
+        this.isLogging = true;
         return new Promise((resolve, reject) => {
             if(user) {
                 this.user = user;
@@ -170,6 +171,7 @@ class AppSocket extends Socket {
                     } else {
                         reject();
                     }
+                    this.isLogging = false;
                 }).catch(reject);
                 this.send({
                     'module': 'chat',
@@ -193,6 +195,7 @@ class AppSocket extends Socket {
 
     logout() {
         this.send('logout');
+        this.markClose();
     }
 
     uploadUserSettings() {
@@ -225,8 +228,8 @@ class AppSocket extends Socket {
     ping() {
         const now = new Date().getTime();
         if((now - this.lastHandTime) > PING_INTERVAL * 2) {
-            this.close(true);
             this.user.markDisconnect();
+            this.close(null, 'ping_timeout');
         } else {
             return this.send('ping');
         }

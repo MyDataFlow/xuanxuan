@@ -27,7 +27,7 @@ class AppView extends Component {
     render() {
         return <div className="affix" style={{
             transition: 'transform .4s',
-            transform: `translateX(${App.profile.isUserOnline ? '0' : '100%'})`
+            transform: `translateX(${App.profile.isUserVertified ? '0' : '100%'})`
         }}>
             <LoginView userStatus={this.state.userStatus} className="dock-left" style={{
                 width: '100%',

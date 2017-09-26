@@ -86,6 +86,10 @@ export default {
         return user && user.isOnline;
     },
 
+    get isUserVertified() {
+        return user && user.isVertified;
+    },
+
     get userStatus() {
         return user && user.status;
     },

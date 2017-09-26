@@ -128,6 +128,7 @@ class Socket {
         const unexpected = !this._status.is(STATUS.CLOSING);
         this.updateStatusFromClient();
         this.client = null;
+        this.status = STATUS.CLOSED;
 
         if(DEBUG) {
             console.collapse('SOCKET Closed', 'indigoBg', this.url, 'indigoPale');
@@ -137,12 +138,12 @@ class Socket {
             console.groupEnd();
         }
 
-        if(this.options.onClose) {
-            this.options.onClose(this, code, reason, unexpected);
-        }
-
         if(this.onClose) {
             this.onClose(code, reason, unexpected);
+        }
+
+        if(this.options.onClose) {
+            this.options.onClose(this, code, reason, unexpected);
         }
     }
 
@@ -203,16 +204,21 @@ class Socket {
         }, callback);
     }
 
+    markClose() {
+        this.status = STATUS.CLOSING;
+    }
+
     close(code, reason) {
         if(this.client) {
-            this.status = STATUS.CLOSING;
+            if(reason === 'close') {
+                this.markClose();
+            }
             this.client.removeAllListeners();
             if(reason === true) {
                 this.client.terminate();
             } else {
                 this.client.close(code || 1000);
             }
-            this.status = STATUS.CLOSED;
             this.handleClose(code, reason);
         }
     }

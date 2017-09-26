@@ -7,6 +7,7 @@ import Lang from '../lang';
 import Platform from 'Platform';
 import Events from './events';
 import profile from './profile';
+import Notice from './notice';
 
 const EVENT = {
     app_link: 'app.link',
@@ -37,11 +38,31 @@ Server.onUserLogin(user => {
 });
 
 Server.onUserLoginout((user, code, reason, unexpected) => {
-    if(user && reason === 'KICKOFF') {
-        Messager.show(Lang.error('KICKOFF'), {
-            type: 'danger',
-            icon: 'alert',
-        });
+    if(user) {
+        console.log('onUserLoginout', {user, code, reason, unexpected});
+        if(unexpected) {
+            let errorCode = null;
+            if(reason === 'KICKOFF') {
+                errorCode = 'KICKOFF';
+            } else if(code === 1006) {
+                errorCode = 'SOCKET_AbnormalClosure';
+            }
+            if(errorCode) {
+                Messager.show(Lang.error(errorCode), {
+                    type: 'danger',
+                    icon: 'alert',
+                    actions: [{
+                        label: Lang.string('login.retry'),
+                        click: () => {
+                            Server.login(user);
+                        }
+                    }]
+                });
+            }
+            if(Notice.requestAttention) {
+                Notice.requestAttention();
+            }
+        }
     }
 });
 
@@ -68,10 +89,19 @@ document.addEventListener('click', e => {
 
 
 window.addEventListener('online',  () => {
-    Events.emit(EVENT.net_online);
+    // Events.emit(EVENT.net_online);
+    if(profile.user) {
+        if(!Server.socket.isLogging) {
+            Server.login(profile.user);
+        }
+    }
 });
 window.addEventListener('offline',  () => {
-    Events.emit(EVENT.net_offline);
+    // Events.emit(EVENT.net_offline);
+    if(profile.isUserOnline) {
+        profile.user.markDisconnect();
+        Server.socket.close(null, 'net_offline');
+    }
 });
 
 

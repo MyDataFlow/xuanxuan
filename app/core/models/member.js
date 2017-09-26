@@ -4,15 +4,11 @@ import Status from '../../utils/status';
 
 const STATUS = new Status({
     unverified: 0,    // 未登录
-    loginFailed: 1,   // 登录失败
-    waitReconnect: 2, // 等待重连
-    logining: 3,      // 正在登录
-    reconnecting: 4,  // 正在重连
-    disconnect: 5,    // 登录过，但掉线了
-    logined: 6,       // 登录成功
-    online: 7,        // 在线
-    busy: 8,          // 忙碌
-    away: 9,          // 离开
+    disconnect: 1,    // 登录过，但掉线了
+    logined: 2,       // 登录成功
+    online: 3,        // 在线
+    busy: 4,          // 忙碌
+    away: 5,          // 离开
 }, 0);
 
 class Member extends Entity {

@@ -4,6 +4,9 @@ import profile from '../profile';
 import API from '../../network/api';
 import notice from '../notice';
 import Events from '../events';
+import limitTimePromise from '../../utils/limit-time-promise';
+
+const TIMEOUT = 20*1000;
 
 const socket = new Socket();
 socket.setHandler(serverHandlers);
@@ -41,8 +44,7 @@ const login = user => {
         return Promise.reject(error);
     }
 
-    user.beginLogin();
-    return API.requestServerInfo(user).then(user => {
+    return limitTimePromise(API.requestServerInfo(user), TIMEOUT).then(user => {
         return socket.login(user, {onClose: (socket, code, reason, unexpected) => {
             Events.emit(EVENT.loginout, user, code, reason, unexpected);
         }});

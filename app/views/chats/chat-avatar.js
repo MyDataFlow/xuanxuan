@@ -30,7 +30,7 @@ class ChatAvatar extends Component {
 
         if(chat.isOne2One) {
             const theOtherOne = chat.getTheOtherOne(App);
-            if(grayOffline && theOtherOne.isOffline) {
+            if(grayOffline && (theOtherOne.isOffline || !App.profile.isUserOnline)) {
                 className = HTML.classes(className, 'grayscale');
             }
             return <UserAvatar size={avatarSize} user={theOtherOne} className={HTML.classes(className, avatarClassName)} {...other}/>;

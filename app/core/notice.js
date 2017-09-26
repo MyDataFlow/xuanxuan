@@ -59,4 +59,5 @@ export default {
     update,
     onNoticeUpdate,
     isMatchWindowCondition,
+    requestAttention: notify.requestAttention
 };

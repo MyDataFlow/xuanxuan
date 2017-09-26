@@ -52,9 +52,10 @@
     "error.IMAGE_NOT_FIND": "无法打开图片，找不到图片或图片已损坏。位置 {0}。",
     "error.UPLOAD_FILE_IS_TOO_LARGE": "文件上传失败，只支持发送小于 {0} 的文件",
     "error.SERVER_DISABLED_UPLOAD": "文件上传失败，因为服务器禁止了文件上传功能",
-    "error.NETWORK_TIMEOUT": "网络连接超时。",
+    "error.TIMEOUT": "网络连接超时。",
     "error.SERVER_IS_BUSY": "服务器正忙，请稍后重试。",
     "error.USER_INFO_REQUIRED": "用户信息不可用。",
+    "error.SOCKET_AbnormalClosure": "与服务器的连接意外终止。",
 
     "login.serverUrl.label": "服务器",
     "login.serverUrl.hint": "https://xuanxuan.chat",
@@ -65,6 +66,7 @@
     "login.btn.logining": "正在登录...",
     "login.swapUser": "切换用户",
     "login.signed": "今日已签到",
+    "login.retry": "重新登录",
 
     "chats.create.label": "新建聊天...",
     "chats.drapNDropFileMessage": "拖放文件或图片到此处来发送",

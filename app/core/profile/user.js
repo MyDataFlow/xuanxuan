@@ -44,21 +44,9 @@ class User extends Member {
             clearTimeout(this.statusChangeCallTimer);
             if(this._status.is(Member.STATUS.logined)) {
                 this.$set('lastLoginTime', new Date().getTime());
-                if(oldStatus === Member.STATUS.reconnecting) {
+                this.statusChangeCallTimer = setTimeout(() => {
                     this.status = Member.STATUS.online;
-                } else {
-                    this.statusChangeCallTimer = setTimeout(() => {
-                        this.status = Member.STATUS.online;
-                    }, 1000);
-                }
-                this.reconnectTimes = 0;
-            } else if(
-                (
-                    this._status.is(Member.STATUS.disconnect) ||
-                    (this._status.is(Member.STATUS.loginFailed) && oldStatus === Member.STATUS.reconnecting)
-                ) && this.config.autoReconnect
-            ) {
-                this.reconnect();
+                }, 1000);
             }
         };
     }
@@ -121,12 +109,8 @@ class User extends Member {
         return this.status <= Member.STATUS.unverified;
     }
 
-    get isLogging() {
-        return this._status.is(Member.STATUS.logining) || this._status.is(Member.STATUS.reconnecting);
-    }
-
-    get isWaitReconnect() {
-        return this._status.is(Member.STATUS.waitReconnect);
+    get isVertified() {
+        return this.status >= Member.STATUS.disconnect;
     }
 
     get isLogined() {
@@ -141,58 +125,8 @@ class User extends Member {
         this.status = Member.STATUS.unverified;
     }
 
-    beginLogin() {
-        const reconnect = this.isWaitReconnect;
-        this.status = reconnect ? Member.STATUS.reconnecting : Member.STATUS.logining;
-    }
-
     endLogin(result) {
-        this.status = result ? Member.STATUS.logined : Member.STATUS.loginFailed;
-    }
-
-    reconnect(delay = 'auto') {
-        if(this.reconnectTimes === undefined) {
-            this.reconnectTimes = 0;
-        }
-        if(delay === 'auto') {
-            delay = this.reconnectTimes * RECONNECT_WAIT_TIME;
-        }
-        if(!delay) {
-            delay = 0;
-        }
-        const clearDelayTimer = () => {
-            if(this.delayReconnectTimer) {
-                clearTimeout(this.delayReconnectTimer);
-                this.delayReconnectTimer = null;
-            }
-            if(this.waitReconnectTimer) {
-                clearInterval(this.waitReconnectTimer);
-                this.waitReconnectTimer = null;
-            }
-        };
-        const requestReconnect = () => {
-            clearDelayTimer();
-            if(this._status.is(Member.STATUS.waitReconnect)) {
-                this.reconnectTimes++;
-                Events.emit(EVENT.reconnect, 0, this);
-            }
-        };
-
-        this.status = Member.STATUS.waitReconnect;
-        if(delay) {
-            clearDelayTimer();
-            this.waitReconnectTime = new Date().getTime();
-            this.delayReconnectTimer = setTimeout(requestReconnect, delay);
-            if(delay > 2) {
-                this.waitReconnectTimer = setInterval(() => {
-                    const now = new Date().getTime();
-                    const time = Math.max(0, this.waitReconnectTime + delay - now);
-                    Events.emit(EVENT.reconnect, time, this);
-                }, 1000 * this.reconnectTimes);
-            }
-        } else {
-            requestReconnect();
-        }
+        this.status = result ? Member.STATUS.logined : Member.STATUS.unverified;
     }
 
     set server(server) {
