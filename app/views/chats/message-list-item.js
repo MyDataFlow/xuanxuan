@@ -153,6 +153,7 @@ class MessageListItem extends Component {
             className={HTML.classes('app-message-item', className, {
                 'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
                 'app-message-send-fail': !ignoreStatus && needResend,
+                'with-avatar': !hideHeader
             })}
         >
             {showDateDivider && <MessageDivider date={message.date}/>}
