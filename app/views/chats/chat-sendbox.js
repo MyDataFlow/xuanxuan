@@ -145,7 +145,7 @@ class ChatSendbox extends Component {
         return <div {...other}
             className={HTML.classes('app-chat-sendbox', className)}
         >
-            <DraftEditor className="app-chat-drafteditor dock-top box scroll-y scrollbar-thin"
+            <DraftEditor className="app-chat-drafteditor dock-top box scroll-y"
                 ref={e => {this.editbox = e;}}
                 placeholder={placeholder}
                 onChange={this.handleOnChange}
