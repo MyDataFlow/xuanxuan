@@ -13,6 +13,7 @@ import {
 import ChatsView from '../chats';
 import ROUTES from '../common/routes';
 import App from '../../core';
+import GlobalMessage from './global-message';
 
 const mainViews = [
     {path: ROUTES.chats.__, view: ChatsView},
@@ -34,11 +35,11 @@ class MainView extends Component {
         let {
             className,
             children,
-            userStatus,
             ...other
         } = this.props;
 
         return <div className={HTML.classes('app-main', className)} {...other}>
+            <GlobalMessage className="dock-top"/>
             <Navbar className="dock-left primary" style={{width: HTML.rem(Config.ui['navbar.width'])}}/>
             {children}
             <div className="app-main-container dock" style={{left: HTML.rem(Config.ui['navbar.width'])}}>

@@ -20,7 +20,7 @@ profile.onSwapUser(user => {
     socket.close();
 });
 
-const login = user => {
+const login = (user) => {
     user = profile.createUser(user);
 
     if(user) {

@@ -135,8 +135,12 @@ class AppSocket extends Socket {
 
     onClose(code, reason, unexpected) {
         this.stopPing();
-        if(this.user && this.user.isOnline) {
-            this.user.markUnverified();
+        if(this.user) {
+            if(unexpected) {
+                this.user.markDisconnect();
+            } else {
+                this.user.markUnverified();
+            }
         }
     }
 
@@ -194,8 +198,12 @@ class AppSocket extends Socket {
     }
 
     logout() {
-        this.send('logout');
         this.markClose();
+        if(this.isConnected) {
+            this.send('logout');
+        } else {
+            this.handleClose(null, 'logout');
+        }
     }
 
     uploadUserSettings() {
@@ -252,7 +260,6 @@ class AppSocket extends Socket {
      */
     startPing() {
         this.stopPing();
-
         if(this.isConnected) {
             this.pingTask = setInterval(() => {
                 const now = new Date().getTime();

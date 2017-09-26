@@ -67,6 +67,12 @@
     "login.swapUser": "切换用户",
     "login.signed": "今日已签到",
     "login.retry": "重新登录",
+    "login.autoConnet.wait": "你已离线，{0} 秒后自动登录。",
+    "login.autoConnet.connecting": "你已离线，正在尝试重新登录...",
+    "login.autoConnet.faildAndWait": "登录失败，{0} 秒后重新尝试。",
+    "login.autoConnet.conectIM": "立即重试",
+    "login.autoConnet.logout": "注销",
+    "login.autoConnet.errorDetail": "了解详情",
 
     "chats.create.label": "新建聊天...",
     "chats.drapNDropFileMessage": "拖放文件或图片到此处来发送",

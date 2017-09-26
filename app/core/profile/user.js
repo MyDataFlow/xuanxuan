@@ -11,7 +11,6 @@ const EVENT = {
     status_change: 'user.status.change',
     reconnect: 'user.reconnect',
 };
-const RECONNECT_WAIT_TIME = 10000;
 
 class User extends Member {
 
@@ -126,7 +125,11 @@ class User extends Member {
     }
 
     endLogin(result) {
-        this.status = result ? Member.STATUS.logined : Member.STATUS.unverified;
+        if(result) {
+            this.status = Member.STATUS.logined;
+        } else if(!this.isDisconnect) {
+            this.status = Member.STATUS.unverified;
+        }
     }
 
     set server(server) {

@@ -133,3 +133,18 @@
     }
   }
 }
+
+.app-global-message {
+  z-index: 1050;
+  height: (40*@rem);
+  top: (-40*@rem);
+
+  &.app-user-disconnet {
+    top: 0;
+
+    + .app-navbar,
+    + .app-navbar + .app-main-container {
+      top: (40*@rem);
+    }
+  }
+}
