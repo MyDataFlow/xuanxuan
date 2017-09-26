@@ -5,11 +5,11 @@
  * @param {number} timeout
  * @param {any} timeoutError
  */
-const limitTimePromise = (promise, timeout = 15000, timeoutError = 'timeout') => {
+const limitTimePromise = (promise, timeout = 15000, timeoutError = 'TIMEOUT') => {
     let timeoutPromise = new Promise((resolve, reject) => {
         setTimeout(() => {
-            reject('timeout')
-        }, timeoutError);
+            reject(timeoutError)
+        }, timeout);
     });
 
     return Promise.race([promise, timeoutPromise]);
