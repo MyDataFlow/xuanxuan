@@ -104,14 +104,18 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
     }
 
     //Memory 注释取消 get中的token
-    //auth := r.Header.Get("Authorization")
-    //if auth != string(util.Token) {
+    auth := r.Header.Get("Authorization")
+    if auth != string(util.Token) {
+        w.WriteHeader(http.StatusUnauthorized)
+        return
+    }
+
+    //新增加验证方式  hash(user.token+sessionID)
+    //auth := r.Header.Get("sid")
+    //if auth != string(GetMD5(util.Token)) {
     //    w.WriteHeader(http.StatusUnauthorized)
     //    return
     //}
-
-    //新增加验证方式  hash(user.token+sessionID)
-
 
 
     r.ParseForm()
