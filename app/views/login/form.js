@@ -9,6 +9,16 @@ import StringHelper from '../../utils/string-helper';
 import SwapUserDialog from './swap-user-dialog';
 import User from '../../core/profile/user';
 
+const simpleServerUrl = serverUrl => {
+    if(serverUrl) {
+        const simpleServer = new URL(serverUrl);
+        if(simpleServer.port === '11443') {
+            serverUrl = serverUrl.replace(':11443', '');
+        }
+    }
+    return serverUrl;
+}
+
 class FormView extends Component {
 
         constructor(props) {
@@ -17,7 +27,7 @@ class FormView extends Component {
             const lastSavedUser = App.profile.getLastSavedUser();
 
             this.state = {
-                serverUrl: lastSavedUser && (lastSavedUser.serverUrl || lastSavedUser.server) || '',
+                serverUrl: lastSavedUser && simpleServerUrl(lastSavedUser.serverUrl || lastSavedUser.server) || '',
                 account: lastSavedUser && lastSavedUser.account || '',
                 password: lastSavedUser && lastSavedUser.password || '',
                 message: '',
@@ -69,7 +79,7 @@ class FormView extends Component {
             const identify = (serverUrl && account) ? User.createIdentify(serverUrl, account) : null;
             SwapUserDialog.show(identify, user => {
                 this.setState({
-                    serverUrl: user.serverUrl,
+                    serverUrl: simpleServerUrl(user.serverUrl),
                     account: user.account,
                     password: user.passwordMD5WithFlag,
                 });
@@ -77,9 +87,9 @@ class FormView extends Component {
         }
 
         componentDidMount() {
-            if(DEBUG && this.state.submitable) {
-                this.login();
-            }
+            // if(DEBUG && this.state.submitable) {
+            //     this.login();
+            // }
         }
 
         render() {
