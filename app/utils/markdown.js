@@ -17,7 +17,7 @@ renderer.code = (code, lang) => {
         }
     }
     let result = HighlightJS.highlightAuto(code, lang ? [lang] : undefined);
-    return `<pre${fileName ? (' data-name="' + fileName + '"') : ''}><code data-lang="${lang || (result.language + '?')}" class="lang-${result.language}">${result.value}</code></pre>`;
+    return `<pre${fileName ? (' data-name="' + fileName + '"') : ''}><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
 };
 
 /**
