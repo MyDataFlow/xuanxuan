@@ -1,10 +1,10 @@
 .drag-n-drop-message {
-  display: none;
+  display: none!important;
 }
 
 .drag-n-drop-over {
   .drag-n-drop-message {
-    display: flex;
+    display: flex!important;
     position: absolute;
     top: 8px;
     right: 8px;
@@ -17,7 +17,7 @@
     color: @color-gray;
     opacity: 0;
     transform: scale(0.8);
-    transition: background @animation-speed-normal @animation-type, border @animation-speed-normal @animation-type, opacity @animation-speed-normal @animation-type, transform @animation-speed-fast @animation-type;
+    transition: background-color @animation-speed-normal @animation-type, border @animation-speed-normal @animation-type, opacity @animation-speed-normal @animation-type, transform @animation-speed-fast @animation-type;
 
     > * {
       pointer-events: none;

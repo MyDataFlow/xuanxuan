@@ -1,6 +1,7 @@
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
+import ContextMenu from '../components/context-menu';
 import DateHelper from '../utils/date-helper';
 import Lang from '../lang';
 import Platform from 'Platform';
@@ -9,6 +10,8 @@ import profile from './profile';
 
 const EVENT = {
     app_link: 'app.link',
+    net_online: 'app.net.online',
+    net_offline: 'app.net.offline',
 };
 
 const onAppLinkClick = (type, listener) => {
@@ -63,6 +66,52 @@ document.addEventListener('click', e => {
     }
 });
 
+
+window.addEventListener('online',  () => {
+    Events.emit(EVENT.net_online);
+});
+window.addEventListener('offline',  () => {
+    Events.emit(EVENT.net_offline);
+});
+
+
+let dragLeaveTask;
+const completeDragNDrop = () => {
+    document.body.classList.remove('drag-n-drop-over-in');
+    setTimeout(() => {
+        document.body.classList.remove('drag-n-drop-over');
+    }, 350);
+}
+window.ondragover = e => {
+    clearTimeout(dragLeaveTask);
+    if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+        document.body.classList.add('drag-n-drop-over');
+        setTimeout(() => {
+            document.body.classList.add('drag-n-drop-over-in');
+        }, 10);
+    }
+    e.preventDefault();
+    return false;
+};
+window.ondragleave = e => {
+    clearTimeout(dragLeaveTask);
+    dragLeaveTask = setTimeout(completeDragNDrop, 300);
+    e.preventDefault();
+    return false;
+};
+window.ondrop = e => {
+    clearTimeout(dragLeaveTask);
+    completeDragNDrop();
+    if(DEBUG) {
+        console.collapse('DRAG FILE', 'redBg', (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length ? e.dataTransfer.files[0].path : ''), 'redPale');
+        console.log(e);
+        console.groupEnd();
+    }
+    e.preventDefault();
+    return false;
+};
+
+
 if(Platform.ui.onRequestQuit) {
     Platform.ui.onRequestQuit(() => {
         const user = profile.user;
@@ -105,4 +154,6 @@ export default {
     onAppLinkClick,
     emitAppLinkClick,
     quit,
+    showMessger: Messager.show,
+    showContextMenu: ContextMenu.show
 };

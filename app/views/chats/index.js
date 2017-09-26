@@ -6,6 +6,7 @@ import Menu from './menu';
 import ChatsCacheView from './chats-cache';
 import App from '../../core';
 import {Route, Redirect} from 'react-router-dom';
+import ChatsDndContainer from './chats-dnd-container';
 
 class IndexView extends Component {
 
@@ -20,7 +21,9 @@ class IndexView extends Component {
 
         return <div className="dock app-chats">
             <Menu className="dock-left" filter={match.params.filterType} style={{width: menuWidth}}/>
-            <ChatsCacheView style={{left: menuWidth}} className="dock-right" filterType={match.params.filterType} chatId={match.params.id}/>
+            <ChatsCacheView style={{left: menuWidth}} className="dock-right" filterType={match.params.filterType} chatId={match.params.id}>
+                <ChatsDndContainer className="dock"/>
+            </ChatsCacheView>
             <Route path="/chats/:filterType" exact render={props => {
                 const activeChatId = App.im.ui.currentActiveChatId;
                 if(activeChatId) {

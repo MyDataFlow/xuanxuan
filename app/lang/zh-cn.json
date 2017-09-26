@@ -67,6 +67,7 @@
     "login.signed": "今日已签到",
 
     "chats.create.label": "新建聊天...",
+    "chats.drapNDropFileMessage": "拖放文件或图片到此处来发送",
     "chats.search.recents": "搜索",
     "chats.search.groups": "搜索讨论组",
     "chats.search.contacts": "搜索联系人",

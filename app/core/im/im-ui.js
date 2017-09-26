@@ -57,7 +57,11 @@ const sendContentToChat = (content, type = 'text', cgid = null) => {
     if(!cgid) {
         cgid = activedChatId;
     }
-    return Events.emit(`${EVENT.sendContentToChat}.${cgid}`, {content, type});
+    if(type === 'file') {
+        Server.sendFileMessage(content, chats.get(cgid));
+    } else {
+        return Events.emit(`${EVENT.sendContentToChat}.${cgid}`, {content, type});
+    }
 };
 
 const onSendContentToChat = (cgid, listener) => {

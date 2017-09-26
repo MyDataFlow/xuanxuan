@@ -48,7 +48,10 @@ const error = err => {
         message += string(`error.${err.message}`, err.message);
     }
     if(err.formats) {
-        message = message.format(err.formats);
+        if(!Array.isArray(err.formats)) {
+            err.formats = [err.formats];
+        }
+        message = StringHelper.format(message, ...err.formats);
     }
     if(DEBUG) {
         console.error('lang.error()', err);
