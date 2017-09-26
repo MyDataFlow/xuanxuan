@@ -75,6 +75,7 @@ const onUserLoginout = listener => {
 const logout = () => {
     notice.update();
     socket.logout();
+    profile.user.markUnverified();
 };
 
 export default {

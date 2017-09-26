@@ -135,12 +135,8 @@ class AppSocket extends Socket {
 
     onClose(code, reason, unexpected) {
         this.stopPing();
-        if(this.user) {
-            if(unexpected) {
-                this.user.markDisconnect();
-            } else {
-                this.user.markUnverified();
-            }
+        if(this.user && this.user.isOnline) {
+            this.user.markUnverified();
         }
     }
 
@@ -198,10 +194,11 @@ class AppSocket extends Socket {
     }
 
     logout() {
-        this.markClose();
         if(this.isConnected) {
+            this.markClose();
             this.send('logout');
         } else {
+            this.markClose();
             this.handleClose(null, 'logout');
         }
     }

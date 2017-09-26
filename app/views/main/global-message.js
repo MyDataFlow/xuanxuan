@@ -130,7 +130,7 @@ class GlobalMessage extends Component {
                     <Avatar icon={tick%2 === 0 ? "lan-disconnect" : "lan-connect"}/>
                     <div className="title">
                         {Lang.format(this.connectTimes ? 'login.autoConnet.faildAndWait' : 'login.autoConnet.wait', Math.max(0, tick))}
-                        {this.state.failMessage ? <small data-hint={this.state.failMessage} className="hint--bottom">{Lang.string('login.autoConnet.errorDetail')}</small> : null}
+                        {this.state.failMessage ? <span data-hint={this.state.failMessage} className="hint--bottom">{Lang.string('login.autoConnet.errorDetail')}</span> : null}
                     </div>
                     <nav className="nav">
                         <a onClick={this.reconnectNow.bind(this)}>{Lang.string('login.autoConnet.conectIM')}</a>
