@@ -68,7 +68,8 @@ class FormView extends Component {
 
         handleLoginBtnClick = () => {
             this.setState({
-                logining: true
+                logining: true,
+                message: '',
             }, () => {
                 this.login()
             });
@@ -82,6 +83,7 @@ class FormView extends Component {
                     serverUrl: simpleServerUrl(user.serverUrl),
                     account: user.account,
                     password: user.passwordMD5WithFlag,
+                    message: ''
                 });
             });
         }
