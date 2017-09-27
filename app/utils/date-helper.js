@@ -1,25 +1,25 @@
-const TIME_DAY = 24*60*60*1000;
+export const TIME_DAY = 24*60*60*1000;
 
-const createDate = date => {
+export const createDate = date => {
     if(!(date instanceof Date)) {
         date = new Date(date);
     }
     return date;
 };
 
-const isSameDay = (date1, date2) => {
+export const isSameDay = (date1, date2) => {
     return createDate(date1).toDateString() === createDate(date2).toDateString();
 };
 
-const isToday = (date, now) => {
+export const isToday = (date, now) => {
     return isSameDay(now || new Date(), date);
 };
 
-const isYestoday = (date, now) => {
+export const isYestoday = (date, now) => {
     return isSameDay((now || new Date()).getTime() - TIME_DAY, date);
 };
 
-const formatDate = (date, format) => {
+export const formatDate = (date, format) => {
     date = createDate(date);
 
     let dateInfo = {
