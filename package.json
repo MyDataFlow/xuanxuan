@@ -30,7 +30,8 @@
     "package-win-debug": "npm run build-debug && build --win --x64 --publish never",
     "package-win-one-debug": "npm run build-debug && build --win --publish never",
     "package-all": "npm run package-win && npm run package-win-32 && npm run package-win-debug && npm run package-mac && npm run package-linux",
-    "cleanup": "mop -v"
+    "cleanup": "mop -v",
+    "docs": "./node_modules/.bin/esdoc"
   },
   "build": {
     "productName": "xuanxuan",
@@ -138,6 +139,11 @@
     "electron": "^1.4.15",
     "electron-builder": "^17.0.3",
     "electron-devtools-installer": "^2.0.1",
+    "esdoc": "^1.0.3",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-inject-style-plugin": "^1.0.0",
+    "esdoc-jsx-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "fbjs-scripts": "^0.7.1",
