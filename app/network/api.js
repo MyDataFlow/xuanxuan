@@ -1,4 +1,5 @@
 import Platform from '../platform/electron';
+import md5 from 'md5';
 
 const isUserLogining = false;
 
@@ -50,7 +51,7 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
 };
 
 const createFileDownloadUrl = (user, file) => {
-    return user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}&serverName=${user.serverName}&gid=${user.id}`);
+    return user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
 };
 
 const downloadFile = (user, file, onProgress = null) => {

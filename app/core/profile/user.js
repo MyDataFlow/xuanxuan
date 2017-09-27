@@ -132,6 +132,14 @@ class User extends Member {
         }
     }
 
+    get sessionID() {
+        return this._sessionID;
+    }
+
+    set sessionID(sessionID) {
+        this._sessionID = sessionID;
+    }
+
     set server(server) {
         if(!server.startsWith('https://') && !server.startsWith('http://')) {
             server = 'https://' + server;

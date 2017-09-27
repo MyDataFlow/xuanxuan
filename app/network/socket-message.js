@@ -29,7 +29,7 @@ class SocketMessage {
      * @return {boolean}
      */
     get isSuccess() {
-        return this.result === 'success' || (this.data && this.result === undefined);
+        return this.result === 'success' || (this.result === undefined);
     }
 
     /**

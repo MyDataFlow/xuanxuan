@@ -102,6 +102,13 @@ const chatUsergetlist = (msg, socket) => {
     }
 };
 
+const chatSessionID = (msg, socket) => {
+    if(msg.isSuccess || msg.sessionID) {
+        const user = socket.user;
+        user.sessionID = msg.data || msg.sessionID;
+    }
+};
+
 
 export default {
     'chat/login': chatLogin,
@@ -112,4 +119,5 @@ export default {
     'chat/userchange': chatUserchange,
     'chat/kickoff': chatKickoff,
     'chat/usergetlist': chatUsergetlist,
+    'chat/sessionid': chatSessionID,
 };
