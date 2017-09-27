@@ -1,10 +1,9 @@
-import DefaultLang from './default.json';
 import ZhcnLang from './zh-cn.json';
 import StringHelper from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
-let langData = Object.assign({}, DefaultLang, ZhcnLang);
+let langData = Object.assign({}, ZhcnLang);
 let currentLangName = DEFAULT_LANG;
 
 /**
@@ -71,6 +70,6 @@ const lang = {
 
 Object.assign(lang, langData);
 
-if(DEBUG) global.Lang = lang;
+if(DEBUG) global.$.Lang = lang;
 
 export default lang;

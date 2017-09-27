@@ -12,20 +12,20 @@ if(DEBUG && process.type === 'renderer') {
 }
 
 const SELECT_MENU = Menu.buildFromTemplate([
-    {role: 'copy', label: Lang.menu.copy},
+    {role: 'copy', label: Lang.string('menu.copy')},
     {type: 'separator'},
-    {role: 'selectall', label: Lang.menu.selectAll}
+    {role: 'selectall', label: Lang.string('menu.selectAll')}
 ]);
 
 const INPUT_MENU = Menu.buildFromTemplate([
-    {role: 'undo', label: Lang.menu.undo},
-    {role: 'redo', label: Lang.menu.redo},
+    {role: 'undo', label: Lang.string('menu.undo')},
+    {role: 'redo', label: Lang.string('menu.redo')},
     {type: 'separator'},
-    {role: 'cut', label: Lang.menu.cut},
-    {role: 'copy', label: Lang.menu.copy},
-    {role: 'paste', label: Lang.menu.paste},
+    {role: 'cut', label: Lang.string('menu.cut')},
+    {role: 'copy', label: Lang.string('menu.copy')},
+    {role: 'paste', label: Lang.string('menu.paste')},
     {type: 'separator'},
-    {role: 'selectall', label: Lang.menu.selectAll}
+    {role: 'selectall', label: Lang.string('menu.selectAll')}
 ]);
 
 /**
@@ -118,18 +118,18 @@ class AppRemote {
         let tray = new Tray(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`);
         let trayContextMenu = Menu.buildFromTemplate([
             {
-                label: Lang.common.open,
+                label: Lang.string('common.open'),
                 click: () => {
                     this.showAndFocusWindow();
                 }
             }, {
-                label: Lang.common.exit,
+                label: Lang.string('common.exit'),
                 click: () => {
                     this.mainWindow.webContents.send(R.event.app_quit);
                 }
             }
         ]);
-        tray.setToolTip(Lang.title);
+        tray.setToolTip(Lang.string('app.title'));
         tray.on('click', () => {
             this.showAndFocusWindow();
         });
@@ -266,10 +266,10 @@ class AppRemote {
                 const now = new Date().getTime();
                 if(this.lastRequestCloseTime && (now - this.lastRequestCloseTime) < 1000) {
                     electron.dialog.showMessageBox(mainWindow, {
-                        buttons: [Lang.common.exitIM, Lang.common.cancel],
+                        buttons: [Lang.string('common.exitIM'), Lang.string('common.cancel')],
                         defaultId: 0,
                         type: 'question',
-                        message: Lang.common.comfirmQuiteIM
+                        message: Lang.string('common.comfirmQuiteIM')
                     }, response => {
                         if(response === 0) {
                             setTimeout(() => {
@@ -322,7 +322,7 @@ class AppRemote {
      * @return {void}
      */
     trayTooltip(tooltip) {
-        this.tray.setToolTip(tooltip || Lang.title);
+        this.tray.setToolTip(tooltip || Lang.string('app.title'));
     }
 
     /**

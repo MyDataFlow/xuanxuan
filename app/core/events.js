@@ -158,6 +158,4 @@ class Events extends EventEmitter {
 
 const events = new Events();
 
-if(DEBUG) global.Events = events;
-
 export default events;

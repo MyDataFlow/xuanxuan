@@ -5,6 +5,7 @@ import InputControl from './input-control';
 import Icon from './icon';
 import StringHelper from '../utils/string-helper';
 import DelayAction from '../utils/delay-action';
+import Lang from '../lang';
 
 class SearchControl extends Component {
 

@@ -278,10 +278,15 @@ class ChatMessage extends Entity {
 
     get imageContent() {
         if(this.contentType === CONTENT_TYPES.image) {
-            if(!this._imageContent) {
-                this._imageContent = JSON.parse(this.content);
+            let imageContent = this._imageContent;
+            if(!imageContent) {
+                imageContent = JSON.parse(this.content);
+                if(imageContent.path) {
+                    delete imageContent.path;
+                }
+                this._imageContent = imageContent;
             }
-            return this._imageContent;
+            return imageContent;
         }
         return null;
     }
@@ -304,6 +309,9 @@ class ChatMessage extends Entity {
             let fileContent = this._fileContent;
             if(!fileContent) {
                 fileContent = JSON.parse(this.content);
+                if(fileContent.path) {
+                    delete fileContent.path;
+                }
                 this._fileContent = fileContent;
             }
             if(fileContent) {
