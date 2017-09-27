@@ -35,7 +35,6 @@ export default validate({
         packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
         alias: {
             Platform: 'platform/electron',
-            App: 'core/index.js',
             Config: 'config/index.js',
         },
         root: path.join(__dirname, 'app')
