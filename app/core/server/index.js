@@ -17,7 +17,7 @@ socket.setHandler(serverHandlers);
 const EVENT = {
     login: 'server.user.login',
     loginout: 'server.user.loginout',
-}
+};
 
 profile.onSwapUser(user => {
     socket.close();
@@ -102,7 +102,9 @@ const onUserLoginout = listener => {
 const logout = () => {
     notice.update();
     socket.logout();
-    profile.user.markUnverified();
+    if(profile.user) {
+        profile.user.markUnverified();
+    }
 };
 
 export default {
