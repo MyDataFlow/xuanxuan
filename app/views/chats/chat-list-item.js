@@ -49,7 +49,7 @@ class ChatListItem extends Component {
                 style={style}
                 {...other}
             >
-                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
+                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={24} grayOffline={true} className="flex-none"/>
                 <div className="title text-ellipsis">
                     {name}
                     {subname && <small className="muted">&nbsp; {subname}</small>}
@@ -64,7 +64,7 @@ class ChatListItem extends Component {
                 style={style}
                 {...other}
             >
-                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={20} grayOffline={true} className="flex-none"/>
+                <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={24} grayOffline={true} className="flex-none"/>
                 <div className="title text-ellipsis">
                     {name}
                     {subname && <small className="muted">&nbsp; {subname}</small>}
