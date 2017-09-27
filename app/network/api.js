@@ -50,10 +50,19 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
 };
 
 const createFileDownloadUrl = (user, file) => {
-    return user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}`);
+    return user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}&serverName=${user.serverName}&gid=${user.id}`);
+};
+
+const downloadFile = (user, file, onProgress = null) => {
+    if(!file.url) {
+        const url = createFileDownloadUrl(user, file);
+        file.url = url;
+    }
+    return Platform.net.downloadFile(user, file, onProgress);
 };
 
 export default {
+    downloadFile,
     uploadFile,
     requestServerInfo,
     checkUploadFileSize,

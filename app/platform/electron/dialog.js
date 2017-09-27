@@ -38,7 +38,7 @@ const showSaveDialog = (options, callback) => {
     }, options);
     Remote.dialog.showSaveDialog(ui.browserWindow, options, filename => {
         if(filename) {
-            lastFileSavePath = filename;
+            lastFileSavePath = Path.dirname(filename);
         }
         callback && callback(filename);
     });
@@ -56,29 +56,8 @@ const showRemoteOpenDialog = (options, callback) => {
     Remote.dialog.showOpenDialog(ui.browserWindow, options, callback);
 };
 
-const downloadAndSaveFile = (options, onProgress) => {
-    return new Promise((resolve, reject) => {
-        showSaveDialog({
-            buttonLabel: Lang.string('common.download'),
-            filename: options.name
-        }, filename => {
-            if(filename) {
-                Net.downloadFile(options.url, filename, null, onProgress).then(() => {
-                    resolve({
-                        filename,
-                        save: true
-                    });
-                }).catch(reject);
-            } else {
-                reject(false);
-            }
-        });
-    });
-};
-
 export default {
     showRemoteOpenDialog,
     showSaveDialog,
     showOpenDialog: openFileButton.showOpenDialog,
-    downloadAndSaveFile
 };

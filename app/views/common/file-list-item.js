@@ -27,30 +27,37 @@ class FileListItem extends Component {
     }
 
     handleDownloadBtnClick(file) {
-        Platform.dialog.downloadAndSaveFile(file, progress => {
-            this.setState({download: Math.floor(progress)});
-        }).then(result => {
-            if(result.filename) {
-                const filename = result.filename;
-                Messager.show(Lang.format('file.fileSavedAt.format', filename), {
-                    action: [{
-                        label: Lang.string('file.open'),
-                        click: () => {
-                            Platform.ui.openItem(filename);
+        if(Platform.dialog.showSaveDialog) {
+            Platform.dialog.showSaveDialog({filename: file.name}, filename => {
+                if(filename) {
+                    file.path = filename;
+                    this.setState({download: 0});
+                    API.downloadFile(App.user, file, progress => {
+                        this.setState({download: progress});
+                    }).then(file => {
+                        this.setState({download: false});
+                        Messager.show(Lang.format('file.fileSavedAt.format', filename), {
+                            actions: [{
+                                label: Lang.string('file.open'),
+                                click: () => {
+                                    Platform.ui.openFileItem(filename);
+                                }
+                            }, {
+                                label: Lang.string('file.openFolder'),
+                                click: () => {
+                                    Platform.ui.showItemInFolder(filename);
+                                }
+                            }]
+                        });
+                    }).catch(error => {
+                        this.setState({download: false});
+                        if(error) {
+                            Messager.show(Lang.error(error), {type: 'danger'});
                         }
-                    }, {
-                        label: Lang.string('file.openFolder'),
-                        click: () => {
-                            Platform.ui.openFileItem(filename);
-                        }
-                    }]
-                });
-            }
-        }).catch(error => {
-            if(error) {
-                Messager.show(Lang.error(error), {type: 'danger'});
-            }
-        });
+                    });
+                }
+            });
+        }
     }
 
     render() {
@@ -72,13 +79,13 @@ class FileListItem extends Component {
             const percent = Math.floor(file.send);
             actions = <Avatar className="avatar secondary outline small circle" label={percent + '%'}/>
         } else if(file.send === true) {
-            const fileUrl = API.createFileDownloadUrl(App.profile.user, file);
-            file.url = fileUrl;
+            file.url = API.createFileDownloadUrl(App.profile.user, file);
             if(Platform.type === 'browser') {
-                actions = <div className="hint--top" data-hint={Lang.string('file.download')}><a href={fileUrl} download={fileName} target="_blank" className="btn iconbutton text-primary rounded"><Icon name="download"/></a></div>;
+                actions = <div className="hint--top" data-hint={Lang.string('file.download')}><a href={file.url} download={fileName} target="_blank" className="btn iconbutton text-primary rounded"><Icon name="download"/></a></div>;
             } else {
-                if(this.state.download) {
-                    actions = <Avatar className="avatar secondary outline small circle" label={this.state.download + '%'}/>
+                if(this.state.download !== false) {
+                    fileStatus = <span className="text-primary small">{Lang.string('file.downloading')} </span>;
+                    actions = <Avatar className="avatar secondary outline small circle" label={Math.floor(this.state.download) + '%'}/>
                 } else {
                     actions = <div className="hint--top" data-hint={Lang.string('file.download')}><button onClick={this.handleDownloadBtnClick.bind(this, file)} type="button" className="btn iconbutton text-primary rounded"><Icon name="download"/></button></div>;
                 }

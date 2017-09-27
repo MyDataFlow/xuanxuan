@@ -142,7 +142,7 @@ class Socket {
             this.onClose(code, reason, unexpected);
         }
 
-        if(this.options.onClose) {
+        if(this.options && this.options.onClose) {
             this.options.onClose(this, code, reason, unexpected);
         }
     }

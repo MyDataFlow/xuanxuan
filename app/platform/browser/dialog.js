@@ -16,11 +16,6 @@ const showSaveDialog = (options, callback) => {
     }
 };
 
-const downloadAndSaveFile = (options, onProgress) => {
-    showSaveDialog({fileUrl: options.url});
-    return true;
-};
-
 export default {
     downloadAndSaveFile,
     showSaveDialog,

@@ -1,12 +1,82 @@
 import network from '../common/network';
 import fse from 'fs-extra';
 import Request from 'request';
+import Path from 'path';
+import {userDataPath} from './ui';
+import md5 from 'md5';
 
 const downloadFileOrigin = network.downloadFile;
 
-const downloadFile = (url, fileSavePath, beforeSend, onprogress) => {
-    return downloadFileOrigin(url, beforeSend, onprogress).then(arrayBuffer => {
-        return fse.outputFile(fileSavePath, new Buffer(arrayBuffer));
+const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
+    return new Promise((resolve, reject) => {
+        const headers = {
+            ServerName: user.serverName,
+            Authorization: user.token
+        };
+        const requestOptions = {
+            url,
+            headers,
+            rejectUnauthorized: false,
+        };
+        let onProgressTimer = null;
+        if(onProgress) {
+            let progress = 0;
+            onProgress(0);
+            onProgressTimer = setInterval(() => {
+                progress += (100 - progress)/10;
+                onProgress(progress);
+            }, 1000);
+        }
+        Request.get(requestOptions, (error, response, body) => {
+            if(error || response.statusCode !== 200) {
+                error = error || new Error('Status code is not 200.');
+                if(DEBUG) {
+                    console.collapse('HTTP DOWNLOAD', 'blueBg', url, 'bluePale', error ? 'ERROR' : 'OK', error ? 'redPale' : 'greenPale');
+                    console.log('response', response);
+                    console.log('body', body);
+                    if(error) console.error('error', error);
+                    console.groupEnd();
+                }
+                if(error) {
+                    if(onProgressTimer) {
+                        clearInterval(onProgressTimer);
+                    }
+                    reject(error);
+                }
+            }
+        }).on('error', error => {
+            if(onProgressTimer) {
+                clearInterval(onProgressTimer);
+            }
+            reject(error);
+        }).on('end', () => {
+            if(onProgressTimer) {
+                onProgress(100);
+                clearInterval(onProgressTimer);
+            }
+            setTimeout(resolve, 100);
+            if(DEBUG) {
+                console.collapse('HTTP DOWNLOAD', 'blueBg', url, 'bluePale', 'OK', 'greenPale');
+                console.log('path', fileSavePath);
+                console.groupEnd();
+            }
+        }).pipe(fse.createWriteStream(fileSavePath));
+    });
+};
+
+const downloadFile = (user, file, onProgress) => {
+    const fileSavePath = file.path || Path.join(userDataPath, 'users', user.identify, 'images', md5(file.name + file.id + file.time) + Path.extname(file.name));
+    return fse.pathExists(fileSavePath).then(exists => {
+        if(exists) {
+            file.src = fileSavePath;
+            return Promise.resolve(file);
+        } else {
+            fse.ensureDirSync(Path.dirname(fileSavePath));
+            return downloadFileWithRequest(user, file.url, fileSavePath, onProgress).then(() => {
+                file.src = fileSavePath;
+                return Promise.resolve(file);
+            });
+        }
     });
 };
 
@@ -103,52 +173,50 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
                 }, 1000);
             }
             Request(requestOptions, (error, response, body) => {
-                setTimeout(() => {
-                    if(onProgressTimer) {
-                        clearInterval(onProgressTimer);
-                    }
-                    let json = null;
-                    if(error) {
-                        error.code = 'WRONG_CONNECT';
-                    } else if(response.statusCode === 200) {
-                        try {
-                            let bodyJson = JSON.parse(body);
-                            if(bodyJson.result === 'success' && bodyJson.data) {
-                                bodyJson = bodyJson.data;
-                                json = Array.isArray(bodyJson) && bodyJson.length === 1 ? bodyJson[0] : bodyJson;
-                            } else {
-                                error = new Error('Server return wrong data.');
-                                error.code = 'WRONG_DATA';
-                            }
-                        } catch(err) {
-                            if(body.indexOf("user-deny-attach-upload") > 0) {
-                                err.code = 'USER_DENY_ATTACT_UPLOAD';
-                            } else {err.code = 'WRONG_DATA';}
-                            error = err;
+                if(onProgressTimer) {
+                    clearInterval(onProgressTimer);
+                }
+                let json = null;
+                if(error) {
+                    error.code = 'WRONG_CONNECT';
+                } else if(response.statusCode === 200) {
+                    try {
+                        let bodyJson = JSON.parse(body);
+                        if(bodyJson.result === 'success' && bodyJson.data) {
+                            bodyJson = bodyJson.data;
+                            json = Array.isArray(bodyJson) && bodyJson.length === 1 ? bodyJson[0] : bodyJson;
+                        } else {
+                            error = new Error('Server return wrong data.');
+                            error.code = 'WRONG_DATA';
                         }
-                    } else {
-                        error = new Error('Status code is not 200.');
-                        error.response = response;
-                        error.code = 'WRONG_DATA';
+                    } catch(err) {
+                        if(body.indexOf("user-deny-attach-upload") > 0) {
+                            err.code = 'USER_DENY_ATTACT_UPLOAD';
+                        } else {err.code = 'WRONG_DATA';}
+                        error = err;
                     }
-                    if(DEBUG) {
-                        console.collapse('HTTP UPLOAD Request', 'blueBg', serverUrl, 'bluePale', error ? 'ERROR' : 'OK', error ? 'redPale' : 'greenPale');
-                        console.log('files', file);
-                        console.log('response', response);
-                        console.log('body', body);
-                        if(error) console.error('error', error);
-                        console.groupEnd();
-                    }
+                } else {
+                    error = new Error('Status code is not 200.');
+                    error.response = response;
+                    error.code = 'WRONG_DATA';
+                }
+                if(DEBUG) {
+                    console.collapse('HTTP UPLOAD Request', 'blueBg', serverUrl, 'bluePale', error ? 'ERROR' : 'OK', error ? 'redPale' : 'greenPale');
+                    console.log('files', file);
+                    console.log('response', response);
+                    console.log('body', body);
+                    if(error) console.error('error', error);
+                    console.groupEnd();
+                }
 
-                    if(!error && (!json || !json.id)) {
-                        error = new Error('File data is incorrect.');
-                        error.response = response;
-                        error.code = 'WRONG_DATA';
-                    }
+                if(!error && (!json || !json.id)) {
+                    error = new Error('File data is incorrect.');
+                    error.response = response;
+                    error.code = 'WRONG_DATA';
+                }
 
-                    if(error) reject(error);
-                    else resolve(json);
-                }, DEBUG ? 5000 : 0);
+                if(error) reject(error);
+                else resolve(json);
             });
         };
         if(file.path) {
