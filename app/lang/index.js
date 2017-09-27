@@ -44,8 +44,8 @@ const error = err => {
     if(err.code) {
         message += string(`error.${err.code}`, `[Code: ${err.code}]`);
     }
-    if(err.message) {
-        message += string(`error.${err.message}`, err.message);
+    if(err.message && err.message !== err.code) {
+        message += '(' + string(`error.${err.message}`, err.message) + ')';
     }
     if(err.formats) {
         if(!Array.isArray(err.formats)) {

@@ -21,12 +21,13 @@ const request = (url, options) => {
                 }
                 resolve(response);
             } else {
-                let error = new Error('Status code is not 200.');
-                error.code = 'WRONG_STATUS';
+                let error = new Error(response.statusMessage || 'Status code is not 200.');
+                error.code = response.statusMessage || 'WRONG_STATUS';
                 if(DEBUG) {
                     console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', error.code || 'ERROR', 'redPale');
                     console.log('options', options);
                     console.log('error', error);
+                    console.log('response', response);
                     console.groupEnd();
                 }
                 reject(error);
