@@ -34,7 +34,7 @@ class chat extends control
      * @access public
      * @return void
      */
-    public function login($account = '', $password = '', $status = 'online')
+    public function login($account = '', $password = '', $status = '')
     {
         $password = md5($password . $account);
         $user     = $this->loadModel('user')->identify($account, $password);
