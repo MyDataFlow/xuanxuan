@@ -110,15 +110,15 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
     }
 
     //新增加验证方式
-    sid := r.Form["sid"][0]
-    gid := r.Form["gid"][0]
-    session,err :=util.GetUid(serverName, gid)
+    reqSid := r.Form["sid"][0]
+    reqGid := r.Form["gid"][0]
+    session,err :=util.GetUid(serverName, reqGid)
     util.Println("file_session:",session)
     if err!=nil {
         fmt.Fprintln(w, "not supported request")
         return
     }
-    if sid != string(util.GetMD5( session  + reqFileName )) {
+    if reqSid != string(util.GetMD5( session  + reqFileName )) {
         w.WriteHeader(http.StatusUnauthorized)
         return
     }
