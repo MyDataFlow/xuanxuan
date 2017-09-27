@@ -169,6 +169,7 @@
   "dependencies": {
     "aes-js": "^3.1.0",
     "clipboard-js": "^0.3.5",
+    "compare-versions": "^3.1.0",
     "dexie": "^2.0.0-beta.11",
     "draft-js": "^0.10.0",
     "electron-debug": "^1.1.0",

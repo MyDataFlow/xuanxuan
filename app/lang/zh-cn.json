@@ -57,6 +57,9 @@
     "error.USER_INFO_REQUIRED": "用户信息不可用。",
     "error.SOCKET_AbnormalClosure": "与服务器的连接意外终止。",
     "error.Unauthorized": "用户验证失败，用户名或密码不正确。",
+    "error.SERVER_VERSION_UNKNOWN": "未知的服务器版本。",
+    "error.SERVER_VERSION_NOT_SUPPORT": "当前客户端（{0}）不支持所连接服务器版本 {1}，需要服务器版本为 {2} 以上。",
+    "error.SERVER_VERSION_NOT_SUPPORT_IN_BROWSER": "浏览器端（{0}）不支持所连接服务器版本 {1}，需要服务器版本为 {2} 以上。",
 
     "login.serverUrl.label": "服务器",
     "login.serverUrl.hint": "https://xuanxuan.chat",
