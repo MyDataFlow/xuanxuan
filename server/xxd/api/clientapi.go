@@ -192,6 +192,22 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
 	return retData, nil
 }
 
+func UserFileSessionID(serverName string, userID int64) ([]byte , error) {
+    sessionID := util.GetMD5( serverName + util.Int642String(userID) + util.Int642String(util.GetUnixTime()) )
+    sessionData := []byte(`{"module":"chat","method":"SessionID","sessionID":"` + sessionID + `"}`)
+
+    //将sessionID 存入公共空间
+    util.CreatUid(serverName, userID,sessionID)
+
+    sessionData, err := aesEncrypt(sessionData, util.Token)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil, err
+    }
+
+    return sessionData , nil
+}
+
 func Getlist(serverName string, userID int64) ([]byte, error) {
 	ranzhiServer, ok := RanzhiServer(serverName)
 	if !ok {

@@ -98,30 +98,30 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    serverName := r.Header.Get("ServerName")
-    if serverName == "" {
-        serverName = util.Config.DefaultServer
-    }
-
-    //Memory 注释取消 get中的token
-    auth := r.Header.Get("Authorization")
-    if auth != string(util.Token) {
-        w.WriteHeader(http.StatusUnauthorized)
-        return
-    }
-
-    //新增加验证方式  hash(user.token+sessionID)
-    //auth := r.Header.Get("sid")
-    //if auth != string(GetMD5(util.Token)) {
-    //    w.WriteHeader(http.StatusUnauthorized)
-    //    return
-    //}
-
 
     r.ParseForm()
     reqFileName := r.Form["fileName"][0]
     reqFileTime := r.Form["time"][0]
     reqFileID := r.Form["id"][0]
+
+    serverName := r.Form["ServerName"][0]
+    if serverName == "" {
+        serverName = util.Config.DefaultServer
+    }
+
+    //新增加验证方式
+    sid := r.Form["sid"][0]
+    gid := r.Form["gid"][0]
+    session,err :=util.GetUid(serverName, gid)
+    util.Println("file_session:",session)
+    if err!=nil {
+        fmt.Fprintln(w, "not supported request")
+        return
+    }
+    if sid != string(util.GetMD5( session  + reqFileName )) {
+        w.WriteHeader(http.StatusUnauthorized)
+        return
+    }
 
     fileTime, err := util.String2Int64(reqFileTime)
     if err != nil {
