@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import InputControl from '../../components/input-control';
+import Modal from '../../components/modal';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import HTML from '../../utils/html-helper';
@@ -71,7 +72,31 @@ class FormView extends Component {
                 logining: true,
                 message: '',
             }, () => {
-                this.login()
+                const {serverUrl} = this.state;
+                if(serverUrl.toLowerCase().startsWith('http://')) {
+                    Modal.confirm(<div>
+                        <h4>{Lang.format('login.nonSecurity.confirm', serverUrl)}</h4>
+                        <div className="text-gray">{Lang.string('login.nonSecurity.detail')}</div>
+                    </div>, {
+                        actions: [
+                            {type: 'cancel'},
+                            {type: 'submit', label: Lang.string('login.nonSecurity.btn'), className: 'danger-pale text-danger'},
+                        ],
+                        style: {maxWidth: 500},
+                        className: 'app-login-nonSecurity-dialog',
+                    }).then(result => {
+                        if(result) {
+                            this.login();
+                        } else {
+                            this.setState({
+                                logining: false,
+                                message: '',
+                            });
+                        }
+                    });
+                } else {
+                    this.login();
+                }
             });
         }
 
