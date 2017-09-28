@@ -180,7 +180,7 @@ class AppRemote {
             url: `index.html`,
             autoHideMenuBar: !IS_MAC_OSX,
             backgroundColor: '#FFF',
-            show: DEBUG,
+            show: false,
             webPreferences: {webSecurity: false}
         }, options);
 
@@ -204,7 +204,8 @@ class AppRemote {
         browserWindow.webContents.on('did-finish-load', () => {
             if(options.showAfterLoad) {
                 options.beforeShow && options.beforeShow(browserWindow, name);
-                this.showAndFocusWindow(browserWindow);
+                browserWindow.show();
+                browserWindow.focus();
                 options.afterShow && options.afterShow(browserWindow, name);
             }
             if(options.onLoad) {

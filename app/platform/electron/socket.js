@@ -155,7 +155,7 @@ class Socket {
         if(this.onConnectFail) {
             this.onConnectFail(e);
         }
-        if(this.options.onConnectFail) {
+        if(this.options && this.options.onConnectFail) {
             this.options.onConnectFail(e);
         }
     }

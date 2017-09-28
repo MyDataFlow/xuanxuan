@@ -12,9 +12,18 @@ import User from '../../core/profile/user';
 
 const simpleServerUrl = serverUrl => {
     if(serverUrl) {
-        const simpleServer = new URL(serverUrl);
-        if(simpleServer.port === '11443') {
-            serverUrl = serverUrl.replace(':11443', '');
+        if(!serverUrl.startsWith('http://') && !serverUrl.startsWith('https://')) {
+            serverUrl = 'https://' + serverUrl;
+        }
+        try {
+            const simpleServer = new URL(serverUrl);
+            if(simpleServer.port === '11443') {
+                serverUrl = serverUrl.replace(':11443', '');
+            }
+        } catch(e) {
+            if(DEBUG) {
+                console.error('Cannot parse url ', serverUrl, e);
+            }
         }
     }
     return serverUrl;
@@ -50,7 +59,7 @@ class FormView extends Component {
                 if(DEBUG) {
                     console.error('Login failed with error:', error);
                 }
-                this.setState({message: Lang.error(error), logining: false});
+                this.setState({message: error ? Lang.error(error) : null, logining: false});
             });
         }
 

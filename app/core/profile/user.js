@@ -124,7 +124,16 @@ class User extends Member {
         this.status = Member.STATUS.unverified;
     }
 
+    get isLogging() {
+        return this._isLogging;
+    }
+
+    beginLogin() {
+        this._isLogging = true;
+    }
+
     endLogin(result) {
+        this._isLogging = false;
         if(result) {
             this.status = Member.STATUS.logined;
         } else if(!this.isDisconnect) {

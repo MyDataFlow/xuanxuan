@@ -169,7 +169,7 @@ class AppSocket extends Socket {
                         this.startPing();
                         resolve(user);
                     } else {
-                        reject();
+                        reject('Login result is not success.');
                     }
                     this.isLogging = false;
                 }).catch(reject);

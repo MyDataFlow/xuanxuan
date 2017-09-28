@@ -9,7 +9,7 @@ import notify from './notify';
 import config from '../common/config'
 import net from '../common/network';
 
-export default {
+const platform = {
     type: 'browser',
     Socket,
     clipboard,
@@ -22,3 +22,9 @@ export default {
     sound,
     net,
 };
+
+if(DEBUG) {
+    global.$.Platform = platform;
+}
+
+export default platform;

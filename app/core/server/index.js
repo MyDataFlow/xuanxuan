@@ -67,6 +67,7 @@ const login = (user) => {
         return Promise.reject(error);
     }
 
+    user.beginLogin();
     return limitTimePromise(API.requestServerInfo(user), TIMEOUT).then(user => {
         const versionError = checkServerVersion(user.serverVersion);
         if(versionError) {
@@ -82,7 +83,7 @@ const login = (user) => {
         return Promise.resolve(user);
     }).catch(error => {
         user.endLogin(false);
-        Events.emit(EVENT.login, false);
+        Events.emit(EVENT.login, false, error);
         return Promise.reject(error);
     });
 };
