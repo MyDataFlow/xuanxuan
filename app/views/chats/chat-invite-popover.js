@@ -13,7 +13,7 @@ const show = (position, chat, callback) => {
     return Popover.show(
         position,
         <ChatInvite chat={chat} onRequestClose={onRequestClose}/>,
-        {id: popoverId, width: 480, height: 400},
+        {id: popoverId, width: 490, height: 400},
         callback
     );
 };

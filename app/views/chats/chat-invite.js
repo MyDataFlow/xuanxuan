@@ -97,26 +97,28 @@ class ChatInvite extends Component {
                     <button type="button" disabled={!choosedItems.length} className="btn primary rounded btn-wide" onClick={this.handleInviteBtnClick}>{Lang.string('chat.invite')}</button>
                 </div>
             </div>
-            <div className="scroll-y flex-auto">
-                {
-                    choosedItems.length ? <div className="list compact divider space-sm">
-                        <div className="heading fluid">
-                            <div className="title text-accent">{Lang.string('chat.invite.choosed')} ({choosedItems.length})</div>
-                        </div>
-                        {
-                            choosedItems.map(member => {
-                                return <MemberListItem onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member}/>
-                            })
-                        }
-                        <div className="space-sm fluid"></div>
-                    </div> : null
-                }
-                <div className="list compact">
-                {
-                    items.map(member => {
-                        return <MemberListItem key={member.id} onClick={this.handleMemberItemClick.bind(this, member)} member={member}/>
-                    })
-                }
+            <div className="flex-auto">
+                <div className="scroll-y" style={{maxHeight: 352}}>
+                    {
+                        choosedItems.length ? <div className="list compact divider space-sm">
+                            <div className="heading fluid">
+                                <div className="title text-accent">{Lang.string('chat.invite.choosed')} ({choosedItems.length})</div>
+                            </div>
+                            {
+                                choosedItems.map(member => {
+                                    return <MemberListItem onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member}/>
+                                })
+                            }
+                            <div className="space-sm fluid"></div>
+                        </div> : null
+                    }
+                    <div className="list compact">
+                    {
+                        items.map(member => {
+                            return <MemberListItem key={member.id} onClick={this.handleMemberItemClick.bind(this, member)} member={member}/>
+                        })
+                    }
+                    </div>
                 </div>
             </div>
         </div>;
