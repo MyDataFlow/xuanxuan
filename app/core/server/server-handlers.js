@@ -23,7 +23,7 @@ const chatLogin = (msg, socket) => {
 const chatLogout = (msg, socket) => {
     if(msg.isSuccess) {
         const user = socket.user;
-        if(msg.data.id === user.id) {
+        if(msg.data.id === user.id && socket.isConnecting) {
             user.markUnverified();
             socket.close();
         } else {

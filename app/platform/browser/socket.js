@@ -65,6 +65,10 @@ class Socket {
         return this.isStatus(STATUS.OPEN);
     }
 
+    get isConnecting() {
+        return this.isStatus(STATUS.CONNECTING);
+    }
+
     isStatus(status) {
         return this._status.is(status);
     }
