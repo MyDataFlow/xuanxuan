@@ -3,16 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title>喧喧</title>
+    <link rel="shortcut icon" type="image/x-icon" href="resources/favicon.ico">
+    <script src="assets/pace/pace.min.js" data-pace-options='{ "restartOnPushState": false, "initialRate": 0.01 }'></script>
+    <link href="assets/pace/pace-theme-minimal.min.css" rel="stylesheet" />
     <script>
-      (function() {
-        if (!process.env.HOT) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = './dist/style.css';
-          // HACK: Writing the script path should be done with webpack
-          document.getElementsByTagName('head')[0].appendChild(link);
+    (function() {
+        if(typeof global === 'undefined') {
+            window.global = window;
         }
-      }());
+        const process = global.process || {type: 'renderer', env: {HOT: window.location.search.includes('hot'), port: 3000}};
+        if(typeof DEBUG === 'undefined') {
+            window.DEBUG = window.location.search.includes('debug=1');
+        }
+        if (!process.env.HOT) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = './dist/style.css';
+            // HACK: Writing the script path should be done with webpack
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    }());
     </script>
   </head>
   <body>
@@ -25,7 +35,8 @@
     </div>
     <input style="position: fixed!important; bottom: -50px!important; left: 0!important; opacity: 0!important;" type="file" id="fileOpenButton" />
     <script>
-      {
+    {
+        const process = global.process || {type: 'renderer', env: {HOT: window.location.search.includes('hot'), port: 3000}};
         const script = document.createElement('script');
         const port = process.env.PORT || 3000;
         script.src = (process.env.HOT)
@@ -33,7 +44,7 @@
           : './dist/bundle.js';
         // HACK: Writing the script path should be done with webpack
         document.body.appendChild(script);
-      }
+    }
     </script>
   </body>
 </html>
