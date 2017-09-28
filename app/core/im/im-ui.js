@@ -414,6 +414,10 @@ chats.onChatsInit(initChats => {
     if(!activedChatId) {
         const lastActiveChat = chats.getLastActiveChat();
         activedChatId = lastActiveChat && lastActiveChat.gid;
+        lastActiveChat.makeActive();
+        if(window.location.hash.startsWith('#/chats/')) {
+            window.location.hash = `#/chats/recents/${activedChatId}`;
+        }
     }
 });
 
