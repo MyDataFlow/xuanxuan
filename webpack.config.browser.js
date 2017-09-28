@@ -63,7 +63,7 @@ export default validate(merge(baseConfig, {
 
     plugins: [
 
-        // new UglifyJsPlugin(),
+        new UglifyJsPlugin(),
 
         // https://webpack.github.io/docs/list-of-plugins.html#occurrenceorderplugin
         // https://github.com/webpack/webpack/issues/864

@@ -9,7 +9,6 @@ import webpack from 'webpack';
 import validate from 'webpack-validator';
 import merge from 'webpack-merge';
 import baseConfig from './webpack.config.base';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 const port = process.env.PORT || 3000;
 
@@ -65,8 +64,6 @@ export default validate(merge(baseConfig, {
     },
 
     plugins: [
-
-        new UglifyJsPlugin(),
 
         // https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
         new webpack.HotModuleReplacementPlugin(),
