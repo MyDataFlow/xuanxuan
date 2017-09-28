@@ -12,6 +12,7 @@ import MemberProfileDialog from '../common/member-profile-dialog';
 import ContextMenu from '../../components/context-menu';
 import Icon from '../../components/icon';
 import MessageBroadcast from './message-broadcast';
+import Lang from '../../lang';
 
 const showTimeLabelInterval = 1000*60*5;
 
