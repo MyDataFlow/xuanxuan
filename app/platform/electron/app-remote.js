@@ -180,7 +180,7 @@ class AppRemote {
             url: `index.html`,
             autoHideMenuBar: !IS_MAC_OSX,
             backgroundColor: '#FFF',
-            show: false,
+            show: DEBUG,
             webPreferences: {webSecurity: false}
         }, options);
 
