@@ -53,7 +53,7 @@ class StatusDot extends Component {
 
         if(label) {
             if(label === true) {
-                label = Lang.string(`member.status.${status}`);
+                label = Lang.string(`member.status.${status === 'unverified' ? 'offline' : status}`);
             }
             return <div className="app-member-status">{dotView} &nbsp; <span className="status-label muted">{label}</span></div>;
         } else {

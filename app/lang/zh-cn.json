@@ -211,10 +211,6 @@
     "usermenu.exit": "退出",
 
     "member.status.unverified":   "未登录",
-    "member.status.loginFailed":  "登录失败",
-    "member.status.waitReconnect":"等待重连",
-    "member.status.logining":     "正在登录",
-    "member.status.reconnecting": "正在重连",
     "member.status.disconnect":   "掉线了",
     "member.status.logined":      "登录成功",
     "member.status.online":       "在线",
