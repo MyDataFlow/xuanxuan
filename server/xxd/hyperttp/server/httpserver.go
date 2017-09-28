@@ -18,6 +18,7 @@ import (
     //"strings"
     "xxd/api"
     "xxd/util"
+    "math/rand"
 )
 
 type retCInfo struct {
@@ -100,7 +101,6 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-
     r.ParseForm()
     reqFileName := r.Form["fileName"][0]
     reqFileTime := r.Form["time"][0]
@@ -144,28 +144,39 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 }
 
 func fileUpload(w http.ResponseWriter, r *http.Request) {
+    w.Header().Add("Access-Control-Allow-Origin", "*")
+    w.Header().Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE")
+    w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-FILENAME")
+    w.Header().Add("Access-Control-Allow-Credentials", "true")
+
     if r.Method != "POST" {
         fmt.Fprintln(w, "not supported request")
         return
     }
 
     //util.Println(r.Header)
-    serverName := r.Header.Get("ServerName")
+    r.ParseForm()
+    serverName := r.Form["ServerName"][0]
+    if serverName == "" {
+        serverName = r.Header.Get("ServerName")
+    }
     if serverName == "" {
         serverName = util.Config.DefaultServer
     }
 
-    authorization := r.Header.Get("Authorization")
-    if authorization != string(util.Token) {
-        w.WriteHeader(http.StatusUnauthorized)
-        return
-    }
+    //  使用新的验证方式
+    // authorization := r.Header.Get("Authorization")
+    // if authorization != string(util.Token) {
+    //     w.WriteHeader(http.StatusUnauthorized)
+    //     return
+    // }
 
     r.ParseMultipartForm(32 << 20)
 
     file, handler, err := r.FormFile("file")
     if err != nil {
         util.LogError().Println("form file error:", err)
+        fmt.Fprintln(w, "form file error")
         return
     }
     defer file.Close()
@@ -175,6 +186,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
     if err := util.Mkdir(savePath); err != nil {
         util.LogError().Println("mkdir error:", err)
         w.WriteHeader(http.StatusInternalServerError)
+        fmt.Fprintln(w, "mkdir error")
         return
     }
 
@@ -191,12 +203,14 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
     if fileSize <= 0 {
         util.LogError().Println("get file size error")
         w.WriteHeader(http.StatusInternalServerError)
+        fmt.Fprintln(w, "get file size error")
         return
     }
 
     if fileSize > util.Config.UploadFileSize {
         // 400
         w.WriteHeader(http.StatusBadRequest)
+        fmt.Fprintln(w, "file is too large")
         return
     }
 
@@ -213,7 +227,11 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         util.LogError().Println("Upload file info error:", err)
         w.WriteHeader(http.StatusInternalServerError)
+        fmt.Fprintln(w, "Upload file info error")
         return
+    }
+    if fileID == "" {
+        fileID = fmt.Sprintf("%d", rand.Intn(999999) + 1)
     }
 
     // new file name = md5(old filename + fileID + nowTime)
@@ -223,6 +241,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         util.LogError().Println("open file error:", err)
         w.WriteHeader(http.StatusInternalServerError)
+        fmt.Fprintln(w, "open file error")
         return
     }
     defer f.Close()
@@ -240,6 +259,7 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
     w.Header().Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE")
     w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
     w.Header().Add("Access-Control-Allow-Credentials", "true")
+
     if r.Method != "POST" {
         fmt.Fprintln(w, "not supported request")
         return
