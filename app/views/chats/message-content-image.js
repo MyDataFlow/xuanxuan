@@ -14,26 +14,37 @@ class MessageContentImageView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            download: 0,
+            download: false,
             url: ''
         };
     }
 
     downloadImage(image) {
-        API.downloadFile(App.user, image, progress => {
-            this.setState({download: progress});
-        }).then(file => {
-            this.setState({url: image.src});
-            this.setState({download: true});
-        }).catch(error => {
-            this.setState({download: false});
-        });
+        if(this.state.download === false || this.state.download === true) {
+            API.downloadFile(App.user, image, progress => {
+                this.setState({download: progress});
+            }).then(file => {
+                this.setState({url: image.src});
+                this.setState({download: true});
+            }).catch(error => {
+                this.setState({download: false});
+            });
+        }
     }
 
     componentDidMount() {
         const {message} = this.props;
         const image = message.imageContent;
         if(image.id && image.send === true) {
+            this.downloadImage(image);
+        }
+    }
+
+
+    componentDidUpdate() {
+        const {message} = this.props;
+        const image = message.imageContent;
+        if(!this.state.url && image.id && image.send === true) {
             this.downloadImage(image);
         }
     }
