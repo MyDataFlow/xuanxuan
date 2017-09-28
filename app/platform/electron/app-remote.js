@@ -115,8 +115,8 @@ class AppRemote {
             this.tray.destroy();
         }
         // Make tray icon
-        let tray = new Tray(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`);
-        let trayContextMenu = Menu.buildFromTemplate([
+        const tray = new Tray(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`);
+        const trayContextMenu = Menu.buildFromTemplate([
             {
                 label: Lang.string('common.open'),
                 click: () => {
@@ -125,7 +125,7 @@ class AppRemote {
             }, {
                 label: Lang.string('common.exit'),
                 click: () => {
-                    this.mainWindow.webContents.send(R.event.app_quit);
+                    this.mainWindow.webContents.send(EVENT.remote_app_quit);
                 }
             }
         ]);
@@ -138,8 +138,8 @@ class AppRemote {
         });
         this.tray = tray;
         this._trayIcons = [
-            nativeImage.createFromPath(`${__dirname}/img/tray-icon-16.png`),
-            nativeImage.createFromPath(`${__dirname}/img/tray-icon-transparent.png`)
+            nativeImage.createFromPath(`${this.entryPath}/img/tray-icon-16.png`),
+            nativeImage.createFromPath(`${this.entryPath}/img/tray-icon-transparent.png`)
         ];
         this._trayIconCounter = 0;
     }
@@ -336,7 +336,7 @@ class AppRemote {
         if(flash) {
             if(!this._flashTrayIconTask) {
                 this._flashTrayIconTask = setInterval(() => {
-                    this.tray.setImage(this._trayIcons[this._trayIconCounter++%2]);
+                    this.tray.setImage(this._trayIcons[(this._trayIconCounter++)%2]);
                 }, 400);
             }
         } else {

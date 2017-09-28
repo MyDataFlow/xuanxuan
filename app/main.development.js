@@ -46,7 +46,6 @@ const installExtensions = async() => {
 };
 
 const createMenu = () => {
-
     // Create application menu
     if (process.platform === 'darwin') {
         const template = [{
