@@ -39,10 +39,8 @@ app/bundle.js
 app/bundle.js.map
 app/style.css
 app/style.css.map
-dist
-web-dist
-main.js
-main.js.map
+app/dist
+app/web-dist
 
 # User custom files
 *.custom
