@@ -152,7 +152,7 @@ export default {
     showQuitConfirmDialog,
     quit,
 
-    get isWindowsFocus() {
+    get isWindowFocus() {
         return browserWindow.isFocused();
     },
 

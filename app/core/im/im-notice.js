@@ -3,7 +3,7 @@ import ui from './im-ui';
 import DelayAction from '../../utils/delay-action';
 import notice from '../notice';
 import Lang from '../../lang';
-import {ui as PlatformUI, type as PlatformType} from 'Platform';
+import Platform from 'Platform';
 import profile from '../profile';
 import members from '../members';
 import HTML from '../../utils/html-helper';
@@ -37,24 +37,27 @@ const updateChatNoticeTask = new DelayAction(() => {
 
     chats.forEach(chat => {
         if(chat.noticeCount) {
-            const isWindowFocus = PlatformUI.isWindowFocus;
+
+            const isWindowFocus = Platform.ui.isWindowFocus;
             const isActiveChat = ui.isActiveChat(chat.gid);
-            if(!isWindowFocus || !isActiveChat) {
+            if(isWindowFocus && isActiveChat) {
+                const mutedMessages = chat.muteNotice();
+                if(mutedMessages && mutedMessages.length) {
+                    chats.saveChatMessages(chat.messages, chat);
+                }
+            } else {
                 total += chat.noticeCount;
                 const chatLastMessage = chat.lastMessage;
                 if(chatLastMessage && (!lastChatMessage || lastChatMessage.date < chatLastMessage.date)) {
                     lastChatMessage = chatLastMessage;
                     lastNoticeChat = chat;
                 }
-            } else if(isWindowFocus && isActiveChat) {
-                chat.muteNotice();
-                chats.saveChatMessages(chat.messages, chat);
             }
         }
     });
 
     let message = null;
-    if(total && userConfig.enableWindowNotification && (PlatformType === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
+    if(total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
         message = userConfig.safeWindowNotification ? {
             title: Lang.format('notification.receviedMessages.format', total),
         } : {
@@ -70,8 +73,8 @@ const updateChatNoticeTask = new DelayAction(() => {
         }
         message.click = () => {
             window.location.hash = `#/chats/recents/${lastNoticeChat.gid}`;
-            if(PlatformUI.showAndFocusWindow) {
-                PlatformUI.showAndFocusWindow();
+            if(Platform.ui.showAndFocusWindow) {
+                Platform.ui.showAndFocusWindow();
             }
         }
     }
@@ -95,7 +98,7 @@ const runChatNoticeTask = () => {
 
 chats.onChatMessages(runChatNoticeTask);
 
-PlatformUI.onWindowFocus(() => {
+Platform.ui.onWindowFocus(() => {
     const activedChat = ui.currentActiveChat;
     if(lastNoticeChat && lastNoticeChat.noticeCount && (!activedChat || (!activedChat.noticeCount && activedChat.gid !== lastNoticeChat.gid))) {
         window.location.hash = `#/chats/recents/${lastNoticeChat.gid}`;

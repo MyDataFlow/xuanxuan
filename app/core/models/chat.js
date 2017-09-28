@@ -472,9 +472,14 @@ class Chat extends Entity {
 
     muteNotice() {
         this._noticeCount = 0;
+        const mutedMessages = [];
         this._messages.forEach(message => {
-            message.unread = false;
+            if(message.unread) {
+                message.unread = false;
+                mutedMessages.push(message);
+            }
         });
+        return mutedMessages;
     }
 
     get messages() {
