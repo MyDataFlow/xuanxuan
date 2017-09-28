@@ -167,6 +167,7 @@ class AppSocket extends Socket {
                 this.listenMessage('chat', 'login').then((result, msg) => {
                     if(result) {
                         this.startPing();
+                        this.syncUserSettings();
                         resolve(user);
                     } else {
                         reject('Login result is not success.');
@@ -198,8 +199,11 @@ class AppSocket extends Socket {
 
     logout() {
         if(this.isConnected) {
-            this.markClose();
-            this.send('logout');
+            this.uploadUserSettings();
+            setTimeout(() => {
+                this.markClose();
+                this.send('logout');
+            }, 500);
         } else {
             this.markClose();
             this.handleClose(null, 'logout');
