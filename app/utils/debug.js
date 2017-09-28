@@ -14,7 +14,7 @@ if(global.DEBUG) {
         return console._error(errMessage, ...args);
     };
 
-    if(process.type === 'renderer') {
+    if(process.browser || process.type === 'renderer') {
         const STYLE = {
             rounded: 'border-radius: 3px;',
             block: 'display: block;',
