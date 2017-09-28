@@ -102,16 +102,18 @@ class ChangeFontView extends Component {
             <input className="fluid" type="range" min="0" value={this.state.select} max={CONFIGS.length-1} step="1" onChange={this.handleSliderChange}/>
         </div>
     }
-
-    static show(position, callback) {
-        const popoverId = 'app-chat-change-font-popover';
-        return Popover.show(
-            position,
-            <ChangeFontView/>,
-            {id: popoverId, width: 250, height: 80},
-            callback
-        );
-    }
 };
 
-export default ChangeFontView;
+const show = (position, callback) => {
+    const popoverId = 'app-chat-change-font-popover';
+    return Popover.show(
+        position,
+        <ChangeFontView/>,
+        {id: popoverId, width: 250, height: 80},
+        callback
+    );
+};
+
+export default {
+    show
+};
