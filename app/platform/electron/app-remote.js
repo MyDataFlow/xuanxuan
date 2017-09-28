@@ -194,7 +194,7 @@ class AppRemote {
             delete windowSetting[optionName];
         });
         browserWindow = new BrowserWindow(windowSetting);
-        if(DEBUG) console.log('\n>> Create window with settings', windowSetting);
+        // if(DEBUG) console.log('\n>> Create window with settings', windowSetting);
         this.windows[name] = browserWindow;
         browserWindow.on('closed', () => {
             delete this.windows[name];
@@ -237,9 +237,9 @@ class AppRemote {
             });
         }
 
-        if(DEBUG) {
-            console.log('\n>> Create window', name, url, options);
-        }
+        // if(DEBUG) {
+        //     console.log('\n>> Create window', name, url, options);
+        // }
 
         return browserWindow;
     }
