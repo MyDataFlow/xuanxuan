@@ -23,11 +23,9 @@ class Events extends EventEmitter {
     constructor() {
         super();
         this.eventsMap     = {};
-        this.isMainProcess = process.type !== 'renderer';
-        this.setMaxListeners(20);
-
-        if(!DEBUG) {
-            this.setMaxListeners(0);
+        this.isMainProcess = !process.browser && process.type !== 'renderer';
+        if(this.setMaxListeners) {
+            this.setMaxListeners(20);
         }
     }
 
