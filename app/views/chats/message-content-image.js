@@ -8,6 +8,9 @@ import Icon from '../../components/icon';
 import API from '../../network/api';
 import Avatar from '../../components/avatar';
 import ImageViewer from '../../components/image-viewer';
+import Platform from 'Platform';
+
+const isBrowser = Platform.type === 'browser';
 
 class MessageContentImageView extends Component {
 
@@ -17,6 +20,11 @@ class MessageContentImageView extends Component {
             download: false,
             url: ''
         };
+        if(isBrowser) {
+            const {message} = this.props;
+            const image = message.imageContent;
+            this.state.url = API.createFileDownloadUrl(App.user, image);
+        }
     }
 
     downloadImage(image) {
@@ -35,18 +43,14 @@ class MessageContentImageView extends Component {
     componentDidMount() {
         const {message} = this.props;
         const image = message.imageContent;
-        if(image.id && image.send === true) {
+        if(!this.state.url && image.id && image.send === true) {
             this.downloadImage(image);
         }
     }
 
 
     componentDidUpdate() {
-        const {message} = this.props;
-        const image = message.imageContent;
-        if(!this.state.url && image.id && image.send === true) {
-            this.downloadImage(image);
-        }
+        this.componentDidMount();
     }
 
     render() {

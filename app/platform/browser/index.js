@@ -8,7 +8,7 @@ import ui from './ui';
 import dialog from './dialog';
 import notify from './notify';
 import config from '../common/config'
-import net from '../common/network';
+import net from './net';
 
 const platform = {
     type: 'browser',

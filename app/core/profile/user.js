@@ -253,7 +253,7 @@ class User extends Member {
     }
 
     get uploadUrl() {
-        return this.makeServerUrl('upload');
+        return this.makeServerUrl(`upload?ServerName=${this.serverName}&gid=${this.id}&sid=${Md5(this.sessionID + this.id)}`);
     }
 
     get identify() {
