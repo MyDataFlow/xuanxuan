@@ -177,6 +177,15 @@ if(Platform.ui.quit) {
     };
 }
 
+if(Platform.ui.onWindowMinimize) {
+    Platform.ui.onWindowMinimize(() => {
+        const userConfig = profile.userConfig;
+        if(userConfig && userConfig.removeFromTaskbarOnHide) {
+            Platform.ui.setShowInTaskbar(false);
+        }
+    });
+}
+
 export default {
     get canQuit() {
         return !!Platform.ui.quit;

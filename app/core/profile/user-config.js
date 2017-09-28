@@ -222,6 +222,14 @@ class UserConfig {
     set appCloseOption(option) {
         return this.set('ui.app.onClose', option);
     }
+
+    get removeFromTaskbarOnHide() {
+        return this.get('ui.app.removeFromTaskbarOnHide');
+    }
+
+    set removeFromTaskbarOnHide(option) {
+        return this.set('ui.app.removeFromTaskbarOnHide', option);
+    }
 }
 
 export default UserConfig;

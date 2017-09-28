@@ -94,6 +94,10 @@ const onWindowFocus = listener => {
     browserWindow.on('focus', listener);
 };
 
+const onWindowMinimize = listener => {
+    browserWindow.on('minimize', listener);
+};
+
 remote.onRequestQuit(() => {
     quit();
 });
@@ -120,6 +124,10 @@ const showQuitConfirmDialog = (callback) => {
     });
 };
 
+browserWindow.on('restore', () => {
+    setShowInTaskbar(true);
+});
+
 export default {
     userDataPath,
     browserWindow,
@@ -130,6 +138,7 @@ export default {
     openFileItem: shell.openItem,
     setBadgeLabel,
     setShowInTaskbar,
+    onWindowMinimize,
     setTrayTooltip,
     flashTrayIcon,
     onRequestQuit,
