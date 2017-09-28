@@ -180,7 +180,8 @@ class AppRemote {
             url: `index.html`,
             autoHideMenuBar: !IS_MAC_OSX,
             backgroundColor: '#FFF',
-            show: DEBUG
+            show: DEBUG,
+            webPreferences: {webSecurity: false}
         }, options);
 
         let browserWindow = this.windows[name];
