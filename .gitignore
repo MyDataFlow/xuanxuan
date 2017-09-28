@@ -55,3 +55,6 @@ server/xxd/certificate
 # documentation
 docs
 issues.md
+
+# xxd tmp files
+server/xxd/tmpfile
