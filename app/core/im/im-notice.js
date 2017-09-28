@@ -37,7 +37,6 @@ const updateChatNoticeTask = new DelayAction(() => {
 
     chats.forEach(chat => {
         if(chat.noticeCount) {
-
             const isWindowFocus = Platform.ui.isWindowFocus;
             const isActiveChat = ui.isActiveChat(chat.gid);
             if(isWindowFocus && isActiveChat) {

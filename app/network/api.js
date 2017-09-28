@@ -8,8 +8,7 @@ const isUserLogining = false;
  * @param {Object} user
  */
 const requestServerInfo = user => {
-    let form = new FormData();
-    form.append('data', JSON.stringify({
+    const postData = JSON.stringify({
         'module': 'chat',
         'method': 'login',
         params: [
@@ -18,8 +17,11 @@ const requestServerInfo = user => {
             user.passwordMD5,
             ''
         ]
-    }));
-    return Platform.net.postJSON(user.webServerInfoUrl, form).then(data => {
+    });
+    return Platform.net.postJSON(user.webServerInfoUrl, {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        body: `data=${postData}`
+    }).then(data => {
         if(data) {
             user.socketPort     = data.chatPort;
             user.token          = data.token;
