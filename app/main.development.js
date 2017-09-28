@@ -1,5 +1,6 @@
 import electron, {
     app as ElectronApp,
+    Menu,
 }                   from 'electron';
 import DEBUG        from './utils/debug';
 import application  from './platform/electron/app-remote';
@@ -44,12 +45,158 @@ const installExtensions = async() => {
     }
 };
 
+const createMenu = () => {
+
+    // Create application menu
+    if (process.platform === 'darwin') {
+        const template = [{
+            label: Lang.string('app.title'),
+            submenu: [{
+                label: Lang.string('menu.about'),
+                selector: 'orderFrontStandardAboutPanel:'
+            }, {
+                type: 'separator'
+            }, {
+                label: 'Services',
+                submenu: []
+            }, {
+                type: 'separator'
+            }, {
+                label: Lang.string('menu.hideCurrentWindow'),
+                accelerator: 'Command+H',
+                selector: 'hide:'
+            }, {
+                label: Lang.string('menu.hideOtherWindows'),
+                accelerator: 'Command+Shift+H',
+                selector: 'hideOtherApplications:'
+            }, {
+                label: Lang.string('menu.showAllWindows'),
+                selector: 'unhideAllApplications:'
+            }, {
+                type: 'separator'
+            }, {
+                label: Lang.string('menu.quit'),
+                accelerator: 'Command+Q',
+                click() {
+                    app.quit();
+                }
+            }]
+        }, {
+            label: Lang.string('menu.edit'),
+            submenu: [{
+                label: Lang.string('menu.undo'),
+                accelerator: 'Command+Z',
+                selector: 'undo:'
+            }, {
+                label: Lang.string('menu.redo'),
+                accelerator: 'Shift+Command+Z',
+                selector: 'redo:'
+            }, {
+                type: 'separator'
+            }, {
+                label: Lang.string('menu.cut'),
+                accelerator: 'Command+X',
+                selector: 'cut:'
+            }, {
+                label: Lang.string('menu.copy'),
+                accelerator: 'Command+C',
+                selector: 'copy:'
+            }, {
+                label: Lang.string('menu.paste'),
+                accelerator: 'Command+V',
+                selector: 'paste:'
+            }, {
+                label: Lang.string('menu.selectAll'),
+                accelerator: 'Command+A',
+                selector: 'selectAll:'
+            }]
+        }, {
+            label: Lang.string('menu.view'),
+            submenu: (DEBUG) ? [{
+                label: Lang.string('menu.reload'),
+                accelerator: 'Command+R',
+                click() {
+                    mainWindow.webContents.reload();
+                }
+            }, {
+                label: Lang.string('menu.toggleFullscreen'),
+                accelerator: 'Ctrl+Command+F',
+                click() {
+                    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+                }
+            }, {
+                label: Lang.string('menu.toggleDeveloperTool'),
+                accelerator: 'Alt+Command+I',
+                click() {
+                    mainWindow.toggleDevTools();
+                }
+            }] : [{
+                label: Lang.string('menu.toggleFullscreen'),
+                accelerator: 'Ctrl+Command+F',
+                click() {
+                    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+                }
+            }]
+        }, {
+            label: Lang.string('menu.window'),
+            submenu: [{
+                label: Lang.string('menu.minimize'),
+                accelerator: 'Command+M',
+                selector: 'performMiniaturize:'
+            }, {
+                label: Lang.string('menu.close'),
+                accelerator: 'Command+W',
+                selector: 'performClose:'
+            }, {
+                type: 'separator'
+            }, {
+                label: Lang.string('menu.bringAllToFront'),
+                selector: 'arrangeInFront:'
+            }]
+        }, {
+            label: Lang.string('menu.help'),
+            submenu: [{
+                label: Lang.string('menu.website'),
+                click() {
+                    shell.openExternal(PKG.homepage);
+                }
+            }, {
+                label: Lang.string('menu.project'),
+                click() {
+                    shell.openExternal('https://github.com/easysoft/xuanxuan');
+                }
+            }, {
+                label: Lang.string('menu.community'),
+                click() {
+                    shell.openExternal('https://github.com/easysoft/xuanxuan');
+                }
+            }, {
+                label: Lang.string('menu.issues'),
+                click() {
+                    shell.openExternal('https://github.com/easysoft/xuanxuan/issues');
+                }
+            }]
+        }];
+
+        const menu = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menu);
+        if(DEBUG) {
+            console.log('Mac os menu created.');
+        }
+    } else {
+        if(DEBUG) {
+            console.log('Windows menu not avaliable now.');
+        }
+    }
+};
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 ElectronApp.on('ready', async() => {
     await installExtensions();
     application.openMainWindow();
+    createMenu();
     if(DEBUG) console.info('\n>> Electron app ready.');
 });
 
@@ -57,6 +204,7 @@ ElectronApp.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     application.openMainWindow();
+    createMenu();
     if(DEBUG) console.info('\n>> Electron app activate.');
 });
 
