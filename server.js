@@ -10,10 +10,15 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import { spawn } from 'child_process';
 
-import config from './webpack.config.development';
+import electronConfig from './webpack.config.development';
+import browserConfig from './webpack.config.browser.development';
 
 const argv = require('minimist')(process.argv.slice(2));
-
+const isBrowserTarget = argv['target'] === 'browser';
+if(isBrowserTarget) {
+    console.log('Server for browser target.');
+}
+const config = isBrowserTarget ? browserConfig : electronConfig;
 const app = express();
 const compiler = webpack(config);
 const PORT = process.env.PORT || 3000;

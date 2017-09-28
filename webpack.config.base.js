@@ -18,7 +18,7 @@ export default validate({
             test: /\.json$/,
             loader: 'json-loader'
         }],
-        noParse: [/pouchdb/, /granim/, /ajv/]
+        noParse: [/ajv/]
     },
 
     output: {
