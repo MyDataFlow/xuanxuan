@@ -15,7 +15,7 @@ export default {
     get isWindowOpenAndFocus() {
         return isDocumentHasFocus();
     },
-    get isWindowsFocus() {
+    get isWindowFocus() {
         return isDocumentHasFocus();
     },
     isWindowOpen: true,
