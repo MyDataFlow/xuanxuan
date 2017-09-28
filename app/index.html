@@ -12,8 +12,8 @@
             window.global = window;
         }
         const process = global.process || {type: 'renderer', env: {HOT: window.location.search.includes('hot'), port: 3000}};
-        if(typeof DEBUG === 'undefined') {
-            window.DEBUG = window.location.search.includes('debug=1');
+        if(window.location.search.includes('debug=1')) {
+            window.DEBUG = true;
         }
         if (!process.env.HOT) {
             const link = document.createElement('link');
