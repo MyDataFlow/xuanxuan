@@ -65,9 +65,11 @@ func InitHttp() {
         util.Exit("ranzhi server login error")
     }
 
-    http.HandleFunc(download, fileDownload)
-    http.HandleFunc(upload, fileUpload)
-    http.HandleFunc(sInfo, serverInfo)
+    mux := http.NewServeMux()
+
+    mux.HandleFunc(download, fileDownload)
+    mux.HandleFunc(upload, fileUpload)
+    mux.HandleFunc(sInfo, serverInfo)
 
     addr := util.Config.Ip + ":" + util.Config.CommonPort
 
@@ -80,12 +82,12 @@ func InitHttp() {
     util.LogInfo().Println("http server start,listen addr: https://", addr, sInfo)
 
     if util.Config.IsHttps != "1" {
-        if err := http.ListenAndServe(addr, nil); err != nil {
+        if err := http.ListenAndServe(addr, mux); err != nil {
             util.LogError().Println("http server listen err:", err)
             util.Exit("http server listen err")
         }
     }else{
-        if err := http.ListenAndServeTLS(addr, crt, key, nil); err != nil {
+        if err := http.ListenAndServeTLS(addr, crt, key, mux); err != nil {
             util.LogError().Println("https server listen err:", err)
             util.Exit("https server listen err")
         }
@@ -233,13 +235,17 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
 }
 
 func serverInfo(w http.ResponseWriter, r *http.Request) {
+
+    w.Header().Add("Access-Control-Allow-Origin", "*")
+    w.Header().Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE")
+    w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+    w.Header().Add("Access-Control-Allow-Credentials", "true")
     if r.Method != "POST" {
         fmt.Fprintln(w, "not supported request")
         return
     }
 
     r.ParseForm()
-    //util.Println(r.Form)
 
     ok, err := api.VerifyLogin([]byte(r.Form["data"][0]))
     if err != nil {
@@ -260,9 +266,6 @@ func serverInfo(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
-    w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
-    w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
-    w.Header().Set("content-type", "application/json")             //返回数据格式是json
 
     info := retCInfo{
         Version:        util.Version,
