@@ -159,7 +159,7 @@ const downloadFile = (url, beforeSend, onprogress) => {
  */
 const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
     return new Promise((resolve, reject) => {
-        let xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.onload = e => {
             if(xhr.status === 200) {
                 let bodyText = xhr.responseText;
@@ -190,8 +190,8 @@ const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
             }
         };
         xhr.upload.onprogress = e => {
-            if (e.lengthComputable && onprogress) {
-                onprogress(100*e.loaded/e.total);
+            if (e.lengthComputable && onProgress) {
+                onProgress(100*e.loaded/e.total);
             }
         };
         xhr.onerror = e => {
