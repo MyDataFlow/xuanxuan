@@ -1,12 +1,13 @@
 import Socket from './socket';
 import clipboard from './clipboard';
+import sound from '../common/sound'
 import crypto from './crypto';
 import EventEmitter from './event-emitter';
 import env from './env';
 import ui from './ui';
 import notify from './notify';
-
-window.process = {type: 'renderer'};
+import config from '../common/config'
+import net from '../common/network';
 
 export default {
     type: 'browser',
@@ -17,4 +18,7 @@ export default {
     env,
     ui,
     notify,
+    config,
+    sound,
+    net,
 };
