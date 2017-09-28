@@ -40,6 +40,7 @@ app/bundle.js.map
 app/style.css
 app/style.css.map
 dist
+web-dist
 main.js
 main.js.map
 
@@ -55,3 +56,4 @@ server/xxd/certificate
 
 # documentation
 docs
+issues.md
