@@ -10,7 +10,8 @@ const encrypt = (data, token, cipherIV) => {
     const iv = AES.utils.utf8.toBytes(cipherIV);
     const aesCbc = new AES.ModeOfOperation.cbc(key, iv);
     const dataBytes = AES.utils.utf8.toBytes(data);
-    const encryptedBytes = aesCbc.encrypt(textBytes);
+    const paddedData = AES.padding.pkcs7.pad(dataBytes);
+    const encryptedBytes = aesCbc.encrypt(paddedData);
     return encryptedBytes;
 }
 
@@ -23,8 +24,9 @@ const decrypt = (data, token, cipherIV) => {
     const key = AES.utils.utf8.toBytes(token);
     const iv = AES.utils.utf8.toBytes(cipherIV);
     const aesCbc = new AES.ModeOfOperation.cbc(key, iv);
-    const decryptedBytes = aesCbc.decrypt(data);
-    const decryptedText = AES.utils.utf8.fromBytes(decryptedBytes);
+    const utf8Array = new Uint8Array(data);
+    const decryptedBytes = aesCbc.decrypt(utf8Array);
+    const decryptedText = AES.utils.utf8.fromBytes(AES.padding.pkcs7.strip(decryptedBytes));
     return decryptedText;
 };
 

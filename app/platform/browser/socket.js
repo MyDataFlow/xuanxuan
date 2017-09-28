@@ -189,13 +189,13 @@ class Socket {
             }
         }
 
-        if(DEBUG) {
-            console.collapse('SOCKET Data', 'greenBg', this.url, 'greenPale');
-            console.log('socket', this);
-            console.log('rawdata', rawdata);
-            console.log('data', data);
-            console.groupEnd();
-        }
+        // if(DEBUG) {
+        //     console.collapse('SOCKET Data', 'greenBg', this.url, 'greenPale');
+        //     console.log('socket', this);
+        //     console.log('rawdata', rawdata);
+        //     console.log('data', {data});
+        //     console.groupEnd();
+        // }
 
         if(this.options.onData) {
             this.options.onData(this, data, flags);
@@ -209,7 +209,7 @@ class Socket {
     send(rawdata, callback) {
         let data = null;
         if(this.options.encryptEnable) {
-            data = crypto.encrypt(rawdata);
+            data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
             if(DEBUG) {
                 console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
                 console.log('data', data);

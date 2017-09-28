@@ -35,6 +35,9 @@ Server.onUserLogin(user => {
             autoHide: true,
         })
     }
+    if(typeof Pace !== 'undefined') {
+        Pace.stop();
+    }
 });
 
 Server.onUserLoginout((user, code, reason, unexpected) => {

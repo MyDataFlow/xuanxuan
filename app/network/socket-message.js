@@ -48,10 +48,22 @@ class SocketMessage {
                 json = json.map(x => x.toString()).join('');
             }
             if(typeof json !== 'string') json = json.toString();
-            if(json.endsWith('\n')) json = json.substring(0, json.length - 1);
+            json = json.trim();
+            let lastCharCode = json.charCodeAt(json.length - 1);
+            while(json.length && (json[json.length - 1] === '\n' || json.charCodeAt(json.length - 1) === 8)) {
+                lastCharCode = json.length && json.charCodeAt(json.length - 1);
+                json = json.substring(0, json.length - 1);
+            }
             let firstEOF = json.indexOf('\n');
             if(firstEOF > 0 && firstEOF < json.length) {
-                json = '[' + json.split('\n').join(',') + ']';
+                const objArray = [];
+                json.split('\n').forEach(str => {
+                    str = str.trim();
+                    if(str.length && str.startsWith('{')) {
+                        objArray.push(str);
+                    }
+                });
+                json = (objArray.length > 1) ? ('[' + objArray.join(',') + ']') : (objArray[0] || '');
                 if(DEBUG) {
                     console.groupCollapsed('%cSocket message contains "\\n", make it as json array.', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
                     console.log('json', json);

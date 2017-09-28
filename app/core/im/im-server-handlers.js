@@ -33,7 +33,7 @@ const chatAddmember = (msg, socket) => {
     if(!msg.isSuccess) {
         return;
     }
-    const chat = chats.get(msg.data.gid);
+    let chat = chats.get(msg.data.gid);
     if(chat) {
         const serverChatMembers = Chat.create(msg.data).members;
 

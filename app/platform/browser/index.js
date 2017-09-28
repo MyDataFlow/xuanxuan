@@ -5,6 +5,7 @@ import crypto from './crypto';
 import EventEmitter from './event-emitter';
 import env from './env';
 import ui from './ui';
+import dialog from './dialog';
 import notify from './notify';
 import config from '../common/config'
 import net from '../common/network';
@@ -21,6 +22,7 @@ const platform = {
     config,
     sound,
     net,
+    dialog,
 };
 
 if(DEBUG) {

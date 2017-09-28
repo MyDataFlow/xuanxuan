@@ -17,7 +17,6 @@ const showSaveDialog = (options, callback) => {
 };
 
 export default {
-    downloadAndSaveFile,
     showSaveDialog,
     showOpenDialog: openFileButton.showOpenDialog
 };

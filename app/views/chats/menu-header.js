@@ -25,6 +25,7 @@ class MenuHeader extends Component {
 
         return <div className={HTML.classes('app-chats-menu-header', className)} style={style} {...other}>
             <SearchControl
+                style={{width: 'calc(100% - 2rem)'}}
                 defaultValue={defaultSearch}
                 className="app-chats-search"
                 onSearchChange={onSearchChange}
