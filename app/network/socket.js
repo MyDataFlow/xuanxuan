@@ -188,7 +188,10 @@ class AppSocket extends Socket {
                 userToken: user.token,
                 cipherIV: user.cipherIV,
                 connect: true,
-                onConnect
+                onConnect,
+                onConnectFail: (e) => {
+                    reject(e);
+                }
             }, options));
         });
     }

@@ -66,7 +66,7 @@ class Socket {
     }
 
     isStatus(status) {
-        return this._status.isStatus(status);
+        return this._status.is(status);
     }
 
     updateStatusFromClient() {
@@ -89,6 +89,9 @@ class Socket {
             this.handleData(e.data, {binary: true});
         };
         client.onclose = e => {
+            if(!this.isConnected) {
+                this.handleConnectFail(e);
+            }
             this.handleClose(e.code, e.reason);
         };
         client.onerror = e => {
@@ -100,6 +103,15 @@ class Socket {
 
     reconnect() {
         return this.connect();
+    }
+
+    handleConnectFail(e) {
+        if(this.onConnectFail) {
+            this.onConnectFail(e);
+        }
+        if(this.options.onConnectFail) {
+            this.options.onConnectFail(e);
+        }
     }
 
     handleConnect() {

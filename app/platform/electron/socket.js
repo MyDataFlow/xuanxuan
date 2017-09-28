@@ -125,6 +125,10 @@ class Socket {
     }
 
     handleClose(code, reason) {
+        if(!this.isConnected) {
+            this.handleConnectFail({code, message: reason});
+        }
+
         const unexpected = !this._status.is(STATUS.CLOSING);
         this.updateStatusFromClient();
         this.client = null;
@@ -144,6 +148,15 @@ class Socket {
 
         if(this.options && this.options.onClose) {
             this.options.onClose(this, code, reason, unexpected);
+        }
+    }
+
+    handleConnectFail(e) {
+        if(this.onConnectFail) {
+            this.onConnectFail(e);
+        }
+        if(this.options.onConnectFail) {
+            this.options.onConnectFail(e);
         }
     }
 

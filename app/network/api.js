@@ -1,4 +1,4 @@
-import Platform from '../platform/electron';
+import Platform from 'Platform';
 import md5 from 'md5';
 
 const isUserLogining = false;
