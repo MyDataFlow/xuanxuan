@@ -15,8 +15,12 @@ import ChatSidebar from './chat-sidebar';
 class ChatView extends Component {
 
     componentDidMount() {
+        const {chat} = this.props;
         this.dataChangeHandler = App.events.onDataChange(data => {
-            if(data.chats && data.chats[this.props.chat.gid]) {
+            if(
+                (data.chats && data.chats[chat.gid]) ||
+                (data.members)
+            ) {
                 this.forceUpdate();
             }
         });
