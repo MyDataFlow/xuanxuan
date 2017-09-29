@@ -35,7 +35,6 @@ const setUser = newUser => {
     }
     user = newUser;
     user.enableEvents();
-    user.sessionId = timeSequence();
 
     if(DEBUG) {
         console.collapse('Profile.setUser', 'tealBg', user.identify, 'tealPale');
@@ -108,8 +107,4 @@ export default {
     get userAccount() {
         return user ? user.account : {};
     },
-
-    get sessionId() {
-        return user ? user.sessionId : timeSequence();
-    }
 };
