@@ -136,8 +136,8 @@ class AppRemote {
         });
         this.tray = tray;
         this._trayIcons = [
-            nativeImage.createFromPath(`${this.entryPath}/img/tray-icon-16.png`),
-            nativeImage.createFromPath(`${this.entryPath}/img/tray-icon-transparent.png`)
+            nativeImage.createFromPath(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`),
+            nativeImage.createFromPath(`${this.entryPath}/${Config.media['image.path']}tray-icon-transparent.png`)
         ];
         this._trayIconCounter = 0;
     }

@@ -4,7 +4,6 @@ import profile from '../profile';
 import Events from '../events';
 import members from '../members';
 import db from '../db';
-import notice from '../notice';
 import StringHelper from '../../utils/string-helper';
 
 const CHATS_LIMIT_DEFAULT = 100;
