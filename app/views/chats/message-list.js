@@ -67,7 +67,7 @@ class MessageList extends Component {
                     return messageListItem;
                 })
             }
-            <div className="space-sm" ref={e => this.messageEndEle = e}></div>
+            <div className="scroll-root-ele" ref={e => this.messageEndEle = e}></div>
         </div>;
     }
 }
