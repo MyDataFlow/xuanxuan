@@ -9,18 +9,37 @@ class MessageList extends Component {
         showDateDivider: 0,
     };
 
-    scrollToBottom = (smooth) => {
-        this.messageEndEle.scrollIntoView({block: 'end', behavior: smooth ? 'smooth' : 'instant'});
+    scrollToBottom = (utilTime = 0) => {
+        this.messageEndEle.scrollIntoView({block: 'end', behavior: 'instant'});
+        const now = new Date().getTime();
+        if(utilTime) {
+            this.shouldStayInBottom = now + utilTime;
+        }
+        if(!this.stayToBottomInterval && this.shouldStayInBottom && this.shouldStayInBottom > now) {
+            this.stayToBottomInterval = setInterval(() => {
+                const time = new Date().getTime();
+                if(this.shouldStayInBottom && this.shouldStayInBottom > time) {
+                    this.scrollToBottom();
+                } else {
+                    clearInterval(this.stayToBottomInterval);
+                    this.stayToBottomInterval = null;
+                }
+            }, 50);
+        }
     }
 
     componentDidMount() {
-        this.scrollToBottom();
-        this.shouldStayInBottom = true;
+        this.scrollToBottom(2000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.stayToBottomInterval);
     }
 
     componentDidUpdate() {
-        if(this.shouldStayInBottom) {
-            this.scrollToBottom();
+        const {messages} = this.props;
+        if(this.checkHasNewMessages(messages)) {
+            this.scrollToBottom(1000);
         }
     }
 
@@ -52,9 +71,6 @@ class MessageList extends Component {
         } = this.props;
 
         let lastMessage = null;
-        if(this.checkHasNewMessages(messages)) {
-            this.shouldStayInBottom = true;
-        }
 
         return <div {...other}
             className={HTML.classes('app-message-list', className)}
