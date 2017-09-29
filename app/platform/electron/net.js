@@ -23,7 +23,7 @@ const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
             let progress = 0;
             onProgress(0);
             onProgressTimer = setInterval(() => {
-                progress += (100 - progress)/10;
+                progress += (100 - progress)/20;
                 onProgress(progress);
             }, 1000);
         }
@@ -168,7 +168,7 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
             if(onProgress) {
                 let progress = 0;
                 onProgressTimer = setInterval(() => {
-                    progress += (100 - progress)/10;
+                    progress += (100 - progress)/20;
                     onProgress(progress);
                 }, 1000);
             }
