@@ -15,6 +15,7 @@ import dialog from './dialog';
 import net from './net';
 import crypto from './crypto';
 import Socket from './socket';
+import clipboard from './clipboard';
 
 if(process.type !== 'renderer') {
     throw new Error('platform/electron/index.js must run in renderer process.');
@@ -37,7 +38,8 @@ const platform = {
     net,
     crypto,
     Socket,
-    notify
+    notify,
+    clipboard
 };
 
 if(DEBUG) {

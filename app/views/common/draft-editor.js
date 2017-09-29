@@ -103,12 +103,14 @@ class DraftEditor extends Component {
     }
 
     appendContent(content, asNewLine, callback) {
-        const editorState = this.state.editorState;
-        const selection = editorState.getSelection();
-        const contentState = editorState.getCurrentContent();
-        const ncs = Modifier.insertText(contentState, selection, content);
-        const newEditorState = EditorState.push(editorState, ncs, 'insert-fragment');
-        this.onChange(newEditorState, callback);
+        if(content !== null && content !== undefined) {
+            const editorState = this.state.editorState;
+            const selection = editorState.getSelection();
+            const contentState = editorState.getCurrentContent();
+            const ncs = Modifier.insertText(contentState, selection, content);
+            const newEditorState = EditorState.push(editorState, ncs, 'insert-fragment');
+            this.onChange(newEditorState, callback);
+        }
     }
 
     appendEmojione(emoji, callback) {
