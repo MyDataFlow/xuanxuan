@@ -126,6 +126,8 @@ const showQuitConfirmDialog = (callback) => {
 
 const openDevTools = () => {
     browserWindow.openDevTools();
+    global.DEBUG = true;
+    window.DEBUG = true;
 };
 
 browserWindow.on('restore', () => {
