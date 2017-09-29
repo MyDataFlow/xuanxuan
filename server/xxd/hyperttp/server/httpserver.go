@@ -155,21 +155,16 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
     }
 
     //util.Println(r.Header)
-    r.ParseForm()
-    serverName := r.Form["ServerName"][0]
-    if serverName == "" {
-        serverName = r.Header.Get("ServerName")
-    }
+    serverName := r.Header.Get("ServerName")
     if serverName == "" {
         serverName = util.Config.DefaultServer
     }
 
-    //  使用新的验证方式
-    // authorization := r.Header.Get("Authorization")
-    // if authorization != string(util.Token) {
-    //     w.WriteHeader(http.StatusUnauthorized)
-    //     return
-    // }
+    authorization := r.Header.Get("Authorization")
+    if authorization != string(util.Token) {
+        w.WriteHeader(http.StatusUnauthorized)
+        return
+    }
 
     r.ParseMultipartForm(32 << 20)
 
