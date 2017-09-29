@@ -19,6 +19,8 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
     }
     file.form = form;
     return uploadFileOrigin(file, serverUrl, xhr => {
+        xhr.setRequestHeader('ServerName', user.serverName);
+        xhr.setRequestHeader('Authorization', user.token);
     }, onProgress);
 };
 
