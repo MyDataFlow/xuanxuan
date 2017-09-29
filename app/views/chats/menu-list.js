@@ -58,7 +58,7 @@ class MenuList extends Component {
         const chats = this.loadChats(filter, search);
         const user = App.user;
 
-        return <div className={HTML.classes('app-chats-menu-list list scroll-y scrollbar-thin', className)} style={style} {...other}>
+        return <div className={HTML.classes('app-chats-menu-list list scroll-y', className)} style={style} {...other}>
             {user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={20} showStatusDot={false} onClick={this.handleUserItemClick}/>}
             {
                 chats.map(chat => {
