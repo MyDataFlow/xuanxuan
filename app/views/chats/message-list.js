@@ -11,6 +11,7 @@ class MessageList extends Component {
 
     scrollToBottom = (utilTime = 0) => {
         this.messageEndEle.scrollIntoView({block: 'end', behavior: 'instant'});
+
         const now = new Date().getTime();
         if(utilTime) {
             this.shouldStayInBottom = now + utilTime;
@@ -29,7 +30,7 @@ class MessageList extends Component {
     }
 
     componentDidMount() {
-        this.scrollToBottom(2000);
+        this.scrollToBottom(1500);
     }
 
     componentWillUnmount() {
@@ -45,7 +46,7 @@ class MessageList extends Component {
 
     handleListScrollEvent = e => {
         const listEle = e.target;
-        this.shouldStayInBottom = (listEle.scrollTop + listEle.offsetHeight) === listEle.scrollHeight;
+        // this.shouldStayInBottom = (listEle.scrollTop + listEle.offsetHeight) === listEle.scrollHeight;
     }
 
     checkHasNewMessages(messages) {
