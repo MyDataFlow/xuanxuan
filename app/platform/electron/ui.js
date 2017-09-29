@@ -124,6 +124,10 @@ const showQuitConfirmDialog = (callback) => {
     });
 };
 
+const openDevTools = () => {
+    browserWindow.openDevTools();
+};
+
 browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
@@ -144,6 +148,7 @@ export default {
     onRequestQuit,
     onWindowFocus,
     closeWindow,
+    openDevTools,
 
     showWindow,
     hideWindow,
