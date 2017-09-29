@@ -15,6 +15,7 @@ class Avatar extends Component {
             size,
             iconSize,
             className,
+            imageClassName,
             iconClassName,
             children,
             style,
@@ -32,7 +33,7 @@ class Avatar extends Component {
         }
 
         return <div className={HTML.classes('avatar', className)} {...other} style={style}>
-            {image && <img src={image}/>}
+            {image && <img src={image} className={imageClassName}/>}
             {!image && icon && <Icon className={iconClassName} name={icon} size={iconSize}/>}
             {!image && !icon && label}
             {children}

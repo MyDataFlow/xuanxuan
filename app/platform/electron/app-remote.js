@@ -101,13 +101,11 @@ class AppRemote {
         }
 
         this.entryPath = entryPath;
-        if(ElectronApp.isReady()) {
-            this.initTrayIcon();
-        } else {
-            ElectronApp.on('ready', () => {
-                this.initTrayIcon();
-            });
-        }
+    }
+
+    ready() {
+        this.openMainWindow();
+        this.initTrayIcon();
     }
 
     initTrayIcon() {

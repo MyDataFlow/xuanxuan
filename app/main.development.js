@@ -194,7 +194,7 @@ const createMenu = () => {
 // Some APIs can only be used after this event occurs.
 ElectronApp.on('ready', async() => {
     await installExtensions();
-    application.openMainWindow();
+    application.ready();
     createMenu();
     if(DEBUG) console.info('\n>> Electron app ready.');
 });
