@@ -42,7 +42,6 @@ Server.onUserLogin(user => {
 
 Server.onUserLoginout((user, code, reason, unexpected) => {
     if(user) {
-        console.log('onUserLoginout', {user, code, reason, unexpected});
         if(unexpected) {
             let errorCode = null;
             if(reason === 'KICKOFF') {
