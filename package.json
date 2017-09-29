@@ -29,6 +29,7 @@
     "package-win": "npm run build && npm run pkg-win",
     "pkg-win-32": "cross-env PKG_ARCH=32 build --win --ia32",
     "package-win-32": "npm run build && npm run pkg-win-32",
+    "package-win-all": "npm run build && npm run pkg-win-32 && npm run pkg-win",
     "pkg-win-one": "build --win",
     "package-win-one": "npm run build && npm run pkg-win-one",
     "package-linux": "npm run build && build --linux",
