@@ -329,7 +329,7 @@ const sendImageMessage = (imageFile, chat) => {
             sendChatMessage(message, chat);
         });
     } else {
-        Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)));
+        Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)), {type: 'warning'});
     }
 };
 
@@ -361,7 +361,7 @@ const sendFileMessage = (file, chat) => {
             sendChatMessage(message, chat);
         });
     } else {
-        Messager.show(Lang.from('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(file.size)));
+        Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(file.size)), {type: 'warning'});
     }
 };
 
