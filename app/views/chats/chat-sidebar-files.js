@@ -48,7 +48,6 @@ class ChatSidebarFiles extends Component {
                     </div>
                 </div>
             }
-
             {children}
         </div>;
     }

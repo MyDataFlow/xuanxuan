@@ -148,3 +148,16 @@
     }
   }
 }
+
+.layer-image-viewer {
+  > .heading > .nav {
+    opacity: 0;
+    transition: opacity @animation-speed-slow @animation-type;
+  }
+
+  &:hover {
+    > .heading > .nav {
+      opacity: 1;
+    }
+  }
+}
