@@ -225,7 +225,7 @@ class DisplayLayer extends Component {
             {'has-animation': animation}
         );
 
-        return <div className={rootClassName} style={{zIndex: this.state.zIndex}}>
+        return <div onKeyUp={this.handeWindowKeyup.bind(this)} className={rootClassName} style={{zIndex: this.state.zIndex}}>
             {backdrop && <div onClick={this.handleBackdropClick} className={HTML.classes('display-backdrop', backdropClassName)}></div>}
             <div className={HTML.classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => this.displayElement = e}>
                 {header}
