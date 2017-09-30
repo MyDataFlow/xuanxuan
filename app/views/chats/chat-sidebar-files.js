@@ -5,6 +5,7 @@ import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import FileList from '../common/file-list';
+import Emojione from '../../components/emojione';
 
 class ChatSidebarFiles extends Component {
 
@@ -34,10 +35,20 @@ class ChatSidebarFiles extends Component {
             ...other
         } = this.props;
 
+        const {files} = this.state;
+
         return <div {...other}
             className={HTML.classes('app-chat-sidebar-files has-padding', className)}
         >
-            <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={this.state.files}/>
+            {
+                files.length ? <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={files}/> : <div className="dock center-content">
+                    <div>
+                        <div className="text-center" dangerouslySetInnerHTML={{__html: Emojione.toImage(':blowfish:')}}></div>
+                        <div className="text-gray">{Lang.string('chat.sidebar.tab.files.noFilesHere')}</div>
+                    </div>
+                </div>
+            }
+
             {children}
         </div>;
     }

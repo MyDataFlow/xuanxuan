@@ -196,6 +196,7 @@
 
     "chat.sidebar.tab.peoples.label": "成员",
     "chat.sidebar.tab.files.label": "文件",
+    "chat.sidebar.tab.files.noFilesHere": "还没有人分享文件",
     "chat.sidebar.close": "关闭侧边栏",
 
     "chat.message.resend": "重新发送",
