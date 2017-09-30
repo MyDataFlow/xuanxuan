@@ -48,6 +48,11 @@
     "menu.close": "关闭",
     "menu.bringAllToFront": "全部置于顶层",
 
+    "menu.image.view": "查看",
+    "menu.image.copy": "复制",
+    "menu.image.saveAs": "另存为",
+    "menu.image.open": "打开",
+
     "time.today": "今天",
     "time.yestoday": "昨天",
 

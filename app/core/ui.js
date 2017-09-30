@@ -8,11 +8,63 @@ import Platform from 'Platform';
 import Events from './events';
 import profile from './profile';
 import Notice from './notice';
+import ImageViewer from '../components/image-viewer';
 
 const EVENT = {
     app_link: 'app.link',
     net_online: 'app.net.online',
     net_offline: 'app.net.offline',
+};
+
+const createImageContextMenuItems = (url, dataType) => {
+    const items = [{
+        label: Lang.string('menu.image.view'),
+        click: () => {
+            ImageViewer.show(url);
+        }
+    }];
+    if(Platform.clipboard && Platform.clipboard.writeImageFromUrl) {
+        items.push({
+            label: Lang.string('menu.image.copy'),
+            click: () => {
+                Platform.clipboard.writeImageFromUrl(url, dataType);
+            }
+        });
+    }
+    if(Platform.dialog && Platform.dialog.saveAsImageFromUrl) {
+        items.push({
+            label: Lang.string('menu.image.saveAs'),
+            click: () => {
+                Platform.dialog.saveAsImageFromUrl(url, dataType).then(filename => {
+                    if(filename) {
+                        Messager.show(Lang.format('file.fileSavedAt.format', filename), {
+                            actions: Platform.ui.openFileItem ? [{
+                                label: Lang.string('file.open'),
+                                click: () => {
+                                    Platform.ui.openFileItem(filename);
+                                }
+                            }, {
+                                label: Lang.string('file.openFolder'),
+                                click: () => {
+                                    Platform.ui.showItemInFolder(filename);
+                                }
+                            }] : null
+                        });
+                    }
+                });
+            }
+        });
+    }
+    if(Platform.ui.openFileItem && dataType !== 'base64') {
+        items.push({
+            label: Lang.string('menu.image.open'),
+            click: () => {
+                Platform.ui.openFileItem(url);
+            }
+        });
+    }
+
+    return items;
 };
 
 const onAppLinkClick = (type, listener) => {
@@ -196,5 +248,6 @@ export default {
     emitAppLinkClick,
     quit,
     showMessger: Messager.show,
-    showContextMenu: ContextMenu.show
+    showContextMenu: ContextMenu.show,
+    createImageContextMenuItems
 };

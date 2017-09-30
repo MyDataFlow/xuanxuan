@@ -48,9 +48,13 @@ class MessageContentImageView extends Component {
         }
     }
 
-
     componentDidUpdate() {
         this.componentDidMount();
+    }
+
+    handleImageContextMenu(url, dataType, e) {
+        const items = App.ui.createImageContextMenuItems(url, dataType);
+        App.ui.showContextMenu({x: e.pageX, y: e.pageY}, items);
     }
 
     render() {
@@ -72,11 +76,11 @@ class MessageContentImageView extends Component {
             </div>;
         }
         if(image.type === 'base64') {
-            return <img data-fail={Lang.string('file.downloadFailed')} onError={e => e.target.classList.add('broken')} onDoubleClick={ImageViewer.show.bind(this, image.content, null, null)} src={image.content} />;
+            return <img onContextMenu={isBrowser ? null : this.handleImageContextMenu.bind(this, image.content, image.type)} data-fail={Lang.string('file.downloadFailed')} onError={e => e.target.classList.add('broken')} onDoubleClick={ImageViewer.show.bind(this, image.content, null, null)} src={image.content} />;
         }
         if(image.id && image.send === true) {
             if(this.state.url) {
-                return <img title={image.name} data-fail={Lang.string('file.downloadFailed')} onError={e => e.target.classList.add('broken')} onDoubleClick={ImageViewer.show.bind(this, this.state.url, null, null)} src={this.state.url}/>;
+                return <img onContextMenu={isBrowser ? null : this.handleImageContextMenu.bind(this, this.state.url, '')} title={image.name} data-fail={Lang.string('file.downloadFailed')} onError={e => e.target.classList.add('broken')} onDoubleClick={ImageViewer.show.bind(this, this.state.url, null, null)} src={this.state.url}/>;
             } else {
                 if(typeof this.state.download === 'number') {
                     const percent = Math.floor(this.state.download);

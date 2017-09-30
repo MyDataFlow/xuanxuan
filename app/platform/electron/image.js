@@ -40,6 +40,10 @@ const createFromPath = path => {
     return nativeImage.createFromPath(path);
 };
 
+const createFromDataURL = dataUrl => {
+    return nativeImage.createFromDataURL(dataUrl);
+};
+
 const saveImage = (image, filePath) => {
     let file = {
         path: filePath,
@@ -66,5 +70,6 @@ export default {
     base64ToBuffer,
     cutImage,
     saveImage,
-    createFromPath
+    createFromPath,
+    createFromDataURL
 };

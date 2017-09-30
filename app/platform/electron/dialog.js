@@ -1,4 +1,4 @@
-import {remote as Remote} from 'electron';
+import {remote as Remote, nativeImage} from 'electron';
 import fs from 'fs-extra';
 import env from './env';
 import Path from 'path';
@@ -31,6 +31,9 @@ const showSaveDialog = (options, callback) => {
 
     let filename = options.filename || '';
     delete options.filename;
+    if(filename) {
+        filename = Path.basename(filename);
+    }
 
     options = Object.assign({
         title: Lang.string('dialog.fileSaveTo'),
@@ -56,8 +59,29 @@ const showRemoteOpenDialog = (options, callback) => {
     Remote.dialog.showOpenDialog(ui.browserWindow, options, callback);
 };
 
+const saveAsImageFromUrl = (url, dataType) => {
+    return new Promise((resolve, reject) => {
+        const isBase64Image = dataType === 'base64';
+        showSaveDialog({
+            filename: isBase64Image ? 'xuanxuan-image.png' : Path.basename(url),
+            sourceFilePath: isBase64Image ? null : url
+        }, filename => {
+            if(filename) {
+                if(isBase64Image) {
+                    const image = nativeImage.createFromDataURL(url);
+                    fs.outputFileSync(filename, image.toPNG());
+                }
+                resolve(filename);
+            } else {
+                reject();
+            }
+        });
+    });
+};
+
 export default {
     showRemoteOpenDialog,
     showSaveDialog,
     showOpenDialog: openFileButton.showOpenDialog,
+    saveAsImageFromUrl
 };
