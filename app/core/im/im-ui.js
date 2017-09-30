@@ -19,6 +19,7 @@ import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
 import Emojione from '../../components/emojione';
 import CoreServer from '../server';
 import ChatChangeFontPopover from '../../views/chats/chat-change-font-popover';
+import db from '../db';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -415,6 +416,12 @@ chats.onChatsInit(initChats => {
         lastActiveChat.makeActive();
         if(window.location.hash.startsWith('#/chats/')) {
             window.location.hash = `#/chats/recents/${activedChatId}`;
+        }
+    }
+    if(!db.database.isExists) {
+        Server.fetchChatsHistory('all');
+        if(DEBUG) {
+            console.color('Fetch all history for new database', 'greenPale');
         }
     }
 });

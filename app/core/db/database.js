@@ -17,6 +17,9 @@ class Database {
             userIdentify = userIdentify.identify;
         }
         this._userIdentify = userIdentify;
+        Dexie.exists(userIdentify).then(exists => {
+            this._exists = exists;
+        });
         this._db = new Dexie(userIdentify);
         this._db.version(DB_VERSION).stores({
             // [Entity.NAME]: Entity.SCHEMA.dexieFormat,
@@ -24,6 +27,10 @@ class Database {
             // [Chat.NAME]: Chat.SCHEMA.dexieFormat,
             [Message.NAME]: Message.SCHEMA.dexieFormat,
         });
+    }
+
+    get isExists() {
+        return this._exists;
     }
 
     get identify() {
