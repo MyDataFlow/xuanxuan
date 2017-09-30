@@ -15,7 +15,7 @@ const isNotificationOff = state => {
     return !state['ui.notify.enableSound'];
 };
 const isFlashTrayIconOff = state => {
-    return isBrowser || !Platform.env.isWindowsOS || !state['ui.notify.flashTrayIcon'];
+    return isBrowser || !state['ui.notify.flashTrayIcon'];
 };
 const isWindowNotificationOff = state => {
     return !state['ui.notify.enableWindowNotification'];
