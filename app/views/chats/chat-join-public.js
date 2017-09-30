@@ -98,7 +98,7 @@ class ChatCreateGroups extends Component {
         >
             <div className="list-item divider flex-none">
                 <Avatar icon="arrow-right" iconClassName="text-muted icon-2x"/>
-                <div className="title strong">{Lang.string('chat.create.joinGroupTip')}</div>
+                <div className="title">{Lang.string('chat.create.joinGroupTip')}</div>
                 <div className="flex-none">
                     <button type="button" onClick={this.handleJoinBtnClick} disabled={!this.state.choosed} className="btn primary rounded">{this.state.choosed ? Lang.format('chat.create.joinGroup.format', this.state.choosed.getDisplayName(App)) : Lang.string('chat.create.join')}</button>
                 </div>

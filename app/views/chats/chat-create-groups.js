@@ -119,7 +119,7 @@ class ChatCreateGroups extends Component {
         >
             <div className="list-item divider flex-none">
                 <Avatar icon="arrow-right" iconClassName="text-muted icon-2x"/>
-                <div className="title strong">{Lang.string('chat.create.groupsTip')}</div>
+                <div className="title">{Lang.string('chat.create.groupsTip')}</div>
                 <div className="flex-none">
                     <button type="button" onClick={this.handleCreateBtnClick} disabled={choosedCount < 2} className="btn primary rounded">{choosedCount < 2 ? Lang.string('chat.create.title') : choosedCount === 2 ? Lang.format('chat.create.chatWith.format', theOtherOne.displayName) : Lang.format('chat.create.group.format', choosedCount)}</button>
                 </div>

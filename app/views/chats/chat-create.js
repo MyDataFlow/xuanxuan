@@ -36,7 +36,7 @@ class ChatCreateView extends Component {
             <div className="primary-pale column single flex-none">
                 <div className="list-item divider flex-none">
                     <Avatar icon="arrow-right" iconClassName="text-muted icon-2x"/>
-                    <div className="title strong">{Lang.string('chat.create.chatTypeTip')}</div>
+                    <div className="title">{Lang.string('chat.create.chatTypeTip')}</div>
                 </div>
                 <div className="scroll-y flex-auto lighten">
                     <div className="list compact app-chat-create-types-menu">
