@@ -59,7 +59,7 @@ class MenuList extends Component {
         const user = App.user;
 
         return <div className={HTML.classes('app-chats-menu-list list scroll-y', className)} style={style} {...other}>
-            {user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={20} showStatusDot={false} onClick={this.handleUserItemClick}/>}
+            {user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={24} showStatusDot={false} onClick={this.handleUserItemClick}/>}
             {
                 chats.map(chat => {
                     return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item"/>;
