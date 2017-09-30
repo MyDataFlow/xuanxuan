@@ -235,8 +235,16 @@ class UserConfig {
         return this.get('ui.app.removeFromTaskbarOnHide');
     }
 
-    set removeFromTaskbarOnHide(option) {
-        return this.set('ui.app.removeFromTaskbarOnHide', option);
+    set removeFromTaskbarOnHide(flag) {
+        return this.set('ui.app.removeFromTaskbarOnHide', flag);
+    }
+
+    get hideWindowOnBlur() {
+        return this.get('ui.app.hideWindowOnBlur');
+    }
+
+    set hideWindowOnBlur(flag) {
+        return this.set('ui.app.hideWindowOnBlur', flag);
     }
 }
 

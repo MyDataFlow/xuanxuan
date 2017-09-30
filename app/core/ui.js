@@ -240,6 +240,15 @@ if(Platform.ui.onWindowMinimize) {
     });
 }
 
+if(Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
+    Platform.ui.onWindowBlur(() => {
+        const userConfig = profile.userConfig;
+        if(userConfig && userConfig.hideWindowOnBlur) {
+            Platform.ui.hideWindow();
+        }
+    });
+}
+
 export default {
     get canQuit() {
         return !!Platform.ui.quit;

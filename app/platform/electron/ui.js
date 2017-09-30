@@ -94,6 +94,10 @@ const onWindowFocus = listener => {
     browserWindow.on('focus', listener);
 };
 
+const onWindowBlur = listener => {
+    browserWindow.on('blur', listener);
+};
+
 const onWindowMinimize = listener => {
     browserWindow.on('minimize', listener);
 };
@@ -151,6 +155,7 @@ export default {
     onWindowFocus,
     closeWindow,
     openDevTools,
+    onWindowBlur,
 
     showWindow,
     hideWindow,
