@@ -10,31 +10,8 @@ import Avatar from '../../components/avatar';
 import StatusDot from './status-dot';
 import Config from 'Config';
 import BuildInfo from '../common/build-info';
-import Platform from 'Platform';
 
 class About extends Component {
-
-    handleLogoClick = e => {
-        const now = new Date().getTime();
-        if(!this.lastClickTime) {
-            this.lastClickTime = now;
-        }
-
-        if(!this.clickTimes) {
-            this.clickTimes = 1;
-        } else if(now - this.lastClickTime < 400) {
-            this.clickTimes++;
-            this.lastClickTime = now;
-            if(this.clickTimes >= 5) {
-                if(Platform.ui.openDevTools) {
-                    Platform.ui.openDevTools();
-                }
-            }
-        } else {
-            this.clickTimes = 0;
-            this.lastClickTime = 0;
-        }
-    }
 
     render() {
         let {
@@ -47,7 +24,7 @@ class About extends Component {
             className={HTML.classes('app-about center-content space', className)}
         >
             <section className="text-center">
-                <img onClick={this.handleLogoClick} src={`${Config.media['image.path']}logo.png`} />
+                <img src={`${Config.media['image.path']}logo.png`} />
                 <BuildInfo className="space-sm"/>
                 <div className="space-xl"><a target="_blank" className="btn rounded text-primary strong" href={Config.pkg.homepage}><strong>{Config.pkg.homepage}</strong></a></div>
                 <div><a target="_blank" className="btn rounded" href="https://github.com/easysoft/xuanxuan/blob/master/LICENSE">{`Open source license ${Config.pkg.license}`}</a></div>
