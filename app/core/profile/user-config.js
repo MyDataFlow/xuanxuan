@@ -199,6 +199,14 @@ class UserConfig {
         return this.set('ui.notify.flashTrayIconCondition', condition);
     }
 
+    get muteOnUserIsBusy() {
+        return this.get('ui.notify.muteOnUserIsBusy');
+    }
+
+    set muteOnUserIsBusy(flag) {
+        return this.set('ui.notify.muteOnUserIsBusy', flag);
+    }
+
     get captureScreenHotkey() {
         return this.get('shortcut.captureScreen');
     }

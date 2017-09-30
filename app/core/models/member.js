@@ -61,6 +61,10 @@ class Member extends Entity {
         return !this.isOnline;
     }
 
+    get isBusy() {
+        return this._status.is(STATUS.busy);
+    }
+
     isStatus(status) {
         return this._status.is(status);
     }

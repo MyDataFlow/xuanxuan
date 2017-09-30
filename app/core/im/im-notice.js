@@ -79,12 +79,20 @@ const updateChatNoticeTask = new DelayAction(() => {
     }
 
     let sound = false;
-    if(total && userConfig.enableSound && notice.isMatchWindowCondition(userConfig.playSoundCondition)) {
+    if(
+        total &&
+        userConfig.enableSound &&
+        (!userConfig.muteOnUserIsBusy || !profile.user.isBusy) &&
+        notice.isMatchWindowCondition(userConfig.playSoundCondition)) {
         sound = true;
     }
 
     let tray = {label: total ? Lang.format('notification.receviedMessages.format', total) : ''};
-    if(total && userConfig.flashTrayIcon && notice.isMatchWindowCondition(userConfig.flashTrayIconCondition)) {
+    if(
+        total &&
+        userConfig.flashTrayIcon &&
+        notice.isMatchWindowCondition(userConfig.flashTrayIconCondition)
+    ) {
         tray.flash = true;
     }
 

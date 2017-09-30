@@ -24,7 +24,7 @@ export default {
     "ui.notify.muteOnUserIsBusy": true,
     "ui.notify.flashTrayIcon": true,
     "ui.notify.flashTrayIconCondition": "", // "onWindowBlur", ",
-    "ui.notify.enableWindowNotification": true,
+    "ui.notify.enableWindowNotification": false,
     "ui.notify.windowNotificationCondition": 'onWindowBlur',
     "ui.notify.safeWindowNotification": false,
     "ui.app.hideWindowOnBlur": false,
