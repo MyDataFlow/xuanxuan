@@ -26,6 +26,7 @@ const getPlainTextOfChatMessage = (chatMessage, limitLength = 255, ignoreBreak =
 };
 
 let lastNoticeChat = null;
+let lastTotal = 0;
 const updateChatNoticeTask = new DelayAction(() => {
     const userConfig = profile.userConfig;
     if(!userConfig) {
@@ -56,7 +57,7 @@ const updateChatNoticeTask = new DelayAction(() => {
     });
 
     let message = null;
-    if(total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
+    if(total && lastTotal < total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
         message = userConfig.safeWindowNotification ? {
             title: Lang.format('notification.receviedMessages.format', total),
         } : {
@@ -96,6 +97,7 @@ const updateChatNoticeTask = new DelayAction(() => {
         tray.flash = true;
     }
 
+    lastTotal = total;
     notice.update({chats: total, message, sound, tray});
 }, 200);
 
