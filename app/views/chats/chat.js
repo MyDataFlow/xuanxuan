@@ -15,10 +15,10 @@ import ChatSidebar from './chat-sidebar';
 class ChatView extends Component {
 
     componentDidMount() {
-        const {chat} = this.props;
+        const {chatGid} = this.props;
         this.dataChangeHandler = App.events.onDataChange(data => {
             if(
-                (data.chats && data.chats[chat.gid]) ||
+                (data.chats && data.chats[chatGid]) ||
                 (data.members)
             ) {
                 this.forceUpdate();
@@ -38,13 +38,15 @@ class ChatView extends Component {
 
     render() {
         let {
-            chat,
+            chatGid,
             hidden,
             className,
             style,
             children,
             ...other
         } = this.props;
+
+        const chat = App.im.chats.get(chatGid);
 
         if(chat['delete']) {
             return <div key={chat.gid} className="box muted">请选择一个聊天会话。</div>

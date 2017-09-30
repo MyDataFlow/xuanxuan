@@ -23,9 +23,9 @@ class ChatsCacheView extends Component {
             style={style}
         >
             {
-                App.im.ui.activeAndMapCacheChats(chatId, chat => {
-                    if(chat) {
-                        return <ChatView key={chat.gid} chat={chat} hidden={!App.im.ui.isActiveChat(chat.gid)}/>
+                App.im.ui.activeAndMapCacheChats(chatId, cgid => {
+                    if(cgid) {
+                        return <ChatView key={cgid} chatGid={cgid} hidden={!App.im.ui.isActiveChat(cgid)}/>
                     } else {
                         if(DEBUG) {
                             console.warn('Cannot render undefined chat cache.');
