@@ -64,8 +64,12 @@ const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
     });
 };
 
+const createImageFilePath = (user, file) => {
+    return Path.join(userDataPath, 'users', user.identify, 'images', md5(file.name + file.id + file.time) + Path.extname(file.name));
+};
+
 const downloadFile = (user, file, onProgress) => {
-    const fileSavePath = file.path || Path.join(userDataPath, 'users', user.identify, 'images', md5(file.name + file.id + file.time) + Path.extname(file.name));
+    const fileSavePath = file.path || createImageFilePath(user, file);
     return fse.pathExists(fileSavePath).then(exists => {
         if(exists) {
             file.src = fileSavePath;
@@ -220,12 +224,19 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
             });
         };
         if(file.path) {
+            if(data.copy) {
+                const newPath = createImageFilePath(user, file);
+                fse.copySync(file.path, newPath);
+            }
             const fileBufferData = fse.readFileSync(file.path);
             onFileBufferData(fileBufferData);
         } else if(file.blob) {
             const fileReader = new FileReader();
             fileReader.onload = e => {
-                onFileBufferData(fileReader.result);
+                const result = fileReader.result;
+                file.path = createImageFilePath(user, file);
+                fse.outputFile(file.parse, new Buffer(result));
+                onFileBufferData(result);
             };
             fileReader.readAsArrayBuffer(file.blob);
         } else {

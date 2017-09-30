@@ -318,7 +318,7 @@ const sendImageMessage = (imageFile, chat) => {
             type: imageFile.type
         };
         sendChatMessage(message, chat);
-        API.uploadFile(profile.user, imageFile, {gid: chat.gid}, progress => {
+        API.uploadFile(profile.user, imageFile, {gid: chat.gid, copy: true}, progress => {
             message.updateImageContent({send: progress});
             sendChatMessage(message, chat);
         }).then(data => {
