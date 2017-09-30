@@ -150,10 +150,19 @@ const toggleChatPublic = (chat) => {
 };
 
 const toggleChatStar = (chat) => {
-    return Server.socket.send({
-        'method': 'star',
-        'params': [chat.gid, !chat.star]
-    });
+    const sendRequest = () => {
+        return Server.socket.send({
+            'method': 'star',
+            'params': [chat.gid, !chat.star]
+        })
+    };
+    if(!chat.id) {
+        return createChat(chat).then(() => {
+            return sendRequest();
+        });
+    } else {
+        return sendRequest();
+    }
 };
 
 const sendSocketMessageForChat = (socketMessage, chat) => {

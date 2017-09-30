@@ -69,9 +69,7 @@ const onSendContentToChat = (cgid, listener) => {
 };
 
 const mapCacheChats = callback => {
-    return Object.keys(activeCaches).map(gid => {
-        return callback(chats.get(gid));
-    });
+    return Object.keys(activeCaches).map(callback);
 };
 
 const activeAndMapCacheChats = (chat, callback) => {

@@ -143,7 +143,7 @@ class ChatHistory extends Component {
             <ChatTitle className="flex-none gray has-padding-h" chat={chat}>
                 <nav className="toolbar flex flex-middle">
                     <Pager {...this.state.pager} onPageChange={this.handleOnPageChange}/>
-                    <div data-hint={Lang.string('chats.history.fetchFromServer')} className="hint--bottom-left"><button onClick={this.handleFecthBtnClick} type="button" disabled={this.state.loading} className="iconbutton btn rounded"><Icon name="cloud-download icon-2x"/></button></div>
+                    <div data-hint={Lang.string('chats.history.fetchFromServer')} className="hint--bottom-left"><button onClick={this.handleFecthBtnClick} type="button" disabled={this.state.loading || !chat.id} className="iconbutton btn rounded"><Icon name="cloud-download icon-2x"/></button></div>
                 </nav>
             </ChatTitle>
             {this.state.message && <div className="heading blue flex-none">
