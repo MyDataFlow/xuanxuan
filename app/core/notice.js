@@ -28,7 +28,8 @@ const update = info => {
 
     if(notify.updateTrayIcon) {
         if(info.tray) {
-            notify.updateTrayIcon(`${Lang.string('app.title')} - ${info.tray.label}`, info.tray.flash);
+            const trayLabel = info.tray.label ? `${Lang.string('app.title')} - ${info.tray.label}` : Lang.string('app.title');
+            notify.updateTrayIcon(trayLabel, info.tray.flash);
         } else {
             notify.updateTrayIcon(Lang.string('app.title'));
         }
