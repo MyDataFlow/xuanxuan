@@ -9,14 +9,13 @@ const show = (chat, callback) => {
     const modalId = 'app-chats-history-dialog';
     return Modal.show({
         id: modalId,
-        title: Lang.string('chats.history.title'),
         style: {
             left: 10,
             right: 10,
             bottom: 0,
             top: 10
         },
-        className: 'dock primary-pale',
+        className: 'app-chats-history-dialog dock primary-pale',
         animation: 'enter-from-bottom',
         actions: false,
         content: <ChatsHistory chat={chat}/>

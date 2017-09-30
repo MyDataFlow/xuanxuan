@@ -16,23 +16,60 @@ import Lang from '../../lang';
 const MAX_BASE64_IMAGE_SIZE = 1024*10;
 
 const EVENT = {
-    history: 'im.chats.history'
+    history: 'im.chats.history',
+    history_start: 'im.chats.history.start',
+    history_end: 'im.chats.history.end',
 };
 
 let chatJoinTask = null;
 
 Server.socket.setHandler(imServerHandlers);
 
-const fetchChatHistory = (cgid, pager) => {
+
+let historyFetchingPager = null;
+
+const isFetchingHistory = () => {
+    return historyFetchingPager;
+};
+
+const fetchChatsHistory = (pager, continued = false) => {
+    if(pager === 'all') {
+        pager = {queue: chats.query(x => !!x.id, true).map(x => x.gid)};
+    }
+    if(typeof pager === 'string') {
+        pager = {queue: [pager]};
+    }
     pager = Object.assign({
         recPerPage: 50,
         pageID: 1,
         recTotal: 0,
-        continued: true
-    }, pager);
+        continued: true,
+        perent: 0,
+        finish: [],
+    }, historyFetchingPager, pager);
+    if(!pager.queue || !pager.queue.length) {
+        if(DEBUG) {
+            console.error('Cannot fetch history, because the fetch queue is empty.', pager);
+        }
+        return;
+    }
+    pager.gid = pager.queue[0];
+    if(pager.total === undefined) {
+        pager.total = pager.finish.length + pager.queue.length;
+    }
+    if(pager.pageID === 1 && pager.continued && !continued) {
+        if(historyFetchingPager) {
+            if(DEBUG) {
+                console.warn('Server is busy.');
+            }
+            return;
+        }
+        Events.emit(EVENT.history_start, pager);
+        historyFetchingPager = pager;
+    }
     return Server.socket.send({
         'method': 'history',
-        'params': [cgid, pager.recPerPage, pager.pageID, pager.recTotal, pager.continued]
+        'params': [pager.gid, pager.recPerPage, pager.pageID, pager.recTotal, pager.continued]
     });
 };
 
@@ -41,21 +78,45 @@ const updateChatHistory = (cgid, messages, pager, socket) => {
         chats.updateChatMessages(messages, true);
     }
 
-    pager.gid = cgid;
-    pager.isFetchOver = pager.pageID * pager.recPerPage >= pager.recTotal;
-    if(pager.continued && !pager.isFetchOver) {
-        fetchChatHistory(cgid, {
-            recPerPage: pager.recPerPage,
-            pageID: pager.pageID + 1,
-            recTotal: pager.recTotal,
-            continued: true
-        }, socket);
+    const isFetchOver = pager.pageID * pager.recPerPage >= pager.recTotal;
+    pager = Object.assign({}, historyFetchingPager, pager, {
+        isFetchOver,
+    });
+    if(pager.continued) {
+        if(isFetchOver && pager.queue.length < 2) {
+            historyFetchingPager = null;
+        } else {
+            if(isFetchOver) {
+                pager.finish.push(pager.queue.shift());
+                pager = Object.assign(pager, {
+                    pageID: 1,
+                    recTotal: 0,
+                });
+            } else {
+                pager = Object.assign(pager, {
+                    pageID: pager.pageID + 1,
+                });
+            }
+            fetchChatsHistory(pager, true);
+        }
     }
-    Events.emit(EVENT.history, messages, pager);
+    pager.total = pager.finish.length + pager.queue.length;
+    pager.percent = 100*(pager.finish.length/pager.total + (pager.recTotal ? ((Math.min(pager.recTotal, pager.pageID*pager.recPerPage)/pager.recTotal)) : 0)/pager.total);
+    Events.emit(EVENT.history, pager, messages);
+
+    if(pager.continued && !historyFetchingPager) {
+        Events.emit(EVENT.history_end, pager);
+    }
 };
 
 const onChatHistory = listener => {
     return Events.on(EVENT.history, listener);
+};
+const onChatHistoryStart = listener => {
+    return Events.on(EVENT.history_start, listener);
+};
+const onChatHistoryEnd = listener => {
+    return Events.on(EVENT.history_end, listener);
 };
 
 const createChat = chat => {
@@ -411,9 +472,12 @@ const exitChat = (chat) => {
 };
 
 export default {
-    fetchChatHistory,
-    updateChatHistory,
+    fetchChatsHistory,
+    onChatHistoryStart,
+    onChatHistoryEnd,
     onChatHistory,
+    isFetchingHistory,
+    updateChatHistory,
     createChat,
     createChatWithMembers,
     setCommitters,

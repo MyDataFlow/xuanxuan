@@ -76,7 +76,7 @@ class ChatHistory extends Component {
         const chat = this.props.chat;
         if(chat.id) {
             this.setState({loading: true, message: Lang.string('chats.history.fetchingMessages')});
-            App.im.server.fetchChatHistory(this.props.chat.gid);
+            App.im.server.fetchChatsHistory(this.props.chat.gid);
         } else {
             this.setState({loading: false, message: Lang.string('chats.history.localChat'), messages: []});
         }
@@ -88,17 +88,19 @@ class ChatHistory extends Component {
     }
 
     componentDidMount() {
-        this.chatHistoryHandler = App.im.server.onChatHistory((messages, pager) => {
-            this.setState({message: `${Lang.string('chats.history.fetchingMessages')} ${Math.min(pager.recTotal, pager.pageID*pager.recPerPage)}/${pager.recTotal}`});
-            if(pager.isFetchOver) {
-                const thisPager = this.state.pager;
-                thisPager.recTotal = pager.recTotal;
-                thisPager.page = Math.ceil(thisPager.recTotal / thisPager.recPerPage);
-                this.setState({pager: thisPager, message: `${Lang.string('chats.history.fetchingMessages')} ${Lang.string('chats.history.fetchFinish')}`});
-                this.fetchOverTaskTimer = setTimeout(() => {
-                    this.loadMessages();
-                    this.setState({message: ''});
-                }, 200);
+        this.chatHistoryHandler = App.im.server.onChatHistory((pager) => {
+            if(pager.gid === this.props.chat.gid) {
+                this.setState({message: `${Lang.string('chats.history.fetchingMessages')} ${Math.min(pager.recTotal, pager.pageID*pager.recPerPage)}/${pager.recTotal}`});
+                if(pager.isFetchOver) {
+                    const thisPager = this.state.pager;
+                    thisPager.recTotal = pager.recTotal;
+                    thisPager.page = Math.ceil(thisPager.recTotal / thisPager.recPerPage);
+                    this.setState({pager: thisPager, message: `${Lang.string('chats.history.fetchingMessages')} ${Lang.string('chats.history.fetchFinish')}`});
+                    this.fetchOverTaskTimer = setTimeout(() => {
+                        this.loadMessages();
+                        this.setState({message: ''});
+                    }, 200);
+                }
             }
         });
         this.loadFirstPage();
@@ -143,7 +145,7 @@ class ChatHistory extends Component {
             <ChatTitle className="flex-none gray has-padding-h" chat={chat}>
                 <nav className="toolbar flex flex-middle">
                     <Pager {...this.state.pager} onPageChange={this.handleOnPageChange}/>
-                    <div data-hint={Lang.string('chats.history.fetchFromServer')} className="hint--bottom-left"><button onClick={this.handleFecthBtnClick} type="button" disabled={this.state.loading || !chat.id} className="iconbutton btn rounded"><Icon name="cloud-download icon-2x"/></button></div>
+                    <div data-hint={Lang.string('chats.history.fetchFromServer')} className="hint--bottom-left"><button onClick={this.handleFecthBtnClick} type="button" disabled={this.state.loading || !chat.id || App.im.server.isFetchingHistory()} className="iconbutton btn rounded"><Icon name="cloud-download icon-2x"/></button></div>
                 </nav>
             </ChatTitle>
             {this.state.message && <div className="heading blue flex-none">

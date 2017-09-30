@@ -412,9 +412,24 @@
   }
 }
 
+.app-chats-history-dialog {
+  > .heading {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1110;
+
+    > .title {
+      display: none;
+    }
+  }
+}
 .app-chats-history {
-  border-top: @border-width solid @border-color;
-  top: (40*@rem);
+
+}
+.app-chats-history-header {
+  padding: 0 (50*@rem) 0 @space-xs;
+  border-bottom: @border-width solid @border-color;
 }
 .app-chats-history-menu {
   min-width: (200*@rem);
