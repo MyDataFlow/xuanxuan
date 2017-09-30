@@ -106,6 +106,7 @@ class GlobalMessage extends Component {
         let {
             className,
             children,
+            userStatus,
             ...other
         } = this.props;
 

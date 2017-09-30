@@ -66,6 +66,7 @@ class MainView extends Component {
         let {
             className,
             children,
+            userStatus,
             ...other
         } = this.props;
 

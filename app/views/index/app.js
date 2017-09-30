@@ -33,7 +33,7 @@ class AppView extends Component {
                 width: '100%',
                 left: '-100%',
             }}/>
-            <MainView className="dock"/>
+            <MainView userStatus={this.state.userStatus} className="dock"/>
         </div>
     }
 }
