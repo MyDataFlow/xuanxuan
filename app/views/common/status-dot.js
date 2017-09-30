@@ -9,8 +9,8 @@ const statusColors = {
     unverified: '#ccc',
     disconnect: '#ccc',
     logined: '#18ffff',
-    online: '#76ff03',
-    busy: '#ffea00',
+    online: '#00e676',
+    busy: '#ffab00',
     away: '#ff1744',
 };
 
