@@ -1,6 +1,6 @@
 import {clipboard, nativeImage} from 'electron';
 
-const writeImageFromUrl = (url, daaType) => {
+const writeImageFromUrl = (url, dataType) => {
     const img = dataType === 'base64' ? nativeImage.createFromDataURL(url) : nativeImage.createFromPath(url);
     clipboard.writeImage(img);
 };

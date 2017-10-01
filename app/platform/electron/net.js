@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import Request from 'request';
 import Path from 'path';
 import {userDataPath} from './ui';
-import md5 from 'md5';
+import uuid from 'uuid/v4';
 
 const downloadFileOrigin = network.downloadFile;
 
@@ -65,7 +65,7 @@ const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
 };
 
 const createImageFilePath = (user, file) => {
-    return Path.join(userDataPath, 'users', user.identify, 'images', md5(file.name + file.id + file.time) + Path.extname(file.name));
+    return Path.join(userDataPath, 'users', user.identify, 'images', file.name);
 };
 
 const downloadFile = (user, file, onProgress) => {
@@ -137,8 +137,9 @@ network.setFetchObject(nodeFetch);
 network.uploadFile = (user, file, data = {}, onProgress = null) => {
     return new Promise((resolve, reject) => {
         const serverUrl = user.uploadUrl;
+        const filename = data.copy ? `${uuid()}${Path.extname(file.name)}` : file.name;
+        const copyPath = data.copy ? createImageFilePath(user, {name: filename}) : null;
         const onFileBufferData = fileBufferData => {
-            const filename = file.name;
             const headers = {'Content-Type': 'multipart/form-data'};
             headers['ServerName'] = user.serverName;
             headers['Authorization'] = user.token;
@@ -220,13 +221,12 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
                 }
 
                 if(error) reject(error);
-                else resolve(json);
+                else resolve(Object.assign(json, {name: filename}));
             });
         };
         if(file.path) {
             if(data.copy) {
-                const newPath = createImageFilePath(user, file);
-                fse.copySync(file.path, newPath);
+                fse.copySync(file.path, copyPath);
             }
             const fileBufferData = fse.readFileSync(file.path);
             onFileBufferData(fileBufferData);
@@ -234,8 +234,9 @@ network.uploadFile = (user, file, data = {}, onProgress = null) => {
             const fileReader = new FileReader();
             fileReader.onload = e => {
                 const result = fileReader.result;
-                file.path = createImageFilePath(user, file);
-                fse.outputFile(file.parse, new Buffer(result));
+                if(data.copy) {
+                    fse.outputFile(copyPath, new Buffer(result));
+                }
                 onFileBufferData(result);
             };
             fileReader.readAsArrayBuffer(file.blob);
