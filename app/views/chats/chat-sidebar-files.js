@@ -41,10 +41,10 @@ class ChatSidebarFiles extends Component {
             className={HTML.classes('app-chat-sidebar-files has-padding', className)}
         >
             {
-                files.length ? <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={files}/> : <div className="dock center-content">
+                files.length ? <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={files}/> : <div className="dock center-content" style={{top: HTML.rem(50)}}>
                     <div>
                         <div className="text-center" dangerouslySetInnerHTML={{__html: Emojione.toImage(':blowfish:')}}></div>
-                        <div className="text-gray">{Lang.string('chat.sidebar.tab.files.noFilesHere')}</div>
+                        <div className="text-gray small">{Lang.string('chat.sidebar.tab.files.noFilesHere')}</div>
                     </div>
                 </div>
             }
