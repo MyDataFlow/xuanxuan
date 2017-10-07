@@ -1,6 +1,7 @@
 import electron, {
     app as ElectronApp,
     Menu,
+    shell,
 }                   from 'electron';
 import DEBUG        from './utils/debug';
 import application  from './platform/electron/app-remote';
