@@ -5,7 +5,7 @@
 喧喧从1.2版本起提供了浏览器端版本，直接访问下面的网址的一个就可以连接到你的喧喧服务器：
 
 * https://easysoft.github.io/xuanxuan/1.2.0/
-* http://xuan.im/go/
+* http://demo.xuan.im/
 
 通常浏览器对<a href="https://developer.mozilla.org/zh-CN/docs/Security/MixedContent" target="_blank">混合内容</a>会进行限制访问，喧喧浏览器端版本也受此限制：
 
