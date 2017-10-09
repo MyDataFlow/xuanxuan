@@ -304,8 +304,12 @@ $ brew install rpm
       <td>打包 Windows 64 位**调试**版本<</td>
     </tr>
     <tr>
-      <td><code>npm run package-publish</code></td>
-      <td>同时打包除调试版本外的所有平台上的版本</td>
+      <td><code>npm run package-browser</code></td>
+      <td>打包浏览器版本<</td>
+    </tr>
+    <tr>
+      <td><code>npm run package-all</code></td>
+      <td>同时打包除所有平台上的版本</td>
     </tr>
   </tbody>
 </table>
@@ -331,16 +335,12 @@ $ brew install rpm
       <td>客户端使用到的第三发静态资源目录</td>
     </tr>
     <tr>
-      <td><code>/app/img/</code></td>
-      <td>客户端界面上用到的图片资源目录，目前主要是程序图标</td>
+      <td><code>/app/media/</code></td>
+      <td>客户端上用到的图片、语音及表情资源</td>
     </tr>
     <tr>
       <td><code>/app/lang/</code></td>
       <td>客户端语言配置文件目录，目前只有中文简体文件 `zh-cn.json</td></td>
-    </tr>
-    <tr>
-      <td><code>/app/sound/</code></td>
-      <td>客户端使用到的声音文件目录，用于播放消息提示音</td>
     </tr>
     <tr>
       <td><code>/app/style/</code></td>
@@ -351,72 +351,40 @@ $ brew install rpm
       <td>客户端用到的工具组件</td>
     </tr>
     <tr>
-      <td><code>/app/models/</code></td>
-      <td>客户端内部模块组件目录</td>
+      <td><code>/app/network/</code></td>
+      <td>客户端内部与网络相关的接口模块</td>
     </tr>
     <tr>
-      <td><code>/app/models/chat/</code></td>
-      <td>客户端内部与即时消息相关的模块组件目录</td>
+      <td><code>/app/config/</code></td>
+      <td>客户端配置文件</td>
+    </tr>
+    <tr>
+      <td><code>/app/platform</code></td>
+      <td>客户端与平台相关的模块</td>
+    </tr>
+    <tr>
+      <td><code>/app/core/</code></td>
+      <td>客户端核心模块</td>
+    </tr>
+    <tr>
+      <td><code>/app/components/</code></td>
+      <td>客户端界面用到的通用 React 组件</td>
     </tr>
     <tr>
       <td><code>/app/views/</code></td>
-      <td>客户端使用到的 React 组件目录</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/chat/</code></td>
-      <td>与即时消息相关的 React 组件目录</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/components/</code></td>
-      <td>通用 React 组件目录</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/contacts/</code></td>
-      <td>与联系人功能相关的 React 组件目录</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/icons/</code></td>
-      <td>图标组件目录</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/mixins/</code></td>
-      <td>一些 React 插件</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/windows/</code></td>
-      <td>窗口启动容器组件</td>
-    </tr>
-    <tr>
-      <td><code>/app/views/misc/</code></td>
-      <td>与程序特定内容相关的 React 组件</td>
+      <td>客户端界面 React 视图组件</td>
     </tr>
     <tr>
       <td><code>/app/main.development.js</code></td>
       <td>Electron 入口文件</td>
     </tr>
     <tr>
-      <td><code>/app/app-remote.js</code></td>
-      <td>Electron 后台进程管理类</td>
-    </tr>
-    <tr>
-      <td><code>/app/app.js</code></td>
-      <td>Electron 渲染进程管理类</td>
-    </tr>
-    <tr>
       <td><code>/app/index.html</code></td>
-      <td>Electron 主窗口 HTML 代码文件</td>
+      <td>主窗口 HTML 代码文件</td>
     </tr>
     <tr>
       <td><code>/app/index.js</code></td>
       <td>Electron 主窗口入口代码文件</td>
-    </tr>
-    <tr>
-      <td><code>/app/theme.js</code></td>
-      <td>React 主题管理组件</td>
-    </tr>
-    <tr>
-      <td><code>/app/config.js</code></td>
-      <td>运行时配置管理工具</td>
     </tr>
     <tr>
       <td><code>/resources/</code></td>
