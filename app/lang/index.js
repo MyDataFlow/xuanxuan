@@ -1,10 +1,15 @@
 import ZhcnLang from './zh-cn.json';
 import StringHelper from '../utils/string-helper';
+import Platform from 'Platform';
 
 const DEFAULT_LANG = 'zh-cn';
 
 let langData = Object.assign({}, ZhcnLang);
 let currentLangName = DEFAULT_LANG;
+
+if(Platform.lang) {
+    langData = Object.assign(langData, Platform.lang);
+}
 
 /**
  * Get language setting and return string
@@ -67,8 +72,6 @@ const lang = {
         return currentLangName;
     }
 };
-
-Object.assign(lang, langData);
 
 if(DEBUG) global.$.Lang = lang;
 
