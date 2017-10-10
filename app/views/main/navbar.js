@@ -19,9 +19,9 @@ import UserMenu from './user-menu';
 import UserSettingDialog from '../common/user-setting-dialog';
 
 const navbarItems = [
-    {to: ROUTES.chats.recents.__, label: Lang['navbar.chats.label'], icon: 'comment-outline', activeIcon: 'comment-processing'},
-    {to: ROUTES.chats.groups.__, label: Lang['navbar.groups.label'], icon: 'pound', activeIcon: 'pound-box'},
-    {to: ROUTES.chats.contacts.__, label: Lang['navbar.contacts.label'], icon: 'account-multiple-outline', activeIcon: 'account-multiple'},
+    {to: ROUTES.chats.recents.__, label: Lang.string('navbar.chats.label'), icon: 'comment-outline', activeIcon: 'comment-processing'},
+    {to: ROUTES.chats.groups.__, label: Lang.string('navbar.groups.label'), icon: 'pound', activeIcon: 'pound-box'},
+    {to: ROUTES.chats.contacts.__, label: Lang.string('navbar.contacts.label'), icon: 'account-multiple-outline', activeIcon: 'account-multiple'},
 ];
 
 const NavLink = ({item}) => (

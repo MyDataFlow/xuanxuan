@@ -141,8 +141,8 @@ class FormView extends Component {
                     value={this.state.serverUrl}
                     autoFocus={true}
                     disabled={this.state.logining}
-                    label={Lang['login.serverUrl.label']}
-                    placeholder={Lang['login.serverUrl.hint']}
+                    label={Lang.string('login.serverUrl.label')}
+                    placeholder={Lang.string('login.serverUrl.hint')}
                     onChange={this.handleInputFieldChange.bind(this, 'serverUrl')}
                     className="relative app-login-server-control"
                 >
@@ -151,15 +151,15 @@ class FormView extends Component {
                 <InputControl
                     value={this.state.account}
                     disabled={this.state.logining}
-                    label={Lang['login.account.label']}
-                    placeholder={Lang['login.account.hint']}
+                    label={Lang.string('login.account.label')}
+                    placeholder={Lang.string('login.account.hint')}
                     onChange={this.handleInputFieldChange.bind(this, 'account')}
                 />
                 <InputControl
                     value={this.state.password}
                     disabled={this.state.logining}
                     className="space"
-                    label={Lang['login.password.label']}
+                    label={Lang.string('login.password.label')}
                     onChange={value => this.setState({})}
                     inputType="password"
                     onChange={this.handleInputFieldChange.bind(this, 'password')}
