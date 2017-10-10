@@ -170,7 +170,7 @@ class FormView extends Component {
                     className={HTML.classes('btn block rounded', this.state.submitable ? 'primary' : 'gray')}
                     onClick={this.handleLoginBtnClick}
                 >
-                    {Lang[this.state.logining ? 'login.btn.logining' : 'login.btn.label']}
+                    {Lang.string(this.state.logining ? 'login.btn.logining' : 'login.btn.label')}
                 </button>
             </div>;
         }
