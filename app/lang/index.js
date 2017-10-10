@@ -1,15 +1,14 @@
 import ZhcnLang from './zh-cn.json';
 import StringHelper from '../utils/string-helper';
-import Platform from 'Platform';
 
 const DEFAULT_LANG = 'zh-cn';
 
 let langData = Object.assign({}, ZhcnLang);
 let currentLangName = DEFAULT_LANG;
 
-if(Platform.lang) {
-    langData = Object.assign(langData, Platform.lang);
-}
+const update = (newLangData) => {
+    langData = Object.assign(langData, newLangData);
+};
 
 /**
  * Get language setting and return string
@@ -64,6 +63,7 @@ const error = err => {
 };
 
 const lang = {
+    update,
     format,
     string,
     error,
