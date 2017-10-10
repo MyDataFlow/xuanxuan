@@ -30,7 +30,7 @@ class BuildInfo extends Component {
     }
 
     render() {
-        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} {Config.system.specialVersion ? (' for ' + system.config.specialVersion) : ''} {DEBUG ? '[debug]' : ''}</div>;
+        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} {Config.system.specialVersion ? (' for ' + Config.system.specialVersion) : ''} {DEBUG ? '[debug]' : ''}</div>;
     }
 }
 
