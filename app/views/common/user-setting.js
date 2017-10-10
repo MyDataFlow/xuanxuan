@@ -144,6 +144,7 @@ const configs = [
             }, {
                 type: 'select',
                 name: 'ui.app.onClose',
+                hidden: !Platform.ui.showQuitConfirmDialog,
                 options: [
                     {value: 'ask', label: Lang.string('setting.windows.askEveryTime')},
                     {value: 'minimize', label: Lang.string('setting.windows.minimizeMainWindow')},

@@ -201,7 +201,7 @@ if(Platform.ui.onRequestQuit) {
         const user = profile.user;
         if(user && !user.isUnverified) {
             const appCloseOption = user.config.appCloseOption;
-            if(appCloseOption === 'minimize') {
+            if(appCloseOption === 'minimize' || !Platform.ui.showQuitConfirmDialog) {
                 Platform.ui.hideWindow();
                 return false;
             } else if(appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
