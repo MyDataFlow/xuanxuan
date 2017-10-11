@@ -202,6 +202,7 @@
     "chat.fontSize.current.format": "当前 {0}",
     "chat.fontSize.resetDefault": "恢复默认",
 
+    "chat.sidebar.tab.profile.label": "资料",
     "chat.sidebar.tab.peoples.label": "成员",
     "chat.sidebar.tab.files.label": "文件",
     "chat.sidebar.tab.files.noFilesHere": "还没有人分享文件",
