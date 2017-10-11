@@ -107,7 +107,6 @@
 
   .title {
     font-size: (13*@rem);
-    font-weight: bolder;
     align-items: center;
     display: flex;
 
@@ -121,6 +120,7 @@
   }
 
   .sub-content {
+    margin-top: (2*@rem);
     > span + span {
       margin-left: (10*@rem);
       display: inline-block;
@@ -131,6 +131,10 @@
     + .app-file-list-item {
       border-top: @border-width solid @border-color;
     }
+  }
+
+  > .actions {
+    margin-left: (8*@rem);
   }
 }
 
