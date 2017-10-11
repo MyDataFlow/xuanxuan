@@ -196,6 +196,8 @@
     "chat.sendbox.placeholder.sendMessage": "发送消息",
     "chat.sendbox.placeholder.memberIsOffline": "发送消息（{0}现在不在线，你发送的消息将在对方下次上线时送达）",
     "chat.atHim": "@她/他",
+    "chat.atHim.f": "@她",
+    "chat.atHim.m": "@他",
     "chat.sendMessage": "发送消息",
     "chat.fontSize.current.format": "当前 {0}",
     "chat.fontSize.resetDefault": "恢复默认",
@@ -228,6 +230,9 @@
 
     "member.gender.f":            "女",
     "member.gender.m":            "男",
+    "member.him":                 "他/她",
+    "member.him.f":               "她",
+    "member.him.m":               "他",
 
     "member.role.dev": "研发",
     "member.role.po": "产品经理",

@@ -363,7 +363,7 @@ const createChatMemberContextMenuItems = member => {
         const gid = chats.getOne2OneChatGid([member, profile.user]);
         if(gid !== activedChatId) {
             menu.push({
-                label: Lang.string('chat.atHim'),
+                label: Lang.string(`chat.atHim.${member.gender}`, Lang.string('chat.atHim')),
                 click: () => {
                     sendContentToChat(`@${member.displayName} `);
                 }
