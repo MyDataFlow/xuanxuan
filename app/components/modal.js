@@ -25,6 +25,7 @@ const show = (props = {}, callback = null) => {
         onSubmit,
         onCancel,
         className,
+        headingClassName,
     } = props;
 
     if(closeButton === undefined) {
@@ -35,7 +36,7 @@ const show = (props = {}, callback = null) => {
         props.id = timeSequence();
     }
 
-    className = HTML.classes('modal layer', className || 'rounded');
+    className = HTML.classes('modal layer rounded', className || '');
 
     if(actions === undefined) {
         actions = true;
@@ -104,7 +105,7 @@ const show = (props = {}, callback = null) => {
         </footer>;
     }
 
-    const header = (title || closeButton) ? <header className="heading">
+    const header = (title || closeButton) ? <header className={HTML.classes("heading", headingClassName)}>
         <div className="title">{title}</div>
         {closeButton && <nav className="nav"><a className="close" onClick={() => {
             DisplayLayer.remove(props.id);
@@ -118,6 +119,7 @@ const show = (props = {}, callback = null) => {
     delete props.onAction;
     delete props.onSubmit;
     delete props.onCancel;
+    delete props.headingClassName;
 
     return DisplayLayer.show(props, callback);
 };

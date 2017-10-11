@@ -67,7 +67,48 @@
 }
 
 .app-member-profile {
-  min-width: (450*@rem);
+  .app-member-profile-dialog & {
+    min-width: (450*@rem);
+  }
+
+  &.compact {
+    > header {
+      padding: @space @space-sm;
+      margin-bottom: 0!important;
+      flex-direction: column;
+
+      > .content {
+        margin: 0;
+        padding: @space 0 0!important;
+        text-align: center;
+      }
+    }
+
+    > .divider {margin: 0}
+
+    > .contact-info-item {
+      display: block;
+      position: relative;
+      > .avatar {
+        position: absolute;
+        top: (10*@rem);
+        left: (10*@rem);
+        width: (16*@rem);
+        height: (16*@rem);
+
+        > .icon {
+          font-size: (12*@rem);
+        }
+      }
+      > .content {
+        margin: 0;
+
+        > .subtitle {
+          padding-left: (24*@rem);
+        }
+      }
+    }
+  }
 }
 
 .app-about {
