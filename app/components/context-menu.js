@@ -72,7 +72,7 @@ const show = (position, menus, props = {}, callback = null) => {
 
     className = HTML.classes('contextmenu layer', className);
 
-    props = Object.assign({backdropClassName: 'clean', animation: 'fade'}, props, {className, style, content, plugName: 'contextmenu'});
+    props = Object.assign({backdropClassName: 'clean', animation: false}, props, {className, style, content, plugName: 'contextmenu'});
     delete props.menuClassName;
     delete props.itemClassName;
     delete props.onItemClick;
@@ -82,7 +82,9 @@ const show = (position, menus, props = {}, callback = null) => {
         const newX = Math.max(0, Math.min(window.innerWidth - ele.clientWidth, x));
         const newY = Math.max(0, Math.min(window.innerHeight - ele.clientHeight, y));
         if(newX !== x || newY !== y) {
-            display.setStyle({top: newY, left: newX});
+            display.setStyle({top: newY, left: newX, opacity: 1});
+        } else {
+            display.setStyle({opacity: 1});
         }
     });
 };
