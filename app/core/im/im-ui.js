@@ -107,7 +107,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
         }
     });
     if(showSidebarIcon === 'auto') {
-        showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid);
+        showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
     }
     if(showSidebarIcon) {
         items.push({

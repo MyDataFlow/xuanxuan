@@ -52,7 +52,7 @@ class ChatView extends Component {
             return <div key={chatGid} className={HTML.classes("box muted", {hidden})}>请在左侧选择一个聊天会话。</div>
         }
 
-        const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid);
+        const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
         const isReadOnly = !chat.isCommitter(App.profile.user);
 
         return <div {...other}
