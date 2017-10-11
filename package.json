@@ -209,8 +209,8 @@
     "ws": "^2.2.3"
   },
   "devEngines": {
-    "node": ">=6.x",
-    "npm": ">=3.x"
+    "node": ">=7.x",
+    "npm": ">=4.x"
   },
   "optionalDependencies": {
     "bufferutil": "^3.0.0",
