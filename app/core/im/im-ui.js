@@ -343,7 +343,10 @@ const createChatToolbarMoreContextMenuItems = chat => {
     }
 
     if(chat.canExit) {
-        menu.push({type: 'separator'}, {
+        if(menu.length) {
+            menu.push({type: 'separator'});
+        }
+        menu.push({
             label: Lang.string('chat.group.exit'),
             click: () => {
                 chatExitConfirm(chat);
