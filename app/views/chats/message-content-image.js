@@ -55,6 +55,7 @@ class MessageContentImageView extends Component {
     handleImageContextMenu(url, dataType, e) {
         const items = App.ui.createImageContextMenuItems(url, dataType);
         App.ui.showContextMenu({x: e.pageX, y: e.pageY}, items);
+        e.preventDefault();
     }
 
     render() {

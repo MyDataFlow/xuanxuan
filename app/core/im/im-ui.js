@@ -222,6 +222,7 @@ const createSendboxToolbarItems = (chat, config) => {
             },
             contextMenu: e => {
                 ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chat));
+                e.preventDefault();
             }
         });
     }

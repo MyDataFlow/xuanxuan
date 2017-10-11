@@ -43,6 +43,7 @@ class MenuList extends Component {
     handleItemContextMenu(chat, e) {
         const menuItems = App.im.ui.createChatContextMenuItems(chat);
         ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
+        e.preventDefault();
     }
 
     render() {

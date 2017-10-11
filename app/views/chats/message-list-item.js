@@ -31,6 +31,7 @@ class MessageListItem extends Component {
     handleUserContextMenu(sender, e) {
         const items = App.im.ui.createChatMemberContextMenuItems(sender);
         ContextMenu.show({x: e.pageX, y: e.pageY}, items);
+        e.preventDefault();
     }
 
     checkResendMessage() {
