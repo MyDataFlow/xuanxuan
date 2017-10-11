@@ -48,8 +48,8 @@ class ChatView extends Component {
 
         const chat = App.im.chats.get(chatGid);
 
-        if(chat['delete']) {
-            return <div key={chat.gid} className="box muted">请选择一个聊天会话。</div>
+        if(!chat || chat['delete']) {
+            return <div key={chatGid} className={HTML.classes("box muted", {hidden})}>请在左侧选择一个聊天会话。</div>
         }
 
         const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid);
