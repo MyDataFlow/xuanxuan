@@ -26,9 +26,10 @@ class ChatTitle extends Component {
             <ChatAvatar chat={chat} size={24} className="state" onClick={onTitleClick}/>
             {theOtherOne && <StatusDot status={theOtherOne.status}/>}
             {
-                theOtherOne ? <a className="strong rounded title text-primary" onClick={onTitleClick}>{chatName}</a> : <strong className="title">{chatName}</strong>
+                theOtherOne ? <a className="strong rounded title flex-none text-primary" onClick={onTitleClick}>{chatName}</a> : <strong className="title flex-none">{chatName}</strong>
             }
             {chat.public && <small className="label rounded green label-sm">{Lang.string('chat.public.label')}</small>}
+            <div className="flex-auto"></div>
             {children}
         </div>;
     }
