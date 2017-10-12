@@ -107,7 +107,7 @@ const show = (props = {}, callback = null) => {
 
     const header = (title || closeButton) ? <header className={HTML.classes("heading", headingClassName)}>
         <div className="title">{title}</div>
-        {closeButton && <nav className="nav"><a className="close" onClick={() => {
+        {closeButton && <nav style={{overflow: 'visible'}} data-hint={Lang.string('common.close')} className="nav hint--bottom"><a className="close" onClick={() => {
             DisplayLayer.remove(props.id);
         }}><Icon name="close"/></a></nav>}
     </header> : null;
