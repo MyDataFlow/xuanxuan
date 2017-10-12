@@ -2,7 +2,7 @@ import {Socket} from 'Platform';
 import SocketMessage from './socket-message';
 import Events from '../core/events';
 
-const PING_INTERVAL = DEBUG ? (1000 * 30) : (1000 * 60 * 3);
+const PING_INTERVAL = DEBUG ? (1000 * 60) : (1000 * 60 * 3);
 const LISTEN_TIMEOUT = 1000 * 15;
 
 const EVENT = {
