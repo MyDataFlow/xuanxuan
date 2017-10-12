@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import HTML from '../../utils/html-helper';
+import DateHelper from '../../utils/date-helper';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import Lang from '../../lang';
@@ -139,10 +140,13 @@ class ChatHistory extends Component {
             ...other
         } = this.props;
 
+        const messages = this.state.messages;
+
         return <div {...other}
             className={HTML.classes('app-chat-history column single scroll-x', className)}
         >
             <ChatTitle className="flex-none gray has-padding-h" chat={chat}>
+                {(messages && messages.length) ? <div className="small">{DateHelper.formatSpan(messages[0].date, messages[messages.length - 1].date, {full: Lang.string('time.format.full'), month: Lang.string('time.format.month'), day: Lang.string('time.format.day')})}</div> : null}
                 <nav className="toolbar flex flex-middle">
                     <Pager {...this.state.pager} onPageChange={this.handleOnPageChange}/>
                     <div data-hint={Lang.string('chats.history.fetchFromServer')} className="hint--bottom-left"><button onClick={this.handleFecthBtnClick} type="button" disabled={this.state.loading || !chat.id || App.im.server.isFetchingHistory()} className="iconbutton btn rounded"><Icon name="cloud-download icon-2x"/></button></div>
@@ -153,7 +157,7 @@ class ChatHistory extends Component {
                 <div className="title">{this.state.message}</div>
             </div>}
             <div className="flex-auto user-selectable scroll-y scroll-x fluid">
-                <MessageList messages={this.state.messages}/>
+                <MessageList messages={messages}/>
             </div>
             {children}
         </div>;

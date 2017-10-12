@@ -424,12 +424,66 @@
     }
   }
 }
-.app-chats-history {
-
-}
 .app-chats-history-header {
   padding: 0 (50*@rem) 0 @space-xs;
   border-bottom: @border-width solid @border-color;
+
+  > .title {
+    width: (195*@rem);
+  }
+
+  > .search-control {
+    > .search {
+      width: (320*@rem);
+      transition: @animation-type @animation-speed-fast width;
+
+      > .select {
+        top: (3*@rem);
+        left: (3*@rem);
+        opacity: 1;
+        transform: scaleX(1)  translateX(0);
+        transition: @animation-type @animation-speed-fast transform;
+        transition-property: transform, opacity;
+        width: (70*@rem);
+
+        &:after {
+          top: (9*@rem);
+          right: (3*@rem);
+        }
+
+        > select {
+          min-height: (24*@rem);
+          border-color: transparent;
+          background-color: @color-pale;
+          padding:0 (12*@rem) 0 (4*@rem);
+          color: @color-primary;
+        }
+
+        &.search-box-type {
+          left: (75*@rem);
+        }
+      }
+
+      > .input {
+        padding-left: (150*@rem);
+      }
+
+      &.normal.empty {
+        width: (250*@rem);
+
+        > .select {
+          opacity: 0;
+          transform: scaleX(0) translateX(80px);
+        }
+
+        > .input {
+          border-color: transparent;
+          padding-right: (20*@rem);
+          padding-left: (30*@rem);
+        }
+      }
+    }
+  }
 }
 .app-chats-history-menu {
   min-width: (200*@rem);

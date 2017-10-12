@@ -5,6 +5,8 @@ import Events from '../events';
 import members from '../members';
 import db from '../db';
 import StringHelper from '../../utils/string-helper';
+import DateHelper from '../../utils/date-helper';
+import TaskQueue from '../../utils/task-queue';
 
 const CHATS_LIMIT_DEFAULT = 100;
 const MAX_RECENT_TIME  = 1000*60*60*24*7;
@@ -142,7 +144,7 @@ const countChatMessages = cgid => {
     return db.database.chatMessages.where({cgid}).count();
 };
 
-const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true) => {
+const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = false, rawData = false, returnCount = false) => {
     const cgid = chat.gid;
     let collection =  db.database.chatMessages.orderBy('id').and(x => {
         return x.cgid === cgid && (!queryCondition || queryCondition(x));
@@ -156,16 +158,59 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
     if(limit) {
         collection = collection.limit(limit);
     }
+    if(returnCount) {
+        return collection.count(count => {
+            return Promise.resolve({gid: cgid, count, chat});
+        });
+    }
     return collection.toArray(chatMessages => {
         if(chatMessages && chatMessages.length) {
-            const result = chatMessages.map(ChatMessage.create);
-            chat.addMessages(result, profile.userId, true, true);
-            Events.emitDataChange({chats: {[cgid]: chat}});
+            const result = rawData ? chatMessages : chatMessages.map(ChatMessage.create);
+            if(!skipAdd) {
+                chat.addMessages(result, profile.userId, true, true);
+                Events.emitDataChange({chats: {[cgid]: chat}});
+            }
             return Promise.resolve(result);
         } else {
             return Promise.resolve([]);
         }
     });
+};
+
+const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = false) => {
+    const keys = searchKeys.split(' ');
+    return loadChatMessages(chat, msg => {
+        if(minDate && msg.date < minDate) {
+            return false;
+        }
+        for(let key of keys) {
+            if(key === '[image]') {
+                if(msg.contentType !== 'image') {
+                    return false;
+                }
+            } else if(key === '[file]') {
+                if(msg.contentType !== 'file') {
+                    return false;
+                }
+            } else if(msg.contentType === 'text' || msg.content.length < 200) {
+                if(!msg.content || !msg.content.includes(key)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }, 0, 0, true, true, false, returnCount);
+};
+
+const createCountMessagesTask = (chats, searchKeys, minDateDesc = '') => {
+    const minDate = minDateDesc ? DateHelper.getTimeBeforeDesc(minDateDesc) : 0;
+    const taskQueue = new TaskQueue();
+    taskQueue.add(chats.map(chat => {
+        return searchChatMessages.bind(null, chat, searchKeys, minDate, true);
+    }));
+    return taskQueue;
 };
 
 const update = (chatArr) => {
@@ -485,4 +530,6 @@ export default {
     onChatMessages,
     getOne2OneChatGid,
     countChatMessages,
+    createCountMessagesTask,
+    searchChatMessages,
 };
