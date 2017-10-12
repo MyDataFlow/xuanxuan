@@ -4,9 +4,9 @@ import timeSequence from './time-sequence';
 const STATUS = new Status({
     wait: 0,
     pending: 1,
-    paused: 2,
-    done: 3,
-    canceled: 4
+    // paused: 2,
+    done: 2,
+    canceled: 3
 }, 0);
 
 class TaskQueue {
@@ -18,7 +18,6 @@ class TaskQueue {
         this._runId = 0;
         this._onTask = onTask;
         this._running = 0;
-        this._timerId = null;
 
         if(tasks) {
             this.add(tasks);
@@ -75,8 +74,8 @@ class TaskQueue {
         return this._status.is(STATUS.pending);
     }
 
-    get isPaused() {
-        return this._status.is(STATUS.paused);
+    get isWait() {
+        return this._status.is(STATUS.wait);
     }
 
     get percent() {
@@ -94,11 +93,11 @@ class TaskQueue {
     }
 
     cancel() {
-        if(this.isRunning || this.isPaused) {
+        if(this.isRunning) {
             this._status.change(STATUS.canceled);
             this._runId = 0;
         } else if(DEBUG) {
-            console.error(`Cannot cancel a ${this.statusName} task.`, this);
+            console.warn(`Cannot cancel a ${this.statusName} task.`, this);
         }
         return this;
     }
@@ -113,7 +112,7 @@ class TaskQueue {
     }
 
     next(runId, resolve, reject, ...params) {
-        runTask(this._tasks[0], ...params).then(result => {
+        this.runTask(this._tasks[0], ...params).then(result => {
             if(runId === this._runId) {
                 this._finished.push(this._tasks.shift());
                 this._onTask && this._onTask(result, this.percent, runId);
@@ -136,21 +135,20 @@ class TaskQueue {
         if(!this._tasks.length) {
             return Promise.resolve(0);
         }
-        if(this._running || this.isRunning) {
+        if(!this.isWait) {
+            const errorMessage = `The status is not wait(current '${this.statusName}')`;
             if(DEBUG) {
-                console.error(`There has task running already.`, this);
+                console.error(errorMessage, this);
             }
-            return Promise.reject('There has task running already.');
+            return Promise.reject(errorMessage);
         }
+        console.log('task run', this);
         return new Promise((resolve, reject) => {
             const runId = timeSequence();
             this._runId = runId;
+            this._status.change(STATUS.pending);
             this.next(runId, resolve, reject, ...params);
         });
-    }
-
-    pause() {
-        this._status.change(STATUS.paused);
     }
 
     reset() {
