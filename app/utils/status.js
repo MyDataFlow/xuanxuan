@@ -17,14 +17,30 @@ class StatusKeeper {
         return this.mapper.getValue(this.status);
     }
 
+    get onChange() {
+        return this._onChange;
+    }
+
+    set onChange(callback) {
+        this._onChange = callback;
+    }
+
+    get canChange() {
+        return this._canChange;
+    }
+
+    set canChange(callback) {
+        this._canChange = callback;
+    }
+
     change(nameOrValue) {
         const value = this.mapper.getValue(nameOrValue);
         const oldValue = this.value;
         if(value !== undefined && oldValue !== value) {
-            if(!this.canChange || this.canChange(value, oldValue)) {
+            if(!this._canChange || this._canChange(value, oldValue)) {
                 this.status = value;
-                if(typeof this.onChange === 'function') {
-                    this.onChange(value, oldValue, this);
+                if(typeof this._onChange === 'function') {
+                    this._onChange(value, oldValue, this);
                 }
             } else if(DEBUG) {
                 console.error(`Status '${oldValue}' cannot change to ${nameOrValue} with the rule.`);
@@ -110,6 +126,9 @@ class Status {
      * @memberof Status
      */
     create(status) {
+        if(status === undefined) {
+            status = this.defaultValue;
+        }
         return new StatusKeeper(status, this);
     }
 }

@@ -1,3 +1,5 @@
+import StringHelper from './string-helper';
+
 export const TIME_DAY = 24*60*60*1000;
 
 export const createDate = date => {
@@ -8,7 +10,28 @@ export const createDate = date => {
 };
 
 export const isSameDay = (date1, date2) => {
-    return createDate(date1).toDateString() === createDate(date2).toDateString();
+    if(!date2) {
+        date2 = new Date();
+    }
+    date1 = createDate(date1);
+    date2 = createDate(date2);
+    return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
+};
+
+export const isSameYear = (date1, date2) => {
+    if(!date2) {
+        date2 = new Date();
+    }
+    return createDate(date1).getFullYear() === createDate(date2).getFullYear();
+};
+
+export const isSameMonth = (date1, date2) => {
+    if(!date2) {
+        date2 = new Date();
+    }
+    date1 = createDate(date1);
+    date2 = createDate(date2);
+    return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth();
 };
 
 export const isToday = (date, now) => {
@@ -43,10 +66,41 @@ export const formatDate = (date, format) => {
     return format;
 };
 
+export const formatSpan = (date1, date2, format) => {
+    format = Object.assign({full: 'yyyy-M-d', month: 'M-d', day: 'd', str: '{0} ~ {1}'}, format);
+    const date1Str = formatDate(date1, isSameYear(date1) ? format.month : format.full);
+    if(isSameDay(date1, date2)) {
+        return date1Str;
+    }
+    const date2Str = formatDate(date2, isSameYear(date1, date2) ? (isSameMonth(date1, date2) ? format.day : format.month) : format.full);
+    return StringHelper.format(format.str, date1Str, date2Str);
+};
+
+export const getTimeBeforeDesc = desc => {
+    const now = new Date().getTime();
+    switch(desc) {
+        case 'oneWeek':
+            return now - TIME_DAY*7;
+        case 'oneMonth':
+            return now - TIME_DAY*31;
+        case 'threeMonth':
+            return now - TIME_DAY*31*3;
+        case 'halfYea':
+            return now - TIME_DAY*183;
+        case 'oneYea':
+            return now - TIME_DAY*365;
+    }
+    return 0;
+};
+
 export default {
     createDate,
     formatDate,
     isSameDay,
+    isSameMonth,
+    isSameYear,
     isToday,
-    isYestoday
+    isYestoday,
+    formatSpan,
+    getTimeBeforeDesc
 };
