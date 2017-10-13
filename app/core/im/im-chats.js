@@ -178,7 +178,10 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
 };
 
 const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = false) => {
-    const keys = searchKeys.split(' ');
+    if(typeof minDate === 'string') {
+        minDate = DateHelper.getTimeBeforeDesc(minDate);
+    }
+    const keys = searchKeys.toLowerCase().split(' ');
     return loadChatMessages(chat, msg => {
         if(minDate && msg.date < minDate) {
             return false;
@@ -193,7 +196,7 @@ const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = fa
                     return false;
                 }
             } else if(msg.contentType === 'text' || msg.content.length < 200) {
-                if(!msg.content || !msg.content.includes(key)) {
+                if(!msg.content || !msg.content.toLowerCase().includes(key)) {
                     return false;
                 }
             } else {

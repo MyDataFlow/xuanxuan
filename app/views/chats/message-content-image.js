@@ -27,14 +27,21 @@ class MessageContentImageView extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.unmounted = true;
+    }
+
     downloadImage(image) {
         if(this.state.download === false || this.state.download === true) {
             API.downloadFile(App.user, image, progress => {
+                if(this.unmounted) return;
                 this.setState({download: progress});
             }).then(file => {
+                if(this.unmounted) return;
                 this.setState({url: image.src});
                 this.setState({download: true});
             }).catch(error => {
+                if(this.unmounted) return;
                 this.setState({download: false});
             });
         }

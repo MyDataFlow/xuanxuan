@@ -127,6 +127,34 @@
     margin-top: @space-sm;
   }
 }
+.app-message-list-simple {
+  .app-message-item {
+    padding: (10*@rem);
+
+    + .app-message-item {
+      border-top: @rem solid @divider-color;
+      margin: 0;
+    }
+  }
+  .app-message-item-header {
+    margin-top: 0;
+    padding-left: (28*@rem);
+    margin-bottom: @space-xs;
+
+    > .avatar {
+      top: 0;
+    }
+
+    > header > .time {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+  .app-message-content {
+    margin-left: 0;
+  }
+}
 
 .app-message-divider {
   display: flex;
@@ -195,6 +223,11 @@
       opacity: .6;
       font-size: (12*@rem);
     }
+  }
+
+  .app-message-list-static & > header > .title:hover:before {
+    content: '';
+    display: none
   }
 }
 
@@ -433,9 +466,13 @@
   }
 
   > .search-control {
+    padding-top: (5*@rem);
+    padding-bottom: (5*@rem);
+
     > .search {
       width: (320*@rem);
       transition: @animation-type @animation-speed-fast width;
+      margin-right: @space-sm;
 
       > .select {
         top: (3*@rem);
@@ -487,13 +524,13 @@
     > .search-control-tip {
       position: relative;
       min-width: (150*@rem);
-      height: (40*@rem);
+      height: (22*@rem);
 
       > .progress {
         position: absolute;
-        top: (30*@rem);
-        left: (10*@rem);
-        width: (90*@rem);
+        top: (20*@rem);
+        left: 0;
+        width: (100*@rem);
 
         > .bar {
           transition: width @animation-type @animation-speed-fast;
@@ -515,6 +552,31 @@
 .app-chat-history {
   .chat-title {
     > .avatar {margin-right: @space-xs}
+  }
+}
+
+.app-chat-search-result {
+  width: (320*@rem);
+  transition: width @animation-type @animation-speed-fast;
+  border-left: @rem solid @divider-color;
+  border-right: @rem solid @divider-color;
+  background-color: @color-white;
+  // border: 1px solid @color-info;
+
+  &.empty {
+    width: 0;
+    border: none;
+  }
+
+  .highlight {
+    background-color: #eeff41;
+  }
+
+  .app-message-list-simple {
+    .app-message-item.active {
+      outline: @rem solid @color-info;
+      outline-offset: (-1*@rem);
+    }
   }
 }
 

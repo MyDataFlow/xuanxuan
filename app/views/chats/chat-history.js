@@ -126,8 +126,8 @@ class ChatHistory extends Component {
         });
     }
 
-    componentDidUpdate(nextProps, nextState) {
-        if(nextProps.chat.gid !== this.props.chat.gid) {
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.chat.gid !== this.props.chat.gid) {
             this.loadFirstPage();
         }
     }
@@ -143,7 +143,7 @@ class ChatHistory extends Component {
         const messages = this.state.messages;
 
         return <div {...other}
-            className={HTML.classes('app-chat-history column single scroll-x', className)}
+            className={HTML.classes('app-chat-history column single', className)}
         >
             <ChatTitle className="flex-none gray has-padding-h" chat={chat}>
                 {(messages && messages.length) ? <div className="small">{DateHelper.formatSpan(messages[0].date, messages[messages.length - 1].date, {full: Lang.string('time.format.full'), month: Lang.string('time.format.month'), day: Lang.string('time.format.day')})}</div> : null}
@@ -157,7 +157,7 @@ class ChatHistory extends Component {
                 <div className="title">{this.state.message}</div>
             </div>}
             <div className="flex-auto user-selectable scroll-y scroll-x fluid">
-                <MessageList messages={messages}/>
+                <MessageList staticUI={true} messages={messages}/>
             </div>
             {children}
         </div>;

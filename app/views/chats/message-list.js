@@ -7,6 +7,7 @@ class MessageList extends Component {
 
     static defaultProps = {
         showDateDivider: 0,
+        stayBottom: true
     };
 
     scrollToBottom = (utilTime = 0) => {
@@ -30,7 +31,9 @@ class MessageList extends Component {
     }
 
     componentDidMount() {
-        this.scrollToBottom(1500);
+        if(this.props.stayBottom) {
+            this.scrollToBottom(1500);
+        }
     }
 
     componentWillUnmount() {
@@ -38,15 +41,12 @@ class MessageList extends Component {
     }
 
     componentDidUpdate() {
-        const {messages} = this.props;
-        if(this.checkHasNewMessages(messages)) {
-            this.scrollToBottom(1000);
+        if(this.props.stayBottom) {
+            const {messages} = this.props;
+            if(this.checkHasNewMessages(messages)) {
+                this.scrollToBottom(1000);
+            }
         }
-    }
-
-    handleListScrollEvent = e => {
-        const listEle = e.target;
-        // this.shouldStayInBottom = (listEle.scrollTop + listEle.offsetHeight) === listEle.scrollHeight;
     }
 
     checkHasNewMessages(messages) {
@@ -66,25 +66,27 @@ class MessageList extends Component {
             style,
             showDateDivider,
             font,
+            stayBottom,
             children,
             listItemProps,
+            listItemCreator,
+            staticUI,
             ...other
         } = this.props;
 
         let lastMessage = null;
 
         return <div {...other}
-            className={HTML.classes('app-message-list', className)}
-            onScroll={this.handleListScrollEvent}
+            className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
         >
             {
                 messages && messages.map(message => {
-                    const messageListItem = <MessageListItem font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps}/>;
+                    const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps}/>;
                     lastMessage = message;
                     return messageListItem;
                 })
             }
-            <div className="scroll-root-ele" ref={e => this.messageEndEle = e}></div>
+            {stayBottom && <div className="scroll-root-ele" ref={e => this.messageEndEle = e}></div>}
         </div>;
     }
 }

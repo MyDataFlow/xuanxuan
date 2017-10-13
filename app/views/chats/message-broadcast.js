@@ -14,6 +14,7 @@ class MessageBroadcast extends Component {
             className,
             children,
             prefix,
+            contentConverter,
             ...other
         } = this.props;
 
@@ -26,7 +27,7 @@ class MessageBroadcast extends Component {
             <Avatar className="avatar-sm flex-none" icon="bell text-secondary"/>
             <div
                 className="content markdown-content"
-                dangerouslySetInnerHTML={{__html: content}}
+                dangerouslySetInnerHTML={{__html: contentConverter ? contentConverter(content) : content}}
             ></div>
         </div>;
     }

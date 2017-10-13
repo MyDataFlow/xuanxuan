@@ -9,6 +9,7 @@ import ChatListItem from './chat-list-item';
 import ChatHistory from './chat-history';
 import SearchControl from '../../components/search-control';
 import SelectBox from '../../components/select-box';
+import ChatSearchResult from './chat-search-result';
 
 class ChatsHistory extends Component {
 
@@ -20,12 +21,14 @@ class ChatsHistory extends Component {
             {name: 'contacts', chats: App.im.chats.getContactsChats()},
             {name: 'groups', chats: App.im.chats.getGroups()}
         ];
+        this.searchFilterTime = 'oneMonth';
+        this.searchFilterType = '';
         this.state = {
             isFetching: false,
             choosed: chat,
             search: '',
-            searchFilterType: '',
-            searchFilterTime: 'oneMonth',
+            searchFilterType: this.searchFilterType,
+            searchFilterTime: this.searchFilterTime,
             searching: false,
             searchingChat: null,
             searchTip: '',
@@ -134,16 +137,22 @@ class ChatsHistory extends Component {
                         searchingChat: null
                     });
                 }).catch(error => {
-                    this.setState({
-                        searchTip: Lang.error(error),
-                        searching: false,
-                        searchProgress: 1,
-                        searchingChat: null
-                    });
+                    if(error !== 'canceled') {
+                        this.setState({
+                            searchTip: Lang.error(error),
+                            searching: false,
+                            searchProgress: 1,
+                            searchingChat: null,
+                        });
+                    }
                 });
             }
         } else {
             this.lastSearchId = '';
+            if(this.searchTask) {
+                this.searchTask.cancel();
+                this.searchTask = null;
+            }
             this.setState({
                 search: '',
                 searchTip: '',
@@ -193,7 +202,7 @@ class ChatsHistory extends Component {
                         <SelectBox value={this.state.searchFilterTime} onChange={this.handleSearchFilterTimeChange} options={searchTimeOptions} className="search-box-time dock dock-right small"/>
                         <SelectBox value={this.state.searchFilterType} onChange={this.handleSearchFilterTypeChange} options={searchTypeOptions} className="search-box-type dock dock-right small"/>
                     </SearchControl>
-                    {this.state.isFetching ? null : <div className="search-control-tip has-padding">
+                    {this.state.isFetching ? null : <div className="search-control-tip">
                         <small className="muted">{this.state.searchTip}</small>
                         <div className="progress"><div className="bar" style={{width: `${this.state.searchProgress*100}%`}}></div></div>
                     </div>}
@@ -269,7 +278,16 @@ class ChatsHistory extends Component {
                 }
                 </div>
                 {
-                    this.state.choosed ? <ChatHistory className="flex-auto white" chat={this.state.choosed}/> : <div className="flex-auto center-content muted"><div>{Lang.string('chats.history.selectChatTip')}</div></div>
+                    this.state.choosed ? <div className="row single flex-auto">
+                        <ChatSearchResult
+                            className={HTML.classes("flex-none", {empty: !this.state.searchResult || !this.state.searchResult[this.state.choosed.gid]})}
+                            chat={this.state.choosed}
+                            searchKeys={this.state.search}
+                            searchFilterTime={this.state.searchFilterTime}
+                            searchCount={this.state.searchResult && this.state.searchResult[this.state.choosed.gid]}
+                        />
+                        <ChatHistory className="flex-auto white" chat={this.state.choosed}/>
+                    </div> : <div className="flex-auto center-content muted"><div>{Lang.string('chats.history.selectChatTip')}</div></div>
                 }
             </div>
             {children}

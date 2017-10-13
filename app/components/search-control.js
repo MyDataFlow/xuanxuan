@@ -54,6 +54,7 @@ class SearchControl extends Component {
     }
 
     handleOnInputChange = value => {
+        value = typeof value === 'string' ? value.trim() : '';
         this.setState({empty: StringHelper.isEmpty(value), value});
         if(this.delaySearchChangeTask) {
             this.delaySearchChangeTask.do(value);
