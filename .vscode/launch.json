@@ -21,6 +21,7 @@
                 "babel-polyfill",
                 "./app/main.development"
             ],
+            "protocol": "legacy",
             "sourceMaps": true,
             "windows": {
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
