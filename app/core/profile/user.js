@@ -2,6 +2,7 @@ import Member from '../models/member';
 import UserConfig from './user-config';
 import Platfrom from 'Platform';
 import DelayAction from '../../utils/delay-action';
+import DateHelper from '../../utils/date-helper';
 import Events from '../events';
 import Md5 from 'md5';
 
@@ -24,7 +25,11 @@ class User extends Member {
         server: {type: 'string'},
         serverVersion: {type: 'string'},
         uploadFileSize: {type: 'int'},
-        signed: {type: 'timestamp'},
+        signed: {type: 'timestamp', setter: (time, obj) => {
+            const lastSignedTime = obj.signed;
+            obj._isFirstSignedToday = time && DateHelper.isToday(time) && (!lastSignedTime || !DateHelper.isSameDay(time, lastSignedTime));
+            return time;
+        }},
     });
     static STATUS = Member.STATUS;
 
@@ -74,6 +79,10 @@ class User extends Member {
 
     save() {
         this.saveUserAction.do();
+    }
+
+    get isFirstSignedToday() {
+        return !!this._isFirstSignedToday;
     }
 
     get signed() {

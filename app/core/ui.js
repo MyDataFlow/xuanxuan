@@ -80,12 +80,12 @@ onAppLinkClick('Member', target => {
 });
 
 Server.onUserLogin(user => {
-    if(user.signed && (user.isNeverLogined || !DateHelper.isToday(user.lastLoginTime))) {
+    if(user.isFirstSignedToday) {
         Messager.show(Lang.string('login.signed'), {
             type: 'success',
             icon: 'calendar-check',
             autoHide: true,
-        })
+        });
     }
     if(typeof Pace !== 'undefined') {
         Pace.stop();
