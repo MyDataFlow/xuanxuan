@@ -16,6 +16,7 @@ class ChatListItem extends Component {
             filterType,
             className,
             style,
+            badge,
             children,
             notUserLink,
             ...other
@@ -34,12 +35,13 @@ class ChatListItem extends Component {
             subname = `(${Lang.format('chat.membersCount.format', chat.membersCount)})`;
         }
 
-        let badge = null;
-        const noticeCount = chat.noticeCount;
-        if(noticeCount) {
-            badge = <div className="label circle red label-sm">{noticeCount > 99 ? '99+' : noticeCount}</div>;
-        } else if(chat.star) {
-            badge = <Icon name="star" className="icon-sm muted"/>;
+        if(!badge && badge !== false) {
+            const noticeCount = chat.noticeCount;
+            if(noticeCount) {
+                badge = <div className="label circle red label-sm">{noticeCount > 99 ? '99+' : noticeCount}</div>;
+            } else if(chat.star) {
+                badge = <Icon name="star" className="icon-sm muted"/>;
+            }
         }
 
         if(notUserLink) {

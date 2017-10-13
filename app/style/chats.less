@@ -483,6 +483,24 @@
         }
       }
     }
+
+    > .search-control-tip {
+      position: relative;
+      min-width: (150*@rem);
+      height: (40*@rem);
+
+      > .progress {
+        position: absolute;
+        top: (30*@rem);
+        left: (10*@rem);
+        width: (90*@rem);
+
+        > .bar {
+          transition: width @animation-type @animation-speed-fast;
+          border-bottom: @color-gray @rem dotted;
+        }
+      }
+    }
   }
 }
 .app-chats-history-menu {

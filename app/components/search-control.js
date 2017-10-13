@@ -11,6 +11,7 @@ class SearchControl extends Component {
 
     static defaultProps = {
         placeholder: Lang.string('common.search'),
+        changeDelay: 100
     };
 
     constructor(props) {
@@ -24,7 +25,7 @@ class SearchControl extends Component {
         if(this.props.onSearchChange) {
             this.delaySearchChangeTask = new DelayAction((searchValue) => {
                 this.props.onSearchChange(searchValue);
-            }, this.props.changeDelay || 100);
+            }, this.props.changeDelay);
         }
     }
 

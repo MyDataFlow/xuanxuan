@@ -11,12 +11,13 @@ const STATUS = new Status({
 
 class TaskQueue {
 
-    constructor(tasks, onTask) {
+    constructor(tasks, onTask, onTaskStart) {
         this._tasks = [];
         this._finished = [];
         this._status = STATUS.create();
         this._runId = 0;
         this._onTask = onTask;
+        this._onTaskStart = onTaskStart;
         this._running = 0;
 
         if(tasks) {
@@ -28,6 +29,14 @@ class TaskQueue {
                 this._onStatusChange(status, oldStatus);
             }
         };
+    }
+
+    get onTaskStart() {
+        return this._onTaskStart;
+    }
+
+    set onTaskStart(callback) {
+        this._onTaskStart = callback;
     }
 
     get onTask() {
@@ -96,14 +105,14 @@ class TaskQueue {
         if(this.isRunning) {
             this._status.change(STATUS.canceled);
             this._runId = 0;
-        } else if(DEBUG) {
-            console.warn(`Cannot cancel a ${this.statusName} task.`, this);
         }
         return this;
     }
 
     runTask(task, ...params) {
-        const result = task(...params);
+        const taskFunc = (typeof task === 'object' && task.func) ? task.func : task;
+        this._onTaskStart && this._onTaskStart(task, this.percent, this);
+        const result = taskFunc(...params);
         if(result instanceof Promise) {
             return result;
         } else {
@@ -112,10 +121,11 @@ class TaskQueue {
     }
 
     next(runId, resolve, reject, ...params) {
-        this.runTask(this._tasks[0], ...params).then(result => {
+        const task = this._tasks[0];
+        this.runTask(task, ...params).then(result => {
             if(runId === this._runId) {
                 this._finished.push(this._tasks.shift());
-                this._onTask && this._onTask(result, this.percent, runId);
+                this._onTask && this._onTask(result, task, this.percent, this);
                 if(!this._tasks.length) {
                     this._status.change(STATUS.done);
                     resolve(this._finished.length);
@@ -142,7 +152,6 @@ class TaskQueue {
             }
             return Promise.reject(errorMessage);
         }
-        console.log('task run', this);
         return new Promise((resolve, reject) => {
             const runId = timeSequence();
             this._runId = runId;

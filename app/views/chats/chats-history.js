@@ -27,7 +27,11 @@ class ChatsHistory extends Component {
             searchFilterType: '',
             searchFilterTime: 'oneMonth',
             searching: false,
+            searchingChat: null,
             searchTip: '',
+            searchResult: null,
+            searchResultTotal: 0,
+            searchProgress: 0,
             expanded: chat ? {contacts: chat.isOne2One, groups: chat.isGroupOrSystem} : {contacts: true, groups: false},
             chats: this.chats
         };
@@ -64,41 +68,91 @@ class ChatsHistory extends Component {
     }
 
     handleSearchChange = search => {
-        this.setState({search, searchTip: this.searchControl.isEmpty() ? '' : Lang.string('chats.history.search.pressEnterToSearchTip')});
+        this.setState({search});
+        this.startSearch();
+    }
+
+    handleSearchFilterTypeChange = searchFilterType => {
+        this.setState({searchFilterType});
+        this.searchFilterType = searchFilterType;
+        this.startSearch();
+    }
+
+    handleSearchFilterTimeChange = searchFilterTime => {
+        this.setState({searchFilterTime});
+        this.searchFilterTime = searchFilterTime;
+        this.startSearch();
     }
 
     startSearch() {
         if(!this.searchControl.isEmpty()) {
             const search = this.searchControl.getValue();
-            if(this.lastSearch !== search) {
-                this.lastSearch = search;
+            const {searchFilterType, searchFilterTime} = this;
+            const searchId = [search, searchFilterTime, searchFilterType].join('|');
+            if(this.lastSearchId !== searchId) {
+                this.lastSearchId = searchId;
                 if(this.searchTask) {
                     this.searchTask.cancel();
-                    this.searchTask = null;
                 }
-                const searchFilterType = this.state.searchFilterType;
                 const chats = searchFilterType === 'contacts' ? this.chats[0].chats : (searchFilterType === 'groups' ? this.chats[1].chats : []);
                 if(!searchFilterType) {
                     chats.push(...this.chats[0].chats);
                     chats.push(...this.chats[1].chats);
                 }
-                this.searchTask = App.im.chats.createCountMessagesTask(chats, search, this.state.searchFilterTime);
-                this.setState({searchResult: {}});
-                this.searchTask.onTask = result => {
-                    let {searchResult} = this.state;
-                    console.log('task', result);
+                this.searchTask = App.im.chats.createCountMessagesTask(chats, search, searchFilterTime);
+                this.setState({
+                    searchResult: {},
+                    searchResultTotal: 0,
+                    searchTip: Lang.string('chats.history.searching'),
+                    searching: true,
+                    searchProgress: 0,
+                    expanded: {
+                        contacts: !searchFilterType || searchFilterType === 'contacts',
+                        groups: !searchFilterType || searchFilterType === 'groups',
+                    },
+                });
+                this.searchTask.onTask = (result, searchProgress) => {
+                    let {searchResult, searchResultTotal} = this.state;
+                    searchResult = Object.assign(searchResult || {}, {
+                        [result.gid]: result.count
+                    });
+                    searchResultTotal += result.count;
+                    this.setState({searchResult, searchResultTotal, searchProgress});
                 };
-                this.searchTask.run();
-
+                this.searchTask.onTaskStart = (task, searchProgress) => {
+                    this.setState({
+                        searchingChat: task.chat,
+                        searchProgress,
+                        searchTip: Lang.format('chats.history.searching.format', task.chat.getDisplayName(App))
+                    });
+                };
+                this.searchTask.run().then(() => {
+                    this.setState({
+                        searchTip: Lang.format('chats.history.search.result.format', this.state.searchResultTotal),
+                        searching: false,
+                        searchProgress: 1,
+                        searchingChat: null
+                    });
+                }).catch(error => {
+                    this.setState({
+                        searchTip: Lang.error(error),
+                        searching: false,
+                        searchProgress: 1,
+                        searchingChat: null
+                    });
+                });
             }
+        } else {
+            this.lastSearchId = '';
+            this.setState({
+                search: '',
+                searchTip: '',
+                searching: false,
+                searchProgress: 0,
+                searchResult: null,
+                searchingChat: null
+            });
         }
-    }
-
-    handleSearchKeyDown = e => {
-        if(e.which === 13) { // Enter
-            this.startSearch();
-        }
-        console.log('keydonw', Object.assign({}, e));
     }
 
     render() {
@@ -130,21 +184,25 @@ class ChatsHistory extends Component {
                 <div className="flex-none title">{Lang.string('chats.history.title')}</div>
                 <div className="flex-auto search-control row flex-middle">
                     <SearchControl
+                        disabled={this.state.isFetching}
                         ref={e => this.searchControl = e}
+                        changeDelay={500}
                         onSearchChange={this.handleSearchChange}
                         placeholder={Lang.string('chats.history.search.placeholder')}
-                        onKeyDown={this.handleSearchKeyDown}
                     >
-                        <SelectBox value={this.state.searchFilterTime} onChange={value => this.setState({searchFilterTime: value})} options={searchTimeOptions} className="search-box-time dock dock-right small"/>
-                        <SelectBox value={this.state.searchFilterType} onChange={value => this.setState({searchFilterType: value})} options={searchTypeOptions} className="search-box-type dock dock-right small"/>
+                        <SelectBox value={this.state.searchFilterTime} onChange={this.handleSearchFilterTimeChange} options={searchTimeOptions} className="search-box-time dock dock-right small"/>
+                        <SelectBox value={this.state.searchFilterType} onChange={this.handleSearchFilterTypeChange} options={searchTypeOptions} className="search-box-type dock dock-right small"/>
                     </SearchControl>
-                    <div className="small muted search-control-tip has-padding">{this.state.searchTip}</div>
+                    {this.state.isFetching ? null : <div className="search-control-tip has-padding">
+                        <small className="muted">{this.state.searchTip}</small>
+                        <div className="progress"><div className="bar" style={{width: `${this.state.searchProgress*100}%`}}></div></div>
+                    </div>}
                 </div>
                 <nav style={{overflow: 'visible'}} className="flex-none nav hint--bottom" data-hint={Lang.string('chats.history.fetchAllFromServer')}>
                 {
                     this.state.isFetching ? <a>
                         <Icon name="sync spin"/> &nbsp; <small>{this.state.message}</small>
-                    </a> : <a onClick={this.handleFetchAllBtnClick} className="text-primary"><Icon name="cloud-sync"/> &nbsp; <small>{Lang.string('chats.history.fetchAll')}</small></a>
+                    </a> : <a onClick={this.handleFetchAllBtnClick} className={HTML.classes('text-primary', {disabled: this.state.searching})}><Icon name="cloud-sync"/> &nbsp; <small>{Lang.string('chats.history.fetchAll')}</small></a>
                 }
                 </nav>
             </div>
@@ -152,17 +210,57 @@ class ChatsHistory extends Component {
                 <div className="app-chats-history-menu primary-pale scroll-y flex-none">
                 {
                     this.state.chats.map(group => {
+                        const {searchResult, searchFilterType} = this.state;
+                        if(searchResult && searchFilterType && searchFilterType !== group.name) {
+                            return null;
+                        }
                         const isExpanded = this.state.expanded[group.name];
+                        const chats = group.chats;
+                        if(searchResult) {
+                            chats.sort((chat1, chat2) => {
+                                let result = (searchResult[chat2.gid] || 0) - (searchResult[chat1.gid] || 0);
+                                if(result === 0) {
+                                    result = chat2.id - chat1.id;
+                                }
+                                return result;
+                            });
+                        }
+                        const itemsArray = [];
+                        chats.forEach(chat => {
+                            if(searchResult && searchResult[chat.gid] === 0) {
+                                return null;
+                            } else {
+                                itemsArray.push(chat);
+                            }
+                        });
                         return <div key={group.name} className="app-chats-history-menu-group">
                             <a className="heading" onClick={this.handleGroupHeaderClick.bind(this, group.name)}>
                                 <Avatar className="text-primary" icon={isExpanded ? 'menu-down' : 'menu-right'}/>
-                                <div className="text-primary">{Lang.string(`chats.history.group.${group.name}`)} ({group.chats.length})</div>
+                                <div className="text-primary">{Lang.string(`chats.history.group.${group.name}`)} ({itemsArray.length})</div>
                             </a>
                             {isExpanded && <div className="app-chats-history-menu-list list compact">
                             {
-                                group.chats.map(chat => {
+                                itemsArray.map(chat => {
                                     const isChoosed = this.state.choosed && this.state.choosed.gid === chat.gid;
-                                    return <ChatListItem key={chat.gid} notUserLink="disabled" className={isChoosed ? 'item white text-primary' : 'item'} onClick={this.handleChatItemClick.bind(this, chat)} chat={chat}/>
+                                    let badge = null;
+                                    if(searchResult) {
+                                        if(searchResult[chat.gid] === 0 && !isChoosed) {
+                                            return null;
+                                        }
+                                        if(this.state.searchingChat && this.state.searchingChat.gid === chat.gid) {
+                                            badge = <Icon name="loading" square={true} className="spin-fast muted inline-block"/>;
+                                        } else if(searchResult[chat.gid]) {
+                                            badge = <div className="label circle info label-sm">{searchResult[chat.gid]}</div>;
+                                        }
+                                    }
+                                    return <ChatListItem
+                                        key={chat.gid}
+                                        badge={badge}
+                                        notUserLink="disabled"
+                                        className={isChoosed ? 'item white text-primary' : 'item'}
+                                        onClick={this.handleChatItemClick.bind(this, chat)}
+                                        chat={chat}
+                                    />
                                 })
                             }
                             </div>}

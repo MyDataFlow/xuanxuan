@@ -208,7 +208,7 @@ const createCountMessagesTask = (chats, searchKeys, minDateDesc = '') => {
     const minDate = minDateDesc ? DateHelper.getTimeBeforeDesc(minDateDesc) : 0;
     const taskQueue = new TaskQueue();
     taskQueue.add(chats.map(chat => {
-        return searchChatMessages.bind(null, chat, searchKeys, minDate, true);
+        return {func: searchChatMessages.bind(null, chat, searchKeys, minDate, true), chat};
     }));
     return taskQueue;
 };
