@@ -38,9 +38,6 @@ class AppRemote {
     constructor() {
         this.windows  = {};
 
-        // Ensure user data directory exist
-        fse.ensureDir(this.dataPath);
-
         // Bind events
         ipcMain.on(EVENT.app_quit, e => {
             this.quit();
