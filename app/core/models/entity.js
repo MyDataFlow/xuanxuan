@@ -70,7 +70,7 @@ class Entity {
         } else {
             let schema = this.schema;
             if(schema) {
-                val = schema.convertValue(key, val);
+                val = schema.convertSetterValue(key, val, this);
             }
             this.$[key] = val;
         }
@@ -86,7 +86,7 @@ class Entity {
         let value = this.$[key];
         let schema = this.schema;
         if(schema) {
-            value = schema.convertValue(key, value);
+            value = schema.convertGetterValue(key, value, this);
         }
         if(value === undefined) {
             value = defaultValue;
