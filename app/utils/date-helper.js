@@ -4,6 +4,9 @@ export const TIME_DAY = 24*60*60*1000;
 
 export const createDate = date => {
     if(!(date instanceof Date)) {
+        if(typeof date === 'number' && date < 10000000000) {
+            date *= 1000;
+        }
         date = new Date(date);
     }
     return date;
