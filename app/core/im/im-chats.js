@@ -140,8 +140,12 @@ const deleteLocalMessage = (message) => {
     return db.database.chatMessages.delete(gid);
 };
 
-const countChatMessages = cgid => {
-    return db.database.chatMessages.where({cgid}).count();
+const countChatMessages = (cgid, filter) => {
+    let collection = db.database.chatMessages.where({cgid});
+    if(filter) {
+        collection = collection.and(filter);
+    }
+    return collection.count();
 };
 
 const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = false, rawData = false, returnCount = false) => {
@@ -183,7 +187,7 @@ const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = fa
     }
     const keys = searchKeys.toLowerCase().split(' ');
     return loadChatMessages(chat, msg => {
-        if(minDate && msg.date < minDate) {
+        if(!msg.id || (minDate && msg.date < minDate)) {
             return false;
         }
         for(let key of keys) {

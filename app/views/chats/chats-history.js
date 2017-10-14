@@ -36,7 +36,8 @@ class ChatsHistory extends Component {
             searchResultTotal: 0,
             searchProgress: 0,
             expanded: chat ? {contacts: chat.isOne2One, groups: chat.isGroupOrSystem} : {contacts: true, groups: false},
-            chats: this.chats
+            chats: this.chats,
+            messageGoto: null
         };
     }
 
@@ -85,6 +86,16 @@ class ChatsHistory extends Component {
         this.setState({searchFilterTime});
         this.searchFilterTime = searchFilterTime;
         this.startSearch();
+    }
+
+    handleRequestGoto = messageGoto => {
+        this.setState({messageGoto: {
+            time: new Date().getTime(),
+            gid: messageGoto.gid,
+            cgid: messageGoto.cgid,
+            id: messageGoto.id,
+            searchKeys: this.state.search
+        }});
     }
 
     startSearch() {
@@ -285,8 +296,9 @@ class ChatsHistory extends Component {
                             searchKeys={this.state.search}
                             searchFilterTime={this.state.searchFilterTime}
                             searchCount={this.state.searchResult && this.state.searchResult[this.state.choosed.gid]}
+                            requestGoto={this.handleRequestGoto}
                         />
-                        <ChatHistory className="flex-auto white" chat={this.state.choosed}/>
+                        <ChatHistory gotoMessage={this.state.messageGoto && this.state.messageGoto.cgid === this.state.choosed.gid ? this.state.messageGoto : null} className="flex-auto white" chat={this.state.choosed}/>
                     </div> : <div className="flex-auto center-content muted"><div>{Lang.string('chats.history.selectChatTip')}</div></div>
                 }
             </div>

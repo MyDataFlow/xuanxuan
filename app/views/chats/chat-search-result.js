@@ -8,7 +8,7 @@ import App from '../../core';
 import MessageList from './message-list';
 import MessageListItem from './message-list-item';
 
-const MANY_RESULT_COUNT = 100;
+const MANY_RESULT_COUNT = 200;
 const MAX_RESULT_COUNT = 500;
 
 class ChatHistory extends Component {
@@ -54,7 +54,7 @@ class ChatHistory extends Component {
                         realCount,
                         loading: false,
                         errMessage: '',
-                        messages
+                        messages,
                     });
                 }
             }).catch(error => {
@@ -73,6 +73,9 @@ class ChatHistory extends Component {
         if(this._createSearchId(this.props) !== this.searchId) {
             this.loadMessages();
         }
+        if(this.state.messages && this.state.messages.length && !this.state.selectedMessage) {
+            this.handleMessageItemClick(this.state.messages[0]);
+        }
     }
 
     componentDidMount() {
@@ -86,13 +89,15 @@ class ChatHistory extends Component {
         return content;
     }
 
-    handleMessageItemClick(message) {
+    handleMessageItemClick(message, e) {
         this.setState({selectedMessage: message});
+        this.props.requestGoto && this.props.requestGoto(message);
+        e && e.stopPropagation();
     }
 
     listItemCreator(message, lastMessage) {
         return <MessageListItem
-            className={HTML.classes('state', {active: this.state.selectedMessage && this.state.selectedMessage.gid === message.gid})}
+            className={HTML.classes('state state-click-throuth', {active: this.state.selectedMessage && this.state.selectedMessage.gid === message.gid})}
             staticUI={true}
             hideHeader={false}
             showDateDivider={false}
@@ -114,6 +119,7 @@ class ChatHistory extends Component {
             searchCount,
             className,
             children,
+            requestGoto,
             ...other
         } = this.props;
 
@@ -125,6 +131,7 @@ class ChatHistory extends Component {
 
         return <div {...other}
             className={HTML.classes('app-chat-search-result column single', className)}
+            onClick={this.handleMessageItemClick.bind(this, null)}
         >
             <header className="heading flex-none gray">
                 <div className="title"><small>{Lang.format('chats.chat.search.result.format', chat.getDisplayName(App), (typeof this.state.realCount) !== 'number' ? searchCount : this.state.realCount)}</small></div>

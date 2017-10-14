@@ -86,7 +86,7 @@ class MessageList extends Component {
                     return messageListItem;
                 })
             }
-            {stayBottom && <div className="scroll-root-ele" ref={e => this.messageEndEle = e}></div>}
+            <div className="scroll-root-ele" ref={e => this.messageEndEle = e}></div>
         </div>;
     }
 }

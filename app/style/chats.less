@@ -130,9 +130,9 @@
 .app-message-list-simple {
   .app-message-item {
     padding: (10*@rem);
+    border-bottom: @rem dotted @divider-color;
 
     + .app-message-item {
-      border-top: @rem solid @divider-color;
       margin: 0;
     }
   }
@@ -153,6 +153,9 @@
   }
   .app-message-content {
     margin-left: 0;
+  }
+  .app-message-broadcast {
+    margin-bottom: 0;
   }
 }
 
@@ -553,6 +556,11 @@
   .chat-title {
     > .avatar {margin-right: @space-xs}
   }
+
+  .app-message-item.active {
+    outline: @rem solid @color-info;
+    outline-offset: (-1*@rem);
+  }
 }
 
 .app-chat-search-result {
@@ -568,11 +576,12 @@
     border: none;
   }
 
-  .highlight {
-    background-color: #eeff41;
-  }
-
   .app-message-list-simple {
+    .app-message-item {
+      cursor: pointer;
+      // max-height: (80*@rem);
+      // overflow: hidden;
+    }
     .app-message-item.active {
       outline: @rem solid @color-info;
       outline-offset: (-1*@rem);
