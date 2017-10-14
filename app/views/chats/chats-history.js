@@ -94,7 +94,6 @@ class ChatsHistory extends Component {
             gid: messageGoto.gid,
             cgid: messageGoto.cgid,
             id: messageGoto.id,
-            searchKeys: this.state.search
         }});
     }
 
@@ -298,7 +297,7 @@ class ChatsHistory extends Component {
                             searchCount={this.state.searchResult && this.state.searchResult[this.state.choosed.gid]}
                             requestGoto={this.handleRequestGoto}
                         />
-                        <ChatHistory gotoMessage={this.state.messageGoto && this.state.messageGoto.cgid === this.state.choosed.gid ? this.state.messageGoto : null} className="flex-auto white" chat={this.state.choosed}/>
+                        <ChatHistory searchKeys={this.state.search} gotoMessage={this.state.messageGoto && this.state.messageGoto.cgid === this.state.choosed.gid ? this.state.messageGoto : null} className="flex-auto white" chat={this.state.choosed}/>
                     </div> : <div className="flex-auto center-content muted"><div>{Lang.string('chats.history.selectChatTip')}</div></div>
                 }
             </div>

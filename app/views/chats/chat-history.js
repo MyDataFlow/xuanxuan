@@ -72,9 +72,6 @@ class ChatHistory extends Component {
                     });
                 }
             }
-            if(gotoMessage.searchKeys) {
-                this.contentConvertPattern = new RegExp(`(${gotoMessage.searchKeys.split(' ').join('|')})(?![^<]*>)`, 'gi');
-            }
         }
 
         const pageDataID = `${chat.gid}/${pager.page}`;
@@ -184,6 +181,16 @@ class ChatHistory extends Component {
         });
     }
 
+    componentWillUpdate(nextProps, nextState) {
+        if(nextProps.searchKeys !== this.props.nextProps) {
+            if(nextProps.searchKeys) {
+                this.contentConvertPattern = new RegExp(`(${nextProps.searchKeys.split(' ').join('|')})(?![^<]*>)`, 'gi');
+            } else {
+                this.contentConvertPattern = null;
+            }
+        }
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.chat.gid !== this.props.chat.gid) {
             this.loadFirstPage();
@@ -214,7 +221,7 @@ class ChatHistory extends Component {
     }
 
     listItemCreator(message, lastMessage) {
-        const active = this.props.gotoMessage && this.props.gotoMessage.gid === message.gid;
+        const active = this.props.searchKeys && this.props.gotoMessage && this.props.gotoMessage.gid === message.gid;
         if(active) {
             this.activeMessageId = `app-chat-history-message_` + message.gid;
         }
@@ -235,6 +242,7 @@ class ChatHistory extends Component {
             className,
             children,
             gotoMessage,
+            searchKeys,
             ...other
         } = this.props;
 
