@@ -22,7 +22,7 @@ class ChatsHistory extends Component {
             {name: 'groups', chats: App.im.chats.getGroups()}
         ];
         this.searchFilterTime = 'oneMonth';
-        this.searchFilterType = '';
+        this.searchFilterType = 'choosed';
         this.state = {
             isFetching: false,
             choosed: chat,
@@ -48,7 +48,11 @@ class ChatsHistory extends Component {
     }
 
     handleChatItemClick(chat) {
-        this.setState({choosed: chat});
+        this.setState({choosed: chat}, () => {
+            if(this.state.search) {
+                this.startSearch();
+            }
+        });
     }
 
     handleFetchAllBtnClick = e => {
@@ -89,7 +93,7 @@ class ChatsHistory extends Component {
     }
 
     handleRequestGoto = messageGoto => {
-        this.setState({messageGoto: {
+        this.setState({messageGoto: messageGoto && {
             time: new Date().getTime(),
             gid: messageGoto.gid,
             cgid: messageGoto.cgid,
@@ -101,16 +105,27 @@ class ChatsHistory extends Component {
         if(!this.searchControl.isEmpty()) {
             const search = this.searchControl.getValue();
             const {searchFilterType, searchFilterTime} = this;
-            const searchId = [search, searchFilterTime, searchFilterType].join('|');
+            const searchId = [search, searchFilterTime, searchFilterType === 'choosed' ? this.state.choosed.gid : searchFilterType].join('|');
             if(this.lastSearchId !== searchId) {
                 this.lastSearchId = searchId;
                 if(this.searchTask) {
                     this.searchTask.cancel();
                 }
-                const chats = searchFilterType === 'contacts' ? this.chats[0].chats : (searchFilterType === 'groups' ? this.chats[1].chats : []);
-                if(!searchFilterType) {
-                    chats.push(...this.chats[0].chats);
-                    chats.push(...this.chats[1].chats);
+                let chats = null;
+                switch(searchFilterType) {
+                    case 'choosed':
+                        chats = [this.state.choosed]
+                        break;
+                    case 'contacts':
+                        chats = this.chats[0].chats;
+                        break;
+                    case 'groups':
+                        chats = this.chats[1].chats;
+                        break;
+                    default:
+                        chats = [];
+                        chats.push(...this.chats[0].chats);
+                        chats.push(...this.chats[1].chats);
                 }
                 this.searchTask = App.im.chats.createCountMessagesTask(chats, search, searchFilterTime);
                 this.setState({
@@ -120,8 +135,8 @@ class ChatsHistory extends Component {
                     searching: true,
                     searchProgress: 0,
                     expanded: {
-                        contacts: !searchFilterType || searchFilterType === 'contacts',
-                        groups: !searchFilterType || searchFilterType === 'groups',
+                        contacts: !searchFilterType || searchFilterType === 'contacts' || (searchFilterType === 'choosed' && this.state.choosed.isOne2One),
+                        groups: !searchFilterType || searchFilterType === 'groups' || (searchFilterType === 'choosed' && this.state.choosed.isGroupOrSystem),
                     },
                 });
                 this.searchTask.onTask = (result, searchProgress) => {
@@ -153,6 +168,7 @@ class ChatsHistory extends Component {
                             searching: false,
                             searchProgress: 1,
                             searchingChat: null,
+                            gotoMessage: null
                         });
                     }
                 });
@@ -169,7 +185,8 @@ class ChatsHistory extends Component {
                 searching: false,
                 searchProgress: 0,
                 searchResult: null,
-                searchingChat: null
+                searchingChat: null,
+                gotoMessage: null
             });
         }
     }
@@ -191,9 +208,10 @@ class ChatsHistory extends Component {
             {label: Lang.string('time.all'), value: ''},
         ];
         const searchTypeOptions = [
-            {label: Lang.string('chats.history.search.type.all'), value: ''},
+            {label: Lang.string('chats.history.search.type.choosed'), value: 'choosed'},
             {label: Lang.string('chats.history.search.type.contacts'), value: 'contacts'},
             {label: Lang.string('chats.history.search.type.groups'), value: 'groups'},
+            {label: Lang.string('chats.history.search.type.all'), value: ''},
         ];
 
         return <div {...other}
@@ -230,12 +248,12 @@ class ChatsHistory extends Component {
                 {
                     this.state.chats.map(group => {
                         const {searchResult, searchFilterType} = this.state;
-                        if(searchResult && searchFilterType && searchFilterType !== group.name) {
+                        if(searchResult && searchFilterType && searchFilterType !== group.name && searchFilterType !== 'choosed') {
                             return null;
                         }
                         const isExpanded = this.state.expanded[group.name];
                         const chats = group.chats;
-                        if(searchResult) {
+                        if(searchResult && searchFilterType !== 'choosed') {
                             chats.sort((chat1, chat2) => {
                                 let result = (searchResult[chat2.gid] || 0) - (searchResult[chat1.gid] || 0);
                                 if(result === 0) {
@@ -246,7 +264,7 @@ class ChatsHistory extends Component {
                         }
                         const itemsArray = [];
                         chats.forEach(chat => {
-                            if(searchResult && searchResult[chat.gid] === 0) {
+                            if(searchResult && searchResult[chat.gid] === 0 && searchFilterType !== 'choosed') {
                                 return null;
                             } else {
                                 itemsArray.push(chat);
@@ -270,6 +288,8 @@ class ChatsHistory extends Component {
                                             badge = <Icon name="loading" square={true} className="spin-fast muted inline-block"/>;
                                         } else if(searchResult[chat.gid]) {
                                             badge = <div className="label circle info label-sm">{searchResult[chat.gid]}</div>;
+                                        } else if(searchFilterType === 'choosed' && isChoosed) {
+                                            badge = <div className="label circle important label-sm">0</div>;
                                         }
                                     }
                                     return <ChatListItem
@@ -297,7 +317,7 @@ class ChatsHistory extends Component {
                             searchCount={this.state.searchResult && this.state.searchResult[this.state.choosed.gid]}
                             requestGoto={this.handleRequestGoto}
                         />
-                        <ChatHistory searchKeys={this.state.search} gotoMessage={this.state.messageGoto && this.state.messageGoto.cgid === this.state.choosed.gid ? this.state.messageGoto : null} className="flex-auto white" chat={this.state.choosed}/>
+                        <ChatHistory searchKeys={this.state.search} gotoMessage={( this.state.searchResult && this.state.searchResult[this.state.choosed.gid] && this.state.messageGoto && this.state.messageGoto.cgid === this.state.choosed.gid) ? this.state.messageGoto : null} className="flex-auto white" chat={this.state.choosed}/>
                     </div> : <div className="flex-auto center-content muted"><div>{Lang.string('chats.history.selectChatTip')}</div></div>
                 }
             </div>

@@ -146,6 +146,10 @@ class ChatHistory extends Component {
                     listItemCreator={this.listItemCreator.bind(this)}
                 />
             </div>
+            {!this.state.selectedMessage && <div className="flex-none heading info-pale">
+                <Avatar icon="information-outline"/>
+                <div className="title"><small>{Lang.string('chats.history.search.result.selectTip')}</small></div>
+            </div>}
             {this.state.realCount > MANY_RESULT_COUNT && <div className="flex-none heading info-pale">
                 <Avatar icon="information-outline"/>
                 <div className="title"><small>{this.state.realCount > MAX_RESULT_COUNT ? Lang.format('chats.history.search.result.notShow.format', this.state.realCount - MAX_RESULT_COUNT) : ''}{Lang.string('chats.history.search.result.toMany')}</small></div>

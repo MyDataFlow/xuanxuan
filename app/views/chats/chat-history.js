@@ -214,7 +214,7 @@ class ChatHistory extends Component {
     }
 
     convertContent(content) {
-        if (this.contentConvertPattern && this.contentConvertPattern.test(content)) {
+        if (this.props.searchKeys && this.contentConvertPattern && this.contentConvertPattern.test(content)) {
             content = content.replace(this.contentConvertPattern, "<span class='highlight'>$1</span>");
         }
         return content;
