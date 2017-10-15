@@ -25,6 +25,8 @@ class User extends Member {
         server: {type: 'string'},
         serverVersion: {type: 'string'},
         uploadFileSize: {type: 'int'},
+        autoLogin: {type: 'boolean', default: false},
+        rememberPassword: {type: 'boolean', default: true},
         signed: {type: 'timestamp', setter: (time, obj) => {
             const lastSignedTime = obj.signed;
             obj._isFirstSignedToday = time && DateHelper.isToday(time) && (!lastSignedTime || !DateHelper.isSameDay(time, lastSignedTime));
@@ -312,6 +314,22 @@ class User extends Member {
 
     get lastLoginTime() {
         return this.$get('lastLoginTime');
+    }
+
+    get autoLogin() {
+        return this.$get('autoLogin');
+    }
+
+    set autoLogin(autoLogin) {
+        this.$set('autoLogin', autoLogin);
+    }
+
+    get rememberPassword() {
+        return this.$get('rememberPassword');
+    }
+
+    set rememberPassword(rememberPassword) {
+        this.$set('rememberPassword', rememberPassword);
     }
 
     get avatar() {

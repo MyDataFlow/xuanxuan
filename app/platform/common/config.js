@@ -13,6 +13,9 @@ const getUser = (identify) => {
         const user = Store.get(`${KEY_USER_PREFIX}${identify}`);
         if(user) {
             user.identify = identify;
+            if(user.rememberPassword === undefined) {
+                user.rememberPassword = true;
+            }
         }
         return user;
     } else {
@@ -44,6 +47,9 @@ const saveUser = (user) => {
     }
 
     const userData = typeof user.plain === 'function' ? user.plain() : plainObject(user);
+    if(!userData.rememberPassword) {
+        delete userData.password;
+    }
 
     Store.set(`${KEY_USER_PREFIX}${identify}`, userData);
 
