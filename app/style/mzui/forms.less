@@ -112,7 +112,7 @@
       align-items: center;
       justify-content: center;
       color: transparent;
-      border: (@border-width * 2) solid @input-border-color;
+      border: (@border-width * 2) solid @color-gray;
       .transition-fast();
     }
   }
@@ -143,6 +143,10 @@
 }
 
 .checkbox > input {
+  + label:before {
+    border-radius: @border-radius-small;
+  }
+
   + label:after {
     .mdi();
     content: @mdi-check;
@@ -150,10 +154,17 @@
   }
 
   &:focus + label:after {color: @color-primary;}
+
+  &:checked + label:before,
+  &:checked + label:after {
+    color: @color-white;
+    background-color: @color-primary;
+    border-radius: @border-radius-small;
+  }
 }
 
 .radio > input {
-  + label:before {border-radius: 1rem;}
+  + label:before {border-radius: 50%;}
 
   + label:after {
     width: (8*@rem);
@@ -166,6 +177,14 @@
   }
 
   &:focus + label:after {background-color: @color-primary;}
+
+  &:checked + label:before {
+    border-color: @color-primary;
+  }
+
+  &:checked + label:after {
+    background-color: @color-primary;
+  }
 }
 
 
