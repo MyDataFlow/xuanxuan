@@ -23,12 +23,12 @@ class ChatTitle extends Component {
         const onTitleClick = theOtherOne ? MemberProfileDialog.show.bind(null, theOtherOne, null) : null;
 
         return <div className={HTML.classes('chat-title heading', className)}>
-            <ChatAvatar chat={chat} size={24} className="state" onClick={onTitleClick}/>
+            <ChatAvatar chat={chat} size={24} className={theOtherOne ? "state" : ''} onClick={onTitleClick}/>
             {theOtherOne && <StatusDot status={theOtherOne.status}/>}
             {
                 theOtherOne ? <a className="strong rounded title flex-none text-primary" onClick={onTitleClick}>{chatName}</a> : <strong className="title flex-none">{chatName}</strong>
             }
-            {chat.public && <small className="label rounded green label-sm">{Lang.string('chat.public.label')}</small>}
+            {chat.public && <div className="hint--bottom" data-hint={Lang.string('chat.public.label')}><Icon className="text-green" name="access-point"/></div>}
             <div className="flex-auto"></div>
             {children}
         </div>;

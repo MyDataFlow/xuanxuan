@@ -127,7 +127,7 @@ class MessageListItem extends Component {
             headerView = <div className="app-message-item-header">
                 <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)}/>
                 <header style={titleFontStyle}>
-                    <a className="title rounded text-primary" onContextMenu={staticUI ? null : this.handleUserContextMenu.bind(this, sender)} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
+                    <a className="title rounded" onContextMenu={staticUI ? null : this.handleUserContextMenu.bind(this, sender)} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
                     <small className="time">{DateHelper.formatDate(message.date, dateFormater)}</small>
                 </header>
             </div>;
