@@ -120,7 +120,7 @@ class AppRemote {
             }, {
                 label: Lang.string('common.exit'),
                 click: () => {
-                    this.mainWindow.webContents.send(EVENT.remote_app_quit);
+                    this.mainWindow.webContents.send(EVENT.remote_app_quit, 'quit');
                 }
             }
         ]);

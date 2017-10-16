@@ -198,24 +198,26 @@ window.ondrop = e => {
 
 
 if(Platform.ui.onRequestQuit) {
-    Platform.ui.onRequestQuit(() => {
-        const user = profile.user;
-        if(user && !user.isUnverified) {
-            const appCloseOption = user.config.appCloseOption;
-            if(appCloseOption === 'minimize' || !Platform.ui.showQuitConfirmDialog) {
-                Platform.ui.hideWindow();
-                return false;
-            } else if(appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
-                Platform.ui.showQuitConfirmDialog((result, checked) => {
-                    if(checked && result) {
-                        user.config.appCloseOption = result;
-                    }
-                    if(result === 'close') {
-                        Server.logout();
-                    }
-                    return result;
-                });
-                return false;
+    Platform.ui.onRequestQuit(closeReason => {
+        if(closeReason !== 'quit') {
+            const user = profile.user;
+            if(user && !user.isUnverified) {
+                const appCloseOption = user.config.appCloseOption;
+                if(appCloseOption === 'minimize' || !Platform.ui.showQuitConfirmDialog) {
+                    Platform.ui.hideWindow();
+                    return false;
+                } else if(appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
+                    Platform.ui.showQuitConfirmDialog((result, checked) => {
+                        if(checked && result) {
+                            user.config.appCloseOption = result;
+                        }
+                        if(result === 'close') {
+                            Server.logout();
+                        }
+                        return result;
+                    });
+                    return false;
+                }
             }
         }
         Server.logout();

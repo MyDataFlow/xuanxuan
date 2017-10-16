@@ -71,7 +71,7 @@ const quitIM = () => {
 
 const quit = (delay = 1000, ignoreListener = false) => {
     if(delay !== true && !ignoreListener && onRequestQuitListener) {
-        if(onRequestQuitListener() === false) {
+        if(onRequestQuitListener(delay) === false) {
             return;
         }
     }
@@ -102,8 +102,8 @@ const onWindowMinimize = listener => {
     browserWindow.on('minimize', listener);
 };
 
-remote.onRequestQuit(() => {
-    quit();
+remote.onRequestQuit((sender, closeReason) => {
+    quit(closeReason);
 });
 
 const showQuitConfirmDialog = (callback) => {
