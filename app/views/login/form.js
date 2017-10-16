@@ -38,9 +38,9 @@ class FormView extends Component {
             const lastSavedUser = App.profile.getLastSavedUser();
 
             this.state = {
-                serverUrl: lastSavedUser && simpleServerUrl(lastSavedUser.serverUrl || lastSavedUser.server) || '',
-                account: lastSavedUser && lastSavedUser.account || '',
-                password: lastSavedUser.rememberPassword ? (lastSavedUser && lastSavedUser.password || '') : '',
+                serverUrl: lastSavedUser && simpleServerUrl(lastSavedUser.serverUrl || lastSavedUser.server) || App.ui.entryParams.server,
+                account: lastSavedUser && lastSavedUser.account || App.ui.entryParams.account,
+                password: lastSavedUser.rememberPassword ? (lastSavedUser && lastSavedUser.password) : App.ui.entryParams.password,
                 rememberPassword: lastSavedUser.rememberPassword,
                 autoLogin: lastSavedUser.autoLogin,
                 message: '',

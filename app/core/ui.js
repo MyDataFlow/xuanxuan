@@ -3,6 +3,7 @@ import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
 import ContextMenu from '../components/context-menu';
 import DateHelper from '../utils/date-helper';
+import HTML from '../utils/html-helper';
 import Lang from '../lang';
 import Platform from 'Platform';
 import Events from './events';
@@ -249,7 +250,11 @@ if(Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
     });
 }
 
+// Decode url params
+const entryParams = HTML.getSearchParam();
+
 export default {
+    entryParams,
     get canQuit() {
         return !!Platform.ui.quit;
     },
