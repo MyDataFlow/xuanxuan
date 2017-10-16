@@ -226,6 +226,7 @@
     "chat.sendMessage": "发送消息",
     "chat.fontSize.current.format": "当前 {0}",
     "chat.fontSize.resetDefault": "恢复默认",
+    "chat.message.atAll": "所有人",
 
     "chat.sidebar.tab.profile.label": "资料",
     "chat.sidebar.tab.peoples.label": "成员",

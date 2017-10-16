@@ -13,6 +13,7 @@ import {
 import Emojione from '../../components/emojione';
 import App from '../../core';
 import timeSequence from '../../utils/time-sequence';
+import Lang from '../../lang';
 
 const AtomicComponent = props => {
     const key = props.block.getEntityAt(0)
@@ -45,6 +46,7 @@ const findWithRegex = (regex, contentBlock, callback) => {
         callback(start, start + matchArr[0].length);
     }
 };
+const langAtAll = Lang.string('chat.message.atAll');
 const draftDecorator = new CompositeDecorator([{
     strategy: (contentBlock, callback, contentState) => {
         findWithRegex(Emojione.regUnicode, contentBlock, callback);
@@ -67,9 +69,13 @@ const draftDecorator = new CompositeDecorator([{
     component: (props) => {
         let guess = props.decoratedText.substr(1).trim().replace(/[，。,\.\/\s:@\n]/g, '');
         if(guess) {
-            let member = App.members.guess(guess);
-            if(member) {
-                return <a className="app-link text-primary" href={'@Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
+            if(guess === 'all' || guess === langAtAll) {
+                return <span title={langAtAll} className="at-all text-primary" data-offset-key={props.offsetKey}>{props.children}</span>;
+            } else {
+                let member = App.members.guess(guess);
+                if(member) {
+                    return <a className="app-link text-primary" href={'@Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
+                }
             }
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
