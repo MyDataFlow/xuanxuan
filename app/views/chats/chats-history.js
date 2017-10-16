@@ -287,7 +287,7 @@ class ChatsHistory extends Component {
                                         if(this.state.searchingChat && this.state.searchingChat.gid === chat.gid) {
                                             badge = <Icon name="loading" square={true} className="spin-fast muted inline-block"/>;
                                         } else if(searchResult[chat.gid]) {
-                                            badge = <div className="label circle info label-sm">{searchResult[chat.gid]}</div>;
+                                            badge = <div className="label circle secondary label-sm">{searchResult[chat.gid]}</div>;
                                         } else if(searchFilterType === 'choosed' && isChoosed) {
                                             badge = <div className="label circle important label-sm">0</div>;
                                         }
