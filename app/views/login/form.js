@@ -36,19 +36,37 @@ class FormView extends Component {
             super(props);
 
             const lastSavedUser = App.profile.getLastSavedUser();
-
-            this.state = {
-                serverUrl: lastSavedUser && simpleServerUrl(lastSavedUser.serverUrl || lastSavedUser.server) || App.ui.entryParams.server,
-                account: lastSavedUser && lastSavedUser.account || App.ui.entryParams.account,
-                password: lastSavedUser.rememberPassword ? (lastSavedUser && lastSavedUser.password) : App.ui.entryParams.password,
-                rememberPassword: lastSavedUser.rememberPassword,
-                autoLogin: lastSavedUser.autoLogin,
+            const entryParams = App.ui.entryParams;
+            const state = {
+                serverUrl: '',
+                account: '',
+                password: '',
+                rememberPassword: true,
+                autoLogin: false,
                 message: '',
                 submitable: false,
                 logining: false,
             };
 
-            this.state.submitable = StringHelper.isNotEmpty(this.state.serverUrl) && StringHelper.isNotEmpty(this.state.account) && StringHelper.isNotEmpty(this.state.password);
+            if(entryParams && entryParams.server) {
+                state.serverUrl = entryParams.server;
+                state.account = entryParams.account || '';
+                state.password = entryParams.password || '';
+            } else if(lastSavedUser) {
+                state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
+                state.account = lastSavedUser.account || '';
+                state.password = lastSavedUser.rememberPassword ? lastSavedUser.password : '';
+                state.rememberPassword = lastSavedUser.rememberPassword;
+                state.autoLogin = lastSavedUser.autoLogin;
+            }
+
+            if(state.serverUrl) {
+                state.serverUrl = simpleServerUrl(state.serverUrl);
+            }
+
+            state.submitable = StringHelper.isNotEmpty(state.serverUrl) && StringHelper.isNotEmpty(state.account) && StringHelper.isNotEmpty(state.password);
+
+            this.state = state;
         }
 
         login() {

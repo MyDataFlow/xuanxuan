@@ -22,7 +22,7 @@ class IndexView extends Component {
                     <img src={`${Config.media['image.path']}logo-inverse.png`} />
                 </header>
                 <LoginForm className="rounded layer has-padding-xl"/>
-                {App.ui.entryParams.loginTip && <div className="small text-center has-padding-v muted text-white">{App.ui.entryParams.loginTip}</div>}
+                {App.ui.entryParams.loginTip && <div className="app-login-tip small text-center has-padding-v muted text-white">{App.ui.entryParams.loginTip}</div>}
                 {children}
             </section>
             <BuildInfo className="dock-right dock-bottom small has-padding text-white muted"/>

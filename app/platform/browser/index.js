@@ -9,9 +9,11 @@ import dialog from './dialog';
 import notify from './notify';
 import config from '../common/config'
 import net from './net';
+import setting from './setting';
 
 const platform = {
     type: 'browser',
+    setting,
     Socket,
     clipboard,
     crypto,
