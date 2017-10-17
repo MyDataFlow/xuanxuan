@@ -4,6 +4,8 @@ import AreaSelector from './area-selector';
 import Platform from 'Platform';
 import Icon from './icon';
 import Avatar from './avatar';
+import hotkeys from 'hotkeys-js';
+import timeSequence from '../utils/time-sequence';
 
 class ImageCutter extends Component {
 
@@ -13,22 +15,6 @@ class ImageCutter extends Component {
         this.state = {
             hover: true,
         };
-    }
-
-    handleOnKeyPress = e => {
-        if(e) {
-            // Listen ESC
-            if(e.keyCode === 27) {
-                this.handleCloseButtonClick();
-                return false;
-            }
-
-            // Listen Enter
-            if(e.keyCode === 13) {
-                this.handleOkButtonClick();
-                return false;
-            }
-        }
     }
 
     handleOkButtonClick = e => {
@@ -47,6 +33,21 @@ class ImageCutter extends Component {
 
     handleSelectArea = (select) => {
         this.select = select;
+    }
+
+    componentWillUnmount() {
+        hotkeys.deleteScope(this.HotkeysScope);
+    }
+
+    componentDidMount() {
+        this.HotkeysScope = timeSequence();
+        hotkeys.setScope(this.HotkeysScope);
+        hotkeys('esc', this.HotkeysScope, e => {
+            this.handleCloseButtonClick();
+        });
+        hotkeys('enter', this.HotkeysScope, e => {
+            this.handleOkButtonClick();
+        });
     }
 
     render() {
@@ -96,7 +97,6 @@ class ImageCutter extends Component {
             style={style}
             onMouseEnter={e => {this.setState({hover: true})}}
             onMouseLeave={e => {this.setState({hover: false})}}
-            onKeyPress={this.handleOnKeyPress}
         >
             <AreaSelector
                 onSelectArea={this.handleSelectArea}

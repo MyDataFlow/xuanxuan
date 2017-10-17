@@ -230,7 +230,7 @@ class AreaSelector extends Component {
     render() {
         const STYLE = {
             main: {
-                backgroundColor: 'rgba(0,0,0,0.4)',
+                backgroundColor: 'rgba(0,0,0,0.2)',
             },
             controller: {
                 position: 'absolute',

@@ -196,6 +196,7 @@
     "emojione-picker": "^2.1.2",
     "fs-extra": "^4.0.1",
     "highlight.js": "^9.9.0",
+    "hotkeys-js": "^2.0.4",
     "ion-sound": "^3.0.7",
     "marked": "^0.3.6",
     "md5": "^2.2.1",
