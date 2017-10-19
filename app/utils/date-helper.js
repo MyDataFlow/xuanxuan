@@ -1,6 +1,6 @@
 import StringHelper from './string-helper';
 
-export const TIME_DAY = 24*60*60*1000;
+export const TIME_DAY = 24 * 60 * 60 * 1000;
 
 export const createDate = date => {
     if(!(date instanceof Date)) {
@@ -37,13 +37,9 @@ export const isSameMonth = (date1, date2) => {
     return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth();
 };
 
-export const isToday = (date, now) => {
-    return isSameDay(now || new Date(), date);
-};
+export const isToday = (date, now) => (isSameDay(now || new Date(), date));
 
-export const isYestoday = (date, now) => {
-    return isSameDay((now || new Date()).getTime() - TIME_DAY, date);
-};
+export const isYestoday = (date, now) => (isSameDay((now || new Date()).getTime() - TIME_DAY, date));
 
 export const formatDate = (date, format) => {
     date = createDate(date);
@@ -82,16 +78,16 @@ export const formatSpan = (date1, date2, format) => {
 export const getTimeBeforeDesc = desc => {
     const now = new Date().getTime();
     switch(desc) {
-        case 'oneWeek':
-            return now - TIME_DAY*7;
-        case 'oneMonth':
-            return now - TIME_DAY*31;
-        case 'threeMonth':
-            return now - TIME_DAY*31*3;
-        case 'halfYea':
-            return now - TIME_DAY*183;
-        case 'oneYea':
-            return now - TIME_DAY*365;
+    case 'oneWeek':
+        return now - TIME_DAY * 7;
+    case 'oneMonth':
+        return now - TIME_DAY * 31;
+    case 'threeMonth':
+        return now - TIME_DAY * 31 * 3;
+    case 'halfYea':
+        return now - TIME_DAY * 183;
+    case 'oneYea':
+        return now - TIME_DAY * 365;
     }
     return 0;
 };

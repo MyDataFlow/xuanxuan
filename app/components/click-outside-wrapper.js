@@ -1,7 +1,16 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 
-class ClickOutsideWrapper extends Component {
+export default class ClickOutsideWrapper extends Component {
+
+    static defaultProps = {
+        onClickOutside: null,
+        children: null
+    }
+
+    static propTypes = {
+        onClickOutside: PropTypes.func,
+        children: PropTypes.any
+    }
 
     componentDidMount() {
         document.addEventListener('mousedown', this.handleClickOutside);
@@ -12,23 +21,22 @@ class ClickOutsideWrapper extends Component {
     }
 
     handleClickOutside = event => {
-        if (this.wrapper && !this.wrapper.contains(event.target)) {
-            this.props.onClickOutside && this.props.onClickOutside(event, this);
+        if (this.props.onClickOutside && this.wrapper && !this.wrapper.contains(event.target)) {
+            this.props.onClickOutside(event, this);
         }
     }
 
     render() {
-        let {
+        const {
             onClickOutside,
+            children,
             ...other
         } = this.props;
 
         return (
-            <div ref={e => this.wrapper = e} {...other}>
-                {this.props.children}
-            </div>
+          <div ref={e => {this.wrapper = e;}} {...other}>
+            {children}
+          </div>
         );
     }
 }
-
-export default ClickOutsideWrapper;

@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import AreaSelector from './area-selector';
+import hotkeys from 'hotkeys-js';
 import Platform from 'Platform';
 import Icon from './icon';
 import Avatar from './avatar';
-import hotkeys from 'hotkeys-js';
 import timeSequence from '../utils/time-sequence';
 
 class ImageCutter extends Component {

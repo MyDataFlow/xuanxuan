@@ -1,15 +1,21 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 
-class MDIcon extends Component {
+export default class MDIcon extends Component {
 
     static defaultProps = {
         size: 0,
         name: '',
         color: '',
         className: '',
-        square: true
+        square: true,
+        style: null
     };
+
+    static propTypes = {
+        size: PropTypes.number,
+        style: PropTypes.object
+    }
 
     render() {
         let {
@@ -38,5 +44,3 @@ class MDIcon extends Component {
         return <i style={style} {...other} className={HTML.classes(`icon mdi mdi-${name}`, className)}>{children}</i>;
     }
 }
-
-export default MDIcon;

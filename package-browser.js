@@ -1,8 +1,8 @@
 import cpx from 'cpx';
-import pkg from './package.json';
 import ghpages from 'gh-pages';
 import minimist from 'minimist';
 import fse from 'fs-extra';
+import pkg from './package.json';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -10,8 +10,8 @@ const copy = (source, dest, options) => {
     return new Promise((resolve, reject) => {
         cpx.copy(source, dest, options, err => {
             if(err) {
-                reject(err);
                 console.log('failed from ', source, 'to', dest, err);
+                reject(err);
             } else {
                 console.log('  ', source, '-->', dest);
                 resolve(dest);

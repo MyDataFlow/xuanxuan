@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Platform from 'Platform';
 import InputControl from './input-control';
@@ -6,6 +6,16 @@ import InputControl from './input-control';
 const isWindowsOS = Platform.env.isWindowsOS;
 
 class HotkeyInputControl extends Component {
+
+    static defaultProps = {
+        defaultValue: '',
+        onChange: null
+    };
+
+    static propTypes = {
+        defaultValue: PropTypes.string,
+        onChange: PropTypes.func
+    }
 
     constructor(props) {
         super(props);
@@ -15,7 +25,9 @@ class HotkeyInputControl extends Component {
     }
 
     changeValue(value) {
-        this.props.onChange && this.props.onChange(value);
+        if(this.props.onChange) {
+            this.props.onChange(value);
+        }
         this.inputControl.setValue(value);
         this.setState({value});
     }
@@ -58,11 +70,12 @@ class HotkeyInputControl extends Component {
             ...other
         } = this.props;
 
-        return <InputControl {...other}
-            ref={e => this.inputControl = e}
+        return (<InputControl
+            {...other}
+            ref={e => {this.inputControl = e;}}
             defaultValue={defaultValue}
             inputProps={Object.assign({onKeyDown: this.handleKeyDownEvent}, inputProps)}
-        />;
+        />);
     }
 }
 

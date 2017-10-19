@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import DisplayLayer from './display-layer';
 import HTML from '../utils/html-helper';
 import Icon from './icon';

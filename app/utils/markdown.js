@@ -1,7 +1,7 @@
-import Marked       from 'marked';
-import HighlightJS  from 'highlight.js';
+import Marked from 'marked';
+import HighlightJS from 'highlight.js';
 
-var renderer = new Marked.Renderer();
+const renderer = new Marked.Renderer();
 
 renderer.code = (code, lang) => {
     let fileName = null;

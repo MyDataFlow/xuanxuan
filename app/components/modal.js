@@ -10,10 +10,10 @@ import InputControl from './input-control';
 const isWindowsOS = window.navigator.userAgent.includes('Windows');
 
 const DEFAULT_CLASS_NAMES = {
-    'submit': 'primary',
-    'primary': 'primary',
-    'secondary': 'text-red red-pale',
-    'cancel': 'primary-pale text-primary'
+    submit: 'primary',
+    primary: 'primary',
+    secondary: 'text-red red-pale',
+    cancel: 'primary-pale text-primary'
 };
 
 const show = (props = {}, callback = null) => {

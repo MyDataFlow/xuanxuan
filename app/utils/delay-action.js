@@ -1,4 +1,4 @@
-class DelayAction {
+export default class DelayAction {
 
     constructor(action, delay = 100, callback = null) {
         this.action = action;
@@ -9,7 +9,7 @@ class DelayAction {
 
     do(...params) {
         this.done = false;
-        if(this.actionCallTask) {
+        if (this.actionCallTask) {
             clearTimeout(this.actionCallTask);
         }
         this.actionCallTask = setTimeout(() => {
@@ -20,7 +20,7 @@ class DelayAction {
     doIm(...params) {
         const actionResult = this.action(...params);
         this.actionCallTask = null;
-        if(typeof this.callback === 'function') {
+        if (typeof this.callback === 'function') {
             this.callback(actionResult);
         }
         this.done = true;
@@ -34,5 +34,3 @@ class DelayAction {
         clearTimeout(this.actionCallTask);
     }
 }
-
-export default DelayAction;

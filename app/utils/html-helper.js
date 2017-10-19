@@ -1,27 +1,21 @@
-const classes = (...args) => {
-    return args.map(arg => {
-        if(Array.isArray(arg)) {
+const classes = (...args) => (
+    args.map(arg => {
+        if (Array.isArray(arg)) {
             return classes(arg);
-        } else if(arg !== null && typeof arg === 'object') {
+        } else if (arg !== null && typeof arg === 'object') {
             return Object.keys(arg).filter(className => {
-                let condition = arg[className];
-                if(typeof condition === 'function') {
+                const condition = arg[className];
+                if (typeof condition === 'function') {
                     return !!condition();
-                } else {
-                    return !!condition;
                 }
+                return !!condition;
             }).join(' ');
-        } else {
-            return arg;
         }
-    }).filter(x => {
-        return (typeof x === 'string') && x.length;
-    }).join(' ');
-};
+        return arg;
+    }).filter(x => (typeof x === 'string') && x.length).join(' ')
+);
 
-const rem = (value, rootValue = 20) => {
-    return `${value/20}rem`;
-};
+const rem = (value, rootValue = 20) => (`${value / 20}rem`);
 
 const getSearchParam = key => {
     const params = {};
