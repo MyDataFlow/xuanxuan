@@ -1,5 +1,5 @@
 
-export default class StatusKeeper {
+class StatusKeeper {
     constructor(status, mapper) {
         this.mapper = mapper;
         this.status = mapper.getValue(status);
@@ -53,7 +53,7 @@ export default class StatusKeeper {
     }
 }
 
-class Status {
+export default class Status {
     constructor(statuses, defaultStatus) {
         this.$values = {};
         Object.keys(statuses).forEach(name => {

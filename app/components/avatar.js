@@ -72,7 +72,7 @@ export default class Avatar extends Component {
      * @memberof Avatar
      */
     render() {
-        const {
+        let {
             skin,
             image,
             icon,
@@ -82,9 +82,10 @@ export default class Avatar extends Component {
             imageClassName,
             iconClassName,
             children,
+            style,
+            iconSize,
             ...other
         } = this.props;
-        let {style, iconSize} = this.props;
 
         style = Object.assign(skin ? Skin.style(skin) : {}, style);
         if (size) {

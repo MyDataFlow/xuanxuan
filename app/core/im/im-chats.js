@@ -367,15 +367,14 @@ const search = (search, chatType) => {
         getContactsChats();
     }
 
-    let result = [];
-    let caculateScore = (sKey, findIn) => {
+    const caculateScore = (sKey, findIn) => {
         if (StringHelper.isEmpty(sKey) || StringHelper.isEmpty(findIn)) {
             return 0;
         }
         if (sKey === findIn) {
             return SEARCH_SCORE_MAP.matchAll;
         }
-        let idx = findIn.indexOf(sKey);
+        const idx = findIn.indexOf(sKey);
         return idx === 0 ? SEARCH_SCORE_MAP.matchPrefix : (idx > 0 ? SEARCH_SCORE_MAP.include : 0);
     };
 
@@ -392,17 +391,17 @@ const search = (search, chatType) => {
             members,
             user: profile.user
         };
-        let chatName = chat.getDisplayName(imApp, false).toLowerCase();
-        let pinYin = chat.getPinYin(imApp);
+        const chatName = chat.getDisplayName(imApp, false).toLowerCase();
+        const pinYin = chat.getPinYin(imApp);
         let theOtherOneAccount = '';
         let theOtherOneContactInfo = '';
         if (chat.isOne2One) {
-            let theOtherOne = chat.getTheOtherOne(imApp);
+            const theOtherOne = chat.getTheOtherOne(imApp);
             if (theOtherOne) {
                 theOtherOneAccount = theOtherOne.account;
                 theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');
-            } else {
-                if (DEBUG) console.warn('Cannot get the other one of chat', chat);
+            } else if (DEBUG) {
+                console.warn('Cannot get the other one of chat', chat);
             }
         }
         search.forEach(s => {
@@ -412,17 +411,17 @@ const search = (search, chatType) => {
             if (s.length > 1) {
                 if (s[0] === '#') { // id
                     s = s.substr(1);
-                    score += 2*caculateScore(s, chatGid);
+                    score += 2 * caculateScore(s, chatGid);
                     if (chat.isSystem || chat.isGroup) {
-                        score += 2*caculateScore(s, chatName);
+                        score += 2 * caculateScore(s, chatName);
                         if (chat.isSystem) {
-                            score += 2*caculateScore(s, 'system');
+                            score += 2 * caculateScore(s, 'system');
                         }
                     }
                 } else if (s[0] === '@') { // account or username
                     s = s.substr(1);
                     if (chat.isOne2One) {
-                        score += 2*caculateScore(s, theOtherOneAccount);
+                        score += 2 * caculateScore(s, theOtherOneAccount);
                     }
                 }
             }
@@ -440,7 +439,7 @@ const search = (search, chatType) => {
 const remove = gid => {
     const removeChat = chats[gid];
     if (removeChat) {
-        removeChat['delete'] = true;
+        removeChat.delete = true;
         delete chats[gid];
         Events.emitDataChange({chats: {[gid]: removeChat}});
         return true;
@@ -469,9 +468,7 @@ const getChatFiles = (chat, includeFailFile = false) => {
     });
 };
 
-const getPublicChats = () => {
-    return publicChats || [];
-};
+const getPublicChats = () => (publicChats || []);
 
 const updatePublicChats = (serverPublicChats) => {
     publicChats = [];
@@ -522,7 +519,6 @@ export default {
     updatePublicChats,
     getContactsChats,
     getGroups,
-    getRecents,
     onChatsInit,
     onChatMessages,
     getOne2OneChatGid,

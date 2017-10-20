@@ -276,7 +276,7 @@ export default class Color {
     }
 
     get hex() {
-        return `$${toHexValue(this.r)}${toHexValue(this.g)}${toHexValue(this.b)}`;
+        return `#${toHexValue(this.r)}${toHexValue(this.g)}${toHexValue(this.b)}`;
     }
 
     get css() {

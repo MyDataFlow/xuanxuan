@@ -57,7 +57,7 @@ export default class DisplayLayer extends Component {
 
     static propTypes = {
         content: PropTypes.any,
-        id: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+        id: PropTypes.any,
         animation: PropTypes.string,
         onShown: PropTypes.func,
         onHidden: PropTypes.func,
