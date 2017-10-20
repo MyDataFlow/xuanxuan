@@ -52,6 +52,7 @@ const get = (gid) => {
             type: Chat.TYPES.one2one
         });
         chat.updateMembersSet(members);
+        update(chat);
     }
     return chat;
 };
@@ -329,18 +330,7 @@ const getRecents = (includeStar = true, sortList = true) => {
 const getContactChat = (member) => {
     let members = [member.id, profile.user.id].sort();
     const gid = members.join('&');
-    let chat = get(gid);
-    if (chat) {
-        return chat;
-    }
-    chat = new Chat({
-        gid,
-        members,
-        createdBy: profile.user.account,
-        type: 'one2one'
-    });
-    update(chat);
-    return chat;
+    return get(gid);
 };
 
 const getContactsChats = (sortList = true) => {
