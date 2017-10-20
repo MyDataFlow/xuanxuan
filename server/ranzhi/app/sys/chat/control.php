@@ -775,11 +775,13 @@ class chat extends control
             die($this->app->encrypt($this->output));
         }
 
-        $onlineUsers  = array();
+        $onlineUsers  = array($userID);
         $offlineUsers = array();
         $users = $this->chat->getUserList($status = '', array_values($chat->members));
         foreach($users as $id => $user)
         {
+            if($id == $userID) continue;
+
             if($user->status == 'offline')
             {
                 $offlineUsers[] = $id;
