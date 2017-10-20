@@ -116,9 +116,9 @@ const updateChatMessages = (messages, muted = false) => {
     const updatedChats = {};
     Object.keys(chatsMessages).forEach(cgid => {
         const chat = get(cgid);
-        if(chat) {
+        if (chat && chat.id && chat.isMember(profile.userId)) {
             chat.addMessages(chatsMessages[cgid], profile.userId, true, muted);
-            if(muted) {
+            if (muted) {
                 chat.muteNotice();
             }
             updatedChats[cgid] = chat;
