@@ -1,5 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 
+/**
+ * 判定一个点是否在矩形区域内
+ *
+ * @access private
+ * @param {{left: Number, top: Number}} point 要判定的点位置
+ * @param {{left: Number, top: Number, width: Number, height: Number}} rect 要判定对矩形区域
+ * @return {Bool} 如果在矩形区域内则返回 <code>true</code> 否则 返回 <code>false</code>
+ */
 const isPiontInRect = (point, rect) => (
     rect.width > 0 && rect.height > 0
         && point.left >= rect.left
@@ -8,6 +16,14 @@ const isPiontInRect = (point, rect) => (
         && point.top <= (rect.top + rect.height)
 );
 
+/**
+ * 判定一个点在矩形区域的方位
+ *
+ * @access private
+ * @param {{left: Number, top: Number}} pos
+ * @param {{left: Number, top: Number, width: Number, height: Number}} rect 要判定对矩形区域
+ * @return {String}
+ */
 const caculatePosition = (pos, area) => {
     const halfHotSize = 5;
     const hotSize = halfHotSize + halfHotSize;
@@ -59,7 +75,7 @@ const caculatePosition = (pos, area) => {
     })) {
         return 'top-left';
     }
-    if(isPiontInRect(pos, {
+    if (isPiontInRect(pos, {
         left: (area.left + area.width) - halfHotSize,
         top: area.top - halfHotSize,
         width: hotSize,
@@ -86,28 +102,68 @@ const caculatePosition = (pos, area) => {
     return null;
 };
 
+/**
+ * Range area selector component
+ *
+ * @public
+ * @export
+ * @class AreaSelector
+ * @extends {Component}
+ */
 export default class AreaSelector extends Component {
-
+    /**
+     * Property default values
+     *
+     * @static
+     * @memberof AreaSelector
+     */
     static defaultProps = {
         onSelectArea: null,
         toolbarStyle: null,
+        toolbarHeight: 40,
         style: null
-    }
+    };
 
+    /**
+     * Property types
+     *
+     * @static
+     * @memberof AreaSelector
+     */
     static propTypes = {
         onSelectArea: PropTypes.func,
         toolbarStyle: PropTypes.object,
+        toolbarHeight: PropTypes.number,
         style: PropTypes.object
-    }
+    };
 
+    /**
+     * Creates an instance of AreaSelector.
+     *
+     * @public
+     * @param {Object} props
+     * @memberof AreaSelector
+     */
     constructor(props) {
         super(props);
+
+        /**
+         * React state
+         */
         this.state = {
             select: null,
             resizeable: false,
         };
     }
 
+    /**
+     * Set select range
+     * 设置选择的范围
+     *
+     * @param {{left: Number, top: Number, width: Number, height: Number}} select 选择对范围对象
+     * @returns {Void}
+     * @memberof AreaSelector
+     */
     setSelect(select) {
         if (select) {
             select.height = Math.max(0, Math.min(this.contianer.clientHeight, select.height));
@@ -125,6 +181,9 @@ export default class AreaSelector extends Component {
         }
     }
 
+    /**
+     * @private
+     */
     handleMouseDown = e => {
         this.mouseDownPos = {left: e.clientX, top: e.clientY};
         this.mouseDownSelect = Object.assign({}, this.state.select);
@@ -133,6 +192,9 @@ export default class AreaSelector extends Component {
         }
     }
 
+    /**
+     * @private
+     */
     handleMouseMove = e => {
         if (this.mouseDownPos) {
             this.mouseMovePos = {left: e.clientX, top: e.clientY};
@@ -233,6 +295,9 @@ export default class AreaSelector extends Component {
         }
     }
 
+    /**
+     * @private
+     */
     handleMouseUp = () => {
         this.mouseDownPos = null;
         if (!this.state.resizeable && this.state.select) {
@@ -240,6 +305,12 @@ export default class AreaSelector extends Component {
         }
     }
 
+    /**
+     * React render
+     *
+     * @returns
+     * @memberof AreaSelector
+     */
     render() {
         const STYLE = {
             main: {
@@ -310,7 +381,7 @@ export default class AreaSelector extends Component {
 
         let {
             toolbar,
-            toolbarHeight = 40,
+            toolbarHeight,
             style,
             toolbarStyle,
             img,
@@ -319,19 +390,19 @@ export default class AreaSelector extends Component {
         } = this.props;
 
         style = Object.assign({}, STYLE.main, style);
-        if(!this.state.resizeable) {
+        if (!this.state.resizeable) {
             Object.assign(style, {cursor: 'crosshair'});
         }
 
-        let controllerStyle = Object.assign({backgroundImage: img ? (`url("${img}")`) : 'none'}, STYLE.controller);
-        if(this.state.select) {
+        const controllerStyle = Object.assign({backgroundImage: img ? (`url("${img}")`) : 'none'}, STYLE.controller);
+        if (this.state.select) {
             Object.assign(controllerStyle, {left: this.state.select.left, top: this.state.select.top, width: this.state.select.width, height: this.state.select.height, backgroundPositionX: -this.state.select.left - 1, backgroundPositionY: -this.state.select.top - 1});
         } else {
             Object.assign(controllerStyle, {display: 'none'});
         }
 
         let controls = null;
-        if(this.state.resizeable && this.state.select) {
+        if (this.state.resizeable && this.state.select) {
             controls = Object.keys(STYLE.controls).map(key => {
                 const controlStyle = Object.assign({}, STYLE.controlBase, STYLE.controls[key]);
                 return <div key={key} style={controlStyle} />;
@@ -339,24 +410,24 @@ export default class AreaSelector extends Component {
         }
 
         toolbarStyle = Object.assign({position: 'absolute', right: 0}, toolbarStyle);
-        if(this.state.select && this.contianer && (this.state.select.top + this.state.select.height + toolbarHeight) < this.contianer.clientHeight) {
+        if (this.state.select && this.contianer && (this.state.select.top + this.state.select.height + toolbarHeight) < this.contianer.clientHeight) {
             toolbarStyle.top = '100%';
         } else {
             toolbarStyle.bottom = 0;
         }
 
         return (<div
-          {...other}
-          ref={e => {this.contianer = e;}}
-          style={style}
-          onMouseUp={this.handleMouseUp}
-          onMouseDown={this.handleMouseDown}
-          onMouseMove={this.handleMouseMove}
+            {...other}
+            ref={e => {this.contianer = e;}}
+            style={style}
+            onMouseUp={this.handleMouseUp}
+            onMouseDown={this.handleMouseDown}
+            onMouseMove={this.handleMouseMove}
         >
-          <div style={controllerStyle} className="ants-border">
-            {controls}
-            <div style={toolbarStyle}>{toolbar}</div>
-          </div>
+            <div style={controllerStyle} className="ants-border">
+                {controls}
+                <div style={toolbarStyle}>{toolbar}</div>
+            </div>
         </div>);
     }
 }

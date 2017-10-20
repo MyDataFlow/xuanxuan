@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import DisplayLayer from './display-layer';
+import Display from './display';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 import timeSequence from '../utils/time-sequence';
@@ -92,7 +92,7 @@ const show = (props = {}, callback = null) => {
                 actionResult = action.click(action, e);
             }
             if(actionResult !== false) {
-                DisplayLayer.hide(props.id);
+                Display.hide(props.id);
             }
         };
 
@@ -108,7 +108,7 @@ const show = (props = {}, callback = null) => {
     const header = (title || closeButton) ? <header className={HTML.classes("heading", headingClassName)}>
         <div className="title">{title}</div>
         {closeButton && <nav style={{overflow: 'visible'}} data-hint={Lang.string('common.close')} className="nav hint--bottom"><a className="close" onClick={() => {
-            DisplayLayer.remove(props.id);
+            Display.remove(props.id);
         }}><Icon name="close"/></a></nav>}
     </header> : null;
 
@@ -121,7 +121,7 @@ const show = (props = {}, callback = null) => {
     delete props.onCancel;
     delete props.headingClassName;
 
-    return DisplayLayer.show(props, callback);
+    return Display.show(props, callback);
 };
 
 const alert = (content, props, callback) => {
@@ -190,6 +190,6 @@ export default {
     alert,
     confirm,
     prompt,
-    hide: DisplayLayer.hide,
-    remove: DisplayLayer.remove
+    hide: Display.hide,
+    remove: Display.remove
 };

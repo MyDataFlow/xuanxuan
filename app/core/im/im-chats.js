@@ -31,7 +31,7 @@ const app = {
 };
 
 const forEach = (callback) => {
-    if(chats) {
+    if (chats) {
         Object.keys(chats).forEach(gid => {
             callback(chats[gid]);
         });
@@ -39,11 +39,11 @@ const forEach = (callback) => {
 };
 
 const get = (gid) => {
-    if(!chats) {
+    if (!chats) {
         return null;
     }
     let chat = chats[gid];
-    if(!chat && gid.includes('&')) {
+    if (!chat && gid.includes('&')) {
         const chatMembers = gid.split('&').map(x => Number.parseInt(x));
         chat = new Chat({
             gid,
@@ -57,12 +57,12 @@ const get = (gid) => {
 };
 
 const getOne2OneChatGid = members => {
-    if(members instanceof Set) {
+    if (members instanceof Set) {
         members = Array.from(members);
     }
-    if(members.length > 2 || !members.length) {
+    if (members.length > 2 || !members.length) {
         throw new Error(`Cannot build gid for members count with ${members.length}.`);
-    } else if(members.length === 1) {
+    } else if (members.length === 1) {
         members.push(profile.userId);
     }
     return members.map(x => x.id || x).sort().join('&');
@@ -71,7 +71,7 @@ const getOne2OneChatGid = members => {
 const getLastActiveChat = () => {
     let lastChat = null;
     forEach(chat => {
-        if(!lastChat || lastChat.lastActiveTime < chat.lastActiveTime) {
+        if (!lastChat || lastChat.lastActiveTime < chat.lastActiveTime) {
             lastChat = chat;
         }
     });
@@ -79,17 +79,17 @@ const getLastActiveChat = () => {
 };
 
 const saveChatMessages = (messages, chat) => {
-    if(!Array.isArray(messages)) {
+    if (!Array.isArray(messages)) {
         messages = [messages];
     }
 
     Events.emit(EVENT.messages, messages);
-    if(chat) {
+    if (chat) {
         update(chat);
     }
 
     // Save messages to database
-    if(messages.length) {
+    if (messages.length) {
         return db.database.chatMessages.bulkPut(messages.map(x => x.plain()));
     } else {
         return Promise.resolve(0);
@@ -97,7 +97,7 @@ const saveChatMessages = (messages, chat) => {
 };
 
 const updateChatMessages = (messages, muted = false) => {
-    if(!Array.isArray(messages)) {
+    if (!Array.isArray(messages)) {
         messages = [messages];
     }
     let chatsMessages = {};
@@ -106,7 +106,7 @@ const updateChatMessages = (messages, muted = false) => {
         message = ChatMessage.create(message);
         messagesForUpdate.push(message);
 
-        if(!chatsMessages[message.cgid]) {
+        if (!chatsMessages[message.cgid]) {
             chatsMessages[message.cgid] = [message];
         } else {
             chatsMessages[message.cgid].push(message);
@@ -131,7 +131,7 @@ const updateChatMessages = (messages, muted = false) => {
 };
 
 const deleteLocalMessage = (message) => {
-    if(message.id) {
+    if (message.id) {
         return Promise.reject('Cannot delete a remote chat message.');
     }
     const chat = get(message.cgid);
@@ -142,7 +142,7 @@ const deleteLocalMessage = (message) => {
 
 const countChatMessages = (cgid, filter) => {
     let collection = db.database.chatMessages.where({cgid});
-    if(filter) {
+    if (filter) {
         collection = collection.and(filter);
     }
     return collection.count();
@@ -153,24 +153,24 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
     let collection =  db.database.chatMessages.orderBy('id').and(x => {
         return x.cgid === cgid && (!queryCondition || queryCondition(x));
     });
-    if(reverse) {
+    if (reverse) {
         collection = collection.reverse();
     }
-    if(offset) {
+    if (offset) {
         collection = collection.offset(offset);
     }
-    if(limit) {
+    if (limit) {
         collection = collection.limit(limit);
     }
-    if(returnCount) {
+    if (returnCount) {
         return collection.count(count => {
             return Promise.resolve({gid: cgid, count, chat});
         });
     }
     return collection.toArray(chatMessages => {
-        if(chatMessages && chatMessages.length) {
+        if (chatMessages && chatMessages.length) {
             const result = rawData ? chatMessages : chatMessages.map(ChatMessage.create);
-            if(!skipAdd) {
+            if (!skipAdd) {
                 chat.addMessages(result, profile.userId, true, true);
                 Events.emitDataChange({chats: {[cgid]: chat}});
             }
@@ -182,25 +182,25 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
 };
 
 const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = false) => {
-    if(typeof minDate === 'string') {
+    if (typeof minDate === 'string') {
         minDate = DateHelper.getTimeBeforeDesc(minDate);
     }
     const keys = searchKeys.toLowerCase().split(' ');
     return loadChatMessages(chat, msg => {
-        if(!msg.id || (minDate && msg.date < minDate)) {
+        if (!msg.id || (minDate && msg.date < minDate)) {
             return false;
         }
-        for(let key of keys) {
-            if(key === '[image]') {
-                if(msg.contentType !== 'image') {
+        for (let key of keys) {
+            if (key === '[image]') {
+                if (msg.contentType !== 'image') {
                     return false;
                 }
-            } else if(key === '[file]') {
-                if(msg.contentType !== 'file') {
+            } else if (key === '[file]') {
+                if (msg.contentType !== 'file') {
                     return false;
                 }
-            } else if(msg.contentType === 'text' || msg.content.length < 200) {
-                if(!msg.content || !msg.content.toLowerCase().includes(key)) {
+            } else if (msg.contentType === 'text' || msg.content.length < 200) {
+                if (!msg.content || !msg.content.toLowerCase().includes(key)) {
                     return false;
                 }
             } else {
@@ -221,16 +221,16 @@ const createCountMessagesTask = (chats, searchKeys, minDateDesc = '') => {
 };
 
 const update = (chatArr) => {
-    if(!chatArr) return;
+    if (!chatArr) return;
 
-    if(!Array.isArray(chatArr)) {
-        if(chatArr instanceof Chat) {
+    if (!Array.isArray(chatArr)) {
+        if (chatArr instanceof Chat) {
             chatArr = [chatArr];
         }
     }
 
     let newchats = null;
-    if(Array.isArray(chatArr) && chatArr.length) {
+    if (Array.isArray(chatArr) && chatArr.length) {
         newchats = {};
         chatArr.forEach(chat => {
             chat = Chat.create(chat);
@@ -240,7 +240,7 @@ const update = (chatArr) => {
         newchats = chatArr;
     }
 
-    if(newchats && Object.keys(newchats).length) {
+    if (newchats && Object.keys(newchats).length) {
         Object.assign(chats, newchats);
         Events.emitDataChange({chats: newchats});
     }
@@ -249,10 +249,10 @@ const update = (chatArr) => {
 const init = (chatArr) => {
     publicChats = null;
     chats = {};
-    if(chatArr && chatArr.length) {
+    if (chatArr && chatArr.length) {
         update(chatArr);
         forEach(chat => {
-            if(!chat.hasSetMessages) {
+            if (!chat.hasSetMessages) {
                 loadChatMessages(chat);
             }
         });
@@ -265,41 +265,41 @@ const getAll = () => {
 };
 
 const query = (condition, sortList) => {
-    if(!chats) {
+    if (!chats) {
         return [];
     }
     let result = null;
-    if(typeof condition === 'object') {
+    if (typeof condition === 'object') {
         let conditionObj = condition;
         let conditionKeys = Object.keys(conditionObj);
         condition = chat => {
-            for(let key of conditionKeys) {
-                if(conditionObj[key] !== chat[key]) {
+            for (let key of conditionKeys) {
+                if (conditionObj[key] !== chat[key]) {
                     return false;
                 }
             }
             return true;
         };
     }
-    if(typeof condition === 'function') {
+    if (typeof condition === 'function') {
         result = [];
         forEach(chat => {
-            if(condition(chat)) {
+            if (condition(chat)) {
                 result.push(chat);
             }
         });
-    } else if(Array.isArray(condition)) {
+    } else if (Array.isArray(condition)) {
         result = [];
         condition.forEach(x => {
             const chat = get(x);
-            if(chat) {
+            if (chat) {
                 result.push(chat);
             }
         });
     } else {
         result = getAll();
     }
-    if(sortList && result && result.length) {
+    if (sortList && result && result.length) {
         Chat.sort(result, sortList, app);
     }
     return result || [];
@@ -309,18 +309,18 @@ const query = (condition, sortList) => {
 const getRecents = (includeStar = true, sortList = true) => {
     const all = getAll();
     let recents = null;
-    if(all.length < 4) {
+    if (all.length < 4) {
         recents = all;
     } else {
         const now = new Date().getTime();
         recents = all.filter(chat => {
             return chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
         });
-        if(!recents.length) {
+        if (!recents.length) {
             recents = all.filter(chat => chat.isSystem);
         }
     }
-    if(sortList) {
+    if (sortList) {
         Chat.sort(recents, sortList, app);
     }
     return recents;
@@ -330,7 +330,7 @@ const getContactChat = (member) => {
     let members = [member.id, profile.user.id].sort();
     const gid = members.join('&');
     let chat = get(gid);
-    if(chat) {
+    if (chat) {
         return chat;
     }
     chat = new Chat({
@@ -346,11 +346,11 @@ const getContactChat = (member) => {
 const getContactsChats = (sortList = true) => {
     let contactsChats = [];
     members.forEach(member => {
-        if(member.id !== profile.user.id) {
+        if (member.id !== profile.user.id) {
             contactsChats.push(getContactChat(member, true));
         }
     });
-    if(sortList) {
+    if (sortList) {
         Chat.sort(contactsChats, sortList, app);
     }
     return contactsChats;
@@ -361,11 +361,11 @@ const getGroups = (sortList = true) => {
 };
 
 const search = (search, chatType) => {
-    if(StringHelper.isEmpty(search)) {
+    if (StringHelper.isEmpty(search)) {
         return [];
     }
     search = search.trim().toLowerCase().split(' ');
-    if(!search.length) {
+    if (!search.length) {
         return [];
     }
 
@@ -373,16 +373,16 @@ const search = (search, chatType) => {
     const isContactsType = chatType === 'contacts';
     const isGroupsType = chatType === 'groups';
 
-    if(!hasChatType || isContactsType) {
+    if (!hasChatType || isContactsType) {
         getContactsChats();
     }
 
     let result = [];
     let caculateScore = (sKey, findIn) => {
-        if(StringHelper.isEmpty(sKey) || StringHelper.isEmpty(findIn)) {
+        if (StringHelper.isEmpty(sKey) || StringHelper.isEmpty(findIn)) {
             return 0;
         }
-        if(sKey === findIn) {
+        if (sKey === findIn) {
             return SEARCH_SCORE_MAP.matchAll;
         }
         let idx = findIn.indexOf(sKey);
@@ -391,8 +391,8 @@ const search = (search, chatType) => {
 
     return query(chat => {
         const chatGid = chat.gid.toLowerCase();
-        if(hasChatType) {
-            if((isContactsType && !chat.isOne2One) || (isGroupsType && !chat.isGroupOrSystem)) {
+        if (hasChatType) {
+            if ((isContactsType && !chat.isOne2One) || (isGroupsType && !chat.isGroupOrSystem)) {
                 return;
             }
         }
@@ -406,39 +406,39 @@ const search = (search, chatType) => {
         let pinYin = chat.getPinYin(imApp);
         let theOtherOneAccount = '';
         let theOtherOneContactInfo = '';
-        if(chat.isOne2One) {
+        if (chat.isOne2One) {
             let theOtherOne = chat.getTheOtherOne(imApp);
-            if(theOtherOne) {
+            if (theOtherOne) {
                 theOtherOneAccount = theOtherOne.account;
                 theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');
             } else {
-                if(DEBUG) console.warn('Cannot get the other one of chat', chat);
+                if (DEBUG) console.warn('Cannot get the other one of chat', chat);
             }
         }
         search.forEach(s => {
-            if(StringHelper.isEmpty(s)) {
+            if (StringHelper.isEmpty(s)) {
                 return;
             }
-            if(s.length > 1) {
-                if(s[0] === '#') { // id
+            if (s.length > 1) {
+                if (s[0] === '#') { // id
                     s = s.substr(1);
                     score += 2*caculateScore(s, chatGid);
-                    if(chat.isSystem || chat.isGroup) {
+                    if (chat.isSystem || chat.isGroup) {
                         score += 2*caculateScore(s, chatName);
-                        if(chat.isSystem) {
+                        if (chat.isSystem) {
                             score += 2*caculateScore(s, 'system');
                         }
                     }
-                } else if(s[0] === '@') { // account or username
+                } else if (s[0] === '@') { // account or username
                     s = s.substr(1);
-                    if(chat.isOne2One) {
+                    if (chat.isOne2One) {
                         score += 2*caculateScore(s, theOtherOneAccount);
                     }
                 }
             }
             score += caculateScore(s, chatName);
             score += caculateScore(s, pinYin);
-            if(theOtherOneContactInfo) {
+            if (theOtherOneContactInfo) {
                 score += caculateScore(s, theOtherOneContactInfo);
             }
         });
@@ -449,7 +449,7 @@ const search = (search, chatType) => {
 
 const remove = gid => {
     const removeChat = chats[gid];
-    if(removeChat) {
+    if (removeChat) {
         removeChat['delete'] = true;
         delete chats[gid];
         Events.emitDataChange({chats: {[gid]: removeChat}});
@@ -462,14 +462,14 @@ const remove = gid => {
 const getChatFiles = (chat, includeFailFile = false) => {
     return loadChatMessages(chat, (x => x.contentType === 'file'), 0).then(fileMessages => {
         let files = null;
-        if(fileMessages && fileMessages.length) {
-            if(includeFailFile) {
+        if (fileMessages && fileMessages.length) {
+            if (includeFailFile) {
                 files = fileMessages.map(fileMessage => fileMessage.fileContent);
             } else {
                 files = [];
                 fileMessages.forEach(fileMessage => {
                     const fileContent = fileMessage.fileContent;
-                    if(fileContent.send === true && fileContent.id) {
+                    if (fileContent.send === true && fileContent.id) {
                         files.push(fileContent);
                     }
                 });
@@ -485,11 +485,11 @@ const getPublicChats = () => {
 
 const updatePublicChats = (serverPublicChats) => {
     publicChats = [];
-    if(serverPublicChats) {
-        if(!Array.isArray(serverPublicChats)) {
+    if (serverPublicChats) {
+        if (!Array.isArray(serverPublicChats)) {
             serverPublicChats = [serverPublicChats];
         }
-        if(serverPublicChats.length) {
+        if (serverPublicChats.length) {
             serverPublicChats.forEach(chat => {
                 chat = Chat.create(chat);
                 publicChats.push(chat);

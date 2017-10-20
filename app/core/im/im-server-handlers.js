@@ -9,9 +9,9 @@ import imServer from './im-server';
 import imUI from './im-ui';
 
 const chatChangename = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         const chat = chats.get(msg.data.gid);
-        if(chat) {
+        if (chat) {
             chat.name = msg.data.name;
             chats.update(chat);
             return chat;
@@ -20,9 +20,9 @@ const chatChangename = (msg, socket) => {
 };
 
 const chatSetcomitters = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         const chat = chats.get(msg.data.gid);
-        if(chat) {
+        if (chat) {
             chat.committers = msg.data.committers;
             chats.update(chat);
         }
@@ -30,11 +30,11 @@ const chatSetcomitters = (msg, socket) => {
 };
 
 const chatAddmember = (msg, socket) => {
-    if(!msg.isSuccess) {
+    if (!msg.isSuccess) {
         return;
     }
     let chat = chats.get(msg.data.gid);
-    if(chat) {
+    if (chat) {
         const serverChatMembers = Chat.create(msg.data).members;
 
         chat.resetMembers(Array.from(serverChatMembers).map(x => members.get(x)));
@@ -47,9 +47,9 @@ const chatAddmember = (msg, socket) => {
 };
 
 const chatGetlist = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         let newChats = null;
-        if(typeof msg.data === 'object') {
+        if (typeof msg.data === 'object') {
             newChats = Object.keys(msg.data).map(x => msg.data[x]);
         } else {
             newChats = msg.data;
@@ -59,7 +59,7 @@ const chatGetlist = (msg, socket) => {
 };
 
 const chatCreate = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         const chat = new Chat(msg.data);
         chats.update(chat);
         return chat;
@@ -67,29 +67,29 @@ const chatCreate = (msg, socket) => {
 };
 
 const chatMessage = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         let messages = msg.data;
-        if(!Array.isArray(messages)) {
-            if(messages.cgid && messages.content) {
+        if (!Array.isArray(messages)) {
+            if (messages.cgid && messages.content) {
                 messages = [messages];
             } else {
                 messages = Object.keys(messages).map(x => messages[x]);
             }
         }
 
-        if(messages && messages.length) {
+        if (messages && messages.length) {
             chats.updateChatMessages(messages);
         }
     }
 };
 
 const chatHistory = (msg, socket) => {
-    if(!msg.isSuccess) {
+    if (!msg.isSuccess) {
         return;
     }
     let messages = msg.data;
-    if(!Array.isArray(messages)) {
-        if(messages.cgid && messages.content) {
+    if (!Array.isArray(messages)) {
+        if (messages.cgid && messages.content) {
             messages = [messages];
         } else {
             messages = Object.keys(messages).map(x => messages[x]);
@@ -100,9 +100,9 @@ const chatHistory = (msg, socket) => {
 };
 
 const chatStar = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         let chat = chats.get(msg.data.gid);
-        if(chat) {
+        if (chat) {
             chat.star = msg.data.star;
             chats.update(chat);
         }
@@ -110,20 +110,20 @@ const chatStar = (msg, socket) => {
 };
 
 const chatJoinchat = (msg, socket) => {
-    if(!msg.isSuccess) {
+    if (!msg.isSuccess) {
         return;
     }
-    if(msg.data.gid) {
+    if (msg.data.gid) {
         let chat = chats.get(msg.data.gid);
-        if(chat) {
+        if (chat) {
             chat.$set(msg.data);
         } else {
             chat = new Chat(msg.data);
         }
-        if(chat.isMember(profile.user.id)) {
+        if (chat.isMember(profile.user.id)) {
             chat.makeActive();
             chats.update(chat);
-            if(chat.public && imServer.chatJoinTask) {
+            if (chat.public && imServer.chatJoinTask) {
                 imUI.activeChat(chat);
             }
             return chat;
@@ -136,9 +136,9 @@ const chatJoinchat = (msg, socket) => {
 };
 
 const chatHide = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         let chat = chats.get(msg.data.gid);
-        if(chat) {
+        if (chat) {
             chat.hide = msg.data.hide;
             chats.update(chat);
         }
@@ -146,9 +146,9 @@ const chatHide = (msg, socket) => {
 };
 
 const chatChangepublic = (msg, socket) => {
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         let chat = chats.get(msg.data.gid);
-        if(chat) {
+        if (chat) {
             chat.public = msg.data.public;
             chats.update(chat);
         }
@@ -157,7 +157,7 @@ const chatChangepublic = (msg, socket) => {
 
 const chatGetpubliclist = (msg, socket) => {
     let publicChats;
-    if(msg.isSuccess) {
+    if (msg.isSuccess) {
         publicChats = msg.data.map(x => {
             let chat = new Chat(x);
             chat.updateMembersSet(members);

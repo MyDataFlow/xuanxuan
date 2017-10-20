@@ -1,10 +1,9 @@
 
-class StatusKeeper {
-
+export default class StatusKeeper {
     constructor(status, mapper) {
         this.mapper = mapper;
         this.status = mapper.getValue(status);
-        if(this.status === undefined) {
+        if (this.status === undefined) {
             this.status = mapper.defaultValue;
         }
     }
@@ -36,13 +35,13 @@ class StatusKeeper {
     change(nameOrValue) {
         const value = this.mapper.getValue(nameOrValue);
         const oldValue = this.value;
-        if(value !== undefined && oldValue !== value) {
-            if(!this._canChange || this._canChange(value, oldValue)) {
+        if (value !== undefined && oldValue !== value) {
+            if (!this._canChange || this._canChange(value, oldValue)) {
                 this.status = value;
-                if(typeof this._onChange === 'function') {
+                if (typeof this._onChange === 'function') {
                     this._onChange(value, oldValue, this);
                 }
-            } else if(DEBUG) {
+            } else if (DEBUG) {
                 console.error(`Status '${oldValue}' cannot change to ${nameOrValue} with the rule.`);
             }
         }
@@ -55,25 +54,24 @@ class StatusKeeper {
 }
 
 class Status {
-
     constructor(statuses, defaultStatus) {
         this.$values = {};
         Object.keys(statuses).forEach(name => {
-            if(typeof this[name] !== 'undefined') {
+            if (typeof this[name] !== 'undefined') {
                 throw new Error(`Cannot create status object, the name '${name}' is not a valid status name.`);
             }
             const value = statuses[name];
-            if(typeof value !== 'number') {
-                throw new Error(`Cannot create status object, the status value(${value}) must be a number.`)
+            if (typeof value !== 'number') {
+                throw new Error(`Cannot create status object, the status value(${value}) must be a number.`);
             }
             this.$values[value] = name;
             this[name] = value;
         });
 
-        if(defaultStatus !== undefined) {
+        if (defaultStatus !== undefined) {
             this.defaultStatus = this.getValue(defaultStatus);
         }
-        if(this.defaultStatus === undefined) {
+        if (this.defaultStatus === undefined) {
             this.defaultStatus = this.values[0];
         }
     }
@@ -96,9 +94,9 @@ class Status {
 
     getName(valueOrName, defaultName) {
         let name;
-        if(typeof valueOrName === 'number') {
+        if (typeof valueOrName === 'number') {
             name = this.$values[valueOrName];
-        } else if(typeof this[valueOrName] !== undefined) {
+        } else if (this[valueOrName] !== undefined) {
             name = valueOrName;
         }
         return name === undefined ? defaultName : name;
@@ -106,9 +104,9 @@ class Status {
 
     getValue(valueOrName, defaultValue) {
         let value;
-        if(typeof valueOrName === 'string') {
+        if (typeof valueOrName === 'string') {
             value = this[valueOrName];
-        } else if(typeof this.$values[valueOrName] !== undefined) {
+        } else if (this.$values[valueOrName] !== undefined) {
             value = valueOrName;
         }
         return value === undefined ? defaultValue : value;
@@ -126,12 +124,11 @@ class Status {
      * @memberof Status
      */
     create(status) {
-        if(status === undefined) {
+        if (status === undefined) {
             status = this.defaultValue;
         }
         return new StatusKeeper(status, this);
     }
-}
 
-export {StatusKeeper, Status};
-export default Status;
+    static Keeper = StatusKeeper;
+}

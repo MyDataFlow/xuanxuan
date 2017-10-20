@@ -1,5 +1,4 @@
 import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
-import fse from 'fs-extra';
 import Lang from '../../lang';
 import Config from '../../config';
 import EVENT from './remote-events';
@@ -7,7 +6,7 @@ import EVENT from './remote-events';
 
 const IS_MAC_OSX = process.platform === 'darwin';
 
-if(DEBUG && process.type === 'renderer') {
+if (DEBUG && process.type === 'renderer') {
     console.error('AppRemote must run in main process.');
 }
 
@@ -34,9 +33,8 @@ const INPUT_MENU = Menu.buildFromTemplate([
  * Only for main process
  */
 class AppRemote {
-
     constructor() {
-        this.windows  = {};
+        this.windows = {};
 
         // Bind events
         ipcMain.on(EVENT.app_quit, e => {
@@ -45,23 +43,23 @@ class AppRemote {
 
         ipcMain.on(EVENT.remote, (e, method, callBackEventName, ...args) => {
             let result = this[method];
-            if(typeof result === 'function') {
+            if (typeof result === 'function') {
                 result = result.call(this, ...args);
             }
-            if(method === 'quit') return;
-            if(result instanceof Promise) {
+            if (method === 'quit') return;
+            if (result instanceof Promise) {
                 result.then(x => {
                     e.sender.send(callBackEventName, x);
                 });
             } else {
                 e.sender.send(callBackEventName, result);
             }
-            if(DEBUG) console.info('\n>> Accept remote call', callBackEventName + '.' + method + '(', args, ')');
+            if (DEBUG) console.info('\n>> Accept remote call', `${callBackEventName  }.${  method  }(`, args, ')');
         });
 
         ipcMain.on(EVENT.remote_send, (e, windowName, eventName, ...args) => {
-            let browserWindow = this.windows[windowName];
-            if(browserWindow) {
+            const browserWindow = this.windows[windowName];
+            if (browserWindow) {
                 browserWindow.webContents.send(eventName, ...args);
             }
         });
@@ -70,31 +68,31 @@ class AppRemote {
             const remoteOnEventId = this.on(event, (...args) => {
                 try {
                     e.sender.send(eventId, ...args);
-                } catch(e) {
+                } catch (e) {
                     this.off(eventId);
-                    if(SHOW_LOG) {
+                    if (SHOW_LOG) {
                         console.error(`\n>> Remote event '${event}' has be force removed, because window is closed.`, e);
                     }
                 }
             });
             this._eventsMap[eventId] = {remote: true, id: remoteOnEventId};
-            if(SHOW_LOG) console.log('\n>> REMOTE EVENT on', event, eventId);
+            if (SHOW_LOG) console.log('\n>> REMOTE EVENT on', event, eventId);
         });
 
         ipcMain.on(EVENT.remote_off, (e, eventId) => {
             Events.off(eventId);
-            if(SHOW_LOG) console.log('\n>> REMOTE EVENT off', eventId);
+            if (SHOW_LOG) console.log('\n>> REMOTE EVENT off', eventId);
         });
 
         ipcMain.on(EVENT.remote_emit, (e, eventId, ...args) => {
             Events.emit(eventId, ...args);
-            if(SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
+            if (SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
         });
     }
 
     init(entryPath) {
-        if(!entryPath) {
-            throw new Error('Argument entryPath must be set on init app-remote.')
+        if (!entryPath) {
+            throw new Error('Argument entryPath must be set on init app-remote.');
         }
 
         this.entryPath = entryPath;
@@ -106,7 +104,7 @@ class AppRemote {
     }
 
     initTrayIcon() {
-        if(this.tray) {
+        if (this.tray) {
             this.tray.destroy();
         }
         // Make tray icon
@@ -152,8 +150,8 @@ class AppRemote {
             debug: true
         }, options);
 
-        if(DEBUG) {
-            let display = electron.screen.getPrimaryDisplay();
+        if (DEBUG) {
+            const display = electron.screen.getPrimaryDisplay();
             options.height = display.workAreaSize.height;
             options.width = 800;
             options.x = display.workArea.x;
@@ -163,16 +161,16 @@ class AppRemote {
     }
 
     createWindow(name, options) {
-        if(typeof name === 'object') {
+        if (typeof name === 'object') {
             options = name;
             name = options.name;
         }
 
         options = Object.assign({
-            name: name,
+            name,
             showAfterLoad: true,
             hashRoute: `/${name}`,
-            url: `index.html`,
+            url: 'index.html',
             autoHideMenuBar: !IS_MAC_OSX,
             backgroundColor: '#FFF',
             show: DEBUG,
@@ -180,11 +178,11 @@ class AppRemote {
         }, options);
 
         let browserWindow = this.windows[name];
-        if(browserWindow) {
+        if (browserWindow) {
             throw new Error(`The window with name '${name}' has already be created.`);
         }
 
-        let windowSetting = Object.assign({}, options);
+        const windowSetting = Object.assign({}, options);
         ['url', 'showAfterLoad', 'debug', 'hashRoute', 'onLoad', 'beforeShow', 'afterShow', 'onClosed'].forEach(optionName => {
             delete windowSetting[optionName];
         });
@@ -197,32 +195,32 @@ class AppRemote {
         });
 
         browserWindow.webContents.on('did-finish-load', () => {
-            if(options.showAfterLoad) {
+            if (options.showAfterLoad) {
                 options.beforeShow && options.beforeShow(browserWindow, name);
                 browserWindow.show();
                 browserWindow.focus();
                 options.afterShow && options.afterShow(browserWindow, name);
             }
-            if(options.onLoad) {
+            if (options.onLoad) {
                 options.onLoad(browserWindow);
             }
         });
 
         let url = options.url;
-        if(url) {
-            if(!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
+        if (url) {
+            if (!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = `file://${this.entryPath}/${options.url}`;
             }
-            if(options.hashRoute) {
+            if (options.hashRoute) {
                 url += `#${options.hashRoute}`;
             }
             browserWindow.loadURL(url);
         }
 
-        if(options.debug && DEBUG) {
+        if (options.debug && DEBUG) {
             browserWindow.openDevTools();
             browserWindow.webContents.on('context-menu', (e, props) => {
-                const { x, y } = props;
+                const {x, y} = props;
                 Menu.buildFromTemplate([{
                     label: Lang.string('debug.inspectElement'),
                     click() {
@@ -240,10 +238,10 @@ class AppRemote {
     }
 
     openMainWindow() {
-        let mainWindow = this.mainWindow;
-        if(!mainWindow) {
+        const mainWindow = this.mainWindow;
+        if (!mainWindow) {
             this.createMainWindow();
-        } else if(!mainWindow.isVisible()) {
+        } else if (!mainWindow.isVisible()) {
             mainWindow.show();
             mainWindow.focus();
         }
@@ -254,21 +252,21 @@ class AppRemote {
     }
 
     set mainWindow(mainWindow) {
-        if(!mainWindow) {
+        if (!mainWindow) {
             delete this.windows.main;
         } else {
             this.windows.main = mainWindow;
             mainWindow.on('close', e => {
-                if(this.markClose) return;
+                if (this.markClose) return;
                 const now = new Date().getTime();
-                if(this.lastRequestCloseTime && (now - this.lastRequestCloseTime) < 1000) {
+                if (this.lastRequestCloseTime && (now - this.lastRequestCloseTime) < 1000) {
                     electron.dialog.showMessageBox(mainWindow, {
                         buttons: [Lang.string('common.exitIM'), Lang.string('common.cancel')],
                         defaultId: 0,
                         type: 'question',
                         message: Lang.string('common.comfirmQuiteIM')
                     }, response => {
-                        if(response === 0) {
+                        if (response === 0) {
                             setTimeout(() => {
                                 this.quit();
                             }, 0);
@@ -294,8 +292,8 @@ class AppRemote {
 
     closeMainWindow() {
         this.markClose = true;
-        let mainWindow = this.mainWindow;
-        if(mainWindow) {
+        const mainWindow = this.mainWindow;
+        if (mainWindow) {
             mainWindow.close();
         }
     }
@@ -307,8 +305,8 @@ class AppRemote {
     }
 
     sendToWindow(name, channel, ...args) {
-        let browserWindow = this.windows[name];
-        if(browserWindow) {
+        const browserWindow = this.windows[name];
+        if (browserWindow) {
             browserWindow.webContents.send(channel, ...args);
         }
     }
@@ -328,14 +326,14 @@ class AppRemote {
      * @return {void}
      */
     flashTrayIcon(flash = true) {
-        if(flash) {
-            if(!this._flashTrayIconTask) {
+        if (flash) {
+            if (!this._flashTrayIconTask) {
                 this._flashTrayIconTask = setInterval(() => {
-                    this.tray.setImage(this._trayIcons[(this._trayIconCounter++)%2]);
+                    this.tray.setImage(this._trayIcons[(this._trayIconCounter++) % 2]);
                 }, 400);
             }
         } else {
-            if(this._flashTrayIconTask) {
+            if (this._flashTrayIconTask) {
                 clearInterval(this._flashTrayIconTask);
                 this._flashTrayIconTask = null;
             }
@@ -347,8 +345,8 @@ class AppRemote {
      * Show and focus window
      */
     showAndFocusWindow(windowName = 'main') {
-        let browserWindow = this.windows[windowName];
-        if(browserWindow) {
+        const browserWindow = this.windows[windowName];
+        if (browserWindow) {
             browserWindow.show();
             browserWindow.focus();
         }
@@ -364,21 +362,20 @@ class AppRemote {
         ElectronApp.quit();
     }
 
-
     dockBadgeLabel(label) {
-        if(IS_MAC_OSX) {
+        if (IS_MAC_OSX) {
             ElectronApp.dock.setBadge(label);
         }
     }
 
     dockBounce(type = 'informational') {
-        if(IS_MAC_OSX) {
+        if (IS_MAC_OSX) {
             ElectronApp.dock.bounce(type);
         }
     }
 }
 
 const app = new AppRemote();
-if(DEBUG) console.info('App created.');
+if (DEBUG) console.info('App created.');
 
 export default app;

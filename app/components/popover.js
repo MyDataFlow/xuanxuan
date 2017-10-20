@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import DisplayLayer from './display-layer';
+import Display from './display';
 import HTML from '../utils/html-helper';
 
 const show = (position, content, props = {}, callback = null) => {
@@ -148,11 +148,11 @@ const show = (position, content, props = {}, callback = null) => {
     delete props.arrowSize;
     delete props.offset;
 
-    return DisplayLayer.show(props, callback);
+    return Display.show(props, callback);
 };
 
 export default {
     show,
-    hide: DisplayLayer.hide,
-    remove: DisplayLayer.remove
+    hide: Display.hide,
+    remove: Display.remove
 };

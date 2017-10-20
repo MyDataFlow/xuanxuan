@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import DisplayLayer from './display-layer';
+import Display from './display';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 import timeSequence from '../utils/time-sequence';
@@ -52,7 +52,7 @@ const show = (message, props = {}, callback = null) => {
         actions.push({
             icon: 'close',
             click: () => {
-                DisplayLayer.hide(props.id)
+                Display.hide(props.id)
             }
         })
     }
@@ -67,7 +67,7 @@ const show = (message, props = {}, callback = null) => {
                 actionResult = action.click(action, e);
             }
             if(actionResult !== false) {
-                DisplayLayer.hide(props.id);
+                Display.hide(props.id);
             }
         };
 
@@ -85,7 +85,7 @@ const show = (message, props = {}, callback = null) => {
             autoHide = 5000;
         }
         setTimeout(() => {
-            DisplayLayer.hide(props.id);
+            Display.hide(props.id);
         }, autoHide);
     }
 
@@ -97,11 +97,11 @@ const show = (message, props = {}, callback = null) => {
     delete props.position;
     delete props.onAction;
 
-    return DisplayLayer.show(props, callback);
+    return Display.show(props, callback);
 };
 
 export default {
     show,
-    hide: DisplayLayer.hide,
-    remove: DisplayLayer.remove
+    hide: Display.hide,
+    remove: Display.remove
 };

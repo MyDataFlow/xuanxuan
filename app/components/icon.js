@@ -1,8 +1,24 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 
+/**
+ * Material design icon componet
+ * All icons @see http://materialdesignicons.com
+ *
+ * @example <caption>Create a star icon</caption>
+ * <MDIcon name="star" />
+ *
+ * @export
+ * @class MDIcon
+ * @extends {Component}
+ */
 export default class MDIcon extends Component {
-
+    /**
+     * Default values of properties
+     *
+     * @static
+     * @memberof MDIcon
+     */
     static defaultProps = {
         size: 0,
         name: '',
@@ -12,11 +28,23 @@ export default class MDIcon extends Component {
         style: null
     };
 
+    /**
+     * Properties types
+     *
+     * @static
+     * @memberof MDIcon
+     */
     static propTypes = {
         size: PropTypes.number,
         style: PropTypes.object
     }
 
+    /**
+     * React life cycle method: render
+     *
+     * @returns
+     * @memberof MDIcon
+     */
     render() {
         let {
             square,

@@ -5,36 +5,28 @@ const renderer = new Marked.Renderer();
 
 renderer.code = (code, lang) => {
     let fileName = null;
-    if(lang) {
+    if (lang) {
         const colonIndex = lang.indexOf(':');
         const dotIndex = lang.lastIndexOf('.');
-        if(colonIndex > -1) {
+        if (colonIndex > -1) {
             fileName = lang.substr(colonIndex + 1);
             lang = lang.substr(0, colonIndex);
-        } else if(dotIndex > -1) {
+        } else if (dotIndex > -1) {
             fileName = lang;
             lang = lang.substr(dotIndex + 1);
         }
     }
-    let result = HighlightJS.highlightAuto(code, lang ? [lang] : undefined);
-    return `<pre${fileName ? (' data-name="' + fileName + '"') : ''}><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
+    const result = HighlightJS.highlightAuto(code, lang ? [lang] : undefined);
+    return `<pre${fileName ? (` data-name="${fileName}"`) : ''}><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
 };
 
 /**
  * Init markdown helpers
  */
 Marked.setOptions({
-    renderer: renderer,
-    // highlight: (code, lang) => {
-    //     let result = HighlightJS.highlightAuto(code, lang ? [lang] : undefined);
-    //     if(lang) {
-
-    //     }
-    //     return result;
-    // },
+    renderer,
     gfm: true,
-    sanitize: true
+    sanitize: true,
 });
-
 
 export default Marked;
