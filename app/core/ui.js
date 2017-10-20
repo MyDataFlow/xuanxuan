@@ -3,6 +3,7 @@ import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
 import ContextMenu from '../components/context-menu';
 import DateHelper from '../utils/date-helper';
+import HTML from '../utils/html-helper';
 import Lang from '../lang';
 import Platform from 'Platform';
 import Events from './events';
@@ -80,12 +81,12 @@ onAppLinkClick('Member', target => {
 });
 
 Server.onUserLogin(user => {
-    if(user.signed && (user.isNeverLogined || !DateHelper.isToday(user.lastLoginTime))) {
+    if(user.isFirstSignedToday) {
         Messager.show(Lang.string('login.signed'), {
             type: 'success',
             icon: 'calendar-check',
             autoHide: true,
-        })
+        });
     }
     if(typeof Pace !== 'undefined') {
         Pace.stop();
@@ -197,24 +198,26 @@ window.ondrop = e => {
 
 
 if(Platform.ui.onRequestQuit) {
-    Platform.ui.onRequestQuit(() => {
-        const user = profile.user;
-        if(user && !user.isUnverified) {
-            const appCloseOption = user.config.appCloseOption;
-            if(appCloseOption === 'minimize') {
-                Platform.ui.hideWindow();
-                return false;
-            } else if(appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
-                Platform.ui.showQuitConfirmDialog((result, checked) => {
-                    if(checked && result) {
-                        user.config.appCloseOption = result;
-                    }
-                    if(result === 'close') {
-                        Server.logout();
-                    }
-                    return result;
-                });
-                return false;
+    Platform.ui.onRequestQuit(closeReason => {
+        if(closeReason !== 'quit') {
+            const user = profile.user;
+            if(user && !user.isUnverified) {
+                const appCloseOption = user.config.appCloseOption;
+                if(appCloseOption === 'minimize' || !Platform.ui.showQuitConfirmDialog) {
+                    Platform.ui.hideWindow();
+                    return false;
+                } else if(appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
+                    Platform.ui.showQuitConfirmDialog((result, checked) => {
+                        if(checked && result) {
+                            user.config.appCloseOption = result;
+                        }
+                        if(result === 'close') {
+                            Server.logout();
+                        }
+                        return result;
+                    });
+                    return false;
+                }
             }
         }
         Server.logout();
@@ -249,7 +252,11 @@ if(Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
     });
 }
 
+// Decode url params
+const entryParams = HTML.getSearchParam();
+
 export default {
+    entryParams,
     get canQuit() {
         return !!Platform.ui.quit;
     },

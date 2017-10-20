@@ -82,6 +82,7 @@ const updateChatNoticeTask = new DelayAction(() => {
     let sound = false;
     if(
         total &&
+        lastTotal < total &&
         userConfig.enableSound &&
         (!userConfig.muteOnUserIsBusy || !profile.user.isBusy) &&
         notice.isMatchWindowCondition(userConfig.playSoundCondition)) {

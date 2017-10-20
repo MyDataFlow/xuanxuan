@@ -45,7 +45,7 @@ class ChatCreateView extends Component {
                             <div className="title">{Lang.string('chat.create.chatType.normal')}</div>
                         </a>
                         <a onClick={this.changeType.bind(this, 'public')} className={"item" + (this.state.type === 'public' ? ' white text-primary' : '')}>
-                            <Avatar icon="pound-box" iconClassName="text-green icon-2x"/>
+                            <Avatar icon="access-point" iconClassName="text-green icon-2x"/>
                             <div className="title">{Lang.string('chat.create.chatType.public')}</div>
                         </a>
                     </div>

@@ -271,7 +271,7 @@ const createEmojiChatMessage = (emojicon, chat) => {
 };
 
 const sendEmojiMessage = (emojicon, chat) => {
-    return sendChatMessage(createEmojiChatMessage(emojicon, chat), chat);
+    return sendChatMessage(createEmojiChatMessage(emojicon, chat), chat, true);
 };
 
 const renameChat = (chat, newName) => {
@@ -298,7 +298,7 @@ const renameChat = (chat, newName) => {
     }
 };
 
-const sendChatMessage = (messages, chat) => {
+const sendChatMessage = (messages, chat, isSystemMessage = false) => {
     if(!Array.isArray(messages)) {
         messages = [messages];
     }
@@ -310,8 +310,8 @@ const sendChatMessage = (messages, chat) => {
         }
     }
 
-    if(chat.isReadonly(profile.user)) {
-        return Promise.reject(Lang.chat.blockedCommitterTip);
+    if(!isSystemMessage && chat.isReadonly(profile.user)) {
+        return Promise.reject(Lang.string('chat.blockedCommitterTip'));
     }
 
     messages.forEach(message => {

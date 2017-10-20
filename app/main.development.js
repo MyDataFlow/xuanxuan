@@ -78,7 +78,7 @@ const createMenu = () => {
                 label: Lang.string('menu.quit'),
                 accelerator: 'Command+Q',
                 click() {
-                    app.quit();
+                    application.quit();
                 }
             }]
         }, {

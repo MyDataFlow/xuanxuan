@@ -336,15 +336,15 @@ class DisplayContainer extends Component {
     }
 
     render() {
-        return <div className="display-container dock">
+        return (<div className="display-container dock">
         {
             Object.keys(this.state.all).map(itemId => {
                 const item = this.state.all[itemId];
                 const props = item.props;
-                return <DisplayLayer key={itemId} ref={e => item.ref = e} {...props}/>
+                return <DisplayLayer key={itemId} ref={e => {item.ref = e;}} {...props} />;
             })
         }
-        </div>;
+        </div>);
     }
 }
 

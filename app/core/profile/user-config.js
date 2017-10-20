@@ -111,8 +111,8 @@ class UserConfig {
         return this.set('sendHDEmoticon', flag);
     }
 
-    isChatSidebarHidden(cgid) {
-        return !!this.get(`ui.chat.hideSidebar.${cgid}`);
+    isChatSidebarHidden(cgid, defaultValue) {
+        return !!this.get(`ui.chat.hideSidebar.${cgid}`, defaultValue);
     }
 
     setChatSidebarHidden(cgid, flag) {

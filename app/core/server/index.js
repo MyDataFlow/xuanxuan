@@ -78,8 +78,8 @@ const login = (user) => {
         }});
     }).then(user => {
         user.endLogin(true);
-        user.save();
         Events.emit(EVENT.login, user);
+        user.save();
         return Promise.resolve(user);
     }).catch(error => {
         user.endLogin(false);

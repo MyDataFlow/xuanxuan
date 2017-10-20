@@ -99,14 +99,14 @@ class FileListItem extends Component {
         >
             {smallIcon ? null : <Avatar skin={{code: ext, pale: true}} className="circle flex-none" icon={MDIFileIcon.getIcon(ext)}/>}
             <div className="content">
-                <div className="title">{smallIcon ? <Icon style={Skin.text(ext, {dark: true})} name={MDIFileIcon.getIcon(ext)}/> : null}{fileName}</div>
+                <div className="title">{fileName}</div>
                 <div className="sub-content">
                     {fileStatus}
-                    {sender ? <span><UserAvatar size={16} user={sender}/> <small>{sender.displayName}</small></span> : null}
+                    {sender ? <span><UserAvatar size={16} user={sender}/> <small className="muted">{sender.displayName}</small></span> : null}
                     <span className="muted small">{StringHelper.formatBytes(file.size)}</span>
                 </div>
             </div>
-            {actions}
+            {actions && <div className="actions">{actions}</div>}
         </div>;
     }
 }

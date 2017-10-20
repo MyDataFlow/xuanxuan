@@ -11,20 +11,30 @@ class SearchControl extends Component {
 
     static defaultProps = {
         placeholder: Lang.string('common.search'),
+        changeDelay: 100
     };
 
     constructor(props) {
         super(props);
         this.state = {
+            value: props.defaultValue,
             focus: false,
-            empty: StringHelper.isEmpty(this.props.defaultValue)
+            empty: StringHelper.isEmpty(props.defaultValue)
         };
 
         if(this.props.onSearchChange) {
             this.delaySearchChangeTask = new DelayAction((searchValue) => {
                 this.props.onSearchChange(searchValue);
-            }, this.props.changeDelay || 100);
+            }, this.props.changeDelay);
         }
+    }
+
+    getValue() {
+        return this.state.value;
+    }
+
+    isEmpty() {
+        return this.state.empty;
     }
 
     componentWillUnmount() {
@@ -44,7 +54,8 @@ class SearchControl extends Component {
     }
 
     handleOnInputChange = value => {
-        this.setState({empty: StringHelper.isEmpty(value)});
+        value = typeof value === 'string' ? value.trim() : '';
+        this.setState({empty: StringHelper.isEmpty(value), value});
         if(this.delaySearchChangeTask) {
             this.delaySearchChangeTask.do(value);
         }
@@ -67,7 +78,8 @@ class SearchControl extends Component {
         return <InputControl
             className={HTML.classes('search', className, {
                 focus: this.state.focus,
-                empty: this.state.empty
+                empty: this.state.empty,
+                normal: !this.state.focus
             })}
             label = {<Icon name="search"/>}
             onFocus={this.handleOnInputFocus}
@@ -77,6 +89,7 @@ class SearchControl extends Component {
             ref={e => this.inputControl = e}
         >
             <Icon name="close" onClick={this.handleOnCloseBtnClick} className="close state"/>
+            {children}
         </InputControl>;
     }
 }

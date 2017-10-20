@@ -1,10 +1,35 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Skin from '../utils/skin';
 import Icon from './icon';
 
-class Avatar extends Component {
+export default class Avatar extends Component {
+
+    static defaultProps = {
+        skin: null,
+        image: null,
+        icon: null,
+        label: null,
+        size: null,
+        iconSize: null,
+        className: null,
+        imageClassName: null,
+        iconClassName: null,
+        style: null,
+    }
+
+    static propTypes = {
+        skin: PropTypes.any,
+        image: PropTypes.string,
+        icon: PropTypes.string,
+        label: PropTypes.any,
+        size: PropTypes.number,
+        iconSize: PropTypes.number,
+        className: PropTypes.string,
+        imageClassName: PropTypes.string,
+        iconClassName: PropTypes.string,
+        style: PropTypes.object,
+    }
 
     render() {
         let {
@@ -17,8 +42,8 @@ class Avatar extends Component {
             className,
             imageClassName,
             iconClassName,
-            children,
             style,
+            children,
             ...other
         } = this.props;
 
@@ -32,13 +57,11 @@ class Avatar extends Component {
             }
         }
 
-        return <div className={HTML.classes('avatar', className)} {...other} style={style}>
-            {image && <img src={image} className={imageClassName}/>}
-            {!image && icon && <Icon className={iconClassName} name={icon} size={iconSize}/>}
-            {!image && !icon && label}
-            {children}
-        </div>;
+        return (<div className={HTML.classes('avatar', className)} {...other} style={style}>
+          {image && <img alt={image} src={image} className={imageClassName} />}
+          {!image && icon && <Icon className={iconClassName} name={icon} size={iconSize} />}
+          {!image && !icon && label}
+          {children}
+        </div>);
     }
 }
-
-export default Avatar;

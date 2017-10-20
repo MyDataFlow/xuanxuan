@@ -107,7 +107,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
         }
     });
     if(showSidebarIcon === 'auto') {
-        showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid);
+        showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
     }
     if(showSidebarIcon) {
         items.push({
@@ -222,6 +222,7 @@ const createSendboxToolbarItems = (chat, config) => {
             },
             contextMenu: e => {
                 ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chat));
+                e.preventDefault();
             }
         });
     }
@@ -343,7 +344,10 @@ const createChatToolbarMoreContextMenuItems = chat => {
     }
 
     if(chat.canExit) {
-        menu.push({type: 'separator'}, {
+        if(menu.length) {
+            menu.push({type: 'separator'});
+        }
+        menu.push({
             label: Lang.string('chat.group.exit'),
             click: () => {
                 chatExitConfirm(chat);
@@ -359,7 +363,7 @@ const createChatMemberContextMenuItems = member => {
         const gid = chats.getOne2OneChatGid([member, profile.user]);
         if(gid !== activedChatId) {
             menu.push({
-                label: Lang.string('chat.atHim'),
+                label: Lang.string(`chat.atHim.${member.gender}`, Lang.string('chat.atHim')),
                 click: () => {
                     sendContentToChat(`@${member.displayName} `);
                 }
@@ -384,6 +388,9 @@ const createChatMemberContextMenuItems = member => {
 
 const linkMembersInText = (text, format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>') => {
     if(text.indexOf('@') > -1) {
+        const langAtAll = Lang.string('chat.message.atAll');
+        text = text.replace(new RegExp('@(all|' + langAtAll + ')', 'g'), `<span class="at-all">@${langAtAll}</span>`);
+
         const userAccount = profile.userAccount;
         members.forEach(m => {
             text = text.replace(new RegExp('@(' + m.account + '|' + m.realname + ')', 'g'), StringHelper.format(format, {displayName: m.displayName, id: m.id, account: m.account, className: m.account === userAccount ? 'at-me' : ''}));

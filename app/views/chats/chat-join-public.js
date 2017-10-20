@@ -117,7 +117,7 @@ class ChatCreateGroups extends Component {
                             !this.state.loading && this.state.chats.map(chat => {
                                 if(!App.im.chats.get(chat.gid) && this.isMatchSearch(chat)) {
                                     const isChoosed = this.isChoosed(chat);
-                                    return <ChatListItem notUserLink={true} className={isChoosed ? 'item primary-pale space-sm' : 'item space-sm'} onClick={this.handleChatItemClick.bind(this, chat)} key={chat.gid} chat={chat}>{isChoosed && <Icon name="check text-success"/>}</ChatListItem>;
+                                    return <ChatListItem notUserLink="disabled" className={isChoosed ? 'item primary-pale space-sm' : 'item space-sm'} onClick={this.handleChatItemClick.bind(this, chat)} key={chat.gid} chat={chat}>{isChoosed && <Icon name="check text-success"/>}</ChatListItem>;
                                 }
                                 return null;
                             })

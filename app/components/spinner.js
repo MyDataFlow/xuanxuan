@@ -6,7 +6,7 @@ class Spinner extends Component {
 
     static defaultProps = {
         iconSize: 24,
-        iconClassName: '',
+        iconClassName: 'spin text-gray inline-block',
         iconName: 'loading',
         label: '',
         className: '',
@@ -23,7 +23,7 @@ class Spinner extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('spinner spin', className)} {...other}>
+        return <div className={HTML.classes('spinner text-center', className)} {...other}>
             <Icon name={iconName} className={iconClassName} size={iconSize}/>
             {label && <div className="muted small title">{label}</div>}
             {children}

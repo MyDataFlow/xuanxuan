@@ -10,10 +10,10 @@ import InputControl from './input-control';
 const isWindowsOS = window.navigator.userAgent.includes('Windows');
 
 const DEFAULT_CLASS_NAMES = {
-    'submit': 'primary',
-    'primary': 'primary',
-    'secondary': 'text-red red-pale',
-    'cancel': 'primary-pale text-primary'
+    submit: 'primary',
+    primary: 'primary',
+    secondary: 'text-red red-pale',
+    cancel: 'primary-pale text-primary'
 };
 
 const show = (props = {}, callback = null) => {
@@ -25,6 +25,7 @@ const show = (props = {}, callback = null) => {
         onSubmit,
         onCancel,
         className,
+        headingClassName,
     } = props;
 
     if(closeButton === undefined) {
@@ -35,7 +36,7 @@ const show = (props = {}, callback = null) => {
         props.id = timeSequence();
     }
 
-    className = HTML.classes('modal layer', className || 'rounded');
+    className = HTML.classes('modal layer rounded', className || '');
 
     if(actions === undefined) {
         actions = true;
@@ -104,9 +105,9 @@ const show = (props = {}, callback = null) => {
         </footer>;
     }
 
-    const header = (title || closeButton) ? <header className="heading">
+    const header = (title || closeButton) ? <header className={HTML.classes("heading", headingClassName)}>
         <div className="title">{title}</div>
-        {closeButton && <nav className="nav"><a className="close" onClick={() => {
+        {closeButton && <nav style={{overflow: 'visible'}} data-hint={Lang.string('common.close')} className="nav hint--bottom"><a className="close" onClick={() => {
             DisplayLayer.remove(props.id);
         }}><Icon name="close"/></a></nav>}
     </header> : null;
@@ -118,6 +119,7 @@ const show = (props = {}, callback = null) => {
     delete props.onAction;
     delete props.onSubmit;
     delete props.onCancel;
+    delete props.headingClassName;
 
     return DisplayLayer.show(props, callback);
 };

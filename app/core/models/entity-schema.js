@@ -128,9 +128,41 @@ class EntitySchema {
         return null;
     }
 
-    convertValue(name, value) {
+    convertValue(name, value, meta) {
+        meta = meta || this.of(name);
+        if(meta) {
+            if(meta.type && defaultValuesConveter[meta.type]) {
+                return defaultValuesConveter[meta.type](value);
+            }
+            if(value === undefined && meta.defaultValue !== undefined) {
+                value = meta.defaultValue;
+            }
+        }
+        return value;
+    }
+
+    convertGetterValue(name, value, thisObj) {
         const meta = this.of(name);
         if(meta) {
+            if(meta.getter) {
+                return meta.getter.call(thisObj, value, thisObj);
+            }
+            if(meta.type && defaultValuesConveter[meta.type]) {
+                return defaultValuesConveter[meta.type](value);
+            }
+            if(value === undefined && meta.defaultValue !== undefined) {
+                value = meta.defaultValue;
+            }
+        }
+        return value;
+    }
+
+    convertSetterValue(name, value, thisObj) {
+        const meta = this.of(name);
+        if(meta) {
+            if(meta.setter) {
+                return meta.setter.call(thisObj, value, thisObj);
+            }
             if(meta.type && defaultValuesConveter[meta.type]) {
                 return defaultValuesConveter[meta.type](value);
             }

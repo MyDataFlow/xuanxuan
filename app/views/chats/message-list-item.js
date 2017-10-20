@@ -22,6 +22,9 @@ class MessageListItem extends Component {
         lastMessage: null,
         showDateDivider: 0,
         hideHeader: 0,
+        staticUI: false,
+        avatarSize: null,
+        dateFormater: 'hh:mm'
     };
 
     handleSenderNameClick(sender, message) {
@@ -31,6 +34,7 @@ class MessageListItem extends Component {
     handleUserContextMenu(sender, e) {
         const items = App.im.ui.createChatMemberContextMenuItems(sender);
         ContextMenu.show({x: e.pageX, y: e.pageY}, items);
+        e.preventDefault();
     }
 
     checkResendMessage() {
@@ -86,7 +90,11 @@ class MessageListItem extends Component {
             ignoreStatus,
             font,
             className,
+            dateFormater,
+            textContentConverter,
+            avatarSize,
             children,
+            staticUI,
             ...other
         } = this.props;
 
@@ -117,22 +125,22 @@ class MessageListItem extends Component {
         if(!hideHeader) {
             const sender = message.getSender(App.members);
             headerView = <div className="app-message-item-header">
-                <UserAvatar className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)}/>
+                <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)}/>
                 <header style={titleFontStyle}>
-                    <a className="title rounded text-primary" onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
-                    <small className="time">{DateHelper.formatDate(message.date, 'hh:mm')}</small>
+                    <a className="title rounded text-primary" onContextMenu={staticUI ? null : this.handleUserContextMenu.bind(this, sender)} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
+                    <small className="time">{DateHelper.formatDate(message.date, dateFormater)}</small>
                 </header>
             </div>;
         }
 
         if(message.isBroadcast) {
-            contentView = <MessageBroadcast style={basicFontStyle} message={message}/>
+            contentView = <MessageBroadcast contentConverter={textContentConverter} style={basicFontStyle} message={message}/>
         } else if(message.isFileContent) {
             contentView = <MessageContentFile message={message}/>;
         } else if(message.isImageContent) {
             contentView = <MessageContentImage message={message}/>;
         } else {
-            contentView = <MessageContentText style={basicFontStyle} message={message}/>;
+            contentView = <MessageContentText contentConverter={textContentConverter} style={basicFontStyle} message={message}/>;
         }
 
         if(!headerView) {
@@ -143,7 +151,7 @@ class MessageListItem extends Component {
             timeLabelView = <span className={HTML.classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
         }
 
-        if(!ignoreStatus && needResend) {
+        if(!staticUI && !ignoreStatus && needResend) {
             resendButtonsView = <nav className="nav nav-sm app-message-item-actions">
                 <a onClick={this.handleResendBtnClick}><Icon name="refresh"/> {Lang.string('chat.message.resend')}</a>
                 <a onClick={this.handleDeleteBtnClick}><Icon name="delete"/> {Lang.string('common.delete')}</a>

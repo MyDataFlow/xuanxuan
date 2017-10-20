@@ -1,10 +1,34 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
+import timeSequence from '../utils/time-sequence';
 
-class Checkbox extends Component {
+export default class Checkbox extends Component {
+
+    static defaultProps = {
+        checked: false,
+        label: null,
+        className: null,
+        inputProps: null,
+        onChange: null,
+    }
+
+    static propTypes = {
+        checked: PropTypes.bool,
+        label: PropTypes.string,
+        className: PropTypes.string,
+        inputProps: PropTypes.object,
+        onChange: PropTypes.func,
+    }
+
+    constructor(props) {
+        super(props);
+        this.controlId = `checkbox-${timeSequence()}`;
+    }
 
     handleCheckboxChange = e => {
-        this.props.onChange && this.props.onChange(e.target.checked, e);
+        if(this.props.onChange) {
+            this.props.onChange(e.target.checked, e);
+        }
     };
 
     render() {
@@ -18,11 +42,9 @@ class Checkbox extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('checkbox', className, {checked})} {...other}>
-            <input checked={checked} type="checkbox" onChange={this.handleCheckboxChange} {...inputProps}/>
-            {label && <label>{label}</label>}
-        </div>;
+        return (<div className={HTML.classes('checkbox', className, {checked})} {...other}>
+          <input id={this.controlId} checked={checked} type="checkbox" onChange={this.handleCheckboxChange} {...inputProps} />
+          {label && <label htmlFor={this.controlId}>{label}</label>}
+        </div>);
     }
 }
-
-export default Checkbox;

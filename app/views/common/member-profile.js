@@ -18,14 +18,16 @@ class MemberProfile extends Component {
             className,
             children,
             onRequestClose,
+            hideChatBtn,
+            compact,
             ...other
         } = this.props;
 
         return <div {...other}
-            className={HTML.classes('app-member-profile list space user-selectable', className)}
+            className={HTML.classes('app-member-profile space user-selectable', className, {compact})}
         >
-            <div className="item flex-middle space-sm">
-                <UserAvatar className="avatar-xl" user={member}/>
+            <header className="list-item flex-middle space-sm">
+                <UserAvatar className="avatar-xl flex-none" user={member}/>
                 <div className="content has-padding">
                     <h3 className="title strong">{member.displayName} <small className="muted">@{member.account}</small></h3>
                     <div className="flex flex-middle">
@@ -34,31 +36,31 @@ class MemberProfile extends Component {
                         <span>{Lang.string(`member.role.${member.role}`)}</span>
                     </div>
                 </div>
-                {member.account !== App.profile.userAccount && <a href={'#' + ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline"/> {Lang.string('member.profile.sendMessage')}</a>}
-            </div>
+                {!hideChatBtn && member.account !== App.profile.userAccount && <a href={'#' + ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline"/> {Lang.string('member.profile.sendMessage')}</a>}
+            </header>
             <div className="divider"></div>
             <div className="heading">
-                <div className="title">{Lang.string('member.profile.contactInfo')}</div>
+                <div className="title small text-gray">{Lang.string('member.profile.contactInfo')}</div>
             </div>
-            {member.mobile && <div className="item">
-                <Avatar icon="cellphone" className="circle blue"/>
+            {member.mobile && <div className="list-item contact-info-item">
+                <Avatar icon="cellphone" className="flex-none circle blue"/>
                 <div className="content">
                     <div className="subtitle">{Lang.string('member.profile.mobile')}</div>
-                    <div className="title">{member.mobile}</div>
+                    <input type="input" className="input clean" readOnly value={member.mobile}/>
                 </div>
             </div>}
-            {member.email && <div className="item">
-                <Avatar icon="email" className="circle red"/>
+            {member.email && <div className="list-item contact-info-item">
+                <Avatar icon="email" className="flex-none circle red"/>
                 <div className="content">
                     <div className="subtitle">{Lang.string('member.profile.email')}</div>
-                    <div className="title">{member.email}</div>
+                    <input type="input" className="input clean" readOnly value={member.email}/>
                 </div>
             </div>}
-            {member.phone && <div className="item">
-                <Avatar icon="phone" className="circle green"/>
+            {member.phone && <div className="list-item contact-info-item">
+                <Avatar icon="phone" className="flex-none circle green"/>
                 <div className="content">
                     <div className="subtitle">{Lang.string('member.profile.phone')}</div>
-                    <div className="title">{member.phone}</div>
+                    <input type="input" className="input clean" readOnly value={member.phone}/>
                 </div>
             </div>}
 

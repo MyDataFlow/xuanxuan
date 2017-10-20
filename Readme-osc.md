@@ -15,17 +15,26 @@ http://xuan.im
 * **通知及提醒**：与系统桌面环境集成，即时收到新消息通知；
 * **会话管理**：将任意会话（包括讨论组和公开讨论组）置顶，精彩内容不容错过，还可以重命名讨论组、为讨论组设置白名单及浏览会话的所有消息历史记录；
 * **通讯录**：浏览企业成员资料和联系信息；
+* **跨平台客户端**：目前已支持 Windows、Linux、Mac，并且还提供了浏览器客户端；
 * **轻量级服务器端**：轻松搭配[然之协同](http://ranzhico.com)使用。
 
 ## 使用
 
-### 客户端
+### 桌面客户端
 
 受益于 Electron 的跨平台特性，喧喧客户端提供了 Windows、MacOS 和 Linux 版本。
 
 下载地址见：http://xuan.im/#downloads
 
 更多帮助参见 [官方客户端使用指南](http://xuan.im/page/1.html)。
+
+### 浏览器客户端
+
+浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.2.0/
+
+注意：你需要为你的服务器端部署通过官方验证的证书才可以使用浏览器端客户端。
+
+更多帮助参见 [浏览器端部署和使用指南](https://github.com/easysoft/xuanxuan/blob/master/doc/browser-usage.md)
 
 ### 服务器端
 

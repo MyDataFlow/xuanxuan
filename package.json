@@ -75,7 +75,9 @@
       "package.json"
     ],
     "win": {
-      "target": ["nsis"]
+      "target": [
+        "nsis"
+      ]
     },
     "linux": {
       "target": [
@@ -128,6 +130,7 @@
   "devDependencies": {
     "asar": "^0.13.0",
     "babel-core": "^6.22.1",
+    "babel-eslint": "^7.2.3",
     "babel-loader": "^6.2.10",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-dev-expression": "^0.2.1",
@@ -158,6 +161,16 @@
     "esdoc-inject-style-plugin": "^1.0.0",
     "esdoc-jsx-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-formatter-pretty": "^1.1.0",
+    "eslint-import-resolver-webpack": "^0.8.3",
+    "eslint-plugin-compat": "^1.0.4",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "eslint-plugin-jsx-a11y": "5.0.3",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.1.0",
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "fbjs-scripts": "^0.7.1",
@@ -185,6 +198,7 @@
   "dependencies": {
     "aes-js": "^3.1.0",
     "clipboard-js": "^0.3.5",
+    "color-thief-browser": "^2.0.2",
     "compare-versions": "^3.1.0",
     "dexie": "^2.0.0-beta.11",
     "draft-js": "^0.10.0",
@@ -193,6 +207,7 @@
     "emojione-picker": "^2.1.2",
     "fs-extra": "^4.0.1",
     "highlight.js": "^9.9.0",
+    "hotkeys-js": "^2.0.4",
     "ion-sound": "^3.0.7",
     "marked": "^0.3.6",
     "md5": "^2.2.1",
@@ -209,8 +224,8 @@
     "ws": "^2.2.3"
   },
   "devEngines": {
-    "node": ">=6.x",
-    "npm": ">=3.x"
+    "node": ">=7.x",
+    "npm": ">=4.x"
   },
   "optionalDependencies": {
     "bufferutil": "^3.0.0",

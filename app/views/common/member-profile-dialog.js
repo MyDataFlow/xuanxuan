@@ -12,6 +12,8 @@ const show = (member, callback) => {
     return Modal.show({
         actions: false,
         id: modalId,
+        headingClassName: 'dock-right dock-top',
+        className: 'app-member-profile-dialog',
         content: <MemberProfile member={member} onRequestClose={() => {
             Modal.hide(modalId);
         }}/>

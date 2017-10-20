@@ -1,20 +1,20 @@
-if(typeof DEBUG === 'undefined') {
+if (typeof DEBUG === 'undefined') {
     global.DEBUG = process.env.NODE_ENV !== 'production';
 } else {
     global.DEBUG = DEBUG;
 }
 
-if(global.DEBUG) {
+if (global.DEBUG) {
     // Mute react router warning.
     console._error = console.error;
     console.error = (errMessage, ...args) => {
-        if(typeof errMessage === 'string' && (errMessage.indexOf('Warning: Hash history cannot PUSH the same path;') === 0 || errMessage.startsWith('Warning: Failed prop type: Prop paneStyle passed to SplitPane. Has invalid keys userSelect') || errMessage.startsWith('Warning: Failed prop type: Prop style passed'))) {
+        if (typeof errMessage === 'string' && (errMessage.indexOf('Warning: Hash history cannot PUSH the same path;') === 0 || errMessage.startsWith('Warning: Failed prop type: Prop paneStyle passed to SplitPane. Has invalid keys userSelect') || errMessage.startsWith('Warning: Failed prop type: Prop style passed'))) {
             return;
         }
         return console._error(errMessage, ...args);
     };
 
-    if(process.browser || process.type === 'renderer') {
+    if (process.browser || process.type === 'renderer') {
         const STYLE = {
             rounded: 'border-radius: 3px;',
             block: 'display: block;',
@@ -112,19 +112,17 @@ if(global.DEBUG) {
         const formatOutput = (args) => {
             let output = [''];
             let format = [];
-            args.map((arg, idx) => {
-                let index = Math.floor(idx/2);
-                if(idx%2 === 1) {
-                    format[index] = '%c' + format[index];
+            args.forEach((arg, idx) => {
+                let index = Math.floor(idx / 2);
+                if(idx % 2 === 1) {
+                    format[index] = `%c${format[index]}`;
                     let style = 'padding: 0 4px; border: 1px solid transparent;';
                     if(Array.isArray(arg)) {
                         style += arg.reduce((tmpStyle, styleName) => {
                             return tmpStyle + (STYLE[styleName] || styleName);
                         }, '');
                     } else if(typeof arg === 'object') {
-                        style += Object.keys(arg).reduce((tmpStyle, propName) => {
-                            return tmpStyle + `${propName}: ${arg[propName]}`;
-                        }, '');
+                        style += Object.keys(arg).reduce((tmpStyle, propName) => (`${tmpStyle}${propName}: ${arg[propName]}`), '');
                     } else {
                         style += STYLE[arg] || arg;
                     }
@@ -154,7 +152,7 @@ if(global.DEBUG) {
         const showHashPath = () => {
             console.color('➜', 'orangeBg', window.location.hash.substr(1), 'orangePale');
         };
-        window.addEventListener("hashchange", showHashPath, false);
+        window.addEventListener('hashchange', showHashPath, false);
         showHashPath();
     }
 

@@ -18,9 +18,9 @@
 
 | 操作系统       | 64位                                      | 32位                                      |
 | :--------- | :--------------------------------------- | ---------------------------------------- |
-| Windows 7+ | [xxd-1.1.1-win64.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win64.zip) | [xxd-1.1.1-win32.zip](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-win32.zip) |
-| Mac OS10+  | [xxd-1.1.1-mac.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-mac.tar.gz) |                                          |
-| Linux      | [xxd-1.1.1-linux-x64.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-linux-x64.tar.gz) | [xxd-1.1.1-linux-ia32.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.1/xxd-1.1.1-linux-ia32.tar.gz) |
+| Windows 7+ | [xxd-1.2.0-win64.zip](http://dl.cnezsoft.com/xuanxuan/1.2/xxd-1.2.0-win64.zip) | [xxd-1.2.0-win32.zip](http://dl.cnezsoft.com/xuanxuan/1.2/xxd-1.2.0-win32.zip) |
+| Mac OS10+  | [xxd-1.2.0-mac.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.2/xxd-1.2.0-mac.tar.gz) |                                          |
+| Linux      | [xxd-1.2.0-linux-x64.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.2/xxd-1.2.0-linux-x64.tar.gz) | [xxd-1.2.0-linux-ia32.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.2/xxd-1.2.0-linux-ia32.tar.gz) |
 
 2.修改目录中的config文件
 
@@ -33,6 +33,9 @@ ip=192.168.1.164
 
 # 与聊天客户端通讯的端口
 chatPort=11444
+
+# 是否启用https , 设置为0则使用http协议 1为https协议
+isHttps=1
 
 # 通用端口，该端口用于客户端登录时验证，以及文件上传下载使用
 commonPort=11443
@@ -87,4 +90,10 @@ crtPath=certificate/
 在命令终端中执行`./xxd.exe`启动服务器，若启动失败，请查看log目录下面的日志文件，按照提示解决问题。
 
 需要开机启动和后台执行的，请把启动命令加入到计划任务中。
+
+**证书配置**
+
+运行xxd后会在xxd当前目录生成`certificate`文件夹,服务会自动生成两个证书`main.key`和`main.crt`这两个证书为自己生成,浏览器可能会拦截
+
+将购买的受信任的证书直接替换即可,注意证书的格式和名称
 

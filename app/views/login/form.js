@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import InputControl from '../../components/input-control';
+import Checkbox from '../../components/checkbox';
 import Modal from '../../components/modal';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
@@ -35,24 +36,46 @@ class FormView extends Component {
             super(props);
 
             const lastSavedUser = App.profile.getLastSavedUser();
-
-            this.state = {
-                serverUrl: lastSavedUser && simpleServerUrl(lastSavedUser.serverUrl || lastSavedUser.server) || '',
-                account: lastSavedUser && lastSavedUser.account || '',
-                password: lastSavedUser && lastSavedUser.password || '',
+            const entryParams = App.ui.entryParams;
+            const state = {
+                serverUrl: '',
+                account: '',
+                password: '',
+                rememberPassword: true,
+                autoLogin: false,
                 message: '',
                 submitable: false,
-                logining: false
+                logining: false,
             };
 
-            this.state.submitable = StringHelper.isNotEmpty(this.state.serverUrl) && StringHelper.isNotEmpty(this.state.account) && StringHelper.isNotEmpty(this.state.password);
+            if(entryParams && entryParams.server) {
+                state.serverUrl = entryParams.server;
+                state.account = entryParams.account || '';
+                state.password = entryParams.password || '';
+            } else if(lastSavedUser) {
+                state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
+                state.account = lastSavedUser.account || '';
+                state.password = lastSavedUser.rememberPassword ? lastSavedUser.password : '';
+                state.rememberPassword = lastSavedUser.rememberPassword;
+                state.autoLogin = lastSavedUser.autoLogin;
+            }
+
+            if(state.serverUrl) {
+                state.serverUrl = simpleServerUrl(state.serverUrl);
+            }
+
+            state.submitable = StringHelper.isNotEmpty(state.serverUrl) && StringHelper.isNotEmpty(state.account) && StringHelper.isNotEmpty(state.password);
+
+            this.state = state;
         }
 
         login() {
             App.server.login({
                 server: this.state.serverUrl,
                 account: this.state.account,
-                password: this.state.password
+                password: this.state.password,
+                rememberPassword: this.state.rememberPassword,
+                autoLogin: this.state.autoLogin
             }).then(() => {
                 this.setState({logining: false});
             }).catch(error => {
@@ -74,6 +97,20 @@ class FormView extends Component {
             userState.submitable = StringHelper.isNotEmpty(userState.serverUrl) && StringHelper.isNotEmpty(userState.account) && StringHelper.isNotEmpty(userState.password);
 
             this.setState(userState);
+        }
+
+        handleRememberPasswordChanged = rememberPassword => {
+            this.setState({
+                rememberPassword,
+                autoLogin: !rememberPassword ? false : this.state.autoLogin
+            });
+        }
+
+        handleAutoLoginChanged = autoLogin => {
+            this.setState({
+                autoLogin,
+                rememberPassword: autoLogin ? true : this.state.rememberPassword
+            });
         }
 
         handleLoginBtnClick = () => {
@@ -123,9 +160,9 @@ class FormView extends Component {
         }
 
         componentDidMount() {
-            // if(DEBUG && this.state.submitable) {
-            //     this.login();
-            // }
+            if(DEBUG && this.state.autoLogin && this.state.submitable) {
+                this.login();
+            }
         }
 
         render() {
@@ -141,8 +178,8 @@ class FormView extends Component {
                     value={this.state.serverUrl}
                     autoFocus={true}
                     disabled={this.state.logining}
-                    label={Lang['login.serverUrl.label']}
-                    placeholder={Lang['login.serverUrl.hint']}
+                    label={Lang.string('login.serverUrl.label')}
+                    placeholder={Lang.string('login.serverUrl.hint')}
                     onChange={this.handleInputFieldChange.bind(this, 'serverUrl')}
                     className="relative app-login-server-control"
                 >
@@ -151,15 +188,15 @@ class FormView extends Component {
                 <InputControl
                     value={this.state.account}
                     disabled={this.state.logining}
-                    label={Lang['login.account.label']}
-                    placeholder={Lang['login.account.hint']}
+                    label={Lang.string('login.account.label')}
+                    placeholder={Lang.string('login.account.hint')}
                     onChange={this.handleInputFieldChange.bind(this, 'account')}
                 />
                 <InputControl
                     value={this.state.password}
                     disabled={this.state.logining}
                     className="space"
-                    label={Lang['login.password.label']}
+                    label={Lang.string('login.password.label')}
                     onChange={value => this.setState({})}
                     inputType="password"
                     onChange={this.handleInputFieldChange.bind(this, 'password')}
@@ -167,11 +204,15 @@ class FormView extends Component {
                 <button
                     type="button"
                     disabled={!this.state.submitable || this.state.logining}
-                    className={HTML.classes('btn block rounded', this.state.submitable ? 'primary' : 'gray')}
+                    className={HTML.classes('btn block rounded space-sm', this.state.submitable ? 'primary' : 'gray')}
                     onClick={this.handleLoginBtnClick}
                 >
-                    {Lang[this.state.logining ? 'login.btn.logining' : 'login.btn.label']}
+                    {Lang.string(this.state.logining ? 'login.btn.logining' : 'login.btn.label')}
                 </button>
+                <div className="row">
+                    <Checkbox disabled={this.state.logining} checked={this.state.rememberPassword} onChange={this.handleRememberPasswordChanged} className="cell" label={Lang.string('login.rememberPassword')}/>
+                    <Checkbox disabled={this.state.logining} checked={this.state.autoLogin} onChange={this.handleAutoLoginChanged} className="cell" label={Lang.string('login.autoLogin')}/>
+                </div>
             </div>;
         }
     }

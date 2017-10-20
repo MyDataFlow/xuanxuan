@@ -6,6 +6,10 @@ const DEFAULT_LANG = 'zh-cn';
 let langData = Object.assign({}, ZhcnLang);
 let currentLangName = DEFAULT_LANG;
 
+const update = (newLangData) => {
+    langData = Object.assign(langData, newLangData);
+};
+
 /**
  * Get language setting and return string
  * @param  {string} name
@@ -59,6 +63,7 @@ const error = err => {
 };
 
 const lang = {
+    update,
     format,
     string,
     error,
@@ -67,8 +72,6 @@ const lang = {
         return currentLangName;
     }
 };
-
-Object.assign(lang, langData);
 
 if(DEBUG) global.$.Lang = lang;
 

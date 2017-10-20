@@ -1,4 +1,4 @@
-import electron, { BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
+import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
 import fse from 'fs-extra';
 import Lang from '../../lang';
 import Config from '../../config';
@@ -37,9 +37,6 @@ class AppRemote {
 
     constructor() {
         this.windows  = {};
-
-        // Ensure user data directory exist
-        fse.ensureDir(this.dataPath);
 
         // Bind events
         ipcMain.on(EVENT.app_quit, e => {
@@ -123,7 +120,7 @@ class AppRemote {
             }, {
                 label: Lang.string('common.exit'),
                 click: () => {
-                    this.mainWindow.webContents.send(EVENT.remote_app_quit);
+                    this.mainWindow.webContents.send(EVENT.remote_app_quit, 'quit');
                 }
             }
         ]);

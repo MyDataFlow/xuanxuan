@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import Config from 'Config';
 import Platform from 'Platform';
 
-const PKG = Config.pkg;
+const setting = Platform.setting || Config;
+const PKG = setting.pkg;
 
 class BuildInfo extends Component {
 
@@ -30,7 +31,7 @@ class BuildInfo extends Component {
     }
 
     render() {
-        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} {Config.system.specialVersion ? (' for ' + system.config.specialVersion) : ''} {DEBUG ? '[debug]' : ''}</div>;
+        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} {setting.system.specialVersion ? (' for ' + setting.system.specialVersion) : ''} {DEBUG ? '[debug]' : ''}</div>;
     }
 }
 

@@ -9,6 +9,7 @@ class MessageContentTextView extends Component {
         let {
             message,
             className,
+            contentConverter,
             children,
             ...other
         } = this.props;
@@ -19,7 +20,7 @@ class MessageContentTextView extends Component {
             className={HTML.classes('app-message-content-text markdown-content', className, {
                 'is-content-block': message.isBlockContent
             })}
-            dangerouslySetInnerHTML={{__html: content}}
+            dangerouslySetInnerHTML={{__html: contentConverter ? contentConverter(content) : content}}
         ></div>;
     }
 }
