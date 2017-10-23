@@ -3,16 +3,15 @@ import Pinyin from '../../utils/pinyin';
 import Status from '../../utils/status';
 
 const STATUS = new Status({
-    unverified: 0,    // 未登录
-    disconnect: 1,    // 登录过，但掉线了
-    logined: 2,       // 登录成功
-    online: 3,        // 在线
-    busy: 4,          // 忙碌
-    away: 5,          // 离开
+    unverified: 0, // 未登录
+    disconnect: 1, // 登录过，但掉线了
+    logined: 2, // 登录成功
+    online: 3, // 在线
+    busy: 4, // 忙碌
+    away: 5, // 离开
 }, 0);
 
 class Member extends Entity {
-
     static NAME = 'Member';
     static STATUS = STATUS;
     static SCHEMA = Entity.SCHEMA.extend({
@@ -84,7 +83,7 @@ class Member extends Entity {
     }
 
     get isAdmin() {
-        return this.$get('admin') !== 'no';;
+        return this.$get('admin') !== 'no';
     }
 
     get realname() {
@@ -113,8 +112,8 @@ class Member extends Entity {
 
     getAvatar(serverUrl) {
         let avatar = this.avatar;
-        if(serverUrl && avatar && !avatar.startsWith('https://') && !avatar.startsWith('http://')) {
-            if(!(serverUrl instanceof URL)) {
+        if (serverUrl && avatar && !avatar.startsWith('https://') && !avatar.startsWith('http://')) {
+            if (!(serverUrl instanceof URL)) {
                 serverUrl = new URL(serverUrl);
             }
             const serverUrlRoot = `${serverUrl.protocol}//${serverUrl.hostname}/`;
@@ -129,14 +128,14 @@ class Member extends Entity {
 
     get displayName() {
         let name = this.$get('realname', `[${this.account}]`);
-        if(!name) {
+        if (!name) {
             name = `User-${this.id}`;
         }
         return name;
     }
 
     get namePinyin() {
-        if(!this._namePinyin) {
+        if (!this._namePinyin) {
             this._namePinyin = Pinyin(this.displayName);
         }
         return this._namePinyin;
@@ -146,7 +145,7 @@ class Member extends Entity {
     // Static methods
 
     static create(member) {
-        if(member instanceof Member) {
+        if (member instanceof Member) {
             return member;
         }
         return new Member(member);
@@ -160,52 +159,52 @@ class Member extends Entity {
      * @return {array}
      */
     static sort(members, orders, userMe) {
-        if(members.length < 2) {
+        if (members.length < 2) {
             return members;
         }
-        if(typeof orders === 'function') {
+        if (typeof orders === 'function') {
             return members.sort(orders);
         }
-        if(!orders || orders === 'default' || orders === true) {
+        if (!orders || orders === 'default' || orders === true) {
             orders = ['me', 'status', '-namePinyin', '-id'];
-        } else if(typeof orders === 'string') {
+        } else if (typeof orders === 'string') {
             orders = orders.split(' ');
         }
         let isFinalInverse = false;
-        if(orders[0] === '-' || orders[0] === -1) {
+        if (orders[0] === '-' || orders[0] === -1) {
             isFinalInverse = true;
             orders.shift();
         }
         const userMeId = (typeof userMe === 'object') ? userMe.id : userMe;
         return members.sort((y, x) => {
             let result = 0;
-            for(let order of orders) {
-                if(result !== 0) break;
-                if(typeof order === 'function') {
+            for (let order of orders) {
+                if (result !== 0) break;
+                if (typeof order === 'function') {
                     result = order(y, x);
                     continue;
                 }
-                let isInverse = order[0] === '-';
-                if(isInverse) order = order.substr(1);
-                switch(order) {
-                    case 'me':
-                        if(userMe) {
-                            if(userMeId === x.id) result = 1;
-                            else if(userMeId === y.id) result = -1;
-                        }
-                        break;
-                    case 'status':
-                        let xStatus = x.status,
-                            yStatus = y.status;
-                        if(xStatus === STATUS.online) xStatus = 100;
-                        if(yStatus === STATUS.online) yStatus = 100;
-                        result = xStatus > yStatus ? 1 : (xStatus == yStatus ? 0 : -1);
-                        break;
-                    default:
-                        let xValue = x[order], yValue = y[order];
-                        if(xValue === undefined || xValue === null) xValue = 0;
-                        if(yValue === undefined || yValue === null) yValue = 0;
-                        result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
+                const isInverse = order[0] === '-';
+                if (isInverse) order = order.substr(1);
+                switch (order) {
+                case 'me':
+                    if (userMe) {
+                        if (userMeId === x.id) result = 1;
+                        else if (userMeId === y.id) result = -1;
+                    }
+                    break;
+                case 'status':
+                    let xStatus = x.status,
+                        yStatus = y.status;
+                    if (xStatus === STATUS.online) xStatus = 100;
+                    if (yStatus === STATUS.online) yStatus = 100;
+                    result = xStatus > yStatus ? 1 : (xStatus == yStatus ? 0 : -1);
+                    break;
+                default:
+                    let xValue = x[order], yValue = y[order];
+                    if (xValue === undefined || xValue === null) xValue = 0;
+                    if (yValue === undefined || yValue === null) yValue = 0;
+                    result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
                 }
                 result *= isInverse ? (-1) : 1;
             }
@@ -214,5 +213,4 @@ class Member extends Entity {
     }
 }
 
-export {STATUS};
 export default Member;

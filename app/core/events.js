@@ -22,9 +22,9 @@ class Events extends EventEmitter {
      */
     constructor() {
         super();
-        this.eventsMap     = {};
+        this.eventsMap = {};
         this.isMainProcess = !process.browser && process.type !== 'renderer';
-        if(this.setMaxListeners) {
+        if (this.setMaxListeners) {
             this.setMaxListeners(20);
         }
     }
@@ -39,8 +39,8 @@ class Events extends EventEmitter {
         super.on(event, listener);
         const name = Symbol(event);
         this.eventsMap[name] = {listener, name: event};
-        if(DEBUG) {
-            if(this.isMainProcess) {
+        if (DEBUG) {
+            if (this.isMainProcess) {
                 console.log('\n>> ON EVENT', event);
             } else {
                 console.collapse('ON EVENT', 'orangeBg', event, 'orangePale');
@@ -65,8 +65,8 @@ class Events extends EventEmitter {
         };
         super.once(event, listenerBinder);
         this.eventsMap[name] = {listener: listenerBinder, name: event};
-        if(DEBUG) {
-            if(this.isMainProcess) {
+        if (DEBUG) {
+            if (this.isMainProcess) {
                 console.log('\n>> ON ONCE EVENT', event);
             } else {
                 console.collapse('ON ONCE EVENT', 'orangeBg', event, 'orangePale');
@@ -83,14 +83,14 @@ class Events extends EventEmitter {
      * @return {Void}
      */
     off(...names) {
-        if(this.eventsMap) {
+        if (this.eventsMap) {
             names.forEach(name => {
                 let event = this.eventsMap[name];
-                if(event) {
+                if (event) {
                     this.removeListener(event.name, event.listener);
                     delete this.eventsMap[name];
-                    if(DEBUG) {
-                        if(this.isMainProcess) {
+                    if (DEBUG) {
+                        if (this.isMainProcess) {
                             console.log('OFF EVENT', event.name);
                         } else {
                             console.collapse('OFF EVENT', 'orangeBg', event.name, 'orangePale');
@@ -108,13 +108,13 @@ class Events extends EventEmitter {
      */
     emit(names, ...args) {
         super.emit(names, ...args);
-        if(DEBUG) {
-            if(this.isMainProcess) {
+        if (DEBUG) {
+            if (this.isMainProcess) {
                 console.log('\n>> EMIT EVENT', names);
             } else {
                 console.collapse('EMIT EVENT', 'orangeBg', names, 'orangePale');
                 let argIdx = 0;
-                for(let arg of args) {
+                for (let arg of args) {
                     console.log('arg:' + argIdx++, arg);
                 }
                 console.groupEnd();
@@ -127,24 +127,22 @@ class Events extends EventEmitter {
     }
 
     emitDataChange(data, delay = DATA_CHANGE_DELAY) {
-        if(typeof data === 'object') {
-            if(this.delayEmitData && data) {
+        if (typeof data === 'object') {
+            if (this.delayEmitData && data) {
                 Object.keys(data).forEach(dataKey => {
                     this.delayEmitData[dataKey] = Object.assign(this.delayEmitData[dataKey] || {}, data[dataKey]);
                 });
             } else {
                 this.delayEmitData = data;
             }
-        } else {
-            if(DEBUG) {
-                console.warn('Events.emitDataChange error, because the data param is not object.');
-            }
+        } else if (DEBUG) {
+            console.warn('Events.emitDataChange error, because the data param is not object.');
         }
-        if(this.delayEmitDataChangeEventTimer) {
+        if (this.delayEmitDataChangeEventTimer) {
             clearTimeout(this.delayEmitDataChangeEventTimer);
         }
         this.delayEmitDataChangeEventTimer = setTimeout(() => {
-            if(this.delayEmitData && Object.keys(this.delayEmitData).length) {
+            if (this.delayEmitData && Object.keys(this.delayEmitData).length) {
                 const data = Object.assign({}, this.delayEmitData);
                 this.emit(EVENT.data_change, data);
             }

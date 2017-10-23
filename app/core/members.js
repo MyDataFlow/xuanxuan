@@ -5,11 +5,11 @@ import Events from './events';
 let members = null;
 
 const update = (memberArr) => {
-    if(!Array.isArray(memberArr)) {
+    if (!Array.isArray(memberArr)) {
         memberArr = [memberArr];
     }
 
-    let newMembers = {};
+    const newMembers = {};
 
     memberArr.forEach(member => {
         member = Member.create(member);
@@ -23,35 +23,39 @@ const update = (memberArr) => {
 
 const init = (memberArr) => {
     members = {};
-    if(memberArr && memberArr.length) {
+    if (memberArr && memberArr.length) {
         update(memberArr);
     }
 };
 
-const getAll = () => {
-  return members ? Object.keys(members).map(x => members[x]) : [];
-};
+/**
+ * Get all members and return an array
+ */
+const getAll = () => (members ? Object.keys(members).map(x => members[x]) : []);
 
 const forEach = (callback) => {
-    if(members) {
+    if (members) {
         Object.keys(members).forEach(memberId => {
             callback(members[memberId]);
         });
     }
 };
 
+/**
+ * Get member by given id or account
+ *
+ * @param {string} idOrAccount
+ */
 const get = (idOrAccount) => {
     let member = members[idOrAccount];
-    if(!member) {
-        let findId = Object.keys(members).find(x => {
-            return members[x].account === idOrAccount;
-        });
-        if(findId) member = members[findId]
+    if (!member) {
+        const findId = Object.keys(members).find(x => (members[x].account === idOrAccount));
+        if (findId) member = members[findId];
         else {
             member = new Member({
                 id: idOrAccount,
                 account: idOrAccount,
-                realname: 'User-' + idOrAccount
+                realname: `User-${idOrAccount}`
             });
         }
     }
@@ -60,49 +64,51 @@ const get = (idOrAccount) => {
 
 const guess = (search) => {
     let member = get(search);
-    if(!member) {
-        let findId = Object.keys(members).find(x => {
+    if (!member) {
+        const findId = Object.keys(members).find(x => {
             const xMember = members[x];
             return xMember.account === search || xMember.realname === search;
         });
-        if(findId) member = members[findId]
+        if (findId) {
+            member = members[findId];
+        }
     }
     return member;
 };
 
 const query = (condition, sortList) => {
     let result = null;
-    if(typeof condition === 'object' && condition !== null) {
-        let conditionObj = condition;
-        let conditionKeys = Object.keys(conditionObj);
+    if (typeof condition === 'object' && condition !== null) {
+        const conditionObj = condition;
+        const conditionKeys = Object.keys(conditionObj);
         condition = member => {
-            for(let key of conditionKeys) {
-                if(conditionObj[key] !== member[key]) {
+            for (const key of conditionKeys) {
+                if (conditionObj[key] !== member[key]) {
                     return false;
                 }
             }
             return true;
         };
     }
-    if(typeof condition === 'function') {
+    if (typeof condition === 'function') {
         result = [];
         forEach(member => {
-            if(condition(member)) {
+            if (condition(member)) {
                 result.push(member);
             }
         });
-    } else if(Array.isArray(condition)) {
+    } else if (Array.isArray(condition)) {
         result = [];
         condition.forEach(x => {
-            let member = get(x);
-            if(member) {
+            const member = get(x);
+            if (member) {
                 result.push(member);
             }
         });
     } else {
         result = getAll();
     }
-    if(sortList && result && result.length) {
+    if (sortList && result && result.length) {
         Member.sort(result, sortList, profile.user && profile.user.id);
     }
     return result || [];
@@ -110,12 +116,11 @@ const query = (condition, sortList) => {
 
 const remove = member => {
     const memberId = (typeof member === 'object') ? member.id : member;
-    if(members[memberId]) {
+    if (members[memberId]) {
         delete members[memberId];
         return true;
-    } else {
-        return false;
     }
+    return false;
 };
 
 profile.onSwapUser(user => {

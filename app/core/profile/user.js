@@ -1,10 +1,10 @@
+import Md5 from 'md5';
+import Platfrom from 'Platform';
 import Member from '../models/member';
 import UserConfig from './user-config';
-import Platfrom from 'Platform';
 import DelayAction from '../../utils/delay-action';
 import DateHelper from '../../utils/date-helper';
 import Events from '../events';
-import Md5 from 'md5';
 
 const PASSWORD_WITH_MD5_FLAG = '%%%PWD_FLAG%%% ';
 const EVENT = {
@@ -14,7 +14,6 @@ const EVENT = {
 };
 
 class User extends Member {
-
     static EVENT = EVENT;
     static SCHEMA = Member.SCHEMA.extend({
         lastLoginTime: {type: 'timestamp'},
@@ -27,12 +26,16 @@ class User extends Member {
         uploadFileSize: {type: 'int'},
         autoLogin: {type: 'boolean', default: false},
         rememberPassword: {type: 'boolean', default: true},
-        signed: {type: 'timestamp', setter: (time, obj) => {
-            const lastSignedTime = obj.signed;
-            obj._isFirstSignedToday = time && DateHelper.isToday(time) && (!lastSignedTime || !DateHelper.isSameDay(time, lastSignedTime));
-            return time;
-        }},
+        signed: {
+            type: 'timestamp',
+            setter: (time, obj) => {
+                const lastSignedTime = obj.signed;
+                obj._isFirstSignedToday = time && DateHelper.isToday(time) && (!lastSignedTime || !DateHelper.isSameDay(time, lastSignedTime));
+                return time;
+            }
+        },
     });
+
     static STATUS = Member.STATUS;
 
     constructor(data) {

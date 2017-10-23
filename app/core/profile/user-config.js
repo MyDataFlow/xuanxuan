@@ -2,11 +2,10 @@ import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
 
 class UserConfig {
-
     static DEFAULT = DEFAULT;
 
     constructor(config) {
-        if(config && config.version !== DEFAULT.version) {
+        if (config && config.version !== DEFAULT.version) {
             config = null;
         }
         this.$ = Object.assign({}, DEFAULT, config);
@@ -22,9 +21,9 @@ class UserConfig {
     }
 
     exportCloud() {
-        let config = {};
+        const config = {};
         Object.keys(this.$).forEach(key => {
-            if(key.indexOf('local.') !== 0) {
+            if (key.indexOf('local.') !== 0) {
                 config[key] = this.$[key];
             }
         });
@@ -34,27 +33,27 @@ class UserConfig {
     makeChange(change) {
         this.lastChange = Object.assign({}, this.lastChange, change);
 
-        if(typeof this.onChange === 'function') {
+        if (typeof this.onChange === 'function') {
             this.changeAction.do();
         }
         this.$.lastChangeTime = new Date().getTime();
     }
 
     get(key, defaultValue) {
-        if(this.$) {
-            let val = this.$[key];
-            if(val !== undefined) {
+        if (this.$) {
+            const val = this.$[key];
+            if (val !== undefined) {
                 return val;
             }
         }
-        if(defaultValue === undefined) {
+        if (defaultValue === undefined) {
             defaultValue = DEFAULT[key];
         }
         return defaultValue;
     }
 
     set(keyOrObj, value) {
-        if(typeof keyOrObj === 'object') {
+        if (typeof keyOrObj === 'object') {
             Object.assign(this.$, keyOrObj);
             this.makeChange(keyOrObj);
         } else {
@@ -89,7 +88,7 @@ class UserConfig {
     }
 
     set lastSaveTime(time) {
-        if(time instanceof Date) {
+        if (time instanceof Date) {
             time = time.getTime();
         }
         return this.set('lastSaveTime', time);
@@ -133,14 +132,6 @@ class UserConfig {
 
     set enableSearchInEmojionePicker(flag) {
         return this.set('ui.chat.enableSearchInEmojionePicker', flag);
-    }
-
-    get showMessageTip() {
-        return this.get('ui.chat.showMessageTip');
-    }
-
-    set showMessageTip(flag) {
-        return this.set('ui.chat.showMessageTip', flag);
     }
 
     get enableWindowNotification() {

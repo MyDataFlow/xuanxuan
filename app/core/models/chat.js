@@ -25,7 +25,6 @@ const COMMITTERS_TYPES = {
 const MAX_MESSAGE_COUNT = 100;
 
 class Chat extends Entity {
-
     static NAME = 'Chat';
     static STATUS = STATUS;
     static TYPES = TYPES;
@@ -52,14 +51,14 @@ class Chat extends Entity {
         this._status = STATUS.create(this.$.status);
         this._status.onChange = newStatus => {
             this.$.status = newStatus;
-            if(typeof this.onStatusChange === 'function') {
+            if (typeof this.onStatusChange === 'function') {
                 this.onStatusChange(newStatus, this);
             }
         };
     }
 
     ensureGid() {
-        if(this.isOne2One) {
+        if (this.isOne2One) {
             this.$.gid = Array.from(this.members).sort().join('&');
         } else {
             super.ensureGid();
@@ -99,7 +98,7 @@ class Chat extends Entity {
 
     get type() {
         let type = this.$get('type');
-        if(!type) {
+        if (!type) {
             const members = this.members;
             type = (members && members.size === 2) ? TYPES.one2one : TYPES.group;
         }
@@ -127,30 +126,27 @@ class Chat extends Entity {
     }
 
     getDisplayName(app, includeMemberCount = false) {
-        let name = this.name;
-        if(this.isOne2One) {
-            let otherOne = this.getTheOtherOne(app);
+        const name = this.name;
+        if (this.isOne2One) {
+            const otherOne = this.getTheOtherOne(app);
             return otherOne ? otherOne.displayName : Lang.string('chat.tempChat.name');
-        } else if(this.isSystem) {
-            if(includeMemberCount) {
+        } else if (this.isSystem) {
+            if (includeMemberCount) {
                 return Lang.format('chat.groupName.format', name || Lang.string('chat.systemGroup.name'), Lang.string('chat.all'));
-            } else {
-                return name || Lang.string('chat.systemGroup.name');
             }
-        } else if(name !== undefined && name !== '') {
-            if(includeMemberCount) {
+            return name || Lang.string('chat.systemGroup.name');
+        } else if (name !== undefined && name !== '') {
+            if (includeMemberCount) {
                 return Lang.format('chat.groupName.format', name, this.membersCount);
-            } else {
-                return name;
             }
-        } else {
-            return `${Lang.string('chat.group.name')}${this.id || ('(' + Lang.string('chat.tempChat.name') + ')')}`;
+            return name;
         }
+        return `${Lang.string('chat.group.name')}${this.id || `(${Lang.string('chat.tempChat.name')})`}`;
     }
 
     getPinYin(app) {
-        if(!this._pinyin) {
-            let str = app ? this.getDisplayName(app, false) : this.name;
+        if (!this._pinyin) {
+            const str = app ? this.getDisplayName(app, false) : this.name;
             this._pinyin = Pinyin(str);
         }
         return this._pinyin;
@@ -180,14 +176,6 @@ class Chat extends Entity {
         this.$set('public', flag);
     }
 
-    get lastActiveTime() {
-        return this.$get('lastActiveTime');
-    }
-
-    set lastActiveTime(lastActiveTime) {
-        this.$set('lastActiveTime', lastActiveTime);
-    }
-
     get createdDate() {
         return this.$get('createdDate');
     }
@@ -205,25 +193,25 @@ class Chat extends Entity {
     }
 
     isAdmin(member) {
-        if(typeof member !== 'object') {
+        if (typeof member !== 'object') {
             member = {remoteId: member, account: member};
         }
-        if(this.isSystem && member.isSuperAdmin) {
+        if (this.isSystem && member.isSuperAdmin) {
             return true;
         }
-        if(this.isOwner(member)) {
+        if (this.isOwner(member)) {
             return true;
         }
-        let admins = this.admins;
-        if(admins && admins.size) {
+        const admins = this.admins;
+        if (admins && admins.size) {
             return admins.has(member.id) || admins.has(member.account);
         }
         return false;
     }
 
     addAdmin(memberId) {
-        let admins = this.admins;
-        if(typeof memberId === 'object') {
+        const admins = this.admins;
+        if (typeof memberId === 'object') {
             memberId = memberId.id;
         }
         admins.add(memberId);
@@ -231,8 +219,8 @@ class Chat extends Entity {
     }
 
     get committers() {
-        let committers = this.$get('committers');
-        if(!committers || committers === '$ADMINS') {
+        const committers = this.$get('committers');
+        if (!committers || committers === '$ADMINS') {
             return [];
         }
         return new Set(committers.split(','));
@@ -244,8 +232,8 @@ class Chat extends Entity {
 
     get committersType() {
         const committers = this.$get('committers');
-        if((this.isSystem || this.isGroup) && committers && committers !== '$ALL') {
-            if(committers === '$ADMINS') {
+        if ((this.isSystem || this.isGroup) && committers && committers !== '$ALL') {
+            if (committers === '$ADMINS') {
                 return COMMITTERS_TYPES.admins;
             }
             return COMMITTERS_TYPES.whitelist;
@@ -254,16 +242,17 @@ class Chat extends Entity {
     }
 
     isCommitter(member) {
-        switch(this.committersType) {
-            case COMMITTERS_TYPES.admins:
-                return this.isAdmin(member);
-            case COMMITTERS_TYPES.whitelist:
-                if(typeof member === 'object') {
-                    member = member.id;
-                }
-                return this.isInWhitelist(member);
+        switch (this.committersType) {
+        case COMMITTERS_TYPES.admins:
+            return this.isAdmin(member);
+        case COMMITTERS_TYPES.whitelist:
+            if (typeof member === 'object') {
+                member = member.id;
+            }
+            return this.isInWhitelist(member);
+        default:
+            return true;
         }
-        return true;
     }
 
     canRename(user) {
@@ -291,11 +280,11 @@ class Chat extends Entity {
     }
 
     get whitelist() {
-        if(this.hasWhitelist) {
-            let set = new Set();
+        if (this.hasWhitelist) {
+            const set = new Set();
             this.committers.forEach(x => {
-                x = Number.parseInt(x);
-                if(x !== NaN) {
+                x = Number.parseInt(x, 10);
+                if (!Number.isNaN(x)) {
                     set.add(x);
                 }
             });
@@ -305,7 +294,7 @@ class Chat extends Entity {
     }
 
     set whitelist(value) {
-        if(!this.isGroupOrSystem) {
+        if (!this.isGroupOrSystem) {
             value = '';
         }
         this.$set('committers', value);
@@ -313,23 +302,23 @@ class Chat extends Entity {
 
 
     isInWhitelist(memberId, whitelist) {
-        if(typeof memberId === 'object') {
+        if (typeof memberId === 'object') {
             memberId = memberId.id;
         }
         whitelist = whitelist || this.whitelist;
-        if(whitelist) {
+        if (whitelist) {
             return whitelist.has(memberId);
         }
         return false;
     }
 
     addToWhitelist(memberId) {
-        let whitelist = this.whitelist;
-        if(whitelist) {
-            if(typeof memberId === 'object') {
+        const whitelist = this.whitelist;
+        if (whitelist) {
+            if (typeof memberId === 'object') {
                 memberId = memberId.id;
             }
-            if(!whitelist.has(memberId)) {
+            if (!whitelist.has(memberId)) {
                 whitelist.add(memberId);
                 this.whitelist = whitelist;
                 return true;
@@ -339,12 +328,12 @@ class Chat extends Entity {
     }
 
     removeFromWhitelist(memberId) {
-        let whitelist = this.whitelist;
-        if(whitelist) {
-            if(typeof memberId === 'object') {
+        const whitelist = this.whitelist;
+        if (whitelist) {
+            if (typeof memberId === 'object') {
                 memberId = memberId.id;
             }
-            if(whitelist.has(memberId)) {
+            if (whitelist.has(memberId)) {
                 whitelist.delete(memberId);
                 this.whitelist = whitelist;
                 return true;
@@ -366,8 +355,8 @@ class Chat extends Entity {
     }
 
     set members(newMembers) {
-        if(newMembers.length) {
-            if(typeof newMembers[0] === 'object') {
+        if (newMembers.length) {
+            if (typeof newMembers[0] === 'object') {
                 this.resetMembers(newMembers);
             } else {
                 this.$set('members', new Set(newMembers));
@@ -379,15 +368,15 @@ class Chat extends Entity {
     }
 
     get membersCount() {
-        let members = this.members;
+        const members = this.members;
         return members ? (members.length || members.size) : 0;
     }
 
     isMember(memberId) {
-        if(typeof memberId === 'object') {
+        if (typeof memberId === 'object') {
             memberId = memberId.id;
         }
-        let members = this.members;
+        const members = this.members;
         return members && members.has(memberId);
     }
 
@@ -397,14 +386,14 @@ class Chat extends Entity {
     }
 
     addMember(...newMembers) {
-        let members = this.members;
-        if(!members.size) {
+        const members = this.members;
+        if (!members.size) {
             this._membersSet = [];
         }
         newMembers.forEach(member => {
-            if(!members.has(member.id)) {
+            if (!members.has(member.id)) {
                 members.add(member.id);
-                if(this._membersSet) {
+                if (this._membersSet) {
                     this._membersSet.push(member);
                 }
             }
@@ -413,13 +402,11 @@ class Chat extends Entity {
     }
 
     updateMembersSet(appMembers) {
-        this._membersSet = Array.from(this.members).map(memberId => {
-            return appMembers.get(memberId);
-        });
+        this._membersSet = Array.from(this.members).map(memberId => (appMembers.get(memberId)));
     }
 
     getMembersSet(appMembers) {
-        if(!this._membersSet) {
+        if (!this._membersSet) {
             this.updateMembersSet(appMembers);
         }
         return this._membersSet;
@@ -428,15 +415,15 @@ class Chat extends Entity {
     getTheOtherOne(app) {
         const appMembers = app.members;
         const currentUser = app.user;
-        if(this.isOne2One && !this._theOtherOne) {
+        if (this.isOne2One && !this._theOtherOne) {
             this._theOtherOne = this.getMembersSet(appMembers).find(member => member.id !== currentUser.id);
         }
         return this._theOtherOne;
     }
 
     isOnline(app) {
-        if(this.isOne2One) {
-            let otherOne = this.getTheOtherOne(app);
+        if (this.isOne2One) {
+            const otherOne = this.getTheOtherOne(app);
             return otherOne && otherOne.isOnline;
         }
         return true;
@@ -474,7 +461,7 @@ class Chat extends Entity {
         this._noticeCount = 0;
         const mutedMessages = [];
         this._messages.forEach(message => {
-            if(message.unread) {
+            if (message.unread) {
                 message.unread = false;
                 mutedMessages.push(message);
             }
@@ -488,7 +475,7 @@ class Chat extends Entity {
 
     get lastActiveTime() {
         let lastActiveTime = this.$get('lastActiveTime');
-        if(!lastActiveTime) {
+        if (!lastActiveTime) {
             lastActiveTime = this.createdDate;
         }
         return lastActiveTime || 0;
@@ -507,14 +494,14 @@ class Chat extends Entity {
     }
 
     addMessages(messages, userId, limitSize = true, localMessage = false) {
-        if(!Array.isArray(messages)) {
+        if (!Array.isArray(messages)) {
             messages = [messages];
         }
-        if(!this._messages) {
+        if (!this._messages) {
             this._messages = [];
         }
 
-        if(!messages.length) {
+        if (!messages.length) {
             return;
         }
 
@@ -522,14 +509,14 @@ class Chat extends Entity {
         let newMessageCount = 0;
         let lastActiveTime = this.lastActiveTime;
         messages.forEach(message => {
-            if(message.date) {
-                let checkMessage = this._messages.find(x => x.gid === message.gid);
-                if(checkMessage) {
+            if (message.date) {
+                const checkMessage = this._messages.find(x => x.gid === message.gid);
+                if (checkMessage) {
                     checkMessage.reset(message);
                 } else {
                     this._messages.push(message);
                     newMessageCount++;
-                    if(!localMessage && userId !== message.senderId) {
+                    if (!localMessage && userId !== message.senderId) {
                         message.unread = true;
                         noticeCount++;
                     } else {
@@ -539,30 +526,30 @@ class Chat extends Entity {
                     //     noticeCount++;
                     // }
                 }
-                if(lastActiveTime < message.date) {
+                if (lastActiveTime < message.date) {
                     lastActiveTime = message.date;
                 }
-            } else if(DEBUG) {
+            } else if (DEBUG) {
                 console.warn('The message date is not defined.', message);
             }
         });
         this.lastActiveTime = lastActiveTime;
         this.noticeCount = noticeCount;
 
-        if(newMessageCount) {
+        if (newMessageCount) {
             this._messages.sort((x, y) => {
                 let orderResult = x.date - y.date;
-                if(orderResult === 0) {
+                if (orderResult === 0) {
                     orderResult = (x.id || Number.MAX_SAFE_INTEGER) - (y.id || Number.MAX_SAFE_INTEGER);
                 }
-                if(orderResult === 0) {
+                if (orderResult === 0) {
                     orderResult = x.order - y.order;
                 }
                 return orderResult;
             });
         }
 
-        if(limitSize && this._messages.length > MAX_MESSAGE_COUNT) {
+        if (limitSize && this._messages.length > MAX_MESSAGE_COUNT) {
             this._messages.splice(0, this._messages.length - MAX_MESSAGE_COUNT);
         }
 
@@ -574,12 +561,10 @@ class Chat extends Entity {
     }
 
     removeMessage(messageGid) {
-        let messages = this.messages;
-        if(messages.length) {
-            let findIndex = messages.findIndex(x => {
-                x.id === messageGid || x.gid === messageGid
-            });
-            if(findIndex > -1) {
+        const messages = this.messages;
+        if (messages.length) {
+            const findIndex = messages.findIndex(x => (x.id === messageGid || x.gid === messageGid));
+            if (findIndex > -1) {
                 this._messages.splice(findIndex, 1);
                 return true;
             }
@@ -588,7 +573,7 @@ class Chat extends Entity {
     }
 
     static create(chat) {
-        if(chat instanceof Chat) {
+        if (chat instanceof Chat) {
             return chat;
         }
         return new Chat(chat);
@@ -602,57 +587,57 @@ class Chat extends Entity {
      * @return {array}
      */
     static sort(chats, orders, app) {
-        if(chats.length < 2) {
+        if (chats.length < 2) {
             return chats;
         }
-        if(typeof orders === 'function') {
+        if (typeof orders === 'function') {
             return chats.sort(orders);
         }
-        if(!orders || orders === 'default' || orders === true) {
+        if (!orders || orders === 'default' || orders === true) {
             orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id']; // namePinyin
-        } else if(typeof orders === 'string') {
+        } else if (typeof orders === 'string') {
             orders = orders.split(' ');
         }
         let isFinalInverse = false;
-        if(orders[0] === '-' || orders[0] === -1) {
+        if (orders[0] === '-' || orders[0] === -1) {
             isFinalInverse = true;
             orders.shift();
         }
         return chats.sort((y, x) => {
             let result = 0;
-            for(let order of orders) {
-                if(result !== 0) break;
-                if(typeof order === 'function') {
+            for (let order of orders) {
+                if (result !== 0) break;
+                if (typeof order === 'function') {
                     result = order(y, x);
                     continue;
                 }
-                let isInverse = order[0] === '-';
-                if(isInverse) order = order.substr(1);
-                switch(order) {
+                const isInverse = order[0] === '-';
+                if (isInverse) order = order.substr(1);
+                switch (order) {
                     case 'isSystem':
                     case 'hide':
                     case 'star':
                         result = (x[order] ? 1 : 0) - (y[order] ? 1 : 0);
                         break;
                     case 'online':
-                        if(app) {
+                        if (app) {
                             result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
                         }
                         break;
                     default:
                         let xValue, yValue;
-                        if(order === 'name' && app) {
+                        if (order === 'name' && app) {
                             xValue = x.getDisplayName(app, false);
                             yValue = y.getDisplayName(app, false);
-                        } else if(order === 'namePinyin') {
+                        } else if (order === 'namePinyin') {
                             xValue = x.getPinYin(app);
                             yValue = y.getPinYin(app);
                         } else {
                             xValue = x[order];
                             yValue = y[order];
                         }
-                        if(xValue === undefined || xValue === null) xValue = 0;
-                        if(yValue === undefined || yValue === null) yValue = 0;
+                        if (xValue === undefined || xValue === null) xValue = 0;
+                        if (yValue === undefined || yValue === null) yValue = 0;
                         result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
                 }
                 result *= isInverse ? (-1) : 1;

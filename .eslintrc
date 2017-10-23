@@ -27,7 +27,6 @@
     "no-use-before-define": "off",
     "no-multi-assign": "off",
     "promise/param-names": "error",
-    "promise/always-return": "error",
     "promise/catch-or-return": "error",
     "promise/no-native": "off",
     "react/sort-comp": ["error", {
@@ -53,8 +52,11 @@
     "no-nested-ternary": "warn",
     "no-mixed-operators": "warn",
     "no-underscore-dangle": "off",
-    "react/jsx-indent": "warn",
-    "react/jsx-indent-props": "warn",
+    "react/jsx-indent": ["warn", 4],
+    "react/jsx-indent-props": ["warn", 4],
+    "prefer-template": "warn",
+    "no-shadow": "warn",
+    "promise/always-return": "warn"
   },
   "plugins": [
     "import",

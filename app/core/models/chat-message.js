@@ -27,7 +27,6 @@ const CONTENT_TYPES = {
 const SEND_WAIT_TIME = 10000;
 
 class ChatMessage extends Entity {
-
     static NAME = 'ChatMessage';
     static STATUS = STATUS;
     static TYPES = TYPES;
@@ -48,20 +47,20 @@ class ChatMessage extends Entity {
         this._status = STATUS.create(this.$.status);
         this._status.onChange = newStatus => {
             this.$.status = newStatus;
-            if(typeof this.onStatusChange === 'function') {
+            if (typeof this.onStatusChange === 'function') {
                 this.onStatusChange(newStatus, this);
             }
         };
-        if(!this.$.order) {
+        if (!this.$.order) {
             this.$.order = TimeSequence();
         }
-        if(!this.$.contentType) {
+        if (!this.$.contentType) {
             this.$.contentType = CONTENT_TYPES.text;
         }
-        if(!this.$.type) {
+        if (!this.$.type) {
             this.$.type = TYPES.normal;
         }
-        if(!this.$.date) {
+        if (!this.$.date) {
             this.$.date = new Date().getTime();
         }
     }
@@ -73,7 +72,7 @@ class ChatMessage extends Entity {
             type: this.type,
             contentType: this.contentType,
             content: this.content,
-            date: "",
+            date: '',
             user: this.senderId
         };
     }
@@ -133,7 +132,7 @@ class ChatMessage extends Entity {
         this.$set('date', new Date().getTime());
         this._status.change(STATUS.sending);
         setTimeout(() => {
-            if(this.isStatus(STATUS.sending)) {
+            if (this.isStatus(STATUS.sending)) {
                 this._status.change(STATUS.sendFail);
             }
         }, SEND_WAIT_TIME);
@@ -180,7 +179,7 @@ class ChatMessage extends Entity {
     }
 
     get sender() {
-        if(!this._sender) {
+        if (!this._sender) {
             return new Member({
                 id: this.senderId
             });
@@ -189,14 +188,14 @@ class ChatMessage extends Entity {
     }
 
     set sender(sendUser) {
-        if(sendUser) {
+        if (sendUser) {
             this._sender = sendUser;
             this.$set('user', sendUser.id);
         }
     }
 
     getSender(appMembers) {
-        if(!this._sender) {
+        if (!this._sender) {
             this._sender = appMembers.get(this.senderId);
         }
         return this._sender;
@@ -240,26 +239,26 @@ class ChatMessage extends Entity {
 
     set content(newContent) {
         this.$set('content', newContent);
-        if(this._imageContent) {
+        if (this._imageContent) {
             delete this._imageContent;
         }
-        if(this._fileContent) {
+        if (this._fileContent) {
             delete this._fileContent;
         }
-        if(this._renderedTextContent) {
+        if (this._renderedTextContent) {
             delete this._renderedTextContent;
             delete this._isBlockContent;
         }
     }
 
     renderedTextContent(converter) {
-        if(this._renderedTextContent === undefined) {
+        if (this._renderedTextContent === undefined) {
             let content = this.content;
-            if(typeof content === 'string' && content.length) {
+            if (typeof content === 'string' && content.length) {
                 content = content.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
                 content = Markdown(content);
                 content = Emojione.toImage(content);
-                if(converter) {
+                if (converter) {
                     content = converter(content);
                 }
                 this._renderedTextContent = content;
@@ -277,11 +276,11 @@ class ChatMessage extends Entity {
     }
 
     get imageContent() {
-        if(this.contentType === CONTENT_TYPES.image) {
+        if (this.contentType === CONTENT_TYPES.image) {
             let imageContent = this._imageContent;
-            if(!imageContent) {
+            if (!imageContent) {
                 imageContent = JSON.parse(this.content);
-                if(imageContent.path) {
+                if (imageContent.path) {
                     delete imageContent.path;
                 }
                 this._imageContent = imageContent;
@@ -305,18 +304,18 @@ class ChatMessage extends Entity {
     }
 
     get fileContent() {
-        if(this.contentType === CONTENT_TYPES.file) {
+        if (this.contentType === CONTENT_TYPES.file) {
             let fileContent = this._fileContent;
-            if(!fileContent) {
+            if (!fileContent) {
                 fileContent = JSON.parse(this.content);
-                if(fileContent.path) {
+                if (fileContent.path) {
                     delete fileContent.path;
                 }
                 this._fileContent = fileContent;
             }
-            if(fileContent) {
+            if (fileContent) {
                 fileContent.user = this.user;
-                if(this._sender) {
+                if (this._sender) {
                     fileContent.sender = this.sender;
                 }
                 fileContent.senderId = this.senderId;
@@ -350,9 +349,9 @@ class ChatMessage extends Entity {
     }
 
     getCommand() {
-        if(this.contentType === 'text') {
+        if (this.contentType === 'text') {
             const content = this.content.trim();
-            if(content === '$$version') {
+            if (content === '$$version') {
                 return {action: 'version'};
             }
         }
@@ -360,7 +359,7 @@ class ChatMessage extends Entity {
     }
 
     reset(newData) {
-        if(newData instanceof ChatMessage) {
+        if (newData instanceof ChatMessage) {
             newData = newData.plain();
         }
         this.$set(newData);
@@ -401,7 +400,7 @@ class ChatMessage extends Entity {
     }
 
     static create(chatMessage) {
-        if(chatMessage instanceof ChatMessage) {
+        if (chatMessage instanceof ChatMessage) {
             return chatMessage;
         }
         return new ChatMessage(chatMessage);

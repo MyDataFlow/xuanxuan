@@ -1,20 +1,19 @@
-import UUID  from 'uuid/v4';
+import UUID from 'uuid/v4';
 import Schema from './entity-schema';
 
 /**
  * Entity
  */
 class Entity {
-
     static NAME = 'Entity';
     static SCHEMA = new Schema({
-        'gid': {type: 'string', primaryKey: true},
-        'id': {type: 'int', indexed: true},
+        gid: {type: 'string', primaryKey: true},
+        id: {type: 'int', indexed: true},
     });
 
     constructor(data, entityType) {
         this.$ = {};
-        if(typeof data == 'object') {
+        if (typeof data === 'object') {
             this.$set(data);
         }
 
@@ -27,7 +26,7 @@ class Entity {
     }
 
     ensureGid() {
-        if(!this.$.gid) {
+        if (!this.$.gid) {
             this.$.gid = UUID();
         }
     }
@@ -63,13 +62,13 @@ class Entity {
      * @param {Any} val
      */
     $set(key, val) {
-        if(typeof key === 'object') {
+        if (typeof key === 'object') {
             Object.keys(key).forEach(k => {
                 this.$set(k, key[k]);
             });
         } else {
-            let schema = this.schema;
-            if(schema) {
+            const schema = this.schema;
+            if (schema) {
                 val = schema.convertSetterValue(key, val, this);
             }
             this.$[key] = val;
@@ -84,11 +83,11 @@ class Entity {
      */
     $get(key, defaultValue) {
         let value = this.$[key];
-        let schema = this.schema;
-        if(schema) {
+        const schema = this.schema;
+        if (schema) {
             value = schema.convertGetterValue(key, value, this);
         }
-        if(value === undefined) {
+        if (value === undefined) {
             value = defaultValue;
         }
         return value;

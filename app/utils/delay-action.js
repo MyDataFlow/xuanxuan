@@ -1,5 +1,4 @@
 export default class DelayAction {
-
     constructor(action, delay = 100, callback = null) {
         this.action = action;
         this.delay = delay;

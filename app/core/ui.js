@@ -1,11 +1,10 @@
+import Platform from 'Platform';
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
 import ContextMenu from '../components/context-menu';
-import DateHelper from '../utils/date-helper';
 import HTML from '../utils/html-helper';
 import Lang from '../lang';
-import Platform from 'Platform';
 import Events from './events';
 import profile from './profile';
 import Notice from './notice';
@@ -24,7 +23,7 @@ const createImageContextMenuItems = (url, dataType) => {
             ImageViewer.show(url);
         }
     }];
-    if(Platform.clipboard && Platform.clipboard.writeImageFromUrl) {
+    if (Platform.clipboard && Platform.clipboard.writeImageFromUrl) {
         items.push({
             label: Lang.string('menu.image.copy'),
             click: () => {
@@ -32,12 +31,12 @@ const createImageContextMenuItems = (url, dataType) => {
             }
         });
     }
-    if(Platform.dialog && Platform.dialog.saveAsImageFromUrl) {
+    if (Platform.dialog && Platform.dialog.saveAsImageFromUrl) {
         items.push({
             label: Lang.string('menu.image.saveAs'),
             click: () => {
                 Platform.dialog.saveAsImageFromUrl(url, dataType).then(filename => {
-                    if(filename) {
+                    if (filename) {
                         Messager.show(Lang.format('file.fileSavedAt.format', filename), {
                             actions: Platform.ui.openFileItem ? [{
                                 label: Lang.string('file.open'),
@@ -56,7 +55,7 @@ const createImageContextMenuItems = (url, dataType) => {
             }
         });
     }
-    if(Platform.ui.openFileItem && dataType !== 'base64') {
+    if (Platform.ui.openFileItem && dataType !== 'base64') {
         items.push({
             label: Lang.string('menu.image.open'),
             click: () => {
@@ -81,28 +80,28 @@ onAppLinkClick('Member', target => {
 });
 
 Server.onUserLogin(user => {
-    if(user.isFirstSignedToday) {
+    if (user.isFirstSignedToday) {
         Messager.show(Lang.string('login.signed'), {
             type: 'success',
             icon: 'calendar-check',
             autoHide: true,
         });
     }
-    if(typeof Pace !== 'undefined') {
+    if (typeof Pace !== 'undefined') {
         Pace.stop();
     }
 });
 
 Server.onUserLoginout((user, code, reason, unexpected) => {
-    if(user) {
-        if(unexpected) {
+    if (user) {
+        if (unexpected) {
             let errorCode = null;
-            if(reason === 'KICKOFF') {
+            if (reason === 'KICKOFF') {
                 errorCode = 'KICKOFF';
-            } else if(code === 1006) {
+            } else if (code === 1006) {
                 errorCode = 'SOCKET_AbnormalClosure';
             }
-            if(errorCode) {
+            if (errorCode) {
                 Messager.show(Lang.error(errorCode), {
                     type: 'danger',
                     icon: 'alert',
@@ -114,7 +113,7 @@ Server.onUserLoginout((user, code, reason, unexpected) => {
                     }]
                 });
             }
-            if(Notice.requestAttention) {
+            if (Notice.requestAttention) {
                 Notice.requestAttention();
             }
         }
@@ -125,16 +124,16 @@ document.body.classList.add(`os-${Platform.env.os}`);
 
 document.addEventListener('click', e => {
     let target = e.target;
-    while(target && !((target.classList && target.classList.contains('app-link')) || (target.tagName === 'A' && target.attributes['href']))) {
+    while (target && !((target.classList && target.classList.contains('app-link')) || (target.tagName === 'A' && target.attributes.href))) {
         target = target.parentNode;
     }
 
-    if(target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes['href'] || target.attributes['data-url'])) {
-        const link = (target.attributes['data-url'] || target.attributes['href']).value;
-        if(link.startsWith('http://') || link.startsWith('https://')) {
+    if (target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes.href || target.attributes['data-url'])) {
+        const link = (target.attributes['data-url'] || target.attributes.href).value;
+        if (link.startsWith('http://') || link.startsWith('https://')) {
             Platform.ui.openExternal(link);
             e.preventDefault();
-        } else if(link.startsWith('@')) {
+        } else if (link.startsWith('@')) {
             const params = link.substr(1).split('/');
             emitAppLinkClick(params[0], params[1]);
             e.preventDefault();
@@ -143,17 +142,17 @@ document.addEventListener('click', e => {
 });
 
 
-window.addEventListener('online',  () => {
+window.addEventListener('online', () => {
     // Events.emit(EVENT.net_online);
-    if(profile.user) {
-        if(!Server.socket.isLogging) {
+    if (profile.user) {
+        if (!Server.socket.isLogging) {
             Server.login(profile.user);
         }
     }
 });
-window.addEventListener('offline',  () => {
+window.addEventListener('offline', () => {
     // Events.emit(EVENT.net_offline);
-    if(profile.isUserOnline) {
+    if (profile.isUserOnline) {
         profile.user.markDisconnect();
         Server.socket.close(null, 'net_offline');
     }
@@ -166,10 +165,11 @@ const completeDragNDrop = () => {
     setTimeout(() => {
         document.body.classList.remove('drag-n-drop-over');
     }, 350);
-}
+};
+
 window.ondragover = e => {
     clearTimeout(dragLeaveTask);
-    if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
         document.body.classList.add('drag-n-drop-over');
         setTimeout(() => {
             document.body.classList.add('drag-n-drop-over-in');
@@ -187,7 +187,7 @@ window.ondragleave = e => {
 window.ondrop = e => {
     clearTimeout(dragLeaveTask);
     completeDragNDrop();
-    if(DEBUG) {
+    if (DEBUG) {
         console.collapse('DRAG FILE', 'redBg', (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length ? e.dataTransfer.files[0].path : ''), 'redPale');
         console.log(e);
         console.groupEnd();
@@ -197,21 +197,21 @@ window.ondrop = e => {
 };
 
 
-if(Platform.ui.onRequestQuit) {
+if (Platform.ui.onRequestQuit) {
     Platform.ui.onRequestQuit(closeReason => {
-        if(closeReason !== 'quit') {
+        if (closeReason !== 'quit') {
             const user = profile.user;
-            if(user && !user.isUnverified) {
+            if (user && !user.isUnverified) {
                 const appCloseOption = user.config.appCloseOption;
-                if(appCloseOption === 'minimize' || !Platform.ui.showQuitConfirmDialog) {
+                if (appCloseOption === 'minimize' || !Platform.ui.showQuitConfirmDialog) {
                     Platform.ui.hideWindow();
                     return false;
-                } else if(appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
+                } else if (appCloseOption !== 'close' && Platform.ui.showQuitConfirmDialog) {
                     Platform.ui.showQuitConfirmDialog((result, checked) => {
-                        if(checked && result) {
+                        if (checked && result) {
                             user.config.appCloseOption = result;
                         }
-                        if(result === 'close') {
+                        if (result === 'close') {
                             Server.logout();
                         }
                         return result;
@@ -225,28 +225,28 @@ if(Platform.ui.onRequestQuit) {
 }
 
 let quit = null;
-if(Platform.ui.quit) {
+if (Platform.ui.quit) {
     quit = (delay = 1000, ignoreListener = true) => {
-        if(ignoreListener) {
+        if (ignoreListener) {
             Server.logout();
         }
         Platform.ui.quit(delay, ignoreListener);
     };
 }
 
-if(Platform.ui.onWindowMinimize) {
+if (Platform.ui.onWindowMinimize) {
     Platform.ui.onWindowMinimize(() => {
         const userConfig = profile.userConfig;
-        if(userConfig && userConfig.removeFromTaskbarOnHide) {
+        if (userConfig && userConfig.removeFromTaskbarOnHide) {
             Platform.ui.setShowInTaskbar(false);
         }
     });
 }
 
-if(Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
+if (Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
     Platform.ui.onWindowBlur(() => {
         const userConfig = profile.userConfig;
-        if(userConfig && userConfig.hideWindowOnBlur) {
+        if (userConfig && userConfig.hideWindowOnBlur) {
             Platform.ui.hideWindow();
         }
     });

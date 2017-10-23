@@ -1,5 +1,5 @@
-import Events from './events';
 import {notify, ui as PlatformUI} from 'Platform';
+import Events from './events';
 import Lang from '../lang';
 
 const DEFAULT = {
@@ -18,16 +18,16 @@ const update = info => {
     info = Object.assign({}, DEFAULT, info);
     info.total = info.chats + 0;
 
-    if(info.sound && notify.playSound) {
+    if (info.sound && notify.playSound) {
         notify.playSound(info.sound);
     }
 
-    if(notify.setBadgeLabel) {
+    if (notify.setBadgeLabel) {
         notify.setBadgeLabel(info.total || '');
     }
 
-    if(notify.updateTrayIcon) {
-        if(info.tray) {
+    if (notify.updateTrayIcon) {
+        if (info.tray) {
             const trayLabel = info.tray.label ? `${Lang.string('app.title')} - ${info.tray.label}` : Lang.string('app.title');
             notify.updateTrayIcon(trayLabel, info.tray.flash);
         } else {
@@ -35,7 +35,7 @@ const update = info => {
         }
     }
 
-    if(info.message && notify.showNotification) {
+    if (info.message && notify.showNotification) {
         notify.showNotification(info.message);
     }
 
@@ -43,18 +43,16 @@ const update = info => {
 };
 
 const isMatchWindowCondition = condition => {
-    if(condition === 'onWindowHide') {
+    if (condition === 'onWindowHide') {
         return !PlatformUI.isWindowOpen;
     }
-    if(condition === 'onWindowBlur') {
+    if (condition === 'onWindowBlur') {
         return !PlatformUI.isWindowsFocus;
     }
     return true;
 };
 
-const onNoticeUpdate = listener => {
-    return Events.on(EVENT.update, listener);
-};
+const onNoticeUpdate = listener => (Events.on(EVENT.update, listener));
 
 export default {
     update,

@@ -32,15 +32,15 @@ export default validate(merge(baseConfig, {
         loaders: [
 
             // Fonts
-            { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-            { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
-            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
+            {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
+            {test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
 
             {
                 test: /\.less$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
             },
 
             // Images
@@ -61,7 +61,7 @@ export default validate(merge(baseConfig, {
             'process.env.NODE_ENV': JSON.stringify('debug')
         }),
 
-        new ExtractTextPlugin('style.css', { allChunks: true }),
+        new ExtractTextPlugin('style.css', {allChunks: true}),
 
         new HtmlWebpackPlugin({
             filename: '../index.html',

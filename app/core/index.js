@@ -20,11 +20,11 @@ const app = {
     ui,
 
     get user() {
-        return profile.user
+        return profile.user;
     }
 };
 
-if(DEBUG) {
+if (DEBUG) {
     global.$.App = app;
 }
 

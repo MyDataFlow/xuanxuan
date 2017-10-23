@@ -44,7 +44,7 @@ const get = (gid) => {
     }
     let chat = chats[gid];
     if (!chat && gid.includes('&')) {
-        const chatMembers = gid.split('&').map(x => Number.parseInt(x));
+        const chatMembers = gid.split('&').map(x => Number.parseInt(x, 10));
         chat = new Chat({
             gid,
             members: chatMembers,
