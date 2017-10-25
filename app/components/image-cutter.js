@@ -50,13 +50,19 @@ class ImageCutter extends Component {
         hotkeys.deleteScope(this.HotkeysScope);
     }
 
-    handleOkButtonClick = e => {
+    handleOkButtonClick = () => {
         if (this.select) {
             Platform.image.cutImage(this.props.sourceImage, this.select).then(image => {
-                this.props.onFinish && this.props.onFinish(image);
+                if (this.props.onFinish) {
+                    this.props.onFinish(image);
+                }
+            }).catch(err => {
+                if (DEBUG) {
+                    console.warn('Cut image error', err);
+                }
             });
-        } else {
-            this.props.onFinish && this.props.onFinish(null);
+        } else if (this.props.onFinish) {
+            this.props.onFinish(null);
         }
     }
 
@@ -79,7 +85,7 @@ class ImageCutter extends Component {
             ...other
         } = this.props;
 
-        let imageUrl = 'file://' + sourceImage.replace(/\\/g, '/');
+        let imageUrl = `file://${sourceImage.replace(/\\/g, '/')}`;
 
         style = Object({
             backgroundRepeat: 'no-repeat',
@@ -87,14 +93,6 @@ class ImageCutter extends Component {
             backgroundPosition: 'center',
             backgroundSize: 'contain'
         }, style);
-
-        const toolbarIconStyle = {
-            cursor: 'pointer',
-            padding: 10,
-            width: 20,
-            height: 20,
-            textAlign: 'center',
-        };
 
         const toolbar = (<nav
             className="layer nav primary-pale"

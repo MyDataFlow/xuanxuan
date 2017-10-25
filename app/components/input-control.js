@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
 
 class InputControl extends Component {
-
     static defaultProps = {
         label: '',
+        className: '',
         placeholder: '',
         autoFocus: false,
         style: null,
@@ -17,7 +16,32 @@ class InputControl extends Component {
         disabled: false,
         inputClassName: 'rounded',
         name: `control${timeSequence()}`,
+        labelStyle: null,
+        inputStyle: null,
+        inputProps: null,
+        children: null,
+        value: '',
     };
+
+    static propTypes = {
+        defaultValue: PropTypes.string,
+        label: PropTypes.string,
+        className: PropTypes.string,
+        placeholder: PropTypes.string,
+        autoFocus: PropTypes.bool,
+        style: PropTypes.object,
+        labelStyle: PropTypes.object,
+        inputType: PropTypes.string.isRequired,
+        inputStyle: PropTypes.object,
+        inputProps: PropTypes.object,
+        helpText: PropTypes.string,
+        onChange: PropTypes.func,
+        disabled: PropTypes.bool,
+        inputClassName: PropTypes.string,
+        children: PropTypes.string,
+        name: PropTypes.string,
+        value: PropTypes.string,
+    }
 
     constructor(props) {
         super(props);
@@ -25,16 +49,8 @@ class InputControl extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event) {
-        const value = this.input.value;
-        if(this.state.value !== value) {
-            this.setState({value: value});
-            this.props.onChange && this.props.onChange(value, event);
-        }
-    }
-
     componentDidMount() {
-        if(this.props.autoFocus) {
+        if (this.props.autoFocus) {
             this.autoFocusTask = setTimeout(() => {
                 this.focus();
                 this.autoFocusTask = null;
@@ -43,9 +59,19 @@ class InputControl extends Component {
     }
 
     componentWillUnmount() {
-        if(this.autoFocusTask) {
+        if (this.autoFocusTask) {
             clearTimeout(this.autoFocusTask);
             this.autoFocusTask = null;
+        }
+    }
+
+    handleChange(event) {
+        const value = this.input.value;
+        if (this.state.value !== value) {
+            this.setState({value});
+            if (this.props.onChange) {
+                this.props.onChange(value, event);
+            }
         }
     }
 
@@ -59,7 +85,7 @@ class InputControl extends Component {
     }
 
     render() {
-        let {
+        const {
             name,
             label,
             labelStyle,
@@ -79,22 +105,23 @@ class InputControl extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('control', className, {disabled})} {...other}>
+        return (<div className={HTML.classes('control', className, {disabled})} {...other}>
             {label !== false && <label htmlFor={name} style={labelStyle}>{label}</label>}
             <input
                 disabled={!!disabled}
-                ref={e => {this.input = e}}
+                ref={e => {this.input = e;}}
                 value={value !== undefined ? value : this.state.value}
                 id={name}
                 type={inputType}
-                className={HTML.classes('input', inputClassName)} placeholder={placeholder}
+                className={HTML.classes('input', inputClassName)}
+                placeholder={placeholder}
                 onChange={this.handleChange}
                 style={inputStyle}
                 {...inputProps}
             />
             {helpText ? <p className="help-text">{helpText}</p> : null}
             {children}
-        </div>;
+        </div>);
     }
 }
 

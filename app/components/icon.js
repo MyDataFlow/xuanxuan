@@ -57,14 +57,14 @@ export default class MDIcon extends Component {
             ...other
         } = this.props;
         style = Object.assign({}, style);
-        if(size) {
-            if(size < 12) size *= 12;
+        if (size) {
+            if (size < 12) size *= 12;
             style.fontSize = HTML.rem(size);
         }
-        if(color) {
+        if (color) {
             style.color = color;
         }
-        if(square && size) {
+        if (square && size) {
             style.lineHeight = style.fontSize;
             style.height = style.fontSize;
             style.width = style.fontSize;

@@ -1,10 +1,9 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Modal from './modal';
 import timeSequence from '../utils/time-sequence';
 
 const show = (imageSrc, props, callback) => {
-    const modalId = 'layer-image-viewer-' + timeSequence();
+    const modalId = `layer-image-viewer-${timeSequence()}`;
     return Modal.show(Object.assign({
         closeButton: true,
         actions: false,
@@ -12,7 +11,7 @@ const show = (imageSrc, props, callback) => {
         onClick: e => {
             Modal.hide(modalId);
         },
-        content: <img src={imageSrc}/>
+        content: <img src={imageSrc} alt={imageSrc} />
     }, props, {
         id: modalId
     }), callback);

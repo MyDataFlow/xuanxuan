@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Display from './display';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
@@ -19,69 +18,69 @@ const show = (message, props = {}, callback = null) => {
         position,
     } = props;
 
-    if(!props.id) {
+    if (!props.id) {
         props.id = timeSequence();
     }
 
-    if(closeButton === undefined) {
+    if (closeButton === undefined) {
         closeButton = true;
     }
 
-    if(position === undefined) {
+    if (position === undefined) {
         position = 'top';
     }
 
-    if(!type) {
+    if (!type) {
         type = 'info';
     }
     rootClassName = HTML.classes(rootClassName, `position-${position}`);
     className = HTML.classes('messager layer', className || 'rounded', type);
 
-    content = (content || icon) ? <div className="row single flex-middle">
-        {icon ? (typeof icon === 'string' ? <Icon className="flex-auto messager-icon" name={icon}/> : <div className="flex-none messager-icon">{icon}</div>) : null}
+    content = (content || icon) ? (<div className="row single flex-middle">
+        {icon ? (typeof icon === 'string' ? <Icon className="flex-auto messager-icon" name={icon} /> : <div className="flex-none messager-icon">{icon}</div>) : null}
         {content ? <div className="flex-auto messager-content">
             <h5 className="messager-title">{message}</h5>
             <div>{content}</div>
         </div> : <div className="flex-auto messager-content">{message}</div>}
-    </div> : message;
+    </div>) : message;
 
-    if(!actions) {
+    if (!actions) {
         actions = [];
     }
-    if(closeButton) {
+    if (closeButton) {
         actions.push({
             icon: 'close',
             click: () => {
-                Display.hide(props.id)
+                Display.hide(props.id);
             }
-        })
+        });
     }
     let footer = null;
-    if(actions && actions.length) {
+    if (actions && actions.length) {
         const handleActionClick = (action, e) => {
             let actionResult = null;
-            if(onAction) {
+            if (onAction) {
                 actionResult = onAction(action, e);
             }
-            if(action.click) {
+            if (action.click) {
                 actionResult = action.click(action, e);
             }
-            if(actionResult !== false) {
+            if (actionResult !== false) {
                 Display.hide(props.id);
             }
         };
 
-        footer = <nav className="nav">
-        {
-            actions.map((action, actionIndex) => {
-                return <a onClick={handleActionClick.bind(null, action)} key={actionIndex} title={action.label}>{action.icon ? <Icon name={action.icon}/> : action.label}</a>
-            })
-        }
-        </nav>;
+        footer = (<nav className="nav">
+            {
+                actions.map((action, actionIndex) => {
+                    return (<a onClick={handleActionClick.bind(null, action)} key={actionIndex} title={action.label}>{action.icon ? <Icon name={action.icon}/> : action.label}</a>);
+                })
+            }
+        </nav>);
     }
 
-    if(autoHide) {
-        if(typeof autoHide !== 'number') {
+    if (autoHide) {
+        if (typeof autoHide !== 'number') {
             autoHide = 5000;
         }
         setTimeout(() => {

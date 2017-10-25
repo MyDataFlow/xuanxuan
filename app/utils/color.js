@@ -1,5 +1,4 @@
 const hexReg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-
 const isUndefined = x => (x === undefined);
 const isDefined = x => (!isUndefined(x));
 const fit = (n, end, start) => (Math.min(Math.max(n, isDefined(start) ? start : 0), isDefined(end) ? end : 255));

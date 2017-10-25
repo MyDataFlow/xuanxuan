@@ -1,20 +1,20 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../utils/html-helper';
 import Platform from 'Platform';
 import InputControl from './input-control';
 
 const isWindowsOS = Platform.env.isWindowsOS;
 
 class HotkeyInputControl extends Component {
-
     static defaultProps = {
         defaultValue: '',
-        onChange: null
+        onChange: null,
+        inputProps: null,
     };
 
     static propTypes = {
         defaultValue: PropTypes.string,
-        onChange: PropTypes.func
+        onChange: PropTypes.func,
+        inputProps: PropTypes.object,
     }
 
     constructor(props) {
@@ -25,7 +25,7 @@ class HotkeyInputControl extends Component {
     }
 
     changeValue(value) {
-        if(this.props.onChange) {
+        if (this.props.onChange) {
             this.props.onChange(value);
         }
         this.inputControl.setValue(value);
@@ -33,24 +33,24 @@ class HotkeyInputControl extends Component {
     }
 
     handleKeyDownEvent = e => {
-        if(e.keyCode === 8 || e.cod === 'Backspace') {
+        if (e.keyCode === 8 || e.cod === 'Backspace') {
             this.changeValue('');
             return;
         }
         let shortcut = [];
-        if(e.metaKey) {
+        if (e.metaKey) {
             shortcut.push(isWindowsOS ? 'Windows' : 'Command');
         }
-        if(e.ctrlKey) {
+        if (e.ctrlKey) {
             shortcut.push('Ctrl');
         }
-        if(e.altKey) {
+        if (e.altKey) {
             shortcut.push('Alt');
         }
-        if(e.shiftKey) {
+        if (e.shiftKey) {
             shortcut.push('Shift');
         }
-        if(e.key && e.key !== 'Meta' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Shift') {
+        if (e.key && e.key !== 'Meta' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Shift') {
             shortcut.push(e.key);
         }
         shortcut = shortcut.join('+');
@@ -63,7 +63,7 @@ class HotkeyInputControl extends Component {
     }
 
     render() {
-        let {
+        const {
             onChange,
             defaultValue,
             inputProps,
