@@ -22,7 +22,6 @@
     "consistent-return": "off",
     "comma-dangle": "off",
     "generator-star-spacing": "off",
-    "import/no-unresolved": "error",
     "import/no-extraneous-dependencies": "off",
     "no-console": "off",
     "no-use-before-define": "off",
@@ -58,7 +57,9 @@
     "prefer-template": "warn",
     "no-shadow": "warn",
     "promise/always-return": "warn",
-    "arrow-body-style": "warn"
+    "arrow-body-style": "warn",
+    "import/no-unresolved": "warn",
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"]
   },
   "plugins": [
     "import",

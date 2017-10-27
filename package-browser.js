@@ -9,7 +9,7 @@ const argv = minimist(process.argv.slice(2));
 const copy = (source, dest, options) => {
     return new Promise((resolve, reject) => {
         cpx.copy(source, dest, options, err => {
-            if(err) {
+            if (err) {
                 console.log('failed from ', source, 'to', dest, err);
                 reject(err);
             } else {
@@ -35,27 +35,26 @@ const publish = () => {
         ghpages.publish(destRoot, {
             dest: pkg.version
         }, err => {
-            if(err) {
+            if (err) {
                 reject(err);
                 console.log('failed with err ', err);
             } else {
                 console.log('>> Publish finised.');
                 resolve();
             }
-        })
+        });
     });
-}
+};
 
 const packageAll = () => {
     console.log('>> Packge for browser: ');
     return fse.emptyDir(destRoot).then(() => {
         return Promise.all([copyDist(), copyMedia(), copyAssets(), copyIndexHTML(), copyPKG(), copyIcons()]).then(() => {
             console.log('>> Package for browser finished, dest path is', destRoot);
-            if(argv['publish']) {
+            if (argv.publish) {
                 return publish();
-            } else {
-                return Promise.resolve(destRoot);
             }
+            return Promise.resolve(destRoot);
         }).catch(err => {
             console.log('ERROR', err);
         });

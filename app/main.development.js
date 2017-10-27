@@ -1,12 +1,8 @@
-import electron, {
-    app as ElectronApp,
-    Menu,
-    shell,
-}                   from 'electron';
-import DEBUG        from './utils/debug';
-import application  from './platform/electron/app-remote';
-import PKG          from './package.json';
-import Lang         from './lang';
+import electron, {app as ElectronApp, Menu, shell} from 'electron';
+import DEBUG from './utils/debug';
+import application from './platform/electron/app-remote';
+import PKG from './package.json';
+import Lang from './lang';
 
 ElectronApp.commandLine.appendSwitch('ignore-certificate-errors');
 

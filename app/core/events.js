@@ -14,7 +14,6 @@ const DATA_CHANGE_DELAY = 100;
  * @extends {EventEmitter}
  */
 class Events extends EventEmitter {
-
     static EVENT = EVENT;
 
     /**
@@ -59,7 +58,7 @@ class Events extends EventEmitter {
      */
     once(event, listener) {
         const name = Symbol(event);
-        let listenerBinder = (...args) => {
+        const listenerBinder = (...args) => {
             this.off(name);
             listener(...args);
         };
@@ -85,7 +84,7 @@ class Events extends EventEmitter {
     off(...names) {
         if (this.eventsMap) {
             names.forEach(name => {
-                let event = this.eventsMap[name];
+                const event = this.eventsMap[name];
                 if (event) {
                     this.removeListener(event.name, event.listener);
                     delete this.eventsMap[name];
@@ -113,10 +112,9 @@ class Events extends EventEmitter {
                 console.log('\n>> EMIT EVENT', names);
             } else {
                 console.collapse('EMIT EVENT', 'orangeBg', names, 'orangePale');
-                let argIdx = 0;
-                for (let arg of args) {
-                    console.log('arg:' + argIdx++, arg);
-                }
+                args.forEach((arg, argIdx) => {
+                    console.log(`arg: ${argIdx}`, arg);
+                });
                 console.groupEnd();
             }
         }
@@ -143,8 +141,8 @@ class Events extends EventEmitter {
         }
         this.delayEmitDataChangeEventTimer = setTimeout(() => {
             if (this.delayEmitData && Object.keys(this.delayEmitData).length) {
-                const data = Object.assign({}, this.delayEmitData);
-                this.emit(EVENT.data_change, data);
+                const changedData = Object.assign({}, this.delayEmitData);
+                this.emit(EVENT.data_change, changedData);
             }
             this.delayEmitData = null;
             this.delayEmitDataChangeEventTimer = null;
