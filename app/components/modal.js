@@ -28,46 +28,46 @@ const show = (props = {}, callback = null) => {
         headingClassName,
     } = props;
 
-    if(closeButton === undefined) {
+    if (closeButton === undefined) {
         closeButton = true;
     }
 
-    if(!props.id) {
+    if (!props.id) {
         props.id = timeSequence();
     }
 
     className = HTML.classes('modal layer rounded', className || '');
 
-    if(actions === undefined) {
+    if (actions === undefined) {
         actions = true;
     }
-    if(actions === true) {
-        actions = [{type: 'submit'}, {type: 'cancel'}]
+    if (actions === true) {
+        actions = [{type: 'submit'}, {type: 'cancel'}];
     }
     let footer = null;
-    if(actions && actions.length) {
+    if (actions && actions.length) {
         actions = actions.map((act, idx) => {
-            if(!act.order) {
+            if (!act.order) {
                 act.order = idx;
-                switch(act.type) {
-                    case 'submit':
-                        act.order += isWindowsOS ? (-9000) : 9000;
-                        break;
-                    case 'primary':
-                        act.order += isWindowsOS ? (-8000) : 8000;
-                        break;
-                    case 'secondary':
-                        act.order += isWindowsOS ? (-7000) : 7000;
-                        break;
-                    case 'cancel':
-                        act.order += isWindowsOS ? (9000) : -9000;
-                        break;
+                switch (act.type) {
+                case 'submit':
+                    act.order += isWindowsOS ? (-9000) : 9000;
+                    break;
+                case 'primary':
+                    act.order += isWindowsOS ? (-8000) : 8000;
+                    break;
+                case 'secondary':
+                    act.order += isWindowsOS ? (-7000) : 7000;
+                    break;
+                case 'cancel':
+                    act.order += isWindowsOS ? (9000) : -9000;
+                    break;
                 }
             }
-            if(act.type && !act.className) {
+            if (act.type && !act.className) {
                 act.className = DEFAULT_CLASS_NAMES[act.type];
             }
-            if(!act.label && act.type) {
+            if (!act.label && act.type) {
                 act.label = act.type === 'submit' ? Lang.string('common.confirm') : act.type === 'cancel' ? Lang.string('common.cancel') : act.type.toUpperCase();
             }
             return act;
@@ -79,19 +79,19 @@ const show = (props = {}, callback = null) => {
 
         const handleActionClick = (action, e) => {
             let actionResult = null;
-            if(onAction) {
+            if (onAction) {
                 actionResult = onAction(action, e);
             }
-            if(onSubmit && action.type === 'submit') {
+            if (onSubmit && action.type === 'submit') {
                 actionResult = onSubmit(action, e);
             }
-            if(onCancel && action.type === 'cancel') {
+            if (onCancel && action.type === 'cancel') {
                 actionResult = onCancel(action, e);
             }
-            if(action.click) {
+            if (action.click) {
                 actionResult = action.click(action, e);
             }
-            if(actionResult !== false) {
+            if (actionResult !== false) {
                 Display.hide(props.id);
             }
         };
@@ -140,13 +140,13 @@ const confirm = (content, props, callback) => {
             content,
             actions: true,
             onAction: action => {
-                if(!resolved) {
+                if (!resolved) {
                     resolved = true;
                     resolve(action.type === 'submit');
                 }
             },
             onHidden: () => {
-                if(!resolved) {
+                if (!resolved) {
                     resolve(false);
                 }
             }
@@ -156,7 +156,7 @@ const confirm = (content, props, callback) => {
 
 const prompt = (title, defaultValue, props, callback) => {
     let inputProps = props && props.inputProps;
-    if(inputProps) {
+    if (inputProps) {
         delete props.inputProps;
     }
     return new Promise(resolve => {
@@ -171,13 +171,13 @@ const prompt = (title, defaultValue, props, callback) => {
             }} {...inputProps}/>,
             actions: true,
             onAction: action => {
-                if(action.type === 'submit') {
+                if (action.type === 'submit') {
                     resolved = true;
                     resolve(value);
                 }
             },
             onHidden: () => {
-                if(!resolved) {
+                if (!resolved) {
                     resolve(defaultValue);
                 }
             }

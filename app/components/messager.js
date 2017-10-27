@@ -73,7 +73,7 @@ const show = (message, props = {}, callback = null) => {
         footer = (<nav className="nav">
             {
                 actions.map((action, actionIndex) => {
-                    return (<a onClick={handleActionClick.bind(null, action)} key={actionIndex} title={action.label}>{action.icon ? <Icon name={action.icon}/> : action.label}</a>);
+                    return (<a onClick={handleActionClick.bind(null, action)} key={action.name || actionIndex} title={action.label}>{action.icon ? <Icon name={action.icon} /> : action.label}</a>);
                 })
             }
         </nav>);

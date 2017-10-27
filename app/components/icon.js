@@ -25,7 +25,8 @@ export default class MDIcon extends Component {
         color: '',
         className: '',
         square: true,
-        style: null
+        style: null,
+        children: null
     };
 
     /**
@@ -36,7 +37,12 @@ export default class MDIcon extends Component {
      */
     static propTypes = {
         size: PropTypes.number,
-        style: PropTypes.object
+        style: PropTypes.object,
+        square: PropTypes.bool,
+        className: PropTypes.string,
+        color: PropTypes.string,
+        name: PropTypes.string,
+        children: PropTypes.any
     }
 
     /**

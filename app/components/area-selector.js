@@ -121,7 +121,9 @@ export default class AreaSelector extends Component {
         onSelectArea: null,
         toolbarStyle: null,
         toolbarHeight: 40,
-        style: null
+        style: null,
+        toolbar: null,
+        img: null
     };
 
     /**
@@ -134,7 +136,9 @@ export default class AreaSelector extends Component {
         onSelectArea: PropTypes.func,
         toolbarStyle: PropTypes.object,
         toolbarHeight: PropTypes.number,
-        style: PropTypes.object
+        style: PropTypes.object,
+        toolbar: PropTypes.any,
+        img: PropTypes.string
     };
 
     /**

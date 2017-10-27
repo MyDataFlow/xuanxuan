@@ -1,22 +1,39 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
-import Lang from '../../lang';
-import Avatar from '../../components/avatar';
 import UserAvatar from '../common/user-avatar';
 import App from '../../core';
+import Chat from '../../core/models/chat';
 
 const chatIcons = {
-    'group': {name: 'comment-multiple-outline', colorClass: 'text-info'},
+    group: {name: 'comment-multiple-outline', colorClass: 'text-info'},
     'public-group': {name: 'pound-box', colorClass: 'text-green'},
     'system-group': {name: 'comment-text', colorClass: 'text-primary'}
 };
 
 class ChatAvatar extends Component {
+    static defaultProps = {
+        chat: null,
+        grayOffline: false,
+        className: null,
+        avatarSize: null,
+        iconSize: null,
+        avatarClassName: null,
+        iconClassName: null,
+    };
+
+    static propTypes = {
+        chat: PropTypes.instanceOf(Chat),
+        grayOffline: PropTypes.bool,
+        className: PropTypes.string,
+        avatarSize: PropTypes.number,
+        iconSize: PropTypes.number,
+        avatarClassName: PropTypes.string,
+        iconClassName: PropTypes.string,
+    };
 
     render() {
-        let {
+        const {
             chat,
             grayOffline,
             className,
@@ -28,16 +45,20 @@ class ChatAvatar extends Component {
         } = this.props;
 
 
-        if(chat.isOne2One) {
+        if (chat.isOne2One) {
             const theOtherOne = chat.getTheOtherOne(App);
-            if(grayOffline && (theOtherOne.isOffline || !App.profile.isUserOnline)) {
-                className = HTML.classes(className, 'grayscale');
-            }
-            return <UserAvatar size={avatarSize} user={theOtherOne} className={HTML.classes(className, avatarClassName)} {...other}/>;
-        } else {
-            let icon = chat.isSystem ? chatIcons['system-group'] : chat.public ? chatIcons['public-group'] : chatIcons['group'];
-            return <Icon size={iconSize} name={icon.name + ' icon-2x'} className={HTML.classes(className, iconClassName, icon.colorClass)} {...other}/>
+            const grayscale = grayOffline && (theOtherOne.isOffline || !App.profile.isUserOnline);
+            return <UserAvatar size={avatarSize} user={theOtherOne} className={HTML.classes(className, avatarClassName, {grayscale})} {...other} />;
         }
+        let icon = null;
+        if (chat.isSystem) {
+            icon = chatIcons['system-group'];
+        } else if (chat.public) {
+            icon = chatIcons['public-group'];
+        } else {
+            icon = chatIcons.group;
+        }
+        return <Icon size={iconSize} name={`${icon.name} icon-2x`} className={HTML.classes(className, iconClassName, icon.colorClass)} {...other} />;
     }
 }
 

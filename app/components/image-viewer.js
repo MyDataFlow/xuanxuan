@@ -8,7 +8,7 @@ const show = (imageSrc, props, callback) => {
         closeButton: true,
         actions: false,
         className: 'layer-image-viewer',
-        onClick: e => {
+        onClick: () => {
             Modal.hide(modalId);
         },
         content: <img src={imageSrc} alt={imageSrc} />

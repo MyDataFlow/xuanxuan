@@ -15,6 +15,10 @@ const STAGE = new Status({
 }, 0);
 
 let zIndexSeed = 1100;
+const newZIndex = () => {
+    zIndexSeed += 1;
+    return zIndexSeed;
+};
 
 export default class DisplayLayer extends Component {
     /**
@@ -40,11 +44,13 @@ export default class DisplayLayer extends Component {
         show: true,
         // Content can be a function and return a promise to load lazy content
         content: '',
+        contentLoadFail: null,
         contentClassName: '',
         header: null,
         footer: null,
         onShown: null,
         onHidden: null,
+        onLoad: null,
         hotkey: true,
         className: 'layer',
         rootClassName: '',
@@ -52,27 +58,34 @@ export default class DisplayLayer extends Component {
         backdropClassName: '',
         loadingContent: true,
         cache: false,
-        id: null
+        id: null,
+        children: null,
+        style: null,
     };
 
     static propTypes = {
         content: PropTypes.any,
+        contentLoadFail: PropTypes.any,
         id: PropTypes.any,
         animation: PropTypes.string,
         onShown: PropTypes.func,
         onHidden: PropTypes.func,
+        onLoad: PropTypes.func,
         show: PropTypes.bool,
         hotkey: PropTypes.bool,
         cache: PropTypes.bool,
         loadingContent: PropTypes.bool,
         rootClassName: PropTypes.string,
         className: PropTypes.string,
+        backdrop: PropTypes.bool,
         backdropClassName: PropTypes.string,
         contentClassName: PropTypes.string,
         footer: PropTypes.any,
         header: PropTypes.any,
         plugName: PropTypes.string,
         modal: PropTypes.bool,
+        children: PropTypes.any,
+        style: PropTypes.object,
     };
 
     /**
@@ -87,7 +100,7 @@ export default class DisplayLayer extends Component {
             loading: true,
             content: null,
             style: null,
-            zIndex: zIndexSeed++
+            zIndex: newZIndex()
         };
         if (typeof props.content !== 'function') {
             this.state.content = props.content;
@@ -176,7 +189,7 @@ export default class DisplayLayer extends Component {
     changeStage(stage) {
         const newState = {stage: STAGE.getValue(stage)};
         if (STAGE.isSame(stage, STAGE.shown)) {
-            newState.zIndex = zIndexSeed++;
+            newState.zIndex = newZIndex();
         }
         this.setState(newState);
     }
@@ -207,10 +220,10 @@ export default class DisplayLayer extends Component {
         } else {
             this.changeStage(STAGE.shown);
             const afterShow = () => {
-                if(this.props.onShown) {
+                if (this.props.onShown) {
                     this.props.onShown(this);
                 }
-                if(callback) {
+                if (callback) {
                     callback(this);
                 }
             };
@@ -231,10 +244,10 @@ export default class DisplayLayer extends Component {
     hide(callback) {
         this.changeStage(STAGE.hidden);
         const afterHidden = () => {
-            if(this.props.onHidden) {
+            if (this.props.onHidden) {
                 this.props.onHidden(this);
             }
-            if(callback) {
+            if (callback) {
                 callback(this);
             }
         };
@@ -266,7 +279,7 @@ export default class DisplayLayer extends Component {
                 if (onLoad) {
                     onLoad(true, this.state.content, this);
                 }
-                if(callback) {
+                if (callback) {
                     callback(true, this.state.content, this);
                 }
             };
@@ -363,7 +376,7 @@ export default class DisplayLayer extends Component {
         );
 
         return (<div onKeyUp={this.handeWindowKeyup.bind(this)} className={rootClassName} style={{zIndex: this.state.zIndex}}>
-            {backdrop && <div onClick={this.handleBackdropClick} className={HTML.classes('display-backdrop', backdropClassName)}></div>}
+            {backdrop && <div onClick={this.handleBackdropClick} className={HTML.classes('display-backdrop', backdropClassName)} />}
             <div className={HTML.classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => {this.displayElement = e;}}>
                 {header}
                 <div className={HTML.classes('content', contentClassName)}>{this.state.loading ? loadingContent : this.state.content}</div>

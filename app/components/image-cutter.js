@@ -38,10 +38,10 @@ class ImageCutter extends Component {
     componentDidMount() {
         this.HotkeysScope = timeSequence();
         hotkeys.setScope(this.HotkeysScope);
-        hotkeys('esc', this.HotkeysScope, e => {
+        hotkeys('esc', this.HotkeysScope, () => {
             this.handleCloseButtonClick();
         });
-        hotkeys('enter', this.HotkeysScope, e => {
+        hotkeys('enter', this.HotkeysScope, () => {
             this.handleOkButtonClick();
         });
     }
@@ -66,7 +66,7 @@ class ImageCutter extends Component {
         }
     }
 
-    handleCloseButtonClick = e => {
+    handleCloseButtonClick = () => {
         if (this.props.onFinish) {
             this.props.onFinish(null);
         }
@@ -85,7 +85,7 @@ class ImageCutter extends Component {
             ...other
         } = this.props;
 
-        let imageUrl = `file://${sourceImage.replace(/\\/g, '/')}`;
+        const imageUrl = `file://${sourceImage.replace(/\\/g, '/')}`;
 
         style = Object({
             backgroundRepeat: 'no-repeat',
@@ -106,8 +106,8 @@ class ImageCutter extends Component {
             {...other}
             className="dock user-app-no-dragable"
             style={style}
-            onMouseEnter={e => {this.setState({hover: true});}}
-            onMouseLeave={e => {this.setState({hover: false});}}
+            onMouseEnter={() => {this.setState({hover: true});}}
+            onMouseLeave={() => {this.setState({hover: false});}}
         >
             <AreaSelector
                 onSelectArea={this.handleSelectArea}
