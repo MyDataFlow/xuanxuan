@@ -43,7 +43,8 @@
     "docs": "./node_modules/.bin/esdoc",
     "package-browser": "npm run build-browser && npm run copy-browser-files",
     "publish-browser": "npm run build-browser && npm run copy-browser-files -- --publish",
-    "hot-server-browser": "npm run hot-server -- --target=browser"
+    "hot-server-browser": "npm run hot-server -- --target=browser",
+    "start-browser": "http-server ./app -a 127.0.0.1 -p 8088"
   },
   "build": {
     "productName": "xuanxuan",
