@@ -78,11 +78,12 @@ const postJSON = (url, options) => {
 
 const getJSONData = (url, options) => {
     return getJSON(url, options).then(json => {
-        if(json) {
-            if(json.status === 'success') {
+        if (json) {
+            const jsonResult = json.status || json.result;
+            if (jsonResult === 'success') {
                 return Promise.resolve(json.data);
             } else {
-                let error = new Error(json.message || json.reason || `The server data status is ${json.status}`);
+                let error = new Error(json.message || json.reason || `The server data result is ${jsonResult}`);
                 error.code = 'WRONG_RESULT';
                 return Promise.reject(error);
             }

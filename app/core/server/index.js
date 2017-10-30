@@ -108,11 +108,16 @@ const logout = () => {
     }
 };
 
+const changeRanzhiUserPassword = (oldPassword, newPassword) => {
+    return API.changeRanzhiUserPassword(profile.user, oldPassword, newPassword);
+};
+
 export default {
     login,
     logout,
     socket,
     onUserLogin,
     onUserLoginout,
-    changeUserStatus
+    changeUserStatus,
+    changeRanzhiUserPassword
 };

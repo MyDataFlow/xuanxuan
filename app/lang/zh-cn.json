@@ -107,6 +107,7 @@
     "error.SERVER_VERSION_UNKNOWN": "未知的服务器版本。",
     "error.SERVER_VERSION_NOT_SUPPORT": "当前客户端（{0}）不支持所连接服务器版本 {1}，需要服务器版本为 {2} 以上。",
     "error.SERVER_VERSION_NOT_SUPPORT_IN_BROWSER": "浏览器端（{0}）不支持所连接服务器版本 {1}，需要服务器版本为 {2} 以上。",
+    "error.RANZHI_SERVER_NOTSET": "没有找到然之服务器设置。",
 
     "login.serverUrl.label": "服务器",
     "login.serverUrl.hint": "https://xuanxuan.chat",
@@ -242,10 +243,22 @@
     "navbar.groups.label": "讨论组",
 
     "usermenu.openProfile": "个人资料",
+    "usermenu.changePassword": "更改密码",
     "usermenu.about": "关于",
     "usermenu.setting": "设置",
     "usermenu.logout": "注销",
     "usermenu.exit": "退出",
+
+    "user.changePassword.heading": "修改密码",
+    "user.changePassword.oldPassword": "旧密码",
+    "user.changePassword.newPassword": "新密码",
+    "user.changePassword.newPasswordRepeat": "重复新密码",
+    "user.changePassword.btn.confirm": "更改密码",
+    "user.changePassword.inputRequired": "需要填写“{0}”",
+    "user.changePassword.passwordNotSame": "两次填写的密码不一样",
+    "user.changePassword.notChanged": "新密码与旧密码相同",
+    "user.changePassword.failed": "密码更改失败。",
+    "user.changePassword.success": "密码修改成功。",
 
     "member.status.unverified":   "未登录",
     "member.status.disconnect":   "掉线了",
