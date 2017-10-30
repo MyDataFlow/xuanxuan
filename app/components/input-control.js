@@ -25,7 +25,7 @@ class InputControl extends Component {
 
     static propTypes = {
         defaultValue: PropTypes.string,
-        label: PropTypes.string,
+        label: PropTypes.any,
         className: PropTypes.string,
         placeholder: PropTypes.string,
         autoFocus: PropTypes.bool,
@@ -38,7 +38,7 @@ class InputControl extends Component {
         onChange: PropTypes.func,
         disabled: PropTypes.bool,
         inputClassName: PropTypes.string,
-        children: PropTypes.string,
+        children: PropTypes.any,
         name: PropTypes.string,
         value: PropTypes.string,
     }

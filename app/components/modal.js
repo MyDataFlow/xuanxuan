@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import Display from './display';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
@@ -96,13 +95,13 @@ const show = (props = {}, callback = null) => {
             }
         };
 
-        footer = <footer className="footer toolbar">
-        {
-            actions.map((action, actionIndex) => {
-                return <button className={HTML.classes('btn', action.className, action.type ? `action-${action.type}` : null)} type="button" onClick={handleActionClick.bind(null, action)} key={actionIndex} title={action.label}>{action.label}</button>
-            })
-        }
-        </footer>;
+        footer = (<footer className="footer toolbar">
+            {
+                actions.map((action, actionIndex) => {
+                    return <button className={HTML.classes('btn', action.className, action.type ? `action-${action.type}` : null)} type="button" onClick={handleActionClick.bind(null, action)} key={action.id || actionIndex} title={action.label}>{action.label}</button>;
+                })
+            }
+        </footer>);
     }
 
     const header = (title || closeButton) ? <header className={HTML.classes("heading", headingClassName)}>
@@ -150,12 +149,12 @@ const confirm = (content, props, callback) => {
                     resolve(false);
                 }
             }
-        }, props), callback)
+        }, props), callback);
     });
 };
 
 const prompt = (title, defaultValue, props, callback) => {
-    let inputProps = props && props.inputProps;
+    const inputProps = props && props.inputProps;
     if (inputProps) {
         delete props.inputProps;
     }
@@ -166,9 +165,14 @@ const prompt = (title, defaultValue, props, callback) => {
             closeButton: false,
             modal: true,
             title,
-            content: <InputControl autoFocus={true} defaultValue={defaultValue} onChange={newValue => {
-                value = newValue;
-            }} {...inputProps}/>,
+            content: <InputControl
+                autoFocus
+                defaultValue={defaultValue}
+                onChange={newValue => {
+                    value = newValue;
+                }}
+                {...inputProps}
+            />,
             actions: true,
             onAction: action => {
                 if (action.type === 'submit') {
@@ -181,7 +185,7 @@ const prompt = (title, defaultValue, props, callback) => {
                     resolve(defaultValue);
                 }
             }
-        }, props), callback)
+        }, props), callback);
     });
 };
 

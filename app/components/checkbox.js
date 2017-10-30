@@ -54,7 +54,7 @@ export default class Checkbox extends Component {
      * @memberof Checkbox
      */
     handleCheckboxChange = e => {
-        if(this.props.onChange) {
+        if (this.props.onChange) {
             this.props.onChange(e.target.checked, e);
         }
     };
@@ -66,7 +66,7 @@ export default class Checkbox extends Component {
      * @memberof Checkbox
      */
     render() {
-        let {
+        const {
             checked,
             label,
             children,

@@ -358,6 +358,7 @@ export default class DisplayLayer extends Component {
             cache,
             loadingContent,
             contentClassName,
+            contentLoadFail,
             children,
             style,
             ...other
