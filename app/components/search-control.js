@@ -22,7 +22,7 @@ class SearchControl extends Component {
             empty: StringHelper.isEmpty(props.defaultValue)
         };
 
-        if(this.props.onSearchChange) {
+        if (this.props.onSearchChange) {
             this.delaySearchChangeTask = new DelayAction((searchValue) => {
                 this.props.onSearchChange(searchValue);
             }, this.props.changeDelay);
@@ -38,25 +38,29 @@ class SearchControl extends Component {
     }
 
     componentWillUnmount() {
-        if(this.delaySearchChangeTask) {
+        if (this.delaySearchChangeTask) {
             this.delaySearchChangeTask.destroy();
         }
     }
 
     handleOnInputFocus = e => {
         this.setState({focus: true});
-        this.props.onFocus && this.props.onFocus(e);
+        if (this.props.onFocus) {
+            this.props.onFocus(e);
+        }
     }
 
     handleOnInputBlur = e => {
         this.setState({focus: false});
-        this.props.onBlur && this.props.onBlur(e);
+        if (this.props.onBlur) {
+            this.props.onBlur(e);
+        }
     }
 
     handleOnInputChange = value => {
         value = typeof value === 'string' ? value.trim() : '';
         this.setState({empty: StringHelper.isEmpty(value), value});
-        if(this.delaySearchChangeTask) {
+        if (this.delaySearchChangeTask) {
             this.delaySearchChangeTask.do(value);
         }
     }

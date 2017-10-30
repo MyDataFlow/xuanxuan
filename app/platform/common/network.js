@@ -11,8 +11,8 @@ const request = (url, options) => {
     return new Promise((resolve, reject) => {
         options = getOptions(options);
         fetch(url, options).then(response => {
-            if(response.ok) {
-                if(DEBUG) {
+            if (response.ok) {
+                if (DEBUG) {
                     console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', 'OK', 'greenPale');
                     console.log('options', options);
                     console.log('response', response);
@@ -23,7 +23,7 @@ const request = (url, options) => {
             } else {
                 let error = new Error(response.statusMessage || 'Status code is not 200.');
                 error.code = response.statusMessage || 'WRONG_STATUS';
-                if(DEBUG) {
+                if (DEBUG) {
                     console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', error.code || 'ERROR', 'redPale');
                     console.log('options', options);
                     console.log('error', error);
@@ -34,7 +34,7 @@ const request = (url, options) => {
             }
         }).catch(error => {
             error.code = 'WRONG_CONNECT';
-            if(DEBUG) {
+            if (DEBUG) {
                 console.collapse(`HTTP ${(options && options.method) || 'GET'}`, 'blueBg', url, 'bluePale', error.code || 'ERROR', 'redPale');
                 console.log('options', options);
                 console.log('error', error);
@@ -43,7 +43,7 @@ const request = (url, options) => {
             reject(error);
         });
     });
-}
+};
 
 const getText = (url, options) => {
     return request(url, options).then(response => {
@@ -52,7 +52,7 @@ const getText = (url, options) => {
 };
 
 const postText = (url, options) => {
-    if(options instanceof FormData) {
+    if (options instanceof FormData) {
         options = {body: options};
     }
     return request(url, Object.assign({method: 'POST'}, options)).then(response => {
@@ -68,7 +68,7 @@ const getJSON = (url, options) => {
 };
 
 const postJSON = (url, options) => {
-    if(options instanceof FormData) {
+    if (options instanceof FormData) {
         options = {body: options};
     }
     return request(url, Object.assign({method: 'POST'}, options)).then(response => {
@@ -96,7 +96,7 @@ const getJSONData = (url, options) => {
 };
 
 const postJSONData = (url, options) => {
-    if(options instanceof FormData) {
+    if (options instanceof FormData) {
         options = {body: options};
     }
     return getJSONData(url, Object.assign({
@@ -108,7 +108,7 @@ const downloadFile = (url, beforeSend, onprogress) => {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.onload = e => {
-            if(xhr.status === 200) {
+            if (xhr.status === 200) {
                 let arrayBuffer = xhr.response;
                 if (arrayBuffer) {
                     resolve(arrayBuffer);
@@ -143,7 +143,7 @@ const downloadFile = (url, beforeSend, onprogress) => {
 
         xhr.open('GET', url);
         xhr.responseType = "arraybuffer";
-        if(beforeSend) {
+        if (beforeSend) {
             beforeSend(xhr);
         }
         xhr.send();
@@ -162,19 +162,19 @@ const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = e => {
-            if(xhr.status === 200) {
+            if (xhr.status === 200) {
                 let bodyText = xhr.responseText;
                 try {
                     let json = JSON.parse(bodyText);
-                    if(json.result === 'success' && json.data) {
+                    if (json.result === 'success' && json.data) {
                         resolve(json.data);
                     } else {
                         let error = new Error(`The server returned wrong result: ${responseText}`);
                         error.code = 'WRONG_RESULT';
                         reject(error);
                     }
-                } catch(err) {
-                    if(bodyText.indexOf("user-deny-attach-upload") > 0) {
+                } catch (err) {
+                    if (bodyText.indexOf("user-deny-attach-upload") > 0) {
                         let error = new Error('Server denied the request.');
                         error.code = 'USER_DENY_ATTACT_UPLOAD';
                         reject(error);
@@ -210,7 +210,7 @@ const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
 
         xhr.open('POST', serverUrl);
         xhr.setRequestHeader("X-FILENAME", encodeURIComponent(file.name));
-        if(beforeSend) {
+        if (beforeSend) {
             beforeSend(xhr);
         }
         xhr.send(file.form || file);

@@ -1,25 +1,24 @@
+import Platform from 'Platform';
 import chats from './im-chats';
 import ui from './im-ui';
 import DelayAction from '../../utils/delay-action';
 import notice from '../notice';
 import Lang from '../../lang';
-import Platform from 'Platform';
 import profile from '../profile';
 import members from '../members';
-import HTML from '../../utils/html-helper';
 
 const getPlainTextOfChatMessage = (chatMessage, limitLength = 255, ignoreBreak = true) => {
-    if(chatMessage.isFileContent) {
+    if (chatMessage.isFileContent) {
         return `[${Lang.format('file.title.format', chatMessage.fileContent.name)}]`;
     }
-    if(chatMessage.isImageContent) {
+    if (chatMessage.isImageContent) {
         return `[${Lang.string('file.image.title')}]`;
     }
     let plainText = chatMessage.renderedTextContent().replace(/<(?:.|\n)*?>/gm, '');
-    if(ignoreBreak) {
+    if (ignoreBreak) {
         plainText = plainText.trim().replace(/[\r\n]/g, ' ').replace(/\n[\s| | ]*\r/g,'\n');
     }
-    if(limitLength && plainText.length > limitLength) {
+    if (limitLength && plainText.length > limitLength) {
         plainText = plainText.substr(0, limitLength);
     }
     return plainText;
@@ -29,7 +28,7 @@ let lastNoticeChat = null;
 let lastTotal = 0;
 const updateChatNoticeTask = new DelayAction(() => {
     const userConfig = profile.userConfig;
-    if(!userConfig) {
+    if (!userConfig) {
         return;
     }
 
@@ -37,18 +36,18 @@ const updateChatNoticeTask = new DelayAction(() => {
     let lastChatMessage = null;
 
     chats.forEach(chat => {
-        if(chat.noticeCount) {
+        if (chat.noticeCount) {
             const isWindowFocus = Platform.ui.isWindowFocus;
             const isActiveChat = ui.isActiveChat(chat.gid);
-            if(isWindowFocus && isActiveChat) {
+            if (isWindowFocus && isActiveChat) {
                 const mutedMessages = chat.muteNotice();
-                if(mutedMessages && mutedMessages.length) {
+                if (mutedMessages && mutedMessages.length) {
                     chats.saveChatMessages(chat.messages, chat);
                 }
             } else {
                 total += chat.noticeCount;
                 const chatLastMessage = chat.lastMessage;
-                if(chatLastMessage && (!lastChatMessage || lastChatMessage.date < chatLastMessage.date)) {
+                if (chatLastMessage && (!lastChatMessage || lastChatMessage.date < chatLastMessage.date)) {
                     lastChatMessage = chatLastMessage;
                     lastNoticeChat = chat;
                 }
@@ -57,30 +56,30 @@ const updateChatNoticeTask = new DelayAction(() => {
     });
 
     let message = null;
-    if(total && lastTotal < total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
+    if (total && lastTotal < total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
         message = userConfig.safeWindowNotification ? {
             title: Lang.format('notification.receviedMessages.format', total),
         } : {
             title: lastNoticeChat.isOne2One ? Lang.format('notification.memberSays.format', lastChatMessage.getSender(members).displayName) : Lang.format('notification.memberSaysInGroup.format', lastChatMessage.getSender(members).displayName, lastNoticeChat.getDisplayName({members, user: profile.user})),
             body: getPlainTextOfChatMessage(lastChatMessage)
         };
-        if(lastNoticeChat.isOne2One) {
+        if (lastNoticeChat.isOne2One) {
             const theOtherOne = lastNoticeChat.getTheOtherOne({members, user: profile.user});
             const avatar = theOtherOne.getAvatar(profile.user && profile.user.server)
-            if(avatar) {
+            if (avatar) {
                 message.icon = avatar;
             }
         }
         message.click = () => {
             window.location.hash = `#/chats/recents/${lastNoticeChat.gid}`;
-            if(Platform.ui.showAndFocusWindow) {
+            if (Platform.ui.showAndFocusWindow) {
                 Platform.ui.showAndFocusWindow();
             }
-        }
+        };
     }
 
     let sound = false;
-    if(
+    if (
         total &&
         lastTotal < total &&
         userConfig.enableSound &&
@@ -89,8 +88,8 @@ const updateChatNoticeTask = new DelayAction(() => {
         sound = true;
     }
 
-    let tray = {label: total ? Lang.format('notification.receviedMessages.format', total) : ''};
-    if(
+    const tray = {label: total ? Lang.format('notification.receviedMessages.format', total) : ''};
+    if (
         total &&
         userConfig.flashTrayIcon &&
         notice.isMatchWindowCondition(userConfig.flashTrayIconCondition)
@@ -110,13 +109,11 @@ chats.onChatMessages(runChatNoticeTask);
 
 Platform.ui.onWindowFocus(() => {
     const activedChat = ui.currentActiveChat;
-    if(lastNoticeChat && lastNoticeChat.noticeCount && (!activedChat || (!activedChat.noticeCount && activedChat.gid !== lastNoticeChat.gid))) {
+    if (lastNoticeChat && lastNoticeChat.noticeCount && (!activedChat || (!activedChat.noticeCount && activedChat.gid !== lastNoticeChat.gid))) {
         window.location.hash = `#/chats/recents/${lastNoticeChat.gid}`;
-    } else {
-        if(activedChat && activedChat.noticeCount) {
-            activedChat.muteNotice();
-            chats.saveChatMessages(activedChat.messages, activedChat);
-        }
+    } else if (activedChat && activedChat.noticeCount) {
+        activedChat.muteNotice();
+        chats.saveChatMessages(activedChat.messages, activedChat);
     }
 });
 

@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
-import HotkeyInputControl from '../../components/hotkey-input-control';
-import Lang from '../../lang';
 import Config from 'Config';
 import Platform from 'Platform';
+import HTML from '../../utils/html-helper';
+import HotkeyInputControl from '../../components/hotkey-input-control';
+import Lang from '../../lang';
 import Checkbox from '../../components/checkbox';
 import SelectBox from '../../components/select-box';
 
@@ -184,30 +182,30 @@ class UserSetting extends Component {
 
     changeConfig(item, value) {
         const name = item.name;
-        if(typeof value === 'object' && value.target) {
-            if(value.target.type === 'checkbox') {
+        if (typeof value === 'object' && value.target) {
+            if (value.target.type === 'checkbox') {
                 value = value.target.checked;
             } else {
                 value = value.target.value;
             }
         }
-        if(item.setConverter) {
+        if (item.setConverter) {
             value = item.setConverter(value);
         }
         this.setState({[name]: value});
     }
 
     renderConfigItem(item) {
-        if(item.hidden) {
+        if (item.hidden) {
             let hidden = item.hidden;
-            if(typeof item.hidden === 'function') {
+            if (typeof item.hidden === 'function') {
                 hidden = item.hidden(this.state);
             }
-            if(hidden) {
+            if (hidden) {
                 return null;
             }
         }
-        switch(item.type) {
+        switch (item.type) {
             case 'boolean':
                 return this.renderBooleanItem(item);
             case 'select':
@@ -220,7 +218,7 @@ class UserSetting extends Component {
 
     renderHotkeyItem(item) {
         let value = this.state[item.name];
-        if(item.getConverter) {
+        if (item.getConverter) {
             value = item.getConverter(value);
         }
         return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes("flex", item.className)}/>
@@ -228,7 +226,7 @@ class UserSetting extends Component {
 
     renderSelectItem(item) {
         let value = this.state[item.name];
-        if(item.getConverter) {
+        if (item.getConverter) {
             value = item.getConverter(value);
         }
         return <div className={HTML.classes("control flex", item.className)} key={item.name}>
@@ -239,7 +237,7 @@ class UserSetting extends Component {
 
     renderBooleanItem(item) {
         let value = this.state[item.name];
-        if(item.getConverter) {
+        if (item.getConverter) {
             value = item.getConverter(value);
         }
         const checked = !!value;
@@ -261,7 +259,7 @@ class UserSetting extends Component {
         >
             {
                 configs.map(section => {
-                    if(section.hidden) {
+                    if (section.hidden) {
                         return null;
                     }
                     return <section key={section.name} className="space">

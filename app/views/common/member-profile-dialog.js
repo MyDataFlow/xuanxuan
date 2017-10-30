@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Modal from '../../components/modal';
 import App from '../../core';
 import MemberProfile from './member-profile';

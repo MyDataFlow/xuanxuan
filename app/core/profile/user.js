@@ -46,12 +46,12 @@ class User extends Member {
         });
 
         this._status.onChange = (status, oldStatus) => {
-            if(this.isEventsEnable) {
+            if (this.isEventsEnable) {
                 Events.emit(EVENT.status_change, status, oldStatus, this);
             }
 
             clearTimeout(this.statusChangeCallTimer);
-            if(this._status.is(Member.STATUS.logined)) {
+            if (this._status.is(Member.STATUS.logined)) {
                 this.$set('lastLoginTime', new Date().getTime());
                 this.statusChangeCallTimer = setTimeout(() => {
                     this.status = Member.STATUS.online;
@@ -99,14 +99,14 @@ class User extends Member {
     }
 
     get config() {
-        if(!this._config) {
+        if (!this._config) {
             this._config = new UserConfig(this.$get('config'));
             this._config.onChange = (change, config) => {
                 // Save user to config file
                 this.save();
 
                 // Emit user config change event
-                if(this.isEventsEnable) {
+                if (this.isEventsEnable) {
                     Events.emit(EVENT.config_change, change, config, this);
                 }
             };
@@ -148,9 +148,9 @@ class User extends Member {
 
     endLogin(result) {
         this._isLogging = false;
-        if(result) {
+        if (result) {
             this.status = Member.STATUS.logined;
-        } else if(!this.isDisconnect) {
+        } else if (!this.isDisconnect) {
             this.status = Member.STATUS.unverified;
         }
     }
@@ -164,11 +164,11 @@ class User extends Member {
     }
 
     set server(server) {
-        if(!server.startsWith('https://') && !server.startsWith('http://')) {
+        if (!server.startsWith('https://') && !server.startsWith('http://')) {
             server = 'https://' + server;
         }
         const url = new URL(server);
-        if(!url.port) {
+        if (!url.port) {
             url.port = 11443;
         }
         this.$set('server', url.toString());
@@ -176,7 +176,7 @@ class User extends Member {
     }
 
     get server() {
-        if(!this._server) {
+        if (!this._server) {
             this.server = this.$get('server');
         }
         return this._server;
@@ -187,6 +187,17 @@ class User extends Member {
         return server && server.toString();
     }
 
+    get ranzhiUrl() {
+        if (this._ranzhiUrl === undefined) {
+            this._ranzhiUrl = `http://${this.server.hostname}`;
+        }
+        return this._ranzhiUrl;
+    }
+
+    set ranzhiUrl(url) {
+        this._ranzhiUrl = url;
+    }
+
     get webServerPort() {
         const server = this.server;
         return server ? server.port : '';
@@ -194,7 +205,7 @@ class User extends Member {
 
     get serverName() {
         const server = this.server;
-        if(server) {
+        if (server) {
             return server.username ? server.username : (server.pathname ? server.pathname.substr(1) : '');
         }
         return '';
@@ -214,11 +225,11 @@ class User extends Member {
     }
 
     get socketUrl() {
-        if(this._socketUrl) {
+        if (this._socketUrl) {
             return this._socketUrl;
         }
         let serverUrl = this.serverUrl;
-        if(serverUrl) {
+        if (serverUrl) {
             let url = new URL(serverUrl);
             url.protocol = 'ws:';
             url.pathname = '/ws';
@@ -237,7 +248,7 @@ class User extends Member {
     }
 
     set serverVersion(version) {
-        if(version[0] === 'v') {
+        if (version[0] === 'v') {
             version = version.substr(1);
         }
         this._serverVersion = version;
@@ -246,33 +257,33 @@ class User extends Member {
     get serverUrlRoot() {
         const serverUrl = this.serverUrl;
         let urlRoot = '';
-        if(serverUrl) {
+        if (serverUrl) {
             let url = new URL(serverUrl);
             url.hash = '';
             url.search = '';
             url.pathname = '';
             urlRoot = url.toString();
         }
-        if(urlRoot && !urlRoot.endsWith('/')) {
+        if (urlRoot && !urlRoot.endsWith('/')) {
             urlRoot += '/';
         }
-        return urlRoot
+        return urlRoot;
     }
 
     makeServerUrl(path = '') {
-        if(path && path.startsWith('/')) {
+        if (path && path.startsWith('/')) {
             path = path.substr(1);
         }
         return this.serverUrlRoot + path;
     }
 
     get uploadUrl() {
-        return this.makeServerUrl(`upload`);
+        return this.makeServerUrl('upload');
     }
 
     get identify() {
-        let server = this.server;
-        if(!server) {
+        const server = this.server;
+        if (!server) {
             return '';
         }
         return User.createIdentify(server, this.account);
@@ -337,10 +348,10 @@ class User extends Member {
 
     get avatar() {
         let avatar = this._avatar;
-        if(!avatar) {
+        if (!avatar) {
             avatar = this.$get('avatar');
-            if(avatar) {
-                if(!avatar.startsWith('https://') && !avatar.startsWith('http://')) {
+            if (avatar) {
+                if (!avatar.startsWith('https://') && !avatar.startsWith('http://')) {
                     avatar = this.serverUrlRoot + avatar;
                 }
             }
@@ -363,7 +374,7 @@ class User extends Member {
 
     get passwordMD5WithFlag() {
         let password = this.password;
-        if(password && !password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
+        if (password && !password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
             password = PASSWORD_WITH_MD5_FLAG + password;
         }
         return password;
@@ -371,7 +382,7 @@ class User extends Member {
 
     get passwordMD5() {
         let password = this.password;
-        if(password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
+        if (password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
             password = password.substr(PASSWORD_WITH_MD5_FLAG.length);
         } else {
             password = Md5(password)
@@ -380,32 +391,32 @@ class User extends Member {
     }
 
     set password(newPassword) {
-        if(newPassword && !newPassword.startsWith(PASSWORD_WITH_MD5_FLAG)) {
+        if (newPassword && !newPassword.startsWith(PASSWORD_WITH_MD5_FLAG)) {
             newPassword = PASSWORD_WITH_MD5_FLAG + Md5(newPassword);
         }
         this.$set('password', newPassword);
     }
 
     static create(user) {
-        if(user instanceof User) {
+        if (user instanceof User) {
             return user;
         }
         return new User(user);
     }
 
     static createIdentify(server, account) {
-        if(!(server instanceof URL)) {
-            if(!server.startsWith('https://') && !server.startsWith('http://')) {
+        if (!(server instanceof URL)) {
+            if (!server.startsWith('https://') && !server.startsWith('http://')) {
                 server = `https://${server}`;
             }
             server = new URL(server);
         }
-        if(!server.port) {
+        if (!server.port) {
             server.port = 11443;
         }
         let pathname = server.pathname;
-        if(pathname && pathname.length) {
-            if(pathname === '/') {
+        if (pathname && pathname.length) {
+            if (pathname === '/') {
                 pathname = '';
             }
             pathname = pathname.replace(/\//g, '_');
