@@ -244,6 +244,9 @@ export default class DisplayLayer extends Component {
     hide(callback) {
         this.changeStage(STAGE.hidden);
         const afterHidden = () => {
+            if (this.props.cache) {
+                this.reset();
+            }
             if (this.props.onHidden) {
                 this.props.onHidden(this);
             }
@@ -254,9 +257,6 @@ export default class DisplayLayer extends Component {
         if (this.props.animation) {
             setTimeout(afterHidden, 400);
         } else {
-            if (this.props.cache) {
-                this.reset();
-            }
             afterHidden();
         }
     }
