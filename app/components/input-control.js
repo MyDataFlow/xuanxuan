@@ -20,6 +20,7 @@ class InputControl extends Component {
         inputStyle: null,
         inputProps: null,
         children: null,
+        value: null,
     };
 
     static propTypes = {
@@ -39,11 +40,13 @@ class InputControl extends Component {
         inputClassName: PropTypes.string,
         children: PropTypes.any,
         name: PropTypes.string,
+        value: PropTypes.string,
     }
 
     constructor(props) {
         super(props);
-        this.state = {value: this.props.defaultValue};
+        const {value, defaultValue} = props;
+        this.state = {value: (value !== null && value !== undefined) ? value : defaultValue};
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -98,6 +101,7 @@ class InputControl extends Component {
             className,
             inputClassName,
             disabled,
+            value,
             children,
             ...other
         } = this.props;
@@ -105,9 +109,10 @@ class InputControl extends Component {
         return (<div className={HTML.classes('control', className, {disabled})} {...other}>
             {label !== false && <label htmlFor={name} style={labelStyle}>{label}</label>}
             <input
+                defaultValue={defaultValue}
                 disabled={!!disabled}
                 ref={e => {this.input = e;}}
-                value={this.state.value}
+                value={value !== null ? value : this.state.value}
                 id={name}
                 type={inputType}
                 className={HTML.classes('input', inputClassName)}
