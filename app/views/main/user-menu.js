@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import ClickOutsideWrapper from '../../components/click-outside-wrapper';
@@ -88,11 +87,11 @@ class UserMenu extends Component {
         >
             {
                 allStatus.map(statusName => {
-                    return <a key={statusName} onClick={this.handleStatusClick.bind(this, statusName)} className="item flex-middle">
-                        <StatusDot status={statusName}/>
+                    return (<a key={statusName} onClick={this.handleStatusClick.bind(this, statusName)} className="item flex-middle">
+                        <StatusDot status={statusName} />
                         <div className="title">{Lang.string(`member.status.${statusName}`)}</div>
-                        {userStatusName === statusName && <Icon name="check" className="text-green"/>}
-                    </a>;
+                        {userStatusName === statusName && <Icon name="check" className="text-green" />}
+                    </a>);
                 })
             }
             <div className="divider" />

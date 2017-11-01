@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import Path from 'path';
 
 const base64ToBuffer = base64Str => {
-    let matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (matches.length !== 3) {
         throw new Error('Invalid base64 image string.');
     }
@@ -29,7 +29,7 @@ const cutImage = (imagePath, select) => {
             img = canvas = null;
         };
 
-        if(!imagePath.startsWith('https://') && !imagePath.startsWith('http://') && !imagePath.startsWith('file://')) {
+        if (!imagePath.startsWith('https://') && !imagePath.startsWith('http://') && !imagePath.startsWith('file://')) {
             imagePath = `file://${imagePath}`;
         }
         img.src = imagePath;
@@ -45,25 +45,24 @@ const createFromDataURL = dataUrl => {
 };
 
 const saveImage = (image, filePath) => {
-    let file = {
+    const file = {
         path: filePath,
         name: Path.basename(filePath),
     };
-    if(typeof image === 'string') {
+    if (typeof image === 'string') {
         file.base64 = image;
         image = base64ToBuffer(image);
         file.size = image.length;
-    } else if(image.toPNG) {
+    } else if (image.toPNG) {
         image = image.toPNG();
         file.size = image.length;
     }
-    if(image instanceof Buffer) {
+    if (image instanceof Buffer) {
         return fs.outputFile(filePath, image).then(() => {
             return Promise.resolve(file);
         });
-    } else {
-        return Promise.reject('Cannot convert image to a buffer.');
     }
+    return Promise.reject('Cannot convert image to a buffer.');
 };
 
 export default {

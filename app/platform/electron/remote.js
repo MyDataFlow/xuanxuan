@@ -1,11 +1,11 @@
 import {ipcRenderer} from 'electron';
 import EVENT from './remote-events';
 
-if(process.type !== 'renderer') {
-    if(DEBUG) console.error('\n>> Can not send event with ipc in main process, you can use AppRemote.sendToWindows method instead.');
+if (process.type !== 'renderer') {
+    if (DEBUG) console.error('\n>> Can not send event with ipc in main process, you can use AppRemote.sendToWindows method instead.');
 }
 
-let eventsMap = {};
+const eventsMap = {};
 let idSeed = new Date().getTime() + Math.floor(Math.random() * 100000);
 
 const call = (method, ...args) => {
@@ -38,7 +38,7 @@ const ipcOn = (event, listener) => {
     ipcRenderer.on(event, listener);
     const name = Symbol(event);
     eventsMap[name] = {listener, name: event, ipc: true};
-    if(DEBUG) {
+    if (DEBUG) {
         console.collapse('ON IPC EVENT', 'orangeBg', event, 'orangePale');
         console.trace('event', eventsMap[name]);
         console.groupEnd();
@@ -54,13 +54,13 @@ const ipcOn = (event, listener) => {
  */
 const ipcOnce = (event, listener) => {
     const name = Symbol(event);
-    let bindedListener = (...args) => {
+    const bindedListener = (...args) => {
         remoteOff(name);
         listener(...args);
     };
     ipcRenderer.once(event, bindedListener);
     eventsMap[name] = {listener: bindedListener, name: event, ipc: true};
-    if(DEBUG) {
+    if (DEBUG) {
         console.collapse('ON IPC ONCE EVENT', 'orangeBg', event, 'orangePale');
         console.trace('event', eventsMap[name]);
         console.groupEnd();
@@ -76,12 +76,12 @@ const ipcOnce = (event, listener) => {
  */
 const remoteOn = (event, listener) => {
     const eventId = `${EVENT.remote_on}.${event}.${idSeed++}`;
-    const ipcEventName = ipcRendererOn(eventId, (e, ...args) => {
-        if(DEBUG) {
+    const ipcEventName = ipcOn(eventId, (e, ...args) => {
+        if (DEBUG) {
             console.collapse('COMMING REMOTE EVENT', 'orangeBg', event, 'orangePale');
             console.trace('event', eventsMap[eventId]);
             let argIdx = 0;
-            for(let arg of args) {
+            for (const arg of args) {
                 console.log('arg:' + argIdx++, arg);
             }
             console.groupEnd();
@@ -90,7 +90,7 @@ const remoteOn = (event, listener) => {
     });
     eventsMap[eventId] = {remote: true, id: ipcEventName};
     ipcRenderer.send(EVENT.remote_on, eventId, event);
-    if(DEBUG) {
+    if (DEBUG) {
         console.collapse('ON REMOTE EVENT', 'orangeBg', event, 'orangePale');
         console.trace('event', eventsMap[eventId]);
         console.groupEnd();
@@ -106,10 +106,10 @@ const remoteOn = (event, listener) => {
  */
 const remoteEmit = (event, ...args) => {
     ipcRenderer.send(EVENT.remote_emit, event, ...args);
-    if(DEBUG) {
+    if (DEBUG) {
         console.collapse('cEMIT REMOTE EVENT', 'orangeBg', event, 'orangePale');
         let argIdx = 0;
-        for(let arg of args) {
+        for (const arg of args) {
             console.log('arg:' + argIdx++, arg);
         }
         console.groupEnd();
@@ -132,19 +132,19 @@ const sendToMainWindow = (eventName, ...args) => {
 
 const remoteOff = (...names) => {
     names.forEach(name => {
-        let event = eventsMap[name];
-        if(event) {
-            if(event.remote) {
+        const event = eventsMap[name];
+        if (event) {
+            if (event.remote) {
                 remoteOff(event.id);
                 ipcSend(EVENT.remote_off, name);
-            } else if(event.ipc) {
+            } else if (event.ipc) {
                 ipcRenderer.removeListener(event.name, event.listener);
             }
             delete eventsMap[name];
-            if(DEBUG) {
+            if (DEBUG) {
                 console.collapse('OFF EVENT', 'orangeBg', event.name, 'orangePale');
-                if(event.ipc) console.log('ipc', true);
-                if(event.remote) console.log('remote', true);
+                if (event.ipc) console.log('ipc', true);
+                if (event.remote) console.log('remote', true);
                 console.trace('event', event);
                 console.groupEnd();
             }

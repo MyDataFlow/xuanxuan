@@ -1,15 +1,15 @@
 const storage = window.localStorage;
 
 const serialize = value => {
-    if(typeof value === 'string') return value;
+    if (typeof value === 'string') return value;
     return JSON.stringify(value);
 };
 
 const deserialize = value => {
-    if(typeof value === 'string') {
+    if (typeof value === 'string') {
         try {
             return JSON.parse(value);
-        } catch(ignore) {}
+        } catch (ignore) {}
     }
     return value;
 };
@@ -37,14 +37,16 @@ const getLength = () => {
 
 const forEach = callback => {
     const length = getLength();
-    for(let i = 0; i < length; ++i) {
+    for (let i = 0; i < length; ++i) {
         const key = storage.key(i);
-        callback && callback(getItem(key), key, i);
+        if (callback) {
+            callback(getItem(key), key, i);
+        }
     }
 };
 
 const getAll = () => {
-    let all = {};
+    const all = {};
     forEach((value, key) => {
         all[key] = value;
     });

@@ -22,6 +22,7 @@ export default class Checkbox extends Component {
         className: null,
         inputProps: null,
         onChange: null,
+        children: null,
     }
 
     /**
@@ -36,6 +37,7 @@ export default class Checkbox extends Component {
         className: PropTypes.string,
         inputProps: PropTypes.object,
         onChange: PropTypes.func,
+        children: PropTypes.any,
     }
 
     /**

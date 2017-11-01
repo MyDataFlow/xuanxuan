@@ -16,7 +16,7 @@ const getPlainTextOfChatMessage = (chatMessage, limitLength = 255, ignoreBreak =
     }
     let plainText = chatMessage.renderedTextContent().replace(/<(?:.|\n)*?>/gm, '');
     if (ignoreBreak) {
-        plainText = plainText.trim().replace(/[\r\n]/g, ' ').replace(/\n[\s| | ]*\r/g,'\n');
+        plainText = plainText.trim().replace(/[\r\n]/g, ' ').replace(/\n[\s| | ]*\r/g, '\n');
     }
     if (limitLength && plainText.length > limitLength) {
         plainText = plainText.substr(0, limitLength);
@@ -65,7 +65,7 @@ const updateChatNoticeTask = new DelayAction(() => {
         };
         if (lastNoticeChat.isOne2One) {
             const theOtherOne = lastNoticeChat.getTheOtherOne({members, user: profile.user});
-            const avatar = theOtherOne.getAvatar(profile.user && profile.user.server)
+            const avatar = theOtherOne.getAvatar(profile.user && profile.user.server);
             if (avatar) {
                 message.icon = avatar;
             }

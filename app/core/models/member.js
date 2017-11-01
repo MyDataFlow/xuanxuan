@@ -182,31 +182,34 @@ class Member extends Entity {
                 if (result !== 0) break;
                 if (typeof order === 'function') {
                     result = order(y, x);
-                    continue;
-                }
-                const isInverse = order[0] === '-';
-                if (isInverse) order = order.substr(1);
-                switch (order) {
-                case 'me':
-                    if (userMe) {
-                        if (userMeId === x.id) result = 1;
-                        else if (userMeId === y.id) result = -1;
+                } else {
+                    const isInverse = order[0] === '-';
+                    if (isInverse) order = order.substr(1);
+                    let xStatus = x.status;
+                    let yStatus = y.status;
+                    let xValue;
+                    let yValue;
+                    switch (order) {
+                    case 'me':
+                        if (userMe) {
+                            if (userMeId === x.id) result = 1;
+                            else if (userMeId === y.id) result = -1;
+                        }
+                        break;
+                    case 'status':
+                        if (xStatus === STATUS.online) xStatus = 100;
+                        if (yStatus === STATUS.online) yStatus = 100;
+                        result = xStatus > yStatus ? 1 : (xStatus == yStatus ? 0 : -1);
+                        break;
+                    default:
+                        xValue = x[order];
+                        yValue = y[order];
+                        if (xValue === undefined || xValue === null) xValue = 0;
+                        if (yValue === undefined || yValue === null) yValue = 0;
+                        result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
                     }
-                    break;
-                case 'status':
-                    let xStatus = x.status,
-                        yStatus = y.status;
-                    if (xStatus === STATUS.online) xStatus = 100;
-                    if (yStatus === STATUS.online) yStatus = 100;
-                    result = xStatus > yStatus ? 1 : (xStatus == yStatus ? 0 : -1);
-                    break;
-                default:
-                    let xValue = x[order], yValue = y[order];
-                    if (xValue === undefined || xValue === null) xValue = 0;
-                    if (yValue === undefined || yValue === null) yValue = 0;
-                    result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
+                    result *= isInverse ? (-1) : 1;
                 }
-                result *= isInverse ? (-1) : 1;
             }
             return result * (isFinalInverse ? (-1) : 1);
         });

@@ -1,9 +1,9 @@
+import Platform from 'Platform';
 import Events from '../events';
 import profile from '../profile';
 import chats from './im-chats';
 import Lang from '../../lang';
 import Server from './im-server';
-import ChatMessage from '../models/chat-message';
 import members from '../members';
 import StringHelper from '../../utils/string-helper';
 import MemberProfileDialog from '../../views/common/member-profile-dialog';
@@ -14,7 +14,6 @@ import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
 import ChatInvitePopover from '../../views/chats/chat-invite-popover';
 import ChatTipPopover from '../../views/chats/chat-tip-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
-import Platform from 'Platform';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
 import Emojione from '../../components/emojione';
 import CoreServer from '../server';
@@ -30,16 +29,16 @@ const EVENT = {
 };
 
 const activeChat = chat => {
-    if((typeof chat === 'string') && chat.length) {
+    if ((typeof chat === 'string') && chat.length) {
         chat = chats.get(chat);
     }
-    if(chat) {
-        if(!activedChatId || chat.gid !== activedChatId) {
+    if (chat) {
+        if (!activedChatId || chat.gid !== activedChatId) {
             activedChatId = chat.gid;
             Events.emit(EVENT.activeChat, chat);
         }
         activeCaches[chat.gid] = true;
-        if(chat.noticeCount) {
+        if (chat.noticeCount) {
             chat.muteNotice();
             chats.saveChatMessages(chat.messages);
         }
@@ -55,10 +54,10 @@ const onActiveChat = listener => {
 };
 
 const sendContentToChat = (content, type = 'text', cgid = null) => {
-    if(!cgid) {
+    if (!cgid) {
         cgid = activedChatId;
     }
-    if(type === 'file') {
+    if (type === 'file') {
         Server.sendFileMessage(content, chats.get(cgid));
     } else {
         return Events.emit(`${EVENT.sendContentToChat}.${cgid}`, {content, type});
@@ -88,13 +87,13 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             Server.toggleChatStar(chat);
         }
     }];
-    if(chat.canInvite(profile.user)) {
+    if (chat.canInvite(profile.user)) {
         items.push({
             id: 'invite',
             icon: 'account-multiple-plus',
             label: Lang.string('chat.toolbor.invite'),
             click: e => {
-                ChatInvitePopover.show({x :e.pageX, y: e.pageY, target: e.target, placement: 'bottom'}, chat);
+                ChatInvitePopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'bottom'}, chat);
             }
         });
     }
@@ -106,10 +105,10 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             ChatsHistoryDialog.show(chat);
         }
     });
-    if(showSidebarIcon === 'auto') {
+    if (showSidebarIcon === 'auto') {
         showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
     }
-    if(showSidebarIcon) {
+    if (showSidebarIcon) {
         items.push({
             id: 'sidebar',
             icon: 'book-open',
@@ -119,7 +118,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             }
         });
     }
-    if(chat.isGroupOrSystem) {
+    if (chat.isGroupOrSystem) {
         items.push({
             id: 'more',
             icon: 'dots-horizontal',
@@ -134,10 +133,14 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
 };
 
 const captureAndCutScreenImage = (hiddenWindows = false) => {
-    if(Platform.screenshot) {
+    if (Platform.screenshot) {
         Platform.screenshot.captureAndCutScreenImage(0, hiddenWindows).then(image => {
-            if(image) {
+            if (image) {
                 sendContentToChat(image, 'image');
+            }
+        }).catch(error => {
+            if (DEBUG) {
+                console.warn('Capture screen image error', error);
             }
         });
     } else {
@@ -146,7 +149,7 @@ const captureAndCutScreenImage = (hiddenWindows = false) => {
 };
 
 const createCatureScreenContextMenuItems = (chat) => {
-    if(!Platform.screenshot) {
+    if (!Platform.screenshot) {
         throw new Error(`The platform(${Platform.type}) not support take screenshots.`);
     }
     const items = [{
@@ -195,7 +198,7 @@ const createSendboxToolbarItems = (chat, config) => {
                     {name: 'Images', extensions: ['jpg', 'png', 'gif']},
                 ]
             }, files => {
-                if(files && files.length) {
+                if (files && files.length) {
                     sendContentToChat(files[0], 'image', chat.gid);
                 }
             });
@@ -206,13 +209,13 @@ const createSendboxToolbarItems = (chat, config) => {
         label: Lang.string('chat.sendbox.toolbar.file'),
         click: () => {
             Platform.dialog.showOpenDialog(null, files => {
-                if(files && files.length) {
+                if (files && files.length) {
                     Server.sendFileMessage(files[0], chat);
                 }
             });
         }
     }];
-    if(Platform.screenshot) {
+    if (Platform.screenshot) {
         items.push({
             id: 'captureScreen',
             icon: 'content-cut rotate-270 inline-block',
@@ -235,7 +238,7 @@ const createSendboxToolbarItems = (chat, config) => {
         }
     });
     let user = profile.user;
-    if(user && user.config.showMessageTip) {
+    if (user && user.config.showMessageTip) {
         items.push({
             id: 'tips',
             icon: 'comment-question-outline',
@@ -249,18 +252,18 @@ const createSendboxToolbarItems = (chat, config) => {
 };
 
 const chatRenamePrompt = chat => {
-    Modal.prompt(Lang.string('chat.rename.title'), chat.name, {
+    return Modal.prompt(Lang.string('chat.rename.title'), chat.name, {
         placeholder: Lang.string('chat.rename.newTitle'),
     }).then(newName => {
-        if(chat.name !== newName) {
+        if (chat.name !== newName) {
             Server.renameChat(chat, newName);
         }
     });
 };
 
 const chatExitConfirm = chat => {
-    Modal.confirm(Lang.format('chat.group.exitConfirm', chat.getDisplayName({members, user: profile.user}))).then(result => {
-        if(result) {
+    return Modal.confirm(Lang.format('chat.group.exitConfirm', chat.getDisplayName({members, user: profile.user}))).then(result => {
+        if (result) {
             Server.exitChat(chat);
         }
     });
@@ -268,7 +271,7 @@ const chatExitConfirm = chat => {
 
 const createChatContextMenuItems = (chat) => {
     let menu = [];
-    if(chat.isOne2One) {
+    if (chat.isOne2One) {
         menu.push({
             label: Lang.string('member.profile.view'),
             click: () => {
@@ -284,7 +287,7 @@ const createChatContextMenuItems = (chat) => {
         }
     });
 
-    if(chat.canRename(profile.user)) {
+    if (chat.canRename(profile.user)) {
         menu.push({
             label: Lang.string('common.rename'),
             click: () => {
@@ -293,7 +296,7 @@ const createChatContextMenuItems = (chat) => {
         });
     }
 
-    if(chat.canMakePublic(profile.user)) {
+    if (chat.canMakePublic(profile.user)) {
         menu.push({
             label: Lang.string(chat.public ? 'chat.public.setPrivate' : 'chat.public.setPublic'),
             click: () => {
@@ -302,7 +305,7 @@ const createChatContextMenuItems = (chat) => {
         });
     }
 
-    if(chat.canExit) {
+    if (chat.canExit) {
         menu.push({type: 'separator'}, {
             label: Lang.string('chat.group.exit'),
             click: () => {
@@ -314,9 +317,9 @@ const createChatContextMenuItems = (chat) => {
 };
 
 const createChatToolbarMoreContextMenuItems = chat => {
-    if(chat.isOne2One) return [];
-    let menu = [];
-    if(chat.canRename(profile.user)) {
+    if (chat.isOne2One) return [];
+    const menu = [];
+    if (chat.canRename(profile.user)) {
         menu.push({
             label: Lang.string('common.rename'),
             click: () => {
@@ -325,7 +328,7 @@ const createChatToolbarMoreContextMenuItems = chat => {
         });
     }
 
-    if(chat.canMakePublic(profile.user)) {
+    if (chat.canMakePublic(profile.user)) {
         menu.push({
             label: Lang.string(chat.public ? 'chat.public.setPrivate' : 'chat.public.setPublic'),
             click: () => {
@@ -334,17 +337,17 @@ const createChatToolbarMoreContextMenuItems = chat => {
         });
     }
 
-    if(chat.canSetCommitters(profile.user)) {
+    if (chat.canSetCommitters(profile.user)) {
         menu.push({
             label: Lang.string('chat.committers.setCommitters'),
             click: () => {
                 ChatCommittersSettingDialog.show(chat);
             }
-        })
+        });
     }
 
-    if(chat.canExit) {
-        if(menu.length) {
+    if (chat.canExit) {
+        if (menu.length) {
             menu.push({type: 'separator'});
         }
         menu.push({
@@ -359,9 +362,9 @@ const createChatToolbarMoreContextMenuItems = chat => {
 
 const createChatMemberContextMenuItems = member => {
     let menu = [];
-    if(member.account !== profile.userAccount) {
+    if (member.account !== profile.userAccount) {
         const gid = chats.getOne2OneChatGid([member, profile.user]);
-        if(gid !== activedChatId) {
+        if (gid !== activedChatId) {
             menu.push({
                 label: Lang.string(`chat.atHim.${member.gender}`, Lang.string('chat.atHim')),
                 click: () => {
@@ -384,10 +387,8 @@ const createChatMemberContextMenuItems = member => {
     return menu;
 };
 
-
-
 const linkMembersInText = (text, format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>') => {
-    if(text.indexOf('@') > -1) {
+    if (text.indexOf('@') > -1) {
         const langAtAll = Lang.string('chat.message.atAll');
         text = text.replace(new RegExp('@(all|' + langAtAll + ')', 'g'), `<span class="at-all">@${langAtAll}</span>`);
 
@@ -403,7 +404,7 @@ const createGroupChat = (members) => {
     return Modal.prompt(Lang.string('chat.create.newChatNameTip'), '', {
         placeholder: Lang.string('chat.rename.newTitle'),
     }).then(newName => {
-        if(newName) {
+        if (newName) {
             return Server.createChatWithMembers(members, {name: newName});
         } else {
             return Promise.reject(false);
@@ -417,30 +418,30 @@ profile.onSwapUser(user => {
 });
 
 chats.onChatsInit(initChats => {
-    if(!activedChatId) {
+    if (!activedChatId) {
         const lastActiveChat = chats.getLastActiveChat();
         activedChatId = lastActiveChat && lastActiveChat.gid;
         lastActiveChat.makeActive();
-        if(window.location.hash.startsWith('#/chats/')) {
+        if (window.location.hash.startsWith('#/chats/')) {
             window.location.hash = `#/chats/recents/${activedChatId}`;
         }
     }
-    if(!db.database.isExists) {
+    if (!db.database.isExists) {
         Server.fetchChatsHistory('all');
-        if(DEBUG) {
+        if (DEBUG) {
             console.color('Fetch all history for new database', 'greenPale');
         }
     }
 });
 
-if(Platform.screenshot && Platform.shortcut) {
+if (Platform.screenshot && Platform.shortcut) {
     const name = 'captureScreenShortcut';
     let lastRegisterHotkey = null;
     const registerShortcut = () => {
         const userConfig = profile.userConfig;
-        if(userConfig) {
+        if (userConfig) {
             const captureScreenHotkey = userConfig.captureScreenHotkey;
-            if(captureScreenHotkey !== lastRegisterHotkey) {
+            if (captureScreenHotkey !== lastRegisterHotkey) {
                 lastRegisterHotkey = captureScreenHotkey;
                 Platform.shortcut.registerGlobalShortcut(name, lastRegisterHotkey, () => {
                     captureAndCutScreenImage();
@@ -449,7 +450,7 @@ if(Platform.screenshot && Platform.shortcut) {
         }
     };
     profile.onUserConfigChange(change => {
-        if(change['shortcut.captureScreen']) {
+        if (change['shortcut.captureScreen']) {
             registerShortcut();
         }
     });

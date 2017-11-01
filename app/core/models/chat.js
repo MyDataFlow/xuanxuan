@@ -609,11 +609,12 @@ class Chat extends Entity {
                 if (result !== 0) break;
                 if (typeof order === 'function') {
                     result = order(y, x);
-                    continue;
-                }
-                const isInverse = order[0] === '-';
-                if (isInverse) order = order.substr(1);
-                switch (order) {
+                } else {
+                    const isInverse = order[0] === '-';
+                    if (isInverse) order = order.substr(1);
+                    let xValue;
+                    let yValue;
+                    switch (order) {
                     case 'isSystem':
                     case 'hide':
                     case 'star':
@@ -625,7 +626,6 @@ class Chat extends Entity {
                         }
                         break;
                     default:
-                        let xValue, yValue;
                         if (order === 'name' && app) {
                             xValue = x.getDisplayName(app, false);
                             yValue = y.getDisplayName(app, false);
@@ -638,13 +638,14 @@ class Chat extends Entity {
                         }
                         if (xValue === undefined || xValue === null) xValue = 0;
                         if (yValue === undefined || yValue === null) yValue = 0;
-                        result = xValue > yValue ? 1 : (xValue == yValue ? 0 : -1);
+                        result = xValue > yValue ? 1 : (xValue === yValue ? 0 : -1);
+                    }
+                    result *= isInverse ? (-1) : 1;
                 }
-                result *= isInverse ? (-1) : 1;
             }
             return result * (isFinalInverse ? (-1) : 1);
         });
     }
- }
+}
 
 export default Chat;

@@ -6,12 +6,12 @@ import crypto from 'crypto';
  * @return {Buffer}
  */
 const encrypt = (data, token, cipherIV) => {
-    let cipher = crypto.createCipheriv('aes-256-cbc', token, cipherIV);
+    const cipher = crypto.createCipheriv('aes-256-cbc', token, cipherIV);
     let crypted = cipher.update(data, 'utf8', 'binary');
     crypted += cipher.final('binary');
     crypted = new Buffer(crypted, 'binary');
     return crypted;
-}
+};
 
 /**
  * Decrypt data
@@ -19,7 +19,7 @@ const encrypt = (data, token, cipherIV) => {
  * @return {string}
  */
 const decrypt = (data, token, cipherIV) => {
-    let decipher = crypto.createDecipheriv('aes-256-cbc', token, cipherIV);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', token, cipherIV);
     let decoded = decipher.update(data, 'binary', 'utf8');
     decoded += decipher.final('utf8');
     return decoded;

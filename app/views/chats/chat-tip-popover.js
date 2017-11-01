@@ -1,24 +1,25 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
+import Config from 'Config';
 import Popover from '../../components/popover';
 import Icon from '../../components/icon';
-import Lang from '../../lang';
 import App from '../../core';
-import Config from 'Config';
 
 const show = (position, chat, callback) => {
     const popoverId = 'app-chat-tip-popover';
     const onRequestClose = () => {
         Popover.hide(popoverId);
     };
-    const content = <div>
+    const content = (<div>
         <div className="heading">
             <div className="title strong">消息框小技巧</div>
             <nav className="nav">
-                <a className="text-gray small" onClick={e => {
-                    App.profile.userConfig.showMessageTip = false;
-                    onRequestClose();
-                }}><Icon name="close"/> 关闭并不再提示</a>
+                <a
+                    className="text-gray small"
+                    onClick={() => {
+                        App.profile.userConfig.showMessageTip = false;
+                        onRequestClose();
+                    }}
+                ><Icon name="close" /> 关闭并不再提示</a>
             </nav>
         </div>
         <div className="box">
@@ -29,7 +30,7 @@ const show = (position, chat, callback) => {
                 {Config.system.screenCaptureDisabled ? null : <li>从截图按钮右键菜单上使用截图高级功能。</li>}
             </ul>
         </div>
-    </div>;
+    </div>);
     return Popover.show(position, content, {id: popoverId, width: 320, height: 140}, callback);
 };
 

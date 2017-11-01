@@ -15,16 +15,16 @@ const classes = (...args) => (
     }).filter(x => (typeof x === 'string') && x.length).join(' ')
 );
 
-const rem = (value, rootValue = 20) => (`${value / 20}rem`);
+const rem = (value, rootValue = 20) => (`${value / rootValue}rem`);
 
 const getSearchParam = key => {
     const params = {};
     const search = window.location.search;
-    if(search.length > 1) {
+    if (search.length > 1) {
         const searchArr = search.substr(1).split('&');
-        for(let pair of searchArr) {
+        for (const pair of searchArr) {
             const pairValues = pair.split('=', 2);
-            if(pairValues.length > 1) {
+            if (pairValues.length > 1) {
                 params[pairValues[0]] = decodeURIComponent(pairValues[1]);
             } else {
                 params[pairValues[0]] = '';

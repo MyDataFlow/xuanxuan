@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import Popover from '../../components/popover';
 import Lang from '../../lang';
 import App from '../../core';
@@ -57,15 +56,14 @@ const CONFIGS = [
 ];
 
 class ChangeFontView extends Component {
-
     constructor(props) {
         super(props);
         this.state = {select: 1};
 
         const userFontSize = App.profile.userConfig.chatFontSize;
-        if(userFontSize) {
+        if (userFontSize) {
             const userIndex = CONFIGS.findIndex(x => x.size === userFontSize.size);
-            if(userIndex > -1) {
+            if (userIndex > -1) {
                 this.state.select = userIndex;
             }
         }
@@ -76,39 +74,39 @@ class ChangeFontView extends Component {
     }
 
     componentWillUnmount() {
-        if(!this.changeFontSizeTask.isDone) {
+        if (!this.changeFontSizeTask.isDone) {
             this.changeFontSizeTask.doIm();
         }
     }
 
     handleSliderChange = e => {
-        const select = parseInt(e.target.value);
+        const select = parseInt(e.target.value, 10);
         this.setState({select});
         this.changeFontSizeTask.do(select);
     }
 
-    handleResetBtnClick = e => {
+    handleResetBtnClick = () => {
         this.setState({select: 1});
         this.changeFontSizeTask.do(1);
     }
 
     render() {
         const currentConfig = CONFIGS[this.state.select];
-        return <div className="box">
+        return (<div className="box">
             <div className="flex space space-between">
                 <strong>{Lang.string('chat.sendbox.toolbar.setFontSize')}</strong>
                 <small className="text-gray">{Lang.format('chat.fontSize.current.format', currentConfig.size)}px  {this.state.select !== 1 ? <a className="text-primary" onClick={this.handleResetBtnClick}>{Lang.string('chat.fontSize.resetDefault')}</a> : null}</small>
             </div>
-            <input className="fluid" type="range" min="0" value={this.state.select} max={CONFIGS.length-1} step="1" onChange={this.handleSliderChange}/>
-        </div>
+            <input className="fluid" type="range" min="0" value={this.state.select} max={CONFIGS.length - 1} step="1" onChange={this.handleSliderChange} />
+        </div>);
     }
-};
+}
 
 const show = (position, callback) => {
     const popoverId = 'app-chat-change-font-popover';
     return Popover.show(
         position,
-        <ChangeFontView/>,
+        <ChangeFontView />,
         {id: popoverId, width: 250, height: 80},
         callback
     );

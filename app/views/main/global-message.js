@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
@@ -9,6 +8,13 @@ import Avatar from '../../components/avatar';
 const CONNECT_TIME_TICK = 5;
 
 class GlobalMessage extends Component {
+    // static defaultProps = {
+    //     className: PropTypes.string,
+    // };
+
+    // static propTypes = {
+    //     className: null,
+    // };
 
     constructor(props) {
         super(props);
@@ -19,7 +25,25 @@ class GlobalMessage extends Component {
             disconnect: false,
             failMessage: ''
         };
+    }
 
+    componentDidMount() {
+        this.onUserStatusChangeHandler = App.profile.onUserStatusChange(user => {
+            const userStatus = App.profile.userStatus;
+            if (this.state.userStatus !== userStatus) {
+                this.setState({userStatus});
+                if (Member.STATUS.isSame(userStatus, Member.STATUS.disconnect)) {
+                    this.startConnect();
+                } else {
+                    this.stopConnect();
+                }
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.onUserStatusChangeHandler);
+        clearInterval(this.countTimer);
     }
 
     connect() {
@@ -28,10 +52,10 @@ class GlobalMessage extends Component {
             failMessage: ''
         });
         App.server.login(App.profile.user).catch(error => {
-            if(DEBUG) {
+            if (DEBUG) {
                 console.error('Login failed with error:', error);
             }
-            this.connectTimes++;
+            this.connectTimes += 1;
             this.setState({
                 failMessage: Lang.error(error),
                 connecting: false,
@@ -50,17 +74,16 @@ class GlobalMessage extends Component {
         this.countTimer = setInterval(() => {
             const {
                 connecting,
-                disconnect,
                 tick,
             } = this.state;
-            if(!connecting) {
-                if(tick < 1) {
+            if (!connecting) {
+                if (tick < 1) {
                     this.connect();
                 } else {
                     this.setState({tick: tick - 1});
                 }
             }
-        }, 1000)
+        }, 1000);
     }
 
     stopConnect() {
@@ -71,28 +94,9 @@ class GlobalMessage extends Component {
         clearInterval(this.countTimer);
     }
 
-    componentDidMount() {
-        this.onUserStatusChangeHandler = App.profile.onUserStatusChange(user => {
-            const userStatus = App.profile.userStatus;
-            if(this.state.userStatus !== userStatus) {
-                this.setState({userStatus});
-                if(Member.STATUS.isSame(userStatus, Member.STATUS.disconnect)) {
-                    this.startConnect();
-                } else {
-                    this.stopConnect();
-                }
-            }
-        });
-    }
-
-    componentWillUnmount() {
-        App.events.off(this.onUserStatusChangeHandler);
-        clearInterval(this.countTimer);
-    }
-
     reconnectNow() {
-        if(!this.state.connecting) {
-            this.connectTimes = Math.min(1, Math.floor(this.connectTimes/2));
+        if (!this.state.connecting) {
+            this.connectTimes = Math.min(1, Math.floor(this.connectTimes / 2));
             this.connect();
         }
     }
@@ -103,10 +107,8 @@ class GlobalMessage extends Component {
     }
 
     render() {
-        let {
+        const {
             className,
-            children,
-            userStatus,
             ...other
         } = this.props;
 
@@ -117,35 +119,38 @@ class GlobalMessage extends Component {
         } = this.state;
 
         let contentView = null;
-        if(disconnect) {
-            if(connecting) {
-                contentView = <div className="heading">
-                    <Avatar icon='loading spin'/>
+        if (disconnect) {
+            if (connecting) {
+                contentView = (<div className="heading">
+                    <Avatar icon="loading spin" />
                     <div className="title">{Lang.string('login.autoConnet.connecting')}</div>
                     <nav className="nav">
-                        <a onClick={this.logout.bind(this)}>{Lang.string("login.autoConnet.logout")}</a>
+                        <a onClick={this.logout.bind(this)}>{Lang.string('login.autoConnet.logout')}</a>
                     </nav>
-                </div>;
+                </div>);
             } else {
-                contentView = <div className="heading">
-                    <Avatar icon={tick%2 === 0 ? "lan-disconnect" : "lan-connect"}/>
+                contentView = (<div className="heading">
+                    <Avatar icon={tick % 2 === 0 ? 'lan-disconnect' : 'lan-connect'} />
                     <div className="title">
                         {Lang.format(this.connectTimes ? 'login.autoConnet.faildAndWait' : 'login.autoConnet.wait', Math.max(0, tick))}
                         {this.state.failMessage ? <span data-hint={this.state.failMessage} className="hint--bottom">{Lang.string('login.autoConnet.errorDetail')}</span> : null}
                     </div>
                     <nav className="nav">
                         <a onClick={this.reconnectNow.bind(this)}>{Lang.string('login.autoConnet.conectIM')}</a>
-                        <a onClick={this.logout.bind(this)}>{Lang.string("login.autoConnet.logout")}</a>
+                        <a onClick={this.logout.bind(this)}>{Lang.string('login.autoConnet.logout')}</a>
                     </nav>
-                </div>;
+                </div>);
             }
         }
 
-        return <div className={HTML.classes('app-global-message center-content', className, {
-            'app-user-disconnet yellow': disconnect,
-        })} {...other}>
+        return (<div
+            className={HTML.classes('app-global-message center-content', className, {
+                'app-user-disconnet yellow': disconnect,
+            })}
+            {...other}
+        >
             {contentView}
-        </div>;
+        </div>);
     }
 }
 

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import ChatListItem from './chat-list-item';
@@ -21,7 +21,27 @@ const loadChats = (filter, search) => {
     return chats || [];
 };
 
+const handleItemContextMenu = (chat, e) => {
+    const menuItems = App.im.ui.createChatContextMenuItems(chat);
+    ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
+    e.preventDefault();
+};
+
 class MenuList extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        search: PropTypes.string,
+        filter: PropTypes.string,
+        children: PropTypes.any,
+    };
+
+    static defaultProps = {
+        className: null,
+        search: null,
+        filter: null,
+        children: null,
+    };
+
     componentDidMount() {
         this.dataChangeHandler = App.events.onDataChange(data => {
             this.forceUpdate();
@@ -36,18 +56,11 @@ class MenuList extends Component {
         UserProfileDialog.show();
     }
 
-    handleItemContextMenu(chat, e) {
-        const menuItems = App.im.ui.createChatContextMenuItems(chat);
-        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-        e.preventDefault();
-    }
-
     render() {
         const {
             search,
             filter,
             className,
-            style,
             children,
             ...other
         } = this.props;
@@ -55,11 +68,11 @@ class MenuList extends Component {
         const chats = loadChats(filter, search);
         const user = App.user;
 
-        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} style={style} {...other}>
-            {!search && user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={24} showStatusDot={false} onClick={this.handleUserItemClick}/>}
+        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
+            {!search && user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={24} showStatusDot={false} onClick={this.handleUserItemClick} />}
             {
                 chats.map(chat => {
-                    return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item"/>;
+                    return <ChatListItem onContextMenu={handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item" />;
                 })
             }
             {children}

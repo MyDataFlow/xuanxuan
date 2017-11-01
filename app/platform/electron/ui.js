@@ -1,18 +1,20 @@
 import {
     shell,
     remote as Remote,
-    nativeImage as NativeImage,
 } from 'electron';
-import remote from './remote';
-import env from './env';
 import uuid from 'uuid/v4';
 import Path from 'path';
+import remote from './remote';
 import shortcut from './shortcut';
 import Lang from '../../lang';
 
 let _appRoot = null;
 remote.call('entryPath').then(path => {
     _appRoot = path;
+}).catch(error => {
+    if (DEBUG) {
+        console.error('Cannot get entryPath from remote.');
+    }
 });
 
 const userDataPath = Remote.app.getPath('userData');
@@ -29,7 +31,7 @@ const makeTmpFilePath = (ext = '') => {
 };
 
 const setBadgeLabel = (label = '') => {
-    return remote.call('dockBadgeLabel', (label || '') + '');
+    return remote.call('dockBadgeLabel', `${label || ''}`);
 };
 
 const setShowInTaskbar = flag => {
@@ -70,8 +72,8 @@ const quitIM = () => {
 };
 
 const quit = (delay = 1000, ignoreListener = false) => {
-    if(delay !== true && !ignoreListener && onRequestQuitListener) {
-        if(onRequestQuitListener(delay) === false) {
+    if (delay !== true && !ignoreListener && onRequestQuitListener) {
+        if (onRequestQuitListener(delay) === false) {
             return;
         }
     }
@@ -79,7 +81,7 @@ const quit = (delay = 1000, ignoreListener = false) => {
     browserWindow.hide();
     shortcut.unregisterAll();
 
-    if(delay && delay !== true) {
+    if (delay && delay !== true) {
         setTimeout(quitIM, delay);
     } else {
         quitIM();
@@ -117,12 +119,12 @@ const showQuitConfirmDialog = (callback) => {
         buttons: [Lang.string('dialog.appClose.minimizeMainWindow'), Lang.string('dialog.appClose.quitApp'), Lang.string('dialog.appClose.cancelAction')],
     }, (result, checked) => {
         result = ['minimize', 'close', ''][result];
-        if(callback) {
+        if (callback) {
             result = callback(result, checked);
         }
-        if(result === 'minimize') {
+        if (result === 'minimize') {
             hideWindow();
-        } else if(result === 'close') {
+        } else if (result === 'close') {
             quit(true);
         }
     });

@@ -9,12 +9,12 @@ import DateHelper from '../../utils/date-helper';
 import TaskQueue from '../../utils/task-queue';
 
 const CHATS_LIMIT_DEFAULT = 100;
-const MAX_RECENT_TIME  = 1000*60*60*24*7;
+const MAX_RECENT_TIME = 1000 * 60 * 60 * 24 * 7;
 const SEARCH_SCORE_MAP = {
-    matchAll   : 100,
+    matchAll: 100,
     matchPrefix: 75,
-    include    : 50,
-    similar    : 10
+    include: 50,
+    similar: 10
 };
 const EVENT = {
     init: 'chats.init',
@@ -101,8 +101,8 @@ const updateChatMessages = (messages, muted = false) => {
     if (!Array.isArray(messages)) {
         messages = [messages];
     }
-    let chatsMessages = {};
-    let messagesForUpdate = [];
+    const chatsMessages = {};
+    const messagesForUpdate = [];
     messages.forEach(message => {
         message = ChatMessage.create(message);
         messagesForUpdate.push(message);
@@ -138,7 +138,7 @@ const deleteLocalMessage = (message) => {
     const chat = get(message.cgid);
     chat.removeMessage(message.gid);
     Events.emitDataChange({chats: {[chat.gid]: chat}});
-    return db.database.chatMessages.delete(gid);
+    return db.database.chatMessages.delete(message.gid);
 };
 
 const countChatMessages = (cgid, filter) => {
@@ -151,7 +151,7 @@ const countChatMessages = (cgid, filter) => {
 
 const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = false, rawData = false, returnCount = false) => {
     const cgid = chat.gid;
-    let collection =  db.database.chatMessages.orderBy('id').and(x => {
+    let collection = db.database.chatMessages.orderBy('id').and(x => {
         return x.cgid === cgid && (!queryCondition || queryCondition(x));
     });
     if (reverse) {
@@ -176,9 +176,8 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
                 Events.emitDataChange({chats: {[cgid]: chat}});
             }
             return Promise.resolve(result);
-        } else {
-            return Promise.resolve([]);
         }
+        return Promise.resolve([]);
     });
 };
 
@@ -191,7 +190,7 @@ const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = fa
         if (!msg.id || (minDate && msg.date < minDate)) {
             return false;
         }
-        for (let key of keys) {
+        for (const key of keys) {
             if (key === '[image]') {
                 if (msg.contentType !== 'image') {
                     return false;
@@ -212,10 +211,10 @@ const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = fa
     }, 0, 0, true, true, false, returnCount);
 };
 
-const createCountMessagesTask = (chats, searchKeys, minDateDesc = '') => {
+const createCountMessagesTask = (countChats, searchKeys, minDateDesc = '') => {
     const minDate = minDateDesc ? DateHelper.getTimeBeforeDesc(minDateDesc) : 0;
     const taskQueue = new TaskQueue();
-    taskQueue.add(chats.map(chat => {
+    taskQueue.add(countChats.map(chat => {
         return {func: searchChatMessages.bind(null, chat, searchKeys, minDate, true), chat};
     }));
     return taskQueue;
@@ -271,10 +270,10 @@ const query = (condition, sortList) => {
     }
     let result = null;
     if (typeof condition === 'object') {
-        let conditionObj = condition;
-        let conditionKeys = Object.keys(conditionObj);
+        const conditionObj = condition;
+        const conditionKeys = Object.keys(conditionObj);
         condition = chat => {
-            for (let key of conditionKeys) {
+            for (const key of conditionKeys) {
                 if (conditionObj[key] !== chat[key]) {
                     return false;
                 }
@@ -328,13 +327,13 @@ const getRecents = (includeStar = true, sortList = true) => {
 };
 
 const getContactChat = (member) => {
-    let members = [member.id, profile.user.id].sort();
+    const members = [member.id, profile.user.id].sort();
     const gid = members.join('&');
     return get(gid);
 };
 
 const getContactsChats = (sortList = true) => {
-    let contactsChats = [];
+    const contactsChats = [];
     members.forEach(member => {
         if (member.id !== profile.user.id) {
             contactsChats.push(getContactChat(member, true));
@@ -443,9 +442,8 @@ const remove = gid => {
         delete chats[gid];
         Events.emitDataChange({chats: {[gid]: removeChat}});
         return true;
-    } else {
-        return false;
     }
+    return false;
 };
 
 const getChatFiles = (chat, includeFailFile = false) => {

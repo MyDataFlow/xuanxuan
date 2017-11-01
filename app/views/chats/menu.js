@@ -1,10 +1,20 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import MenuHeader from './menu-header';
 import MenuList from './menu-list';
 
 class Menu extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        filter: PropTypes.string,
+        children: PropTypes.any,
+    };
+
+    static defaultProps = {
+        className: null,
+        filter: null,
+        children: null,
+    };
 
     constructor(props) {
         super(props);
@@ -19,22 +29,23 @@ class Menu extends Component {
     }
 
     render() {
-        let {
+        const {
             filter,
             className,
-            style,
             children,
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('app-chats-menu primary-pale', className)} style={style} {...other}>
+        return (<div className={HTML.classes('app-chats-menu primary-pale', className)} {...other}>
             <MenuHeader
                 filter={filter}
                 defaultSearch={this.defaultSearch}
-                onSearchChange={this.handleSearchChange} className="dock-top"
+                onSearchChange={this.handleSearchChange}
+                className="dock-top"
             />
-            <MenuList search={this.state.search} filter={filter} className="dock-bottom"/>
-        </div>;
+            <MenuList search={this.state.search} filter={filter} className="dock-bottom" />
+            {children}
+        </div>);
     }
 }
 

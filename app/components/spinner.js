@@ -1,8 +1,16 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 
 class Spinner extends Component {
+    static propTypes = {
+        iconSize: PropTypes.number,
+        iconClassName: PropTypes.string,
+        iconName: PropTypes.string,
+        label: PropTypes.any,
+        className: PropTypes.string,
+        children: PropTypes.any,
+    };
 
     static defaultProps = {
         iconSize: 24,
@@ -10,6 +18,7 @@ class Spinner extends Component {
         iconName: 'loading',
         label: '',
         className: '',
+        children: null,
     };
 
     render() {
@@ -23,11 +32,11 @@ class Spinner extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('spinner text-center', className)} {...other}>
-            <Icon name={iconName} className={iconClassName} size={iconSize}/>
+        return (<div className={HTML.classes('spinner text-center', className)} {...other}>
+            <Icon name={iconName} className={iconClassName} size={iconSize} />
             {label && <div className="muted small title">{label}</div>}
             {children}
-        </div>;
+        </div>);
     }
 }
 

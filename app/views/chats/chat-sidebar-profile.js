@@ -1,12 +1,20 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
-import Lang from '../../lang';
 import App from '../../core';
 import MemberProfile from '../common/member-profile';
 
 class ChatSidebarProfile extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        chat: PropTypes.object,
+        children: PropTypes.any,
+    };
+
+    static defaultProps = {
+        className: null,
+        chat: null,
+        children: null,
+    };
 
     constructor(props) {
         super(props);
@@ -14,21 +22,20 @@ class ChatSidebarProfile extends Component {
         this.member = chat.getTheOtherOne(App);
     }
 
-    componentWillUnmount() {
-        App.events.off(this.dataChangeEventHandler);
-    }
-
     componentDidMount() {
         this.dataChangeEventHandler = App.events.onDataChange(data => {
-            if(this.member && data && data.members && data.members[this.member.id]) {
+            if (this.member && data && data.members && data.members[this.member.id]) {
                 this.forceUpdate();
             }
         });
     }
 
+    componentWillUnmount() {
+        App.events.off(this.dataChangeEventHandler);
+    }
 
     render() {
-        let {
+        const {
             chat,
             className,
             children,
@@ -37,12 +44,13 @@ class ChatSidebarProfile extends Component {
 
         const member = chat.getTheOtherOne(App);
 
-        return <div {...other}
+        return (<div
+            {...other}
             className={HTML.classes('app-chat-sidebar-profile has-padding', className)}
         >
-            <MemberProfile compact={true} hideChatBtn={true} className="rounded white" member={member}/>
+            <MemberProfile compact hideChatBtn className="rounded white" member={member} />
             {children}
-        </div>;
+        </div>);
     }
 }
 

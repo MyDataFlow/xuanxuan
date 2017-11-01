@@ -13,9 +13,9 @@ const writeHTML = html => {
 };
 
 export default {
-    writeText: writeText,
+    writeText,
     // readText: clipboard.readText,
-    writeHTML: writeHTML,
+    writeHTML,
     // readHTML: clipboard.readHTML,
     // readImage: clipboard.readImage,
     // saveImage,

@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import InputControl from './input-control';
 import Icon from './icon';
@@ -8,10 +7,28 @@ import DelayAction from '../utils/delay-action';
 import Lang from '../lang';
 
 class SearchControl extends Component {
+    static propTypes = {
+        placeholder: PropTypes.any,
+        changeDelay: PropTypes.number,
+        onSearchChange: PropTypes.func,
+        onBlur: PropTypes.func,
+        onFocus: PropTypes.func,
+        defaultValue: PropTypes.any,
+        value: PropTypes.any,
+        children: PropTypes.any,
+        className: PropTypes.string,
+    };
 
     static defaultProps = {
         placeholder: Lang.string('common.search'),
-        changeDelay: 100
+        changeDelay: 100,
+        onSearchChange: null,
+        onBlur: null,
+        onFocus: null,
+        defaultValue: null,
+        value: null,
+        className: null,
+        children: null,
     };
 
     constructor(props) {
@@ -29,6 +46,12 @@ class SearchControl extends Component {
         }
     }
 
+    componentWillUnmount() {
+        if (this.delaySearchChangeTask) {
+            this.delaySearchChangeTask.destroy();
+        }
+    }
+
     getValue() {
         return this.state.value;
     }
@@ -37,25 +60,19 @@ class SearchControl extends Component {
         return this.state.empty;
     }
 
-    componentWillUnmount() {
-        if (this.delaySearchChangeTask) {
-            this.delaySearchChangeTask.destroy();
-        }
-    }
-
     handleOnInputFocus = e => {
         this.setState({focus: true});
         if (this.props.onFocus) {
             this.props.onFocus(e);
         }
-    }
+    };
 
     handleOnInputBlur = e => {
         this.setState({focus: false});
         if (this.props.onBlur) {
             this.props.onBlur(e);
         }
-    }
+    };
 
     handleOnInputChange = value => {
         value = typeof value === 'string' ? value.trim() : '';
@@ -79,22 +96,22 @@ class SearchControl extends Component {
             ...other
         } = this.props;
 
-        return <InputControl
+        return (<InputControl
             className={HTML.classes('search', className, {
                 focus: this.state.focus,
                 empty: this.state.empty,
                 normal: !this.state.focus
             })}
-            label = {<Icon name="search"/>}
+            label={<Icon name="search" />}
             onFocus={this.handleOnInputFocus}
             onBlur={this.handleOnInputBlur}
             onChange={this.handleOnInputChange}
             {...other}
-            ref={e => this.inputControl = e}
+            ref={e => {this.inputControl = e;}}
         >
-            <Icon name="close" onClick={this.handleOnCloseBtnClick} className="close state"/>
+            <Icon name="close" onClick={this.handleOnCloseBtnClick} className="close state" />
             {children}
-        </InputControl>;
+        </InputControl>);
     }
 }
 

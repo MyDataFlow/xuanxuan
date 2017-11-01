@@ -1,9 +1,7 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Modal from '../../components/modal';
 import ChatCreateView from './chat-create';
 import Lang from '../../lang';
-import App from '../../core';
 
 const show = (chat, callback) => {
     const modalId = 'app-chat-create-dialog';
@@ -19,9 +17,7 @@ const show = (chat, callback) => {
         className: 'dock primary-pale',
         animation: 'enter-from-bottom',
         actions: false,
-        content: <ChatCreateView onRequestClose={() => {
-            Modal.hide(modalId);
-        }}/>
+        content: <ChatCreateView onRequestClose={() => (Modal.hide(modalId))} />
     }, callback);
 };
 

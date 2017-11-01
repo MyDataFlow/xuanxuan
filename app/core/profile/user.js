@@ -310,14 +310,6 @@ class User extends Member {
         this.$set('cipherIV', cipherIV);
     }
 
-    get serverVersion() {
-        return this.$get('serverVersion');
-    }
-
-    set serverVersion(serverVersion) {
-        this.$set('serverVersion', serverVersion);
-    }
-
     get uploadFileSize() {
         return this.$get('uploadFileSize');
     }
@@ -385,7 +377,7 @@ class User extends Member {
         if (password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
             password = password.substr(PASSWORD_WITH_MD5_FLAG.length);
         } else {
-            password = Md5(password)
+            password = Md5(password);
         }
         return password;
     }

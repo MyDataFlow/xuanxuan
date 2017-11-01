@@ -1,15 +1,8 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
+import {Route, Redirect} from 'react-router-dom';
+import Config from 'Config';
 import HTML from '../../utils/html-helper';
 import Navbar from './navbar';
-import Config from 'Config';
-import {
-    HashRouter as Router,
-    Route,
-    Link,
-    Redirect,
-    withRouter
-} from 'react-router-dom';
 import ChatsView from '../chats';
 import ROUTES from '../common/routes';
 import App from '../../core';
@@ -20,6 +13,15 @@ const mainViews = [
 ];
 
 class MainView extends Component {
+    // static defaultProps = {
+    //     className: PropTypes.string,
+    //     userStatus: PropTypes.any,
+    // };
+
+    // static propTypes = {
+    //     className: null,
+    //     userStatus: null,
+    // };
 
     componentDidMount() {
         this.onUserConfigChange = App.profile.onUserConfigChange(() => {
@@ -34,35 +36,35 @@ class MainView extends Component {
     render() {
         let {
             className,
-            children,
             userStatus,
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('app-main', className)} {...other}>
-            <GlobalMessage userStatus={userStatus} className="dock-top"/>
-            <Navbar userStatus={userStatus} className="dock-left primary" style={{width: HTML.rem(Config.ui['navbar.width'])}}/>
-            {children}
+        return (<div className={HTML.classes('app-main', className)} {...other}>
+            <GlobalMessage className="dock-top" />
+            <Navbar userStatus={userStatus} className="dock-left primary" style={{width: HTML.rem(Config.ui['navbar.width'])}} />
             <div className="app-main-container dock" style={{left: HTML.rem(Config.ui['navbar.width'])}}>
-            {
-                mainViews.map(item => {
-                    return <Route key={item.path} path={item.path} component={item.view}/>
-                })
-            }
-            <Route path="/:app?" exact render={(props) => {
-                if(props.match.url === '/' || props.match.url === '/index' || props.match.url === '/chats') {
-                    const activeChatId = App.im.ui.currentActiveChatId;
-                    if(activeChatId) {
-                        return <Redirect to={`/chats/recents/${activeChatId}`}/>
-                    } else {
-                        return <Redirect to='/chats/recents'/>;
-                    }
-                } else {
-                    return  null;
+                {
+                    mainViews.map(item => {
+                        return <Route key={item.path} path={item.path} component={item.view} />;
+                    })
                 }
-            }}/>
+                <Route
+                    path="/:app?"
+                    exact
+                    render={(props) => {
+                        if (props.match.url === '/' || props.match.url === '/index' || props.match.url === '/chats') {
+                            const activeChatId = App.im.ui.currentActiveChatId;
+                            if (activeChatId) {
+                                return <Redirect to={`/chats/recents/${activeChatId}`} />;
+                            }
+                            return <Redirect to="/chats/recents" />;
+                        }
+                        return null;
+                    }}
+                />
             </div>
-        </div>;
+        </div>);
     }
 }
 

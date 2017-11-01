@@ -10,7 +10,6 @@ const EVENT = {
 };
 
 class AppSocket extends Socket {
-
     constructor() {
         super();
         this.pingInterval = PING_INTERVAL;
@@ -21,11 +20,11 @@ class AppSocket extends Socket {
     send(msg) {
         return new Promise((resolve) => {
             msg = SocketMessage.create(msg);
-            if(!msg.userID) {
+            if (!msg.userID) {
                 msg.userID = this.user.id;
             }
             super.send(msg.json, () => {
-                if(DEBUG) {
+                if (DEBUG) {
                     console.collapse('Socket Send ⬆︎', 'indigoBg', msg.pathname, 'indigoPale');
                     console.log('msg', msg);
                     console.groupEnd();
@@ -42,7 +41,7 @@ class AppSocket extends Socket {
      * @param {Function} func
      */
     setHandler(pathname, func) {
-        if(typeof pathname === 'object') {
+        if (typeof pathname === 'object') {
             Object.keys(pathname).forEach(name => {
                 this.handlers[name.toLowerCase()] = pathname[name];
             });
@@ -61,11 +60,11 @@ class AppSocket extends Socket {
     }
 
     handleMessage(msg) {
-        if(msg.isSuccess) {
+        if (msg.isSuccess) {
             this.lastOkTime = this.lastHandTime;
         }
 
-        if(DEBUG) {
+        if (DEBUG) {
             console.collapse('SOCKET Data ⬇︎', 'purpleBg', msg.pathname, 'purplePale', msg.isSuccess ? 'OK' : 'FAILED', msg.isSuccess ? 'greenPale' : 'dangerPale');
             console.log('msg', msg);
             console.log('socket', this);
@@ -74,15 +73,15 @@ class AppSocket extends Socket {
 
         let handler = this.getHandler(msg.module, msg.method);
         let result;
-        if(handler) {
-            while(handler && typeof handler === 'string') {
+        if (handler) {
+            while (handler && typeof handler === 'string') {
                 handler = this.getHandler(handler);
             }
-            if(handler) {
+            if (handler) {
                 result = handler(msg, this);
             }
         }
-        if(result === undefined) {
+        if (result === undefined) {
             result = msg.isSuccess;
         }
         Events.emit(EVENT.message, msg, result);
@@ -92,17 +91,17 @@ class AppSocket extends Socket {
         return new Promise((resolve, reject) => {
             let listenHandler = null;
             const listenTimer = setTimeout(() => {
-                if(listenHandler) {
+                if (listenHandler) {
                     Events.off(listenHandler);
                 }
                 reject();
             }, timeout);
             listenHandler = Events.on(EVENT.message, (msg, result) => {
-                if(msg.module === moduleName && msg.method === methodName) {
-                    if(listenTimer) {
+                if (msg.module === moduleName && msg.method === methodName) {
+                    if (listenTimer) {
                         clearTimeout(listenTimer);
                     }
-                    if(listenHandler) {
+                    if (listenHandler) {
                         Events.off(listenHandler);
                     }
                     resolve(result);
@@ -115,10 +114,10 @@ class AppSocket extends Socket {
         return new Promise((resolve, reject) => {
             msg = SocketMessage.create(msg);
             this.listenMessage(msg.module, msg.method).then((result) => {
-                if(check) {
+                if (check) {
                     result = check(result);
                 }
-                if(result) {
+                if (result) {
                     resolve(result);
                 } else {
                     reject();
@@ -130,12 +129,12 @@ class AppSocket extends Socket {
 
     onInit() {
         this.lastHandTime = 0;
-        this.lastOkTime   = 0;
+        this.lastOkTime = 0;
     }
 
     onClose(code, reason, unexpected) {
         this.stopPing();
-        if(this.user && this.user.isOnline) {
+        if (this.user && this.user.isOnline) {
             this.user.markUnverified();
         }
     }
@@ -143,7 +142,7 @@ class AppSocket extends Socket {
     onData(data, flags) {
         const msg = SocketMessage.fromJSON(data);
         this.lastHandTime = new Date().getTime();
-        if(Array.isArray(msg)) {
+        if (Array.isArray(msg)) {
             msg.forEach(x => {
                 this.handleMessage(x);
             });
@@ -155,17 +154,17 @@ class AppSocket extends Socket {
     login(user, options) {
         this.isLogging = true;
         return new Promise((resolve, reject) => {
-            if(user) {
+            if (user) {
                 this.user = user;
             } else {
                 user = this.user;
             }
-            if(!user) {
+            if (!user) {
                 return Promise.reject('User is not defined.');
             }
             const onConnect = () => {
                 this.listenMessage('chat', 'login').then((result, msg) => {
-                    if(result) {
+                    if (result) {
                         this.startPing();
                         this.syncUserSettings();
                         resolve(user);
@@ -175,9 +174,9 @@ class AppSocket extends Socket {
                     this.isLogging = false;
                 }).catch(reject);
                 this.send({
-                    'module': 'chat',
-                    'method': 'login',
-                    'params': [
+                    module: 'chat',
+                    method: 'login',
+                    params: [
                         user.serverName,
                         user.account,
                         user.passwordMD5,
@@ -198,7 +197,7 @@ class AppSocket extends Socket {
     }
 
     logout() {
-        if(this.isConnected) {
+        if (this.isConnected) {
             this.uploadUserSettings();
             setTimeout(() => {
                 this.markClose();
@@ -212,7 +211,7 @@ class AppSocket extends Socket {
 
     uploadUserSettings() {
         return this.sendAndListen({
-            'method': 'settings',
+            method: 'settings',
             params: [
                 this.user.account,
                 this.user.config.exportCloud()
@@ -222,7 +221,7 @@ class AppSocket extends Socket {
 
     syncUserSettings() {
         return this.sendAndListen({
-            'method': 'settings',
+            method: 'settings',
             params: [
                 this.user.account,
                 ''
@@ -232,14 +231,14 @@ class AppSocket extends Socket {
 
     changeUserStatus(status) {
         return this.send({
-            'method': 'userChange',
-            'params': [{status}]
+            method: 'userChange',
+            params: [{status}]
         });
     }
 
     ping() {
         const now = new Date().getTime();
-        if((now - this.lastHandTime) > PING_INTERVAL * 2) {
+        if ((now - this.lastHandTime) > PING_INTERVAL * 2) {
             this.user.markDisconnect();
             this.close(null, 'ping_timeout');
         } else {
@@ -252,7 +251,7 @@ class AppSocket extends Socket {
      * @return {void}
      */
     stopPing() {
-        if(this.pingTask) {
+        if (this.pingTask) {
             clearInterval(this.pingTask);
             this.pingTask = null;
         }
@@ -264,14 +263,14 @@ class AppSocket extends Socket {
      */
     startPing() {
         this.stopPing();
-        if(this.isConnected) {
+        if (this.isConnected) {
             this.pingTask = setInterval(() => {
                 const now = new Date().getTime();
-                if(now - this.lastOkTime > this.pingInterval) {
+                if (now - this.lastOkTime > this.pingInterval) {
                     this.ping();
                 }
-            }, this.pingInterval/2);
-        } else if(DEBUG) {
+            }, this.pingInterval / 2);
+        } else if (DEBUG) {
             console.error('Start ping fail, because the socket connection is not opened.');
         }
     }

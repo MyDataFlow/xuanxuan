@@ -1,3 +1,6 @@
+import compareVersions from 'compare-versions';
+import Config from 'Config';
+import Platform from 'Platform';
 import Socket from '../../network/socket';
 import serverHandlers from './server-handlers';
 import profile from '../profile';
@@ -5,11 +8,8 @@ import API from '../../network/api';
 import notice from '../notice';
 import Events from '../events';
 import limitTimePromise from '../../utils/limit-time-promise';
-import compareVersions from 'compare-versions';
-import Config from 'Config';
-import Platform from 'Platform';
 
-const TIMEOUT = 20*1000;
+const TIMEOUT = 20 * 1000;
 
 const socket = new Socket();
 socket.setHandler(serverHandlers);

@@ -2,18 +2,18 @@ const format = (str, ...args) => {
     let result = str;
     if (args.length > 0) {
         let reg;
-        if (args.length == 1 && (typeof args[0] == "object")) {
+        if (args.length === 1 && (typeof args[0] === 'object')) {
             args = args[0];
-            for (let key in args) {
+            Object.keys(args).forEach(key => {
                 if (args[key] !== undefined) {
-                    reg = new RegExp("({" + key + "})", "g");
+                    reg = new RegExp(`({${key}})`, 'g');
                     result = result.replace(reg, args[key]);
                 }
-            }
+            });
         } else {
             for (let i = 0; i < args.length; i++) {
                 if (args[i] !== undefined) {
-                    reg = new RegExp("({[" + i + "]})", "g");
+                    reg = new RegExp(`({[${i}]})`, 'g');
                     result = result.replace(reg, args[i]);
                 }
             }
@@ -25,26 +25,26 @@ const format = (str, ...args) => {
 const BYTE_UNITS = {
     B: 1,
     KB: 1024,
-    MB: 1024*1024,
-    GB: 1024*1024*1024,
-    TB: 1024*1024*1024*1024,
+    MB: 1024 * 1024,
+    GB: 1024 * 1024 * 1024,
+    TB: 1024 * 1024 * 1024 * 1024,
 };
 const formatBytes = (size, fixed = 2, unit = '') => {
-    if(!unit) {
-        if(size < BYTE_UNITS.KB) {
+    if (!unit) {
+        if (size < BYTE_UNITS.KB) {
             unit = 'B';
-        } else if(size < BYTE_UNITS.MB) {
+        } else if (size < BYTE_UNITS.MB) {
             unit = 'KB';
-        } else if(size < BYTE_UNITS.GB) {
+        } else if (size < BYTE_UNITS.GB) {
             unit = 'MB';
-        } else if(size < BYTE_UNITS.TB) {
+        } else if (size < BYTE_UNITS.TB) {
             unit = 'GB';
         } else {
             unit = 'TB';
         }
     }
 
-    return new Number(size / BYTE_UNITS[unit]).toFixed(fixed) + unit;
+    return (size / BYTE_UNITS[unit]).toFixed(fixed) + unit;
 };
 
 /**

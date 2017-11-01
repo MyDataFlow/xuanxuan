@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Modal from '../../components/modal';
 import ChatCommittersSetting from './chat-committers-setting';
 import Lang from '../../lang';
@@ -13,11 +12,11 @@ const show = (chat, callback) => {
             width: '80%'
         },
         onSubmit: () => {
-            if(settingView) {
-                App.im.server.setCommitters(chat, settingView.getCommitters())
+            if (settingView) {
+                App.im.server.setCommitters(chat, settingView.getCommitters());
             }
         },
-        content: <ChatCommittersSetting ref={e => settingView = e} chat={chat}/>
+        content: <ChatCommittersSetting ref={e => {settingView = e;}} chat={chat} />
     }, callback);
 };
 

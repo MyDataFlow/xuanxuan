@@ -67,7 +67,7 @@ export default class DisplayLayer extends Component {
         content: PropTypes.any,
         contentLoadFail: PropTypes.any,
         id: PropTypes.any,
-        animation: PropTypes.string,
+        animation: PropTypes.any,
         onShown: PropTypes.func,
         onHidden: PropTypes.func,
         onLoad: PropTypes.func,

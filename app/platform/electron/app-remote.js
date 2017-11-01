@@ -2,9 +2,11 @@ import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, gl
 import Lang from '../../lang';
 import Config from '../../config';
 import EVENT from './remote-events';
+import Events from './events';
 
 
 const IS_MAC_OSX = process.platform === 'darwin';
+const SHOW_LOG = DEBUG;
 
 if (DEBUG && process.type === 'renderer') {
     console.error('AppRemote must run in main process.');
@@ -50,11 +52,15 @@ class AppRemote {
             if (result instanceof Promise) {
                 result.then(x => {
                     e.sender.send(callBackEventName, x);
+                }).catch(error => {
+                    console.warn('Remote error', error);
                 });
             } else {
                 e.sender.send(callBackEventName, result);
             }
-            if (DEBUG) console.info('\n>> Accept remote call', `${callBackEventName  }.${  method  }(`, args, ')');
+            if (DEBUG) {
+                console.info('\n>> Accept remote call', `${callBackEventName}.${method}(`, args, ')');
+            }
         });
 
         ipcMain.on(EVENT.remote_send, (e, windowName, eventName, ...args) => {
@@ -191,15 +197,21 @@ class AppRemote {
         this.windows[name] = browserWindow;
         browserWindow.on('closed', () => {
             delete this.windows[name];
-            options.onClosed && options.onClosed(name);
+            if (options.onClosed) {
+                options.onClosed(name);
+            }
         });
 
         browserWindow.webContents.on('did-finish-load', () => {
             if (options.showAfterLoad) {
-                options.beforeShow && options.beforeShow(browserWindow, name);
+                if (options.beforeShow) {
+                    options.beforeShow(browserWindow, name);
+                }
                 browserWindow.show();
                 browserWindow.focus();
-                options.afterShow && options.afterShow(browserWindow, name);
+                if (options.afterShow) {
+                    options.afterShow(browserWindow, name);
+                }
             }
             if (options.onLoad) {
                 options.onLoad(browserWindow);

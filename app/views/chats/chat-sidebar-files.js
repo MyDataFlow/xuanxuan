@@ -1,14 +1,42 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import FileList from '../common/file-list';
 import Emojione from '../../components/emojione';
 import Spinner from '../../components/spinner';
 
+const renderLoading = () => {
+    return (<div className="dock center-content" style={{top: HTML.rem(50)}}>
+        <Spinner label={Lang.string('chat.sidebar.tab.files.loading')} />
+    </div>);
+};
+
+const renderEmptyFileList = () => {
+    return (<div className="dock center-content" style={{top: HTML.rem(50)}}>
+        <div>
+            <div className="text-center" dangerouslySetInnerHTML={{__html: Emojione.toImage(':blowfish:')}} />
+            <div className="text-gray small">{Lang.string('chat.sidebar.tab.files.noFilesHere')}</div>
+        </div>
+    </div>);
+};
+
+const renderFileList = files => {
+    return <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={files} />;
+};
+
 class ChatSidebarFiles extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        chat: PropTypes.object,
+        children: PropTypes.any,
+    };
+
+    static defaultProps = {
+        className: null,
+        chat: null,
+        children: null,
+    };
 
     constructor(props) {
         super(props);
@@ -18,34 +46,15 @@ class ChatSidebarFiles extends Component {
         };
     }
 
-    loadFiles() {
-        const chat = this.props.chat;
-        App.im.chats.getChatFiles(chat).then(files => {
-            this.setState({files, loading: false});
-        });
-    }
-
     componentDidMount() {
         this.loadFiles();
     }
 
-    renderLoading() {
-        return <div className="dock center-content" style={{top: HTML.rem(50)}}>
-            <Spinner label={Lang.string('chat.sidebar.tab.files.loading')}/>
-        </div>;
-    }
-
-    renderEmptyFileList() {
-        return <div className="dock center-content" style={{top: HTML.rem(50)}}>
-            <div>
-                <div className="text-center" dangerouslySetInnerHTML={{__html: Emojione.toImage(':blowfish:')}}></div>
-                <div className="text-gray small">{Lang.string('chat.sidebar.tab.files.noFilesHere')}</div>
-            </div>
-        </div>;
-    }
-
-    renderFileList(files) {
-        return <FileList listItemProps={{smallIcon: true, showSender: true}} className="white rounded" files={files}/>;
+    loadFiles() {
+        const chat = this.props.chat;
+        return App.im.chats.getChatFiles(chat).then(files => {
+            this.setState({files, loading: false});
+        });
     }
 
     render() {
@@ -58,14 +67,15 @@ class ChatSidebarFiles extends Component {
 
         const {files, loading} = this.state;
 
-        return <div {...other}
+        return (<div
+            {...other}
             className={HTML.classes('app-chat-sidebar-files has-padding', className)}
         >
             {
-                loading ? this.renderLoading() : files.length ? this.renderFileList(files) : this.renderEmptyFileList()
+                loading ? renderLoading() : files.length ? renderFileList(files) : renderEmptyFileList()
             }
             {children}
-        </div>;
+        </div>);
     }
 }
 

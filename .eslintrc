@@ -18,7 +18,6 @@
   },
   "rules": {
     "arrow-parens": ["off"],
-    "compat/compat": "error",
     "consistent-return": "off",
     "comma-dangle": "off",
     "generator-star-spacing": "off",
@@ -60,7 +59,11 @@
     "arrow-body-style": "warn",
     "import/no-unresolved": "warn",
     "import/extensions": "off",
-    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"]
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
+    "compat/compat": "warn",
+    "class-methods-use-this": "warn",
+    "no-lonely-if": "warn",
+    "react/jsx-no-target-blank": "warn"
   },
   "plugins": [
     "import",

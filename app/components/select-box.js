@@ -1,8 +1,31 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import StringHelper from '../utils/string-helper';
 
 class Selectbox extends Component {
+    static propTypes = {
+        value: PropTypes.any,
+        onChange: PropTypes.func,
+        onFocus: PropTypes.func,
+        onBlur: PropTypes.func,
+        children: PropTypes.any,
+        selectProps: PropTypes.object,
+        className: PropTypes.string,
+        selectClassName: PropTypes.string,
+        options: PropTypes.array,
+    };
+
+    static defaultProps = {
+        value: '',
+        onChange: null,
+        onFocus: null,
+        onBlur: null,
+        children: null,
+        className: null,
+        selectClassName: null,
+        selectProps: null,
+        options: null,
+    };
 
     constructor(props) {
         super(props);
@@ -15,17 +38,23 @@ class Selectbox extends Component {
     handleSelectChange = e => {
         const value = e.target.value;
         this.setState({empty: StringHelper.isEmpty(value)});
-        this.props.onChange && this.props.onChange(value, e);
+        if (this.props.onChange) {
+            this.props.onChange(value, e);
+        }
     };
 
     handleOnSelectFocus = e => {
         this.setState({focus: true});
-        this.props.onFocus && this.props.onFocus(e);
+        if (this.props.onFocus) {
+            this.props.onFocus(e);
+        }
     }
 
     handleOnSelectBlur = e => {
         this.setState({focus: false});
-        this.props.onBlur && this.props.onBlur(e);
+        if (this.props.onBlur) {
+            this.props.onBlur(e);
+        }
     }
 
     render() {
@@ -40,11 +69,13 @@ class Selectbox extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('select', className, {
+        return (<div
+            className={HTML.classes('select', className, {
                 focus: this.state.focus,
                 empty: this.state.empty,
                 normal: !this.state.focus
-            })} {...other}
+            })}
+            {...other}
         >
             <select
                 className={selectClassName}
@@ -54,20 +85,20 @@ class Selectbox extends Component {
                 onFocus={this.handleOnSelectFocus}
                 onBlur={this.handleOnSelectBlur}
             >
-            {
-                options && options.map(option => {
-                    if(!option) {
-                        return null;
-                    }
-                    if(typeof option !== 'object') {
-                        option = {value: option, label: option};
-                    }
-                    return <option key={option.value} value={option.value}>{option.label}</option>
-                })
-            }
-            {children}
+                {
+                    options && options.map(option => {
+                        if (!option) {
+                            return null;
+                        }
+                        if (typeof option !== 'object') {
+                            option = {value: option, label: option};
+                        }
+                        return <option key={option.value} value={option.value}>{option.label}</option>;
+                    })
+                }
+                {children}
             </select>
-        </div>;
+        </div>);
     }
 }
 

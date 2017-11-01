@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import MessageDivider from './message-divider';
@@ -14,18 +13,53 @@ import Icon from '../../components/icon';
 import MessageBroadcast from './message-broadcast';
 import Lang from '../../lang';
 
-const showTimeLabelInterval = 1000*60*5;
+const showTimeLabelInterval = 1000 * 60 * 5;
 
 class MessageListItem extends Component {
+    static propTypes = {
+        message: PropTypes.object.isRequired,
+        lastMessage: PropTypes.object,
+        font: PropTypes.object,
+        ignoreStatus: PropTypes.bool,
+        showDateDivider: PropTypes.any,
+        hideHeader: PropTypes.any,
+        staticUI: PropTypes.bool,
+        avatarSize: PropTypes.number,
+        dateFormater: PropTypes.string,
+        textContentConverter: PropTypes.func,
+        className: PropTypes.string,
+        children: PropTypes.any,
+    };
 
     static defaultProps = {
         lastMessage: null,
+        children: null,
+        font: null,
+        className: null,
         showDateDivider: 0,
         hideHeader: 0,
         staticUI: false,
         avatarSize: null,
-        dateFormater: 'hh:mm'
+        dateFormater: 'hh:mm',
+        ignoreStatus: false,
+        textContentConverter: null,
     };
+
+    componentDidMount() {
+        if (!this.props.ignoreStatus) {
+            this.checkResendMessage();
+        }
+    }
+
+    componentDidUpdate() {
+        if (!this.props.ignoreStatus) {
+            this.checkResendMessage();
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.checkResendTask);
+    }
 
     handleSenderNameClick(sender, message) {
         App.im.ui.sendContentToChat(`@${sender.displayName} `);
@@ -39,36 +73,21 @@ class MessageListItem extends Component {
 
     checkResendMessage() {
         const {message} = this.props;
-        if(message.needCheckResend) {
+        if (message.needCheckResend) {
             clearTimeout(this.checkResendTask);
             this.checkResendTask = setTimeout(() => {
-                if(message.needResend) {
+                if (message.needResend) {
                     this.forceUpdate();
                 }
-            }, 10500)
+            }, 10500);
         }
     }
 
-    componentDidUpdate() {
-        if(!this.props.ignoreStatus) {
-            this.checkResendMessage();
-        }
-    }
-
-    componentDidMount() {
-        if(!this.props.ignoreStatus) {
-            this.checkResendMessage();
-        }
-    }
-
-    componentWillUnmount() {
-        clearTimeout(this.checkResendTask);
-    }
 
     handleResendBtnClick = e => {
         const message = this.props.message;
         message.date = new Date().getTime();
-        if(message.needCheckResend) {
+        if (message.needCheckResend) {
             App.im.server.sendChatMessage(message);
         }
         this.forceUpdate();
@@ -76,7 +95,7 @@ class MessageListItem extends Component {
 
     handleDeleteBtnClick = e => {
         const message = this.props.message;
-        if(message.needCheckResend) {
+        if (message.needCheckResend) {
             App.im.chats.deleteLocalMessage(this.props.message);
         }
     }
@@ -101,10 +120,10 @@ class MessageListItem extends Component {
         const needCheckResend = !ignoreStatus && message.needCheckResend;
         const needResend = !ignoreStatus && needCheckResend && message.needResend;
 
-        if(showDateDivider === 0) {
+        if (showDateDivider === 0) {
             showDateDivider = !lastMessage || !DateHelper.isSameDay(message.date, lastMessage.date);
         }
-        if(hideHeader === 0) {
+        if (hideHeader === 0) {
             hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId;
         }
 
@@ -114,63 +133,64 @@ class MessageListItem extends Component {
         let resendButtonsView = null;
 
         const basicFontStyle = font ? {
-            fontSize: font.size + 'px',
+            fontSize: `${font.size}px`,
             lineHeight: font.lineHeight,
         } : null;
         const titleFontStyle = font ? {
-            fontSize: font.title + 'px',
+            fontSize: `${font.title}px`,
             lineHeight: font.titleLineHeight,
         } : null;
 
-        if(!hideHeader) {
+        if (!hideHeader) {
             const sender = message.getSender(App.members);
-            headerView = <div className="app-message-item-header">
-                <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)}/>
+            headerView = (<div className="app-message-item-header">
+                <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)} />
                 <header style={titleFontStyle}>
                     <a className="title rounded text-primary" onContextMenu={staticUI ? null : this.handleUserContextMenu.bind(this, sender)} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
                     <small className="time">{DateHelper.formatDate(message.date, dateFormater)}</small>
                 </header>
-            </div>;
+            </div>);
         }
 
-        if(message.isBroadcast) {
-            contentView = <MessageBroadcast contentConverter={textContentConverter} style={basicFontStyle} message={message}/>
-        } else if(message.isFileContent) {
-            contentView = <MessageContentFile message={message}/>;
-        } else if(message.isImageContent) {
-            contentView = <MessageContentImage message={message}/>;
+        if (message.isBroadcast) {
+            contentView = <MessageBroadcast contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
+        } else if (message.isFileContent) {
+            contentView = <MessageContentFile message={message} />;
+        } else if (message.isImageContent) {
+            contentView = <MessageContentImage message={message} />;
         } else {
-            contentView = <MessageContentText contentConverter={textContentConverter} style={basicFontStyle} message={message}/>;
+            contentView = <MessageContentText contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
         }
 
-        if(!headerView) {
+        if (!headerView) {
             let hideTimeLabel = false;
-            if(hideHeader && !showDateDivider && lastMessage && message.date && (message.date - lastMessage.date) <= showTimeLabelInterval) {
+            if (hideHeader && !showDateDivider && lastMessage && message.date && (message.date - lastMessage.date) <= showTimeLabelInterval) {
                 hideTimeLabel = true;
             }
             timeLabelView = <span className={HTML.classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
         }
 
-        if(!staticUI && !ignoreStatus && needResend) {
-            resendButtonsView = <nav className="nav nav-sm app-message-item-actions">
-                <a onClick={this.handleResendBtnClick}><Icon name="refresh"/> {Lang.string('chat.message.resend')}</a>
-                <a onClick={this.handleDeleteBtnClick}><Icon name="delete"/> {Lang.string('common.delete')}</a>
-            </nav>
+        if (!staticUI && !ignoreStatus && needResend) {
+            resendButtonsView = (<nav className="nav nav-sm app-message-item-actions">
+                <a onClick={this.handleResendBtnClick}><Icon name="refresh" /> {Lang.string('chat.message.resend')}</a>
+                <a onClick={this.handleDeleteBtnClick}><Icon name="delete" /> {Lang.string('common.delete')}</a>
+            </nav>);
         }
 
-        return <div {...other}
+        return (<div
+            {...other}
             className={HTML.classes('app-message-item', className, {
                 'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
                 'app-message-send-fail': !ignoreStatus && needResend,
                 'with-avatar': !hideHeader
             })}
         >
-            {showDateDivider && <MessageDivider date={message.date}/>}
+            {showDateDivider && <MessageDivider date={message.date} />}
             {headerView}
             {timeLabelView}
             {contentView && <div className="app-message-content">{contentView}</div>}
             {resendButtonsView}
-        </div>;
+        </div>);
     }
 }
 

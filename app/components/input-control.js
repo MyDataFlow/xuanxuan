@@ -20,7 +20,7 @@ class InputControl extends Component {
         inputStyle: null,
         inputProps: null,
         children: null,
-        value: null,
+        value: '',
     };
 
     static propTypes = {
@@ -86,7 +86,7 @@ class InputControl extends Component {
     }
 
     render() {
-        let {
+        const {
             name,
             label,
             labelStyle,
@@ -109,10 +109,9 @@ class InputControl extends Component {
         return (<div className={HTML.classes('control', className, {disabled})} {...other}>
             {label !== false && <label htmlFor={name} style={labelStyle}>{label}</label>}
             <input
-                defaultValue={defaultValue}
                 disabled={!!disabled}
                 ref={e => {this.input = e;}}
-                value={value !== null ? value : this.state.value}
+                value={value !== null ? value : this.state.value === null ? '' : this.state.value}
                 id={name}
                 type={inputType}
                 className={HTML.classes('input', inputClassName)}

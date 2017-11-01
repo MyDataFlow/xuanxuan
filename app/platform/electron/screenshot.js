@@ -1,11 +1,10 @@
-import RecordRTC from "recordrtc";
+import RecordRTC from 'recordrtc';
 import {desktopCapturer, screen as Screen, remote as Remote, clipboard} from 'electron';
 import ui from './ui';
 import Image from './image';
 import env from './env';
 import Lang from '../../lang';
 import RemoteEvents from './remote';
-import fs from 'fs-extra';
 
 /* This is NEEDED because RecordRTC is badly written */
 global.html2canvas = (canvas, obj) => {
@@ -14,7 +13,7 @@ global.html2canvas = (canvas, obj) => {
 
 const getStream = sourceId => {
     return new Promise((resolve, reject) => {
-        desktopCapturer.getSources({ types: ['screen'] }, (error, sources) => {
+        desktopCapturer.getSources({types: ['screen']}, (error, sources) => {
             if (error) {
                 reject(error);
                 return;
@@ -58,7 +57,7 @@ const getCanvas = (width, height) => {
     return canvas;
 };
 
-const drawFrame = ({ ctx, video, x, y, width, height, availTop = screen.availTop }) => {
+const drawFrame = ({ctx, video, x, y, width, height, availTop = screen.availTop}) => {
     ctx.drawImage(video, x, y, width, height, 0, -availTop, width, height);
 };
 
@@ -67,8 +66,10 @@ const getFrameImage = canvas => {
 };
 
 const getDisplay = id => {
-    if(id) return Screen.getAllDisplays().find(item => item.id === id);
-    else return Screen.getPrimaryDisplay();
+    if (id) {
+        return Screen.getAllDisplays().find(item => item.id === id);
+    }
+    return Screen.getPrimaryDisplay();
 };
 
 const getLoop = fn => {
@@ -83,10 +84,10 @@ const getLoop = fn => {
     };
 };
 
-const startRecording = ({ canvas, video, x, y, width, height, availTop }) => {
-    const recorder = RecordRTC(canvas, { type: 'canvas' });
+const startRecording = ({canvas, video, x, y, width, height, availTop}) => {
+    const recorder = RecordRTC(canvas, {type: 'canvas'});
     const ctx = canvas.getContext('2d');
-    const stopLoop = getLoop(() => drawFrame({ ctx, video, x, y, width, height, availTop }));
+    const stopLoop = getLoop(() => drawFrame({ctx, video, x, y, width, height, availTop}));
 
     recorder.startRecording();
 
@@ -95,7 +96,7 @@ const startRecording = ({ canvas, video, x, y, width, height, availTop }) => {
             return new Promise(resolve => {
                 stopLoop();
                 recorder.stopRecording(() => {
-                    recorder.getDataURL(url => resolve({ url, width, height }));
+                    recorder.getDataURL(url => resolve({url, width, height}));
                 });
             });
         },
@@ -108,26 +109,26 @@ const startRecording = ({ canvas, video, x, y, width, height, availTop }) => {
     };
 };
 
-const takeScreenshot = ({ x = 0, y = 0, width = 0, height = 0, sourceId = 0 }) => {
-    let display = getDisplay(sourceId);
+const takeScreenshot = ({x = 0, y = 0, width = 0, height = 0, sourceId = 0}) => {
+    const display = getDisplay(sourceId);
     const availTop = screen.availTop - display.bounds.y;
     sourceId = display.id;
 
-    if(!width) width   = display.bounds.width;
-    if(!height) height = display.bounds.height;
+    if (!width) width = display.bounds.width;
+    if (!height) height = display.bounds.height;
 
     return getStream(sourceId)
         .then(getVideo)
         .then(video => {
             const canvas = getCanvas(width, height);
             const ctx = canvas.getContext('2d');
-            drawFrame({ ctx, video, x, y, width, height, availTop });
+            drawFrame({ctx, video, x, y, width, height, availTop});
             return getFrameImage(canvas);
         });
 };
 
 const takeAllScreenshots = (options) => {
-    if(!options) {
+    if (!options) {
         options = Screen.getAllDisplays().map(item => {
             return {
                 x: 0,
@@ -138,7 +139,7 @@ const takeAllScreenshots = (options) => {
             };
         });
     }
-    if(Array.isArray(options)) {
+    if (Array.isArray(options)) {
         return Promise.all(options.map(option => {
             return takeScreenshot(option);
         }));
@@ -147,33 +148,33 @@ const takeAllScreenshots = (options) => {
     }
 };
 
-const captureVideo = ({ x, y, width, height, sourceId }) => {
-    let display = getDisplay(sourceId);
+const captureVideo = ({x, y, width, height, sourceId}) => {
+    const display = getDisplay(sourceId);
     const availTop = screen.availTop - display.bounds.y;
     sourceId = display.id;
     return getStream(sourceId)
         .then(getVideo)
         .then(video => {
             const canvas = getCanvas(width, height);
-            return startRecording({ canvas, video, x, y, width, height, availTop });
+            return startRecording({canvas, video, x, y, width, height, availTop});
         });
 };
 
 const saveScreenshotImage = (options, filePath, hideCurrentWindow) => {
-    if(!options) {
+    if (!options) {
         options = {};
     }
-    if(!filePath) {
+    if (!filePath) {
         filePath = ui.makeTmpFilePath('.png');
     }
     const processImage = base64Image => {
-        if(hideCurrentWindow) {
+        if (hideCurrentWindow) {
             ui.browserWindow.show();
         }
         return Image.saveImage(base64Image, filePath);
     };
-    if(hideCurrentWindow && ui.browserWindow.isVisible()) {
-        if(env.isWindowsOS) {
+    if (hideCurrentWindow && ui.browserWindow.isVisible()) {
+        if (env.isWindowsOS) {
             const hideWindowTask = () => {
                 ui.browserWindow.hide();
                 return new Promise((resolve, reject) => {
@@ -191,7 +192,7 @@ const saveScreenshotImage = (options, filePath, hideCurrentWindow) => {
 
 const openCaptureScreenWindow = (file, display) => {
     return new Promise((resolve, reject) => {
-        let captureWindow = new Remote.BrowserWindow({
+        const captureWindow = new Remote.BrowserWindow({
             x: display ? display.bounds.x : 0,
             y: display ? display.bounds.y : 0,
             width: display ? display.bounds.width : screen.width,
@@ -200,14 +201,14 @@ const openCaptureScreenWindow = (file, display) => {
             fullscreen: true,
             frame: true,
             show: false,
-            title: Lang.string('imageCutter.captureScreen') + ' - ' + display.id,
+            title: `${Lang.string('imageCutter.captureScreen')} - ${display.id}`,
             titleBarStyle: 'hidden',
             resizable: false,
         });
         if (DEBUG) {
             captureWindow.openDevTools();
         }
-        captureWindow.loadURL(`file://${ui.appRoot}/index.html#image-cutter/` + encodeURIComponent(file.path));
+        captureWindow.loadURL(`file://${ui.appRoot}/index.html#image-cutter/${encodeURIComponent(file.path)}`);
         captureWindow.webContents.on('did-finish-load', () => {
             captureWindow.show();
             captureWindow.focus();
@@ -217,42 +218,42 @@ const openCaptureScreenWindow = (file, display) => {
 };
 
 const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) => {
-    if(!screenSources || screenSources === 'all') {
-        let displays = Screen.getAllDisplays();
+    if (!screenSources || screenSources === 'all') {
+        const displays = Screen.getAllDisplays();
         screenSources = displays.map(display => {
             display.sourceId = display.id;
             return display;
         });
     }
-    if(!Array.isArray(screenSources)) {
+    if (!Array.isArray(screenSources)) {
         screenSources = [screenSources];
     }
     hideCurrentWindow = hideCurrentWindow && ui.browserWindow.isVisible();
     return new Promise((resolve, reject) => {
-        let captureScreenWindows = [];
+        const captureScreenWindows = [];
         RemoteEvents.ipcOnce(RemoteEvents.EVENT.capture_screen, (e, image) => {
-            if(captureScreenWindows) {
+            if (captureScreenWindows) {
                 captureScreenWindows.forEach(captureWindow => {
                     captureWindow.close();
                 });
             }
-            if(hideCurrentWindow) {
+            if (hideCurrentWindow) {
                 ui.browserWindow.show();
                 ui.browserWindow.focus();
             }
-            if(image) {
+            if (image) {
                 const filePath = ui.makeTmpFilePath('.png');
-                Image.saveImage(image.data, filePath).then(image => {
-                    if(image && image.path) {
-                        clipboard.writeImage(Image.createFromPath(image.path));
+                Image.saveImage(image.data, filePath).then(savedImage => {
+                    if (savedImage && savedImage.path) {
+                        clipboard.writeImage(Image.createFromPath(savedImage.path));
                     }
-                    resolve(image);
+                    resolve(savedImage);
                 }).catch(reject);
-            } else {
-                if(DEBUG) console.log('No capture image.');
+            } else if (DEBUG) {
+                console.log('No capture image.');
             }
         });
-        let takeScreenshots = () => {
+        const takeScreenshots = () => {
             return Promise.all(screenSources.map(screenSource => {
                 return saveScreenshotImage(screenSource, '').then(file => {
                     return openCaptureScreenWindow(file, screenSource).then(captureWindow => {
@@ -261,7 +262,7 @@ const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) 
                 });
             }));
         };
-        if(hideCurrentWindow) {
+        if (hideCurrentWindow) {
             ui.browserWindow.hide();
             setTimeout(() => {
                 takeScreenshots();

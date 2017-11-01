@@ -110,18 +110,18 @@ if (global.DEBUG) {
         };
 
         const formatOutput = (args) => {
-            let output = [''];
-            let format = [];
+            const output = [''];
+            const format = [];
             args.forEach((arg, idx) => {
-                let index = Math.floor(idx / 2);
-                if(idx % 2 === 1) {
+                const index = Math.floor(idx / 2);
+                if (idx % 2 === 1) {
                     format[index] = `%c${format[index]}`;
                     let style = 'padding: 0 4px; border: 1px solid transparent;';
-                    if(Array.isArray(arg)) {
+                    if (Array.isArray(arg)) {
                         style += arg.reduce((tmpStyle, styleName) => {
                             return tmpStyle + (STYLE[styleName] || styleName);
                         }, '');
-                    } else if(typeof arg === 'object') {
+                    } else if (typeof arg === 'object') {
                         style += Object.keys(arg).reduce((tmpStyle, propName) => (`${tmpStyle}${propName}: ${arg[propName]}`), '');
                     } else {
                         style += STYLE[arg] || arg;

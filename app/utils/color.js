@@ -8,18 +8,18 @@ const clampNumber = (x, max) => (clamp(number(x), max));
 const convertToRgbInt = x => (Number.parseInt(clampNumber(x, 255), 10));
 
 const hexToRgb = hex => {
-    if(hex && hexReg.test(hex)) {
+    if (hex && hexReg.test(hex)) {
         hex = hex.toLowerCase();
-        if(hex.length === 4) {
+        if (hex.length === 4) {
             let hexNew = '#';
-            for(let i = 1; i < 4; i++) {
+            for (let i = 1; i < 4; i++) {
                 hexNew += hex.slice(i, i + 1).concat(hex.slice(i, i + 1));
             }
             hex = hexNew;
         }
 
         const hexChange = [];
-        for(let i = 1; i < 7; i += 2) {
+        for (let i = 1; i < 7; i += 2) {
             hexChange.push(Number.parseInt(`0x${hex.slice(i, i + 2)}`, 10));
         }
         return {
@@ -38,11 +38,11 @@ const isColor = hex => (typeof hex === 'string' && (hex.toLowerCase() === 'trans
 const hslToRgb = hsl => {
     const hue = h => {
         h = h < 0 ? h + 1 : (h > 1 ? h - 1 : h);
-        if(h * 6 < 1) {
+        if (h * 6 < 1) {
             return m1 + ((m2 - m1) * h * 6);
-        } else if(h * 2 < 1) {
+        } else if (h * 2 < 1) {
             return m2;
-        } else if(h * 3 < 2) {
+        } else if (h * 3 < 2) {
             return m1 + ((m2 - m1) * ((2 / 3) - h) * 6);
         } else {
             return m1;
@@ -78,7 +78,6 @@ const toHexValue = x => {
 };
 
 export default class Color {
-
     static isColor = isColor;
     static hexToRgb = hexToRgb;
     static hslToRgb = hslToRgb;
@@ -103,29 +102,29 @@ export default class Color {
         this.A = a;
 
         const paramType = typeof r;
-        if(paramType === 'string') {
+        if (paramType === 'string') {
             const hex = r.toLowerCase();
-            if(hex === 'transparent') {
+            if (hex === 'transparent') {
                 this.A = 0;
             } else {
                 this.rgb = hexToRgb(hex);
             }
-        } else if(paramType === 'number') {
+        } else if (paramType === 'number') {
             this.R = r;
             this.G = g;
             this.B = b;
-        } else if(paramType === 'object') {
+        } else if (paramType === 'object') {
             const obj = r;
-            if(isDefined(obj.h)) {
-                let hsl = {
+            if (isDefined(obj.h)) {
+                const hsl = {
                     h: clampNumber(obj.h, 360),
                     s: 1,
                     l: 1,
                     a: this.A
                 };
-                if(isDefined(obj.s)) hsl.s = clampNumber(obj.s, 1);
-                if(isDefined(obj.l)) hsl.l = clampNumber(obj.l, 1);
-                if(isDefined(obj.a)) hsl.a = clampNumber(obj.a, 1);
+                if (isDefined(obj.s)) hsl.s = clampNumber(obj.s, 1);
+                if (isDefined(obj.l)) hsl.l = clampNumber(obj.l, 1);
+                if (isDefined(obj.a)) hsl.a = clampNumber(obj.a, 1);
                 this.rgb = hslToRgb(hsl);
             } else {
                 this.rgb = obj;
@@ -175,10 +174,10 @@ export default class Color {
     }
 
     set rgb(rgb) {
-        if(isDefined(rgb.r)) this.R = rgb.r;
-        if(isDefined(rgb.g)) this.G = rgb.g;
-        if(isDefined(rgb.b)) this.B = rgb.b;
-        if(isDefined(rgb.a)) this.A = rgb.a;
+        if (isDefined(rgb.r)) this.R = rgb.r;
+        if (isDefined(rgb.g)) this.G = rgb.g;
+        if (isDefined(rgb.b)) this.B = rgb.b;
+        if (isDefined(rgb.a)) this.A = rgb.a;
     }
 
     setRgb(rgb) {
@@ -187,39 +186,41 @@ export default class Color {
     }
 
     get hsl() {
-        let r = this.r / 255,
-            g = this.g / 255,
-            b = this.b / 255,
-            a = this.a;
+        const r = this.r / 255;
+        const g = this.g / 255;
+        const b = this.b / 255;
+        const a = this.a;
 
-        let max = Math.max(r, g, b),
-            min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2,
-            d = max - min;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h;
+        let s;
+        const l = (max + min) / 2;
+        const d = max - min;
 
-        if(max === min) {
+        if (max === min) {
             h = s = 0;
         } else {
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
-            switch(max) {
-                case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                case g:
-                    h = (b - r) / d + 2;
-                    break;
-                case b:
-                    h = (r - g) / d + 4;
-                    break;
+            switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
             }
             h /= 6;
         }
         return {
             h: h * 360,
-            s: s,
-            l: l,
-            a: a
+            s,
+            l,
+            a
         };
     }
 
@@ -279,19 +280,17 @@ export default class Color {
     }
 
     get css() {
-        if(this.a > 0) {
-            if(this.a < 1) {
+        if (this.a > 0) {
+            if (this.a < 1) {
                 return `rgba(${this.r},${this.g},${this.b},${this.a})`;
-            } else {
-                return this.hex;
             }
-        } else {
-            return 'transparent';
+            return this.hex;
         }
+        return 'transparent';
     }
 
     darken(amount) {
-        let hsl = this.hsl();
+        const hsl = this.hsl();
 
         hsl.l -= amount / 100;
         hsl.l = clamp(hsl.l, 1);
@@ -309,8 +308,8 @@ export default class Color {
     }
 
     spin(amount) {
-        let hsl = this.hsl;
-        let hue = (hsl.h + amount) % 360;
+        const hsl = this.hsl;
+        const hue = (hsl.h + amount) % 360;
 
         hsl.h = hue < 0 ? 360 + hue : hue;
         this.hsl = hsl;
@@ -318,7 +317,7 @@ export default class Color {
     }
 
     saturate(amount) {
-        let hsl = this.hsl;
+        const hsl = this.hsl;
 
         hsl.s += amount / 100;
         hsl.s = clamp(hsl.s);
@@ -328,7 +327,7 @@ export default class Color {
     }
 
     lightness(amount) {
-        let hsl = this.hsl;
+        const hsl = this.hsl;
 
         hsl.l += amount / 100;
         hsl.l = clamp(hsl.l);
@@ -338,34 +337,32 @@ export default class Color {
     }
 
     contrast(dark, light, threshold = 0.43) {
-        if(isUndefined(light)) {
+        if (isUndefined(light)) {
             light = new Color(255, 255, 255, 1);
         } else {
             light = new Color(light);
         }
-        if(isUndefined(dark)) {
+        if (isUndefined(dark)) {
             dark = new Color(0, 0, 0, 1);
         } else {
             dark = new Color(dark);
         }
 
-        if(dark.luma > light.luma) {
-            let swapTmp = light;
+        if (dark.luma > light.luma) {
+            const swapTmp = light;
             light = dark;
             dark = swapTmp;
         }
 
-        if(this.a < 0.5) {
+        if (this.a < 0.5) {
             return dark;
-        } else {
-            threshold = number(threshold);
         }
+        threshold = number(threshold);
 
-        if(this.isDark(threshold)) {
+        if (this.isDark(threshold)) {
             return light;
-        } else {
-            return dark;
         }
+        return dark;
     }
 
     isDark(threshold = 0.43) {
@@ -377,7 +374,7 @@ export default class Color {
     }
 
     static create(r, g, b, a) {
-        if(r instanceof Color) {
+        if (r instanceof Color) {
             return r;
         }
         return new Color(r, g, b, a);

@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import {STATUS} from '../../core/models/member';
 import Lang from '../../lang';
@@ -16,10 +15,20 @@ const statusColors = {
 
 
 class StatusDot extends Component {
+    static propTypes = {
+        size: PropTypes.number,
+        className: PropTypes.string,
+        label: PropTypes.any,
+        style: PropTypes.object,
+        status: PropTypes.any,
+    }
 
     static defaultProps = {
         size: 14,
-        className: 'circle'
+        className: 'circle',
+        style: null,
+        label: null,
+        status: null,
     };
 
     render() {
@@ -27,13 +36,12 @@ class StatusDot extends Component {
             size,
             className,
             style,
-            children,
             status,
             label,
             ...other
         } = this.props;
 
-        if(App.profile.isUserOnline) {
+        if (App.profile.isUserOnline) {
             status = STATUS.getName(status);
         } else {
             status = 'disconnect';
@@ -43,22 +51,21 @@ class StatusDot extends Component {
             border: '1px solid #fff'
         }, style);
 
-        if(size) {
+        if (size) {
             size = HTML.rem(size);
             style.width = size;
             style.height = size;
         }
 
-        const dotView = <span className={HTML.classes('inline-block status-dot', className, `status-${status}`)} style={style} {...other}>{children}</span>;
+        const dotView = <span className={HTML.classes('inline-block status-dot', className, `status-${status}`)} style={style} {...other} />;
 
-        if(label) {
-            if(label === true) {
+        if (label) {
+            if (label === true) {
                 label = Lang.string(`member.status.${status === 'unverified' ? 'offline' : status}`);
             }
             return <div className="app-member-status">{dotView} &nbsp; <span className="status-label muted">{label}</span></div>;
-        } else {
-            return dotView;
         }
+        return dotView;
     }
 }
 

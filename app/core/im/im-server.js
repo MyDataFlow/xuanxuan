@@ -1,3 +1,4 @@
+import Config from 'Config';
 import Server from '../server';
 import imServerHandlers from './im-server-handlers';
 import Events from '../events';
@@ -5,7 +6,6 @@ import profile from '../profile';
 import members from '../members';
 import chats from './im-chats';
 import PKG from '../../package.json';
-import Config from 'Config';
 import Chat from '../models/chat';
 import API from '../../network/api';
 import Messager from '../../components/messager';
@@ -13,7 +13,7 @@ import StringHelper from '../../utils/string-helper';
 import ChatMessage from '../../core/models/chat-message';
 import Lang from '../../lang';
 
-const MAX_BASE64_IMAGE_SIZE = 1024*10;
+const MAX_BASE64_IMAGE_SIZE = 1024 * 10;
 
 const EVENT = {
     history: 'im.chats.history',
@@ -33,10 +33,10 @@ const isFetchingHistory = () => {
 };
 
 const fetchChatsHistory = (pager, continued = false) => {
-    if(pager === 'all') {
+    if (pager === 'all') {
         pager = {queue: chats.query(x => !!x.id, true).map(x => x.gid)};
     }
-    if(typeof pager === 'string') {
+    if (typeof pager === 'string') {
         pager = {queue: [pager]};
     }
     pager = Object.assign({
@@ -47,19 +47,19 @@ const fetchChatsHistory = (pager, continued = false) => {
         perent: 0,
         finish: [],
     }, historyFetchingPager, pager);
-    if(!pager.queue || !pager.queue.length) {
-        if(DEBUG) {
+    if (!pager.queue || !pager.queue.length) {
+        if (DEBUG) {
             console.error('Cannot fetch history, because the fetch queue is empty.', pager);
         }
         return;
     }
     pager.gid = pager.queue[0];
-    if(pager.total === undefined) {
+    if (pager.total === undefined) {
         pager.total = pager.finish.length + pager.queue.length;
     }
-    if(pager.pageID === 1 && pager.continued && !continued) {
-        if(historyFetchingPager) {
-            if(DEBUG) {
+    if (pager.pageID === 1 && pager.continued && !continued) {
+        if (historyFetchingPager) {
+            if (DEBUG) {
                 console.warn('Server is busy.');
             }
             return;
@@ -68,13 +68,13 @@ const fetchChatsHistory = (pager, continued = false) => {
         historyFetchingPager = pager;
     }
     return Server.socket.send({
-        'method': 'history',
-        'params': [pager.gid, pager.recPerPage, pager.pageID, pager.recTotal, pager.continued]
+        method: 'history',
+        params: [pager.gid, pager.recPerPage, pager.pageID, pager.recTotal, pager.continued]
     });
 };
 
 const updateChatHistory = (cgid, messages, pager, socket) => {
-    if(messages && messages.length) {
+    if (messages && messages.length) {
         chats.updateChatMessages(messages, true);
     }
 
@@ -82,11 +82,11 @@ const updateChatHistory = (cgid, messages, pager, socket) => {
     pager = Object.assign({}, historyFetchingPager, pager, {
         isFetchOver,
     });
-    if(pager.continued) {
-        if(isFetchOver && pager.queue.length < 2) {
+    if (pager.continued) {
+        if (isFetchOver && pager.queue.length < 2) {
             historyFetchingPager = null;
         } else {
-            if(isFetchOver) {
+            if (isFetchOver) {
                 pager.finish.push(pager.queue.shift());
                 pager = Object.assign(pager, {
                     pageID: 1,
@@ -101,10 +101,10 @@ const updateChatHistory = (cgid, messages, pager, socket) => {
         }
     }
     pager.total = pager.finish.length + pager.queue.length;
-    pager.percent = 100*(pager.finish.length/pager.total + (pager.recTotal ? ((Math.min(pager.recTotal, pager.pageID*pager.recPerPage)/pager.recTotal)) : 0)/pager.total);
+    pager.percent = 100 * (pager.finish.length / pager.total + (pager.recTotal ? ((Math.min(pager.recTotal, pager.pageID * pager.recPerPage) / pager.recTotal)) : 0) / pager.total);
     Events.emit(EVENT.history, pager, messages);
 
-    if(pager.continued && !historyFetchingPager) {
+    if (pager.continued && !historyFetchingPager) {
         Events.emit(EVENT.history_end, pager);
     }
 };
@@ -121,8 +121,8 @@ const onChatHistoryEnd = listener => {
 
 const createChat = chat => {
     return Server.socket.sendAndListen({
-        'method': 'create',
-        'params': [
+        method: 'create',
+        params: [
             chat.gid,
             chat.name || '',
             chat.type,
@@ -130,38 +130,38 @@ const createChat = chat => {
             0,
             false
         ]
-    }).then(chat => {
-        if(chat) {
-           const groupUrl = `#/chats/groups/${chat.gid}`;
-           if(chat.isGroup) {
-               sendBoardChatMessage(Lang.format('chat.createNewChat.format', `[**[${chat.getDisplayName({members, user: profile.user})}](${groupUrl})**]`), chat);
-           }
+    }).then(theChat => {
+        if (theChat) {
+            const groupUrl = `#/chats/groups/${theChat.gid}`;
+            if (theChat.isGroup) {
+                sendBoardChatMessage(Lang.format('chat.createNewChat.format', `[**[${theChat.getDisplayName({members, user: profile.user})}](${groupUrl})**]`), theChat);
+            }
         }
-        return Promise.resolve(chat);
+        return Promise.resolve(theChat);
     });
 };
 
 const createLocalChatWithMembers = (chatMembers, chatSetting) => {
-    if(!Array.isArray(chatMembers)) {
+    if (!Array.isArray(chatMembers)) {
         chatMembers = [chatMembers];
     }
     const userMeId = profile.user.id;
     chatMembers = chatMembers.map(member => {
-        if(typeof member === 'object') {
+        if (typeof member === 'object') {
             return member.id;
         } else {
             return member;
         }
     });
-    if(!chatMembers.find(memberId => memberId === userMeId)) {
+    if (!chatMembers.find(memberId => memberId === userMeId)) {
         chatMembers.push(userMeId);
     }
     let chat = null;
-    if(chatMembers.length === 2) {
+    if (chatMembers.length === 2) {
         const gid = chatMembers.sort().join('&');
-        chat = get(gid);
-        if(!chat) {
-            chat= new Chat(Object.assign({
+        chat = chats.get(gid);
+        if (!chat) {
+            chat = new Chat(Object.assign({
                 members: chatMembers,
                 createdBy: profile.userAccount,
                 type: Chat.TYPES.one2one
@@ -178,12 +178,11 @@ const createLocalChatWithMembers = (chatMembers, chatSetting) => {
 };
 
 const createChatWithMembers = (chatMembers, chatSettings) => {
-    let chat = createLocalChatWithMembers(chatMembers, chatSettings);
-    if(chat.id) {
+    const chat = createLocalChatWithMembers(chatMembers, chatSettings);
+    if (chat.id) {
         return Promise.resolve(chat);
-    } else {
-        return createChat(chat);
     }
+    return createChat(chat);
 };
 
 const fetchPublicChats = () => {
@@ -191,33 +190,33 @@ const fetchPublicChats = () => {
 };
 
 const setCommitters = (chat, committers) => {
-    if(committers instanceof Set) {
+    if (committers instanceof Set) {
         committers = Array.from(committers);
     }
-    if(Array.isArray(committers)) {
+    if (Array.isArray(committers)) {
         committers = committers.join(',');
     }
     return Server.socket.send({
-        'method': 'setCommitters',
-        'params': [chat.gid, committers]
+        method: 'setCommitters',
+        params: [chat.gid, committers]
     });
 };
 
 const toggleChatPublic = (chat) => {
     return Server.socket.send({
-        'method': 'changePublic',
-        'params': [chat.gid, !!!chat.public]
+        method: 'changePublic',
+        params: [chat.gid, !chat.public]
     });
 };
 
 const toggleChatStar = (chat) => {
     const sendRequest = () => {
         return Server.socket.send({
-            'method': 'star',
-            'params': [chat.gid, !chat.star]
-        })
+            method: 'star',
+            params: [chat.gid, !chat.star]
+        });
     };
-    if(!chat.id) {
+    if (!chat.id) {
         return createChat(chat).then(() => {
             return sendRequest();
         });
@@ -227,7 +226,7 @@ const toggleChatStar = (chat) => {
 };
 
 const sendSocketMessageForChat = (socketMessage, chat) => {
-    if(chat.id) {
+    if (chat.id) {
         return Server.socket.send(socketMessage);
     } else {
         return createChat(chat).then(() => {
@@ -275,53 +274,51 @@ const sendEmojiMessage = (emojicon, chat) => {
 };
 
 const renameChat = (chat, newName) => {
-    if(chat && chat.canRename(profile.user)) {
-        if(chat.id) {
+    if (chat && chat.canRename(profile.user)) {
+        if (chat.id) {
             return Server.socket.sendAndListen({
-                'method': 'changename',
-                'params': [chat.gid, newName]
+                method: 'changename',
+                params: [chat.gid, newName]
             }).then(chat => {
-                if(chat) {
+                if (chat) {
                     sendBoardChatMessage(Lang.format('chat.rename.someRenameGroup.format', `@${profile.user.account}`, `**${newName}**`), chat);
                 }
                 return Promise.resolve(chat);
             });
-        } else {
-            chat.name = newName;
-            if(DEBUG) {
-                console.error(`Cannot rename a local chat.`, chat);
-            }
-            return Promise.reject('Cannot rename a local chat.');
         }
-    } else {
-        return Promise.reject('You have no permission to rename the chat.');
+        chat.name = newName;
+        if (DEBUG) {
+            console.error('Cannot rename a local chat.', chat);
+        }
+        return Promise.reject('Cannot rename a local chat.');
     }
+    return Promise.reject('You have no permission to rename the chat.');
 };
 
 const sendChatMessage = (messages, chat, isSystemMessage = false) => {
-    if(!Array.isArray(messages)) {
+    if (!Array.isArray(messages)) {
         messages = [messages];
     }
 
-    if(!chat) {
+    if (!chat) {
         chat = chats.get(messages[0].cgid);
-        if(!chat) {
+        if (!chat) {
             return Promise.reject('Chat is not set before send messages.');
         }
     }
 
-    if(!isSystemMessage && chat.isReadonly(profile.user)) {
+    if (!isSystemMessage && chat.isReadonly(profile.user)) {
         return Promise.reject(Lang.string('chat.blockedCommitterTip'));
     }
 
     messages.forEach(message => {
         const command = message.getCommand();
-        if(command) {
-            if(command.action === 'rename') {
+        if (command) {
+            if (command.action === 'rename') {
                 setTimeout(() => {
                     renameChat(chat.gid, command.name);
                 }, 500);
-            } else if(command.action === 'version') {
+            } else if (command.action === 'version') {
                 message.content = '```\n$$version = "' + `v${PKG.version}${Config.system.specialVersion ? (' for ' + Config.system.specialVersion) : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
             }
         }
@@ -330,8 +327,8 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
     chats.updateChatMessages(messages);
 
     return sendSocketMessageForChat({
-        'method': 'message',
-        'params': {
+        method: 'message',
+        params: {
             messages: messages.map(m => m.plainServer())
         }
     }, chat);
@@ -356,7 +353,7 @@ const sendImageAsBase64 = (imageFile, chat) => {
             sendChatMessage(message, chat);
             resolve();
         };
-        if(imageFile.base64) {
+        if (imageFile.base64) {
             sendBase64(imageFile.base64);
         } else {
             const reader = new FileReader();
@@ -369,10 +366,10 @@ const sendImageAsBase64 = (imageFile, chat) => {
 };
 
 const sendImageMessage = (imageFile, chat) => {
-    if(imageFile.size < MAX_BASE64_IMAGE_SIZE) {
+    if (imageFile.size < MAX_BASE64_IMAGE_SIZE) {
         return sendImageAsBase64(imageFile, chat);
     }
-    if(API.checkUploadFileSize(profile.user, imageFile.size)) {
+    if (API.checkUploadFileSize(profile.user, imageFile.size)) {
         const message = new ChatMessage({
             user: profile.userId,
             cgid: chat.gid,
@@ -404,7 +401,7 @@ const sendImageMessage = (imageFile, chat) => {
 };
 
 const sendFileMessage = (file, chat) => {
-    if(API.checkUploadFileSize(profile.user, file.size)) {
+    if (API.checkUploadFileSize(profile.user, file.size)) {
         const message = new ChatMessage({
             user: profile.userId,
             cgid: chat.gid,
@@ -436,26 +433,25 @@ const sendFileMessage = (file, chat) => {
 };
 
 const inviteMembersToChat = (chat, chatMembers, newChatSetting) => {
-    if(chat.canInvite(profile.user)) {
-        if(!chat.isOne2One) {
+    if (chat.canInvite(profile.user)) {
+        if (!chat.isOne2One) {
             return Server.socket.sendAndListen({
-                'method': 'addmember',
-                'params': [chat.gid, chatMembers.map(x => x.id), true]
+                method: 'addmember',
+                params: [chat.gid, chatMembers.map(x => x.id), true]
             });
-        } else {
-            chatMembers.push(...chat.membersSet);
-            return createChatWithMembers(chatMembers, newChatSetting);
         }
+        chatMembers.push(...chat.membersSet);
+        return createChatWithMembers(chatMembers, newChatSetting);
     }
 };
 
 const joinChat = (chat, join = true) => {
     chatJoinTask = true;
     return Server.socket.sendAndListen({
-        'method': 'joinchat',
-        'params': [chat.gid, join]
+        method: 'joinchat',
+        params: [chat.gid, join]
     }).then(theChat => {
-        if(theChat && theChat.isMember(profile.userId)) {
+        if (theChat && theChat.isMember(profile.userId)) {
             sendBoardChatMessage(Lang.format('chat.join.message', `@${profile.userAccount}`), theChat);
         }
         return Promise.resolve(theChat);
@@ -464,7 +460,7 @@ const joinChat = (chat, join = true) => {
 
 const exitChat = (chat) => {
     return joinChat(chat, false).then(theChat => {
-        if(theChat && !theChat.isMember(profile.userId)) {
+        if (theChat && !theChat.isMember(profile.userId)) {
             sendBoardChatMessage(Lang.format('chat.exit.message', `@${profile.userAccount}`), theChat);
         }
         return Promise.resolve(theChat);

@@ -11,7 +11,7 @@ const init = soundPath => {
         path: soundPath,
         preload: true,
     });
-    if(DEBUG) {
+    if (DEBUG) {
         console.groupCollapsed('%cSOUND inited', 'display: inline-block; font-size: 10px; color: #689F38; background: #CCFF90; border: 1px solid #CCFF90; padding: 1px 5px; border-radius: 2px;');
         console.log('ion', window.ion);
         console.groupEnd();

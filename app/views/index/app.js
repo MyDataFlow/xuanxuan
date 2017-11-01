@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import App from '../../core';
 import LoginView from '../login';
 import MainView from '../main';
 
 class AppView extends Component {
-
     constructor(props) {
         super(props);
 
@@ -25,16 +23,23 @@ class AppView extends Component {
     }
 
     render() {
-        return <div className="affix" style={{
-            transition: 'transform .4s',
-            transform: `translateX(${App.profile.isUserVertified ? '0' : '100%'})`
-        }}>
-            <LoginView userStatus={this.state.userStatus} className="dock-left" style={{
-                width: '100%',
-                left: '-100%',
-            }}/>
-            <MainView userStatus={this.state.userStatus} className="dock"/>
-        </div>
+        return (<div
+            className="affix"
+            style={{
+                transition: 'transform .4s',
+                transform: `translateX(${App.profile.isUserVertified ? '0' : '100%'})`
+            }}
+        >
+            <LoginView
+                userStatus={this.state.userStatus}
+                className="dock-left"
+                style={{
+                    width: '100%',
+                    left: '-100%',
+                }}
+            />
+            <MainView userStatus={this.state.userStatus} className="dock" />
+        </div>);
     }
 }
 

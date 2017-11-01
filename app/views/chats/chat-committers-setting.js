@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
@@ -9,30 +8,41 @@ import SelectBox from '../../components/select-box';
 import Checkbox from '../../components/checkbox';
 
 class ChatCommittersSetting extends Component {
+    static propTypes = {
+        chat: PropTypes.instanceOf(Chat),
+        className: PropTypes.string,
+        children: PropTypes.any,
+    };
+
+    static defaultProps = {
+        chat: null,
+        className: null,
+        children: null,
+    };
 
     constructor(props) {
         super(props);
 
-        let chat = props.chat;
-        let type = chat.committersType;
-        let members = chat.getMembersSet(App.members);
-        let whitelist = chat.whitelist || new Set();
-        let isEmptyWhiteList = !whitelist.size;
+        const chat = props.chat;
+        const type = chat.committersType;
+        const members = chat.getMembersSet(App.members);
+        const whitelist = chat.whitelist || new Set();
+        const isEmptyWhiteList = !whitelist.size;
         let adminsCount = 0;
         members.forEach(x => {
-            if(chat.isAdmin(x)) {
-                adminsCount++;
-                if(isEmptyWhiteList) whitelist.add(x.id);
+            if (chat.isAdmin(x)) {
+                adminsCount += 1;
+                if (isEmptyWhiteList) whitelist.add(x.id);
             }
         });
-        this.state = {type, members, adminsCount, whitelist}
+        this.state = {type, members, adminsCount, whitelist};
     }
 
     getCommitters() {
-        let type = this.state.type;
-        if(type === 'whitelist') {
+        const type = this.state.type;
+        if (type === 'whitelist') {
             return this.state.whitelist;
-        } else if(type === 'admins') {
+        } else if (type === 'admins') {
             return '$ADMINS';
         }
         return '';
@@ -43,8 +53,8 @@ class ChatCommittersSetting extends Component {
     }
 
     handleCheckboxChange(memberId, isChecked) {
-        let whitelist = this.state.whitelist;
-        if(isChecked) {
+        const whitelist = this.state.whitelist;
+        if (isChecked) {
             whitelist.add(memberId);
         } else {
             whitelist.delete(memberId);
@@ -53,7 +63,7 @@ class ChatCommittersSetting extends Component {
     }
 
     render() {
-        let {
+        const {
             chat,
             className,
             children,
@@ -66,22 +76,23 @@ class ChatCommittersSetting extends Component {
             {value: Chat.COMMITTERS_TYPES.whitelist, label: `${Lang.string('chat.committers.type.whitelist')}(${this.state.whitelist.size})`},
         ];
 
-        return <div {...other}
+        return (<div
+            {...other}
             className={HTML.classes('app-chat-committers-setting', className)}
         >
-            <div className="text-gray space-sm flex flex-middle"><Icon name="information-outline"/>&nbsp; {Lang.string('chat.committers.committersSettingTip')}</div>
-            <SelectBox className="space-sm" style={{width: '50%'}} value={this.state.type} options={options} onChange={this.handleSelectChange}/>
+            <div className="text-gray space-sm flex flex-middle"><Icon name="information-outline" />&nbsp; {Lang.string('chat.committers.committersSettingTip')}</div>
+            <SelectBox className="space-sm" style={{width: '50%'}} value={this.state.type} options={options} onChange={this.handleSelectChange} />
             {
                 this.state.type === 'whitelist' && <div className="checkbox-list rounded box outline">
-                {
-                    this.state.members.map(member => {
-                        return <Checkbox key={member.id} className="inline-block" onChange={this.handleCheckboxChange.bind(this, member.id)} checked={this.state.whitelist.has(member.id)} label={member.displayName}/>
-                    })
-                }
+                    {
+                        this.state.members.map(member => {
+                            return <Checkbox key={member.id} className="inline-block" onChange={this.handleCheckboxChange.bind(this, member.id)} checked={this.state.whitelist.has(member.id)} label={member.displayName} />;
+                        })
+                    }
                 </div>
             }
             {children}
-        </div>;
+        </div>);
     }
 }
 

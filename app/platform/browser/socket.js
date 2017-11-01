@@ -2,25 +2,26 @@ import crypto from './crypto';
 import Status from '../../utils/status';
 
 const STATUS = new Status({
-    CONNECTING:	0,	// 连接还没开启。
-    OPEN:	    1,	// 连接已开启并准备好进行通信。
-    CLOSING:	2,	// 连接正在关闭的过程中。
-    CLOSED:	    3,	// 连接已经关闭，或者连接无法建立。
-    UNCONNECT:  4,  // 未连接
+    CONNECTING: 0, // 连接还没开启。
+    OPEN: 1, // 连接已开启并准备好进行通信。
+    CLOSING: 2, // 连接正在关闭的过程中。
+    CLOSED: 3, // 连接已经关闭，或者连接无法建立。
+    UNCONNECT: 4, // 未连接
 }, 4);
 
 
 class Socket {
-
     static STATUS = STATUS;
 
     constructor(url, options) {
         this._status = STATUS.create(STATUS.UNCONNECT);
         this._status.onChange = (newStatus, oldStatus) => {
-            this.onStatusChange && this.onStatusChange(newStatus, oldStatus);
+            if (this.onStatusChange) {
+                this.onStatusChange(newStatus, oldStatus);
+            }
         };
 
-        if(url) {
+        if (url) {
             this.init(url, options);
         }
     }
@@ -40,11 +41,11 @@ class Socket {
         this.url = url;
         this._status.change(STATUS.UNCONNECT);
 
-        if(options.connect && this.url) {
+        if (options.connect && this.url) {
             this.connect();
         }
 
-        if(this.onInit) {
+        if (this.onInit) {
             this.onInit();
         }
     }
@@ -74,7 +75,7 @@ class Socket {
     }
 
     updateStatusFromClient() {
-        if(this.client) {
+        if (this.client) {
             this.status = this.client.readyState;
         } else {
             this.status = STATUS.UNCONNECT;
@@ -93,7 +94,7 @@ class Socket {
             this.handleData(e.data, {binary: true});
         };
         client.onclose = e => {
-            if(!this.isConnected) {
+            if (!this.isConnected) {
                 this.handleConnectFail(e);
             }
             this.handleClose(e.code, e.reason);
@@ -110,10 +111,10 @@ class Socket {
     }
 
     handleConnectFail(e) {
-        if(this.onConnectFail) {
+        if (this.onConnectFail) {
             this.onConnectFail(e);
         }
-        if(this.options.onConnectFail) {
+        if (this.options.onConnectFail) {
             this.options.onConnectFail(e);
         }
     }
@@ -121,17 +122,17 @@ class Socket {
     handleConnect() {
         this.updateStatusFromClient();
 
-        if(DEBUG) {
+        if (DEBUG) {
             console.collapse('SOCKET Connected', 'greenBg', this.url, 'greenPale');
             console.log('socket', this);
             console.groupEnd();
         }
 
-        if(this.options.onConnect) {
+        if (this.options.onConnect) {
             this.options.onConnect(this);
         }
 
-        if(this.onConnect) {
+        if (this.onConnect) {
             this.onConnect();
         }
     }
@@ -141,7 +142,7 @@ class Socket {
         this.updateStatusFromClient();
         this.client = null;
 
-        if(DEBUG) {
+        if (DEBUG) {
             console.collapse('SOCKET Closed', 'greenBg', this.url, 'greenPale');
             console.log('socket', this);
             console.log('code', code);
@@ -149,11 +150,11 @@ class Socket {
             console.groupEnd();
         }
 
-        if(this.options.onClose) {
+        if (this.options.onClose) {
             this.options.onClose(this, code, reason, unexpected);
         }
 
-        if(this.onClose) {
+        if (this.onClose) {
             this.onClose(code, reason, unexpected);
         }
     }
@@ -161,18 +162,18 @@ class Socket {
     handleError(error) {
         this.updateStatusFromClient();
 
-        if(DEBUG) {
+        if (DEBUG) {
             console.collapse('SOCKET Error', 'redBg', this.url, 'redPale');
             console.log('socket', this);
             console.log('error', error);
             console.groupEnd();
         }
 
-        if(this.options.onError) {
+        if (this.options.onError) {
             this.options.onError(this, error);
         }
 
-        if(this.onError) {
+        if (this.onError) {
             this.onError(error);
         }
     }
@@ -181,8 +182,8 @@ class Socket {
         this.updateStatusFromClient();
 
         let data = null;
-        if(flags && flags.binary) {
-            if(this.options.encryptEnable) {
+        if (flags && flags.binary) {
+            if (this.options.encryptEnable) {
                 data = crypto.decrypt(rawdata, this.options.userToken, this.options.cipherIV);
             } else {
                 data = rawdata.toString();
@@ -197,20 +198,20 @@ class Socket {
         //     console.groupEnd();
         // }
 
-        if(this.options.onData) {
+        if (this.options.onData) {
             this.options.onData(this, data, flags);
         }
 
-        if(this.onData) {
+        if (this.onData) {
             this.onData(data, flags);
         }
     }
 
     send(rawdata, callback) {
         let data = null;
-        if(this.options.encryptEnable) {
+        if (this.options.encryptEnable) {
             data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
-            if(DEBUG) {
+            if (DEBUG) {
                 console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
                 console.log('data', data);
                 console.log('rawdata', rawdata);
@@ -221,17 +222,19 @@ class Socket {
         this.client.send(data, {
             binary: this.options.encryptEnable
         }, () => {
-            if(DEBUG) {
+            if (DEBUG) {
                 console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'greenPale');
                 console.log('rawdata', rawdata);
                 console.groupEnd();
-                callback && callback();
+                if (callback) {
+                    callback();
+                }
             }
         });
     }
 
     close() {
-        if(this.client) {
+        if (this.client) {
             this.status = STATUS.CLOSING;
             this.client.close();
         }

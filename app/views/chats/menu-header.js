@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import SearchControl from '../../components/search-control';
 import Icon from '../../components/icon';
@@ -7,15 +6,29 @@ import Lang from '../../lang';
 import ChatCreateDialog from './chat-create-dialog';
 
 class MenuHeader extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        onSearchChange: PropTypes.func,
+        children: PropTypes.any,
+        defaultSearch: PropTypes.string,
+        filter: PropTypes.string,
+    };
+
+    static defaultProps = {
+        className: null,
+        onSearchChange: null,
+        children: null,
+        defaultSearch: null,
+        filter: null
+    };
 
     handleCreateBtnClick = () => {
         ChatCreateDialog.show();
     }
 
     render() {
-        let {
+        const {
             className,
-            style,
             children,
             onSearchChange,
             defaultSearch,
@@ -23,7 +36,7 @@ class MenuHeader extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('app-chats-menu-header', className)} style={style} {...other}>
+        return (<div className={HTML.classes('app-chats-menu-header', className)} {...other}>
             <SearchControl
                 defaultValue={defaultSearch}
                 className="app-chats-search"
@@ -31,10 +44,10 @@ class MenuHeader extends Component {
                 placeholder={Lang.string(`chats.search.${filter}`)}
             />
             <div className="app-chats-create-btn hint--bottom" data-hint={Lang.string('chats.create.label')}>
-                <button type="button" className="btn rounded iconbutton" onClick={this.handleCreateBtnClick}><Icon name="comment-plus-outline" className="icon-2x"/></button>
+                <button type="button" className="btn rounded iconbutton" onClick={this.handleCreateBtnClick}><Icon name="comment-plus-outline" className="icon-2x" /></button>
             </div>
             {children}
-        </div>;
+        </div>);
     }
 }
 

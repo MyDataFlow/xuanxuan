@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Modal from '../../components/modal';
 import UserSetting from './user-setting';
 import Lang from '../../lang';
@@ -18,8 +17,8 @@ const show = (callback) => {
                 type: 'submit',
                 label: Lang.string('common.save'),
                 click: () => {
-                    if(userSetting) {
-                        App.user.config.set(userSetting.getSettings())
+                    if (userSetting) {
+                        App.user.config.set(userSetting.getSettings());
                     }
                 }
             }, {
@@ -29,7 +28,7 @@ const show = (callback) => {
                 className: 'text-danger pull-left',
                 label: Lang.string('setting.btn.reset'),
                 click: () => {
-                    if(userSetting) {
+                    if (userSetting) {
                         userSetting.setSettings(DEFAULT_USER_CONFIG);
                         Messager.show(Lang.string('setting.message.reset'), {autoHide: true});
                     }
@@ -37,7 +36,7 @@ const show = (callback) => {
                 }
             }
         ],
-        content: <UserSetting ref={e => userSetting = e} settings={App.profile.userConfig.plain()}/>
+        content: <UserSetting ref={e => {userSetting = e;}} settings={App.profile.userConfig.plain()} />
     }, callback);
 };
 

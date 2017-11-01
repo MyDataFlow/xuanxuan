@@ -4,13 +4,13 @@
 class SocketMessage {
     constructor(data) {
         Object.assign(this, {
-            'module': 'chat'
+            module: 'chat'
         }, data);
     }
 
     get pathname() {
-        let pathnames = [this.module];
-        if(this.method !== undefined) {
+        const pathnames = [this.module];
+        if (this.method !== undefined) {
             pathnames.push(this.method);
         }
         return pathnames.join('/').toLowerCase();
@@ -39,42 +39,42 @@ class SocketMessage {
      */
     static fromJSON(json) {
         try {
-            if(Array.isArray(json)) {
-                if(DEBUG) {
+            if (Array.isArray(json)) {
+                if (DEBUG) {
                     console.groupCollapsed('%cBuild socket message from buffer array.', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
                     console.log('buffer', json);
                     console.groupEnd();
                 }
                 json = json.map(x => x.toString()).join('');
             }
-            if(typeof json !== 'string') json = json.toString();
+            if (typeof json !== 'string') json = json.toString();
             json = json.trim();
             let lastCharCode = json.charCodeAt(json.length - 1);
-            while(json.length && (json[json.length - 1] === '\n' || json.charCodeAt(json.length - 1) === 8)) {
+            while (json.length && (json[json.length - 1] === '\n' || json.charCodeAt(json.length - 1) === 8)) {
                 lastCharCode = json.length && json.charCodeAt(json.length - 1);
                 json = json.substring(0, json.length - 1);
             }
-            let firstEOF = json.indexOf('\n');
-            if(firstEOF > 0 && firstEOF < json.length) {
+            const firstEOF = json.indexOf('\n');
+            if (firstEOF > 0 && firstEOF < json.length) {
                 const objArray = [];
                 json.split('\n').forEach(str => {
                     str = str.trim();
-                    if(str.length && str.startsWith('{')) {
+                    if (str.length && str.startsWith('{')) {
                         objArray.push(str);
                     }
                 });
-                json = (objArray.length > 1) ? ('[' + objArray.join(',') + ']') : (objArray[0] || '');
-                if(DEBUG) {
+                json = (objArray.length > 1) ? (`[${objArray.join(',')}]`) : (objArray[0] || '');
+                if (DEBUG) {
                     console.groupCollapsed('%cSocket message contains "\\n", make it as json array.', 'display: inline-block; font-size: 10px; color: #673AB7; background: #D1C4E9; border: 1px solid #D1C4E9; padding: 1px 5px; border-radius: 2px;');
                     console.log('json', json);
                     console.groupEnd();
                 }
             }
-            let data = JSON.parse(json);
-            if(Array.isArray(data)) {
-                let msgs = [];
+            const data = JSON.parse(json);
+            if (Array.isArray(data)) {
+                const msgs = [];
                 data.forEach(x => {
-                    if(Array.isArray(x)) {
+                    if (Array.isArray(x)) {
                         msgs.push(...x.map(y => new SocketMessage(y)));
                     } else {
                         msgs.push(new SocketMessage(x));
@@ -84,7 +84,7 @@ class SocketMessage {
             }
             return new SocketMessage(data);
         } catch (error) {
-            if(DEBUG) {
+            if (DEBUG) {
                 console.groupCollapsed('%cError: SocketMessage from json', 'color:red', error);
                 console.log('raw', json);
                 console.log('raw string', json.toString());
@@ -94,9 +94,9 @@ class SocketMessage {
     }
 
     static create(msg) {
-        if(typeof msg === 'string') {
+        if (typeof msg === 'string') {
             msg = {method: msg};
-        } else if(msg instanceof SocketMessage) {
+        } else if (msg instanceof SocketMessage) {
             return msg;
         }
         return new SocketMessage(msg);

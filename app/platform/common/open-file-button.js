@@ -1,19 +1,19 @@
 const fileButton = document.getElementById('fileOpenButton');
 
 const showOpenDialog = (acceptExts = '', callback) => {
-    if(typeof acceptExts === 'function') {
+    if (typeof acceptExts === 'function') {
         callback = acceptExts;
         acceptExts = '';
     }
 
-    if(typeof acceptExts === 'object') {
+    if (typeof acceptExts === 'object') {
         const options = acceptExts;
-        let extentions = [];
-        if(options && options.filters) {
+        const extentions = [];
+        if (options && options.filters) {
             options.filters.forEach(filter => {
-                if(filter.extensions) {
+                if (filter.extensions) {
                     filter.extensions.forEach(ext => {
-                        if(ext && ext !== '*') {
+                        if (ext && ext !== '*') {
                             extentions.push(`.${ext}`);
                         }
                     });
@@ -24,9 +24,9 @@ const showOpenDialog = (acceptExts = '', callback) => {
     }
 
     fileButton.accept = acceptExts;
-    fileButton.onchange = e => {
+    fileButton.onchange = () => {
         const files = fileButton.files;
-        if(files.length) {
+        if (files.length) {
             callback(files);
             setTimeout(() => {
                 fileButton.onchange = null;

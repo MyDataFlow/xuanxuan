@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import Config from 'Config';
+import React, {Component, PropTypes} from 'react';
 import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import HotkeyInputControl from '../../components/hotkey-input-control';
@@ -122,7 +121,7 @@ const configs = [
                     return value === 'bottom';
                 },
                 setConverter: value => {
-                    return value ? 'bottom' : 'top'
+                    return value ? 'bottom' : 'top';
                 },
             }
         ]
@@ -163,9 +162,17 @@ const configs = [
             }
         ]
     }
-]
+];
 
 class UserSetting extends Component {
+    static propTypes = {
+        settings: PropTypes.object.isRequired,
+        className: PropTypes.string,
+    };
+
+    static defaultProps = {
+        className: null,
+    };
 
     constructor(props) {
         super(props);
@@ -206,12 +213,12 @@ class UserSetting extends Component {
             }
         }
         switch (item.type) {
-            case 'boolean':
-                return this.renderBooleanItem(item);
-            case 'select':
-                return this.renderSelectItem(item);
-            case 'hotkey':
-                return this.renderHotkeyItem(item);
+        case 'boolean':
+            return this.renderBooleanItem(item);
+        case 'select':
+            return this.renderSelectItem(item);
+        case 'hotkey':
+            return this.renderHotkeyItem(item);
         }
         return null;
     }
@@ -221,7 +228,7 @@ class UserSetting extends Component {
         if (item.getConverter) {
             value = item.getConverter(value);
         }
-        return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes("flex", item.className)}/>
+        return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes('flex', item.className)} />;
     }
 
     renderSelectItem(item) {
@@ -229,10 +236,10 @@ class UserSetting extends Component {
         if (item.getConverter) {
             value = item.getConverter(value);
         }
-        return <div className={HTML.classes("control flex", item.className)} key={item.name}>
+        return (<div className={HTML.classes('control flex', item.className)} key={item.name}>
             <div>{item.caption}</div>
-            <SelectBox value={value} options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded"/>
-        </div>;
+            <SelectBox value={value} options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded" />
+        </div>);
     }
 
     renderBooleanItem(item) {
@@ -241,20 +248,20 @@ class UserSetting extends Component {
             value = item.getConverter(value);
         }
         const checked = !!value;
-        return <div className={HTML.classes("control", item.className)} key={item.name}>
-            <Checkbox checked={checked} label={item.caption} onChange={this.changeConfig.bind(this, item)}/>
-        </div>;
+        return (<div className={HTML.classes('control', item.className)} key={item.name}>
+            <Checkbox checked={checked} label={item.caption} onChange={this.changeConfig.bind(this, item)} />
+        </div>);
     }
 
     render() {
-        let {
+        const {
             settings,
             className,
-            children,
             ...other
         } = this.props;
 
-        return <div {...other}
+        return (<div
+            {...other}
             className={HTML.classes('app-user-setting space', className)}
         >
             {
@@ -262,22 +269,21 @@ class UserSetting extends Component {
                     if (section.hidden) {
                         return null;
                     }
-                    return <section key={section.name} className="space">
+                    return (<section key={section.name} className="space">
                         <header className="heading divider space-sm">
                             <strong className="title text-gray">{section.title}</strong>
                         </header>
                         <div className="items">
-                        {
-                            section.items.map(item => {
-                                return this.renderConfigItem(item);
-                            })
-                        }
+                            {
+                                section.items.map(item => {
+                                    return this.renderConfigItem(item);
+                                })
+                            }
                         </div>
-                    </section>
+                    </section>);
                 })
             }
-            {children}
-        </div>;
+        </div>);
     }
 }
 

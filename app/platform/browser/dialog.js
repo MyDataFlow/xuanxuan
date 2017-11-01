@@ -5,11 +5,11 @@ import openFileButton from '../common/open-file-button';
  * @param object   options
  */
 const showSaveDialog = (options, callback) => {
-    if(options.fileUrl) {
+    if (options.fileUrl) {
         window.open(options.fileUrl);
         callback(true);
     } else {
-        if(DEBUG) {
+        if (DEBUG) {
             console.warn('Cannot save file without file url defenition');
         }
         callback(false);

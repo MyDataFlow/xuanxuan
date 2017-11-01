@@ -4,21 +4,24 @@ import {Entity, Member, Chat, ChatMessage as Message} from '../models';
 const DB_VERSION = 1;
 let lastCreateDb = null;
 
-if(DEBUG) {
+if (DEBUG) {
     global.$.Dexie = Dexie;
 }
 
 class Database {
-
     static VERSION = DB_VERSION;
 
     constructor(userIdentify) {
-        if(typeof userIdentify === 'object') {
+        if (typeof userIdentify === 'object') {
             userIdentify = userIdentify.identify;
         }
         this._userIdentify = userIdentify;
         Dexie.exists(userIdentify).then(exists => {
             this._exists = exists;
+        }).catch(error => {
+            if (DEBUG) {
+                console.warn('Dexie error', error);
+            }
         });
         this._db = new Dexie(userIdentify);
         this._db.version(DB_VERSION).stores({
@@ -58,12 +61,12 @@ class Database {
     }
 
     static create(userIdentify) {
-        if(typeof userIdentify === 'object') {
+        if (typeof userIdentify === 'object') {
             userIdentify = userIdentify.identify;
         }
-        if(!lastCreateDb) {
+        if (!lastCreateDb) {
             lastCreateDb = new Database(userIdentify);
-        } else if(lastCreateDb.identify !== userIdentify) {
+        } else if (lastCreateDb.identify !== userIdentify) {
             lastCreateDb.destroy();
             lastCreateDb = new Database(userIdentify);
         }

@@ -35,7 +35,7 @@ const createImageContextMenuItems = (url, dataType) => {
         items.push({
             label: Lang.string('menu.image.saveAs'),
             click: () => {
-                Platform.dialog.saveAsImageFromUrl(url, dataType).then(filename => {
+                return Platform.dialog.saveAsImageFromUrl(url, dataType).then(filename => {
                     if (filename) {
                         Messager.show(Lang.format('file.fileSavedAt.format', filename), {
                             actions: Platform.ui.openFileItem ? [{

@@ -1,28 +1,33 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
 import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
 import API from '../../network/api';
 import StringHelper from '../../utils/string-helper';
 
-class MenuHeader extends Component {
+class ChatsDndContainer extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+    };
 
-    handleDndEnter(e) {
+    static defaultProps = {
+        className: null,
+    };
+
+    handleDndEnter = e => {
         e.target.classList.add('hover');
     }
 
-    handleDndLeave(e) {
+    handleDndLeave = e => {
         e.target.classList.remove('hover');
     }
 
-    handleDndDrop(e) {
+    handleDndDrop = e => {
         e.target.classList.remove('hover');
-        let file = e.dataTransfer.files[0];
-        if(API.checkUploadFileSize(App.user, file.size)) {
-            if(file.type.startsWith('image/')) {
+        const file = e.dataTransfer.files[0];
+        if (API.checkUploadFileSize(App.user, file.size)) {
+            if (file.type.startsWith('image/')) {
                 App.im.ui.sendContentToChat(file, 'image');
             } else {
                 App.im.ui.sendContentToChat(file, 'file');
@@ -33,22 +38,25 @@ class MenuHeader extends Component {
     }
 
     render() {
-        let {
+        const {
             className,
-            style,
-            children,
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('app-chats-dnd-container drag-n-drop-message center-content', className)} style={style} {...other} onDragEnter={this.handleDndEnter} onDrop={this.handleDndDrop} onDragLeave={this.handleDndLeave}>
+        return (<div
+            className={HTML.classes('app-chats-dnd-container drag-n-drop-message center-content', className)}
+            {...other}
+            onDragEnter={this.handleDndEnter}
+            onDrop={this.handleDndDrop}
+            onDragLeave={this.handleDndLeave}
+        >
             <div className="text-center">
-                <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>
-                <div className="dnd-hover" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatched_chick:')}}></div>
+                <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}} />
+                <div className="dnd-hover" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatched_chick:')}} />
                 <h1>{Lang.string('chats.drapNDropFileMessage')}</h1>
             </div>
-            {children}
-        </div>;
+        </div>);
     }
 }
 
-export default MenuHeader;
+export default ChatsDndContainer;

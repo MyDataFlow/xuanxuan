@@ -19,10 +19,8 @@ const DEFAULT_OPTIONS = {
     // name: '',
 };
 
-const NAMES = {};
-
 const getCodeFromString = (str) => {
-    if(!str) {
+    if (!str) {
         return 0;
     }
     return str.split('')
@@ -31,7 +29,7 @@ const getCodeFromString = (str) => {
 };
 
 const style = (skinCode, options = {}) => {
-    if(typeof skinCode === 'object') {
+    if (typeof skinCode === 'object') {
         options = skinCode;
     } else {
         options.code = skinCode;
@@ -59,52 +57,54 @@ const style = (skinCode, options = {}) => {
         ...other
     } = options;
 
-    if(!color) {
-        if(code === 'random') {
+    if (!color) {
+        if (code === 'random') {
             code = Math.floor(Math.random() * 360);
         }
-        if(typeof code === 'string') {
-            if(!Color.isColor(code)) {
+        if (typeof code === 'string') {
+            if (!Color.isColor(code)) {
                 code = getCodeFromString(code);
             }
         }
-        if(typeof code === 'number') {
-            code = {h: code*hueSpace%360, s: saturation, l: lightness};
+        if (typeof code === 'number') {
+            code = {h: (code * hueSpace) % 360, s: saturation, l: lightness};
         }
         color = Color.create(code);
-        if(code !== 'random') {
+        if (code !== 'random') {
             options.color = color;
         }
     }
 
-    let backColor = '', borderColor = '', fontColor = textColor;
-    if(outline) {
-        if(dark) {
+    let backColor = '';
+    let borderColor = '';
+    let fontColor = textColor;
+    if (outline) {
+        if (dark) {
             const darkColor = color.clone().setHsl({s: saturation, l: darkLight});
             borderColor = darkColor;
-        } else if(pale) {
+        } else if (pale) {
             const lightColor = color.clone().setHsl({s: saturation, l: paleLight});
             borderColor = lightColor;
         } else {
             borderColor = color;
         }
-        if(!fontColor && textTint) {
+        if (!fontColor && textTint) {
             fontColor = borderColor;
         }
-    } else if(backTint) {
-        if(dark) {
+    } else if (backTint) {
+        if (dark) {
             const darkColor = color.clone().setHsl({s: saturation, l: darkLight});
             backColor = darkColor;
-        } else if(pale) {
+        } else if (pale) {
             const lightColor = color.clone().setHsl({s: saturation, l: paleLight});
             backColor = lightColor;
         } else {
             backColor = color;
         }
-        if(!fontColor) {
-            if(backColor.isDark(threshold)) {
+        if (!fontColor) {
+            if (backColor.isDark(threshold)) {
                 fontColor = darkText;
-            } else if(textTint) {
+            } else if (textTint) {
                 const darkColor = color.clone().setHsl({s: saturation, l: darkLight});
                 fontColor = darkColor;
             } else {
@@ -112,10 +112,10 @@ const style = (skinCode, options = {}) => {
             }
         }
     } else {
-        if(dark) {
+        if (dark) {
             const darkColor = color.clone().setHsl({s: saturation, l: darkLight});
             fontColor = darkColor;
-        } else if(pale) {
+        } else if (pale) {
             const lightColor = color.clone().setHsl({s: saturation, l: paleLight});
             fontColor = lightColor;
         } else {
@@ -124,14 +124,14 @@ const style = (skinCode, options = {}) => {
     }
 
     const style = Object.assign({}, other);
-    if(backColor) style.backgroundColor = backColor.css || backColor;
-    if(borderColor) style.borderColor = borderColor.css || borderColor;
-    if(fontColor) style.color = fontColor.css || fontColor;
+    if (backColor) style.backgroundColor = backColor.css || backColor;
+    if (borderColor) style.borderColor = borderColor.css || borderColor;
+    if (fontColor) style.color = fontColor.css || fontColor;
     return style;
 };
 
 const text = (skinCode, options) => {
-    return style(skinCode, Object.assign({backTint: false}, options))
+    return style(skinCode, Object.assign({backTint: false}, options));
 };
 
 export default {

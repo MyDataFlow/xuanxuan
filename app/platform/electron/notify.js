@@ -4,14 +4,14 @@ import notification from '../common/notification';
 import sound from '../common/sound';
 
 const requestAttention = (attention = true) => {
-    if(attention) {
+    if (attention) {
         remote.call('dockBounce', 'informational');
     }
     ui.browserWindow.flashFrame(attention);
 };
 
 const setBadgeLabel = (label) => {
-    if(label === false) {
+    if (label === false) {
         label = '';
     }
     ui.setBadgeLabel(label);

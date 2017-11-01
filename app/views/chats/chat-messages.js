@@ -1,27 +1,37 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import MessageList from './message-list';
 import App from '../../core';
 
 class ChatMessages extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        children: PropTypes.any,
+        chat: PropTypes.object,
+    };
+
+    static defaultProps = {
+        className: null,
+        children: null,
+        chat: null,
+    };
 
     render() {
-        let {
+        const {
             chat,
             className,
-            style,
             children,
             ...other
         } = this.props;
 
         const font = App.profile.userConfig.chatFontSize;
 
-        return <div {...other}
+        return (<div
+            {...other}
             className={HTML.classes('app-chat-messages white', className)}
         >
-            <MessageList font={font} className="dock scroll-y user-selectable" messages={chat.messages}/>
-        </div>;
+            <MessageList font={font} className="dock scroll-y user-selectable" messages={chat.messages} />
+        </div>);
     }
 }
 

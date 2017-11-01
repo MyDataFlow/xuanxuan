@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import {
     Editor,
     EditorState,
@@ -15,24 +14,25 @@ import App from '../../core';
 import timeSequence from '../../utils/time-sequence';
 import Lang from '../../lang';
 
+/* eslint-disable */
 const AtomicComponent = props => {
-    const key = props.block.getEntityAt(0)
+    const key = props.block.getEntityAt(0);
     if (!key) {
-        return null
+        return null;
     }
     const entity = Entity.get(key);
     const type = entity.getType();
     if (type === 'image') {
         const data = entity.getData();
-        return <img
+        return (<img
             className="draft-editor-image"
             src={data.src}
             alt={data.alt || ''}
-        />;
-    } else if(type === 'emoji') {
-        let emoji = entity.getData().emoji;
-        let emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
-        return <span><img className='emojione' style={{maxWidth: 20, maxHeight: 20}} contentEditable='false' data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
+        />);
+    } else if (type === 'emoji') {
+        const emoji = entity.getData().emoji;
+        const emojionePngPath = Emojione.imagePathPNG + emoji.unicode + '.png' + Emojione.cacheBustParam;
+        return <span><img className="emojione" style={{maxWidth: 20, maxHeight: 20}} contentEditable="false" data-offset-key={props.offsetKey} src={emojionePngPath} alt={Emojione.shortnameToUnicode(emoji.shortname)} title={emoji.name} />&nbsp;</span>;
     }
     return null;
 };
@@ -40,7 +40,8 @@ const AtomicComponent = props => {
 
 const findWithRegex = (regex, contentBlock, callback) => {
     const text = contentBlock.getText();
-    let matchArr, start;
+    let matchArr;
+    let start;
     while ((matchArr = regex.exec(text)) !== null) {
         start = matchArr.index;
         callback(start, start + matchArr[0].length);
@@ -55,9 +56,9 @@ const draftDecorator = new CompositeDecorator([{
         const unicode = props.decoratedText.trim();
         const map = Emojione.mapUnicodeCharactersToShort();
         const emoji = Emojione.emojioneList[map[unicode]];
-        if(emoji) {
-            let emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.' + Emojione.imageType + Emojione.cacheBustParam;
-            let backgroundImage = 'url(' + emojionePngPath + ') no-repeat left top';
+        if (emoji) {
+            const emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.' + Emojione.imageType + Emojione.cacheBustParam;
+            const backgroundImage = 'url(' + emojionePngPath + ') no-repeat left top';
             return <span title={unicode} data-offset-key={props.offsetKey} style={{width: 16, height: 16, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', background: backgroundImage, backgroundSize: 'contain', textAlign: 'right', verticalAlign: 'bottom', position: 'relative', top: -2, fontSize: '16px', color: 'transparent'}}>{props.children}</span>;
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
@@ -67,13 +68,13 @@ const draftDecorator = new CompositeDecorator([{
         findWithRegex(/@[\u4e00-\u9fa5_\w]+[，。,\.\/\s:@\n]/g, contentBlock, callback);
     },
     component: (props) => {
-        let guess = props.decoratedText.substr(1).trim().replace(/[，。,\.\/\s:@\n]/g, '');
-        if(guess) {
-            if(guess === 'all' || guess === langAtAll) {
+        const guess = props.decoratedText.substr(1).trim().replace(/[，。,\.\/\s:@\n]/g, '');
+        if (guess) {
+            if (guess === 'all' || guess === langAtAll) {
                 return <span title={langAtAll} className="at-all text-primary" data-offset-key={props.offsetKey}>{props.children}</span>;
             } else {
-                let member = App.members.guess(guess);
-                if(member) {
+                const member = App.members.guess(guess);
+                if (member) {
                     return <a className="app-link text-primary" href={'@Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
                 }
             }
@@ -92,8 +93,26 @@ const draftDecorator = new CompositeDecorator([{
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
     }
 }*/]);
+/* eslint-enable */
 
 class DraftEditor extends Component {
+    static propTypes = {
+        placeholder: PropTypes.string,
+        onChange: PropTypes.func,
+        handleKey: PropTypes.bool,
+        onReturnKeyDown: PropTypes.func,
+        onPastedText: PropTypes.func,
+        onPastedFiles: PropTypes.func,
+    };
+
+    static defaultProps = {
+        placeholder: null,
+        onChange: null,
+        onReturnKeyDown: null,
+        onPastedText: null,
+        onPastedFiles: null,
+        handleKey: false,
+    };
 
     constructor(props) {
         super(props);
@@ -109,7 +128,7 @@ class DraftEditor extends Component {
     }
 
     appendContent(content, asNewLine, callback) {
-        if(content !== null && content !== undefined) {
+        if (content !== null && content !== undefined) {
             const editorState = this.state.editorState;
             const selection = editorState.getSelection();
             const contentState = editorState.getCurrentContent();
@@ -124,12 +143,12 @@ class DraftEditor extends Component {
     }
 
     appendEmojioneEntity(emoji, callback) {
-        let {editorState} = this.state;
+        const {editorState} = this.state;
         const contentState = editorState.getCurrentContent();
         const contentStateWithEntity = contentState.createEntity(
             'emoji',
             'Segmented',
-            {emoji: emoji, content: emoji.shortname}
+            {emoji, content: emoji.shortname}
         );
         const newEditorState = EditorState.set(
             editorState,
@@ -139,16 +158,16 @@ class DraftEditor extends Component {
     }
 
     appendImage(image, callback) {
-        let {editorState} = this.state;
+        const {editorState} = this.state;
         const contentState = editorState.getCurrentContent();
         let imageSrc = image.path || image.url;
-        if(!imageSrc && image.blob) {
+        if (!imageSrc && image.blob) {
             imageSrc = URL.createObjectURL(image.blob);
         }
         const contentStateWithEntity = contentState.createEntity(
             'image',
             'IMMUTABLE',
-            {src: imageSrc, alt: image.name || '', image: image}
+            {src: imageSrc, alt: image.name || '', image}
         );
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
         const newEditorState = EditorState.set(
@@ -159,28 +178,28 @@ class DraftEditor extends Component {
     }
 
     getContentList() {
-        let contents = [];
+        const contents = [];
         const editorState = this.state.editorState;
         const contentState = editorState.getCurrentContent();
         const raw = convertToRaw(contentState);
         let thisTextContent = '';
         raw.blocks.forEach(block => {
-            if(block.type === 'atomic') {
-                if(block.entityRanges && block.entityRanges.length) {
+            if (block.type === 'atomic') {
+                if (block.entityRanges && block.entityRanges.length) {
                     contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
                 }
-                if(thisTextContent.length && thisTextContent.trim().length) {
+                if (thisTextContent.length && thisTextContent.trim().length) {
                     contents.push({type: 'text', content: thisTextContent});
                     thisTextContent = '';
                 }
             } else {
-                if(thisTextContent.length) {
+                if (thisTextContent.length) {
                     thisTextContent += '\n';
                 }
                 thisTextContent += block.text;
             }
         });
-        if(thisTextContent.length && thisTextContent.trim().length) {
+        if (thisTextContent.length && thisTextContent.trim().length) {
             contents.push({type: 'text', content: thisTextContent});
             thisTextContent = '';
         }
@@ -196,13 +215,17 @@ class DraftEditor extends Component {
     onChange(editorState, callback) {
         const contentState = editorState.getCurrentContent();
         this.setState({editorState}, () => {
-            callback && callback(contentState);
-            this.props.onChange && this.props.onChange(contentState);
+            if (callback) {
+                callback(contentState);
+            }
+            if (this.props.onChange) {
+                this.props.onChange(contentState);
+            }
         });
     }
 
     handleKeyCommand(command) {
-        if(!this.props.handleKey) {
+        if (!this.props.handleKey) {
             return;
         }
         const newState = RichUtils.handleKeyCommand(this.state.editorState, command);
@@ -214,14 +237,14 @@ class DraftEditor extends Component {
     }
 
     handleReturn(e) {
-        if(this.props.onReturnKeyDown) {
+        if (this.props.onReturnKeyDown) {
             return this.props.onReturnKeyDown(e);
         }
         return 'not-handled';
     }
 
     handlePastedText(text, html) {
-        if(this.props.onPastedText) {
+        if (this.props.onPastedText) {
             this.props.onPastedText(text, html);
         } else {
             this.appendContent(text);
@@ -230,18 +253,18 @@ class DraftEditor extends Component {
     }
 
     handlePastedFiles(files) {
-        if(this.props.onPastedFiles) {
+        if (this.props.onPastedFiles) {
             this.props.onPastedFiles(files);
         } else {
             const date = new Date();
             files.forEach(blob => {
-                if(blob.type.startsWith('image/')) {
+                if (blob.type.startsWith('image/')) {
                     this.appendImage({
                         lastModified: date.getTime(),
                         lastModifiedDate: date,
                         name: `clipboard-image-${timeSequence()}.png`,
                         size: blob.size,
-                        blob: blob,
+                        blob,
                         type: blob.type
                     });
                 }
@@ -258,22 +281,23 @@ class DraftEditor extends Component {
             result = {
                 component: AtomicComponent,
                 editable: true,
-            }
+            };
         }
 
-        return result
+        return result;
     }
 
     render() {
-        let {
+        const {
             placeholder,
             onReturnKeyDown,
             onPastedFiles,
             onPastedText,
+            handleKey,
             ...other
         } = this.props;
 
-        return <div {...other} onClick={e => {this.focus(0);}}>
+        return (<div {...other} onClick={() => {this.focus(0);}}>
             <Editor
                 ref={e => {this.editor = e;}}
                 placeholder={placeholder}
@@ -285,7 +309,7 @@ class DraftEditor extends Component {
                 handlePastedText={this.handlePastedText.bind(this)}
                 handlePastedFiles={this.handlePastedFiles.bind(this)}
             />
-        </div>;
+        </div>);
     }
 }
 

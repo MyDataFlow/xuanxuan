@@ -10,7 +10,6 @@ const STATUS = new Status({
 }, 0);
 
 class TaskQueue {
-
     constructor(tasks, onTask, onTaskStart) {
         this._tasks = [];
         this._finished = [];
@@ -20,12 +19,12 @@ class TaskQueue {
         this._onTaskStart = onTaskStart;
         this._running = 0;
 
-        if(tasks) {
+        if (tasks) {
             this.add(tasks);
         }
 
         this._status.onChange = (status, oldStatus) => {
-            if(this._onStatusChange) {
+            if (this._onStatusChange) {
                 this._onStatusChange(status, oldStatus);
             }
         };
@@ -88,12 +87,12 @@ class TaskQueue {
     }
 
     get percent() {
-        return this.finishCount/this.totalCount;
+        return this.finishCount / this.totalCount;
     }
 
     add(...tasks) {
-        for(let task of tasks) {
-            if(Array.isArray(task)) {
+        for (let task of tasks) {
+            if (Array.isArray(task)) {
                 this.add(...task);
             } else {
                 this._tasks.push(task);
@@ -102,7 +101,7 @@ class TaskQueue {
     }
 
     cancel() {
-        if(this.isRunning) {
+        if (this.isRunning) {
             this._status.change(STATUS.canceled);
             this._runId = 0;
         }
@@ -111,26 +110,29 @@ class TaskQueue {
 
     runTask(task, ...params) {
         const taskFunc = (typeof task === 'object' && task.func) ? task.func : task;
-        this._onTaskStart && this._onTaskStart(task, this.percent, this);
-        const result = taskFunc(...params);
-        if(result instanceof Promise) {
-            return result;
-        } else {
-            return Promise.resolve(result);
+        if (this._onTaskStart) {
+            this._onTaskStart(task, this.percent, this);
         }
+        const result = taskFunc(...params);
+        if (result instanceof Promise) {
+            return result;
+        }
+        return Promise.resolve(result);
     }
 
     next(runId, resolve, reject, ...params) {
         const task = this._tasks[0];
         this.runTask(task, ...params).then(result => {
-            if(runId === this._runId) {
+            if (runId === this._runId) {
                 this._finished.push(this._tasks.shift());
-                this._onTask && this._onTask(result, task, this.percent, this);
-                if(!this._tasks.length) {
+                if (this._onTask) {
+                    this._onTask(result, task, this.percent, this);
+                }
+                if (!this._tasks.length) {
                     this._status.change(STATUS.done);
                     resolve(this._finished.length);
-                } else if(this.isRunning) {
-                    if(result !== undefined) {
+                } else if (this.isRunning) {
+                    if (result !== undefined) {
                         params.push(result);
                     }
                     this.next(runId, resolve, reject, ...params);
@@ -142,12 +144,12 @@ class TaskQueue {
     }
 
     run(...params) {
-        if(!this._tasks.length) {
+        if (!this._tasks.length) {
             return Promise.resolve(0);
         }
-        if(!this.isWait) {
+        if (!this.isWait) {
             const errorMessage = `The status is not wait(current '${this.statusName}')`;
-            if(DEBUG) {
+            if (DEBUG) {
                 console.error(errorMessage, this);
             }
             return Promise.reject(errorMessage);

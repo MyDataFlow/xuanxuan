@@ -1,29 +1,30 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
-
-class TabPane extends Component {
-    static defaultProps = {
-        label: 'tab',
-    };
-
-    render() {
-        let {
-            label,
-            children,
-            ...other
-        } = this.props;
-
-        return <div {...other}>{children}</div>;
-    }
-}
+import TabPane from './tab-pane';
 
 class Tabs extends Component {
+    static propTypes = {
+        navClassName: PropTypes.string,
+        activeClassName: PropTypes.string,
+        tabPaneClass: PropTypes.string,
+        contentClassName: PropTypes.string,
+        className: PropTypes.string,
+        children: PropTypes.any,
+        cache: PropTypes.bool,
+        defaultActivePaneKey: PropTypes.any,
+        onPaneChange: PropTypes.func,
+    };
 
     static defaultProps = {
         navClassName: '',
         activeClassName: 'active',
-        cache: false
+        contentClassName: 'active',
+        tabPaneClass: '',
+        className: '',
+        cache: false,
+        defaultActivePaneKey: null,
+        onPaneChange: null,
+        children: null,
     };
 
     constructor(props) {
@@ -34,10 +35,12 @@ class Tabs extends Component {
     }
 
     handleNavClick(key) {
-        if(key !== this.state.activePaneKey) {
+        if (key !== this.state.activePaneKey) {
             const oldKey = this.state.activePaneKey;
             this.setState({activePaneKey: key}, () => {
-                this.props.onPaneChange && this.props.onPaneChange(key, oldKey);
+                if (this.props.onPaneChange) {
+                    this.props.onPaneChange(key, oldKey);
+                }
             });
         }
     }
@@ -56,29 +59,28 @@ class Tabs extends Component {
             ...other
         } = this.props;
 
-        return <div className={HTML.classes('tabs', className)} {...other}>
+        return (<div className={HTML.classes('tabs', className)} {...other}>
             <nav className={HTML.classes('nav', navClassName)}>
-            {
-                children.map(item => {
-                    return <a key={item.key} className={item.key === this.state.activePaneKey ? activeClassName : ''} onClick={this.handleNavClick.bind(this, item.key)}>{item.props.label}</a>
-                })
-            }
+                {
+                    children.map(item => {
+                        return <a key={item.key} className={item.key === this.state.activePaneKey ? activeClassName : ''} onClick={this.handleNavClick.bind(this, item.key)}>{item.props.label}</a>;
+                    })
+                }
             </nav>
             <div className={HTML.classes('content', contentClassName)}>
-            {
-                children.map(item => {
-                    if(item.key === this.state.activePaneKey) {
-                        return <div key={item.key} className={HTML.classes('tab-pane active', tabPaneClass)}>{item}</div>;
-                    }
-                    if(cache) {
-                        return <div key={item.key} className={HTML.classes('tab-pane hidden', tabPaneClass)}>{item}</div>;
-                    } else {
+                {
+                    children.map(item => {
+                        if (item.key === this.state.activePaneKey) {
+                            return <div key={item.key} className={HTML.classes('tab-pane active', tabPaneClass)}>{item}</div>;
+                        }
+                        if (cache) {
+                            return <div key={item.key} className={HTML.classes('tab-pane hidden', tabPaneClass)}>{item}</div>;
+                        }
                         return null;
-                    }
-                })
-            }
+                    })
+                }
             </div>
-        </div>;
+        </div>);
     }
 }
 

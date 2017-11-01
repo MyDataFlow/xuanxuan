@@ -101,7 +101,7 @@ const chatHistory = (msg, socket) => {
 
 const chatStar = (msg, socket) => {
     if (msg.isSuccess) {
-        let chat = chats.get(msg.data.gid);
+        const chat = chats.get(msg.data.gid);
         if (chat) {
             chat.star = msg.data.star;
             chats.update(chat);
@@ -127,17 +127,16 @@ const chatJoinchat = (msg, socket) => {
                 imUI.activeChat(chat);
             }
             return chat;
-        } else {
-            chats.remove(chat.gid);
-            return chat;
         }
+        chats.remove(chat.gid);
+        return chat;
     }
     imServer.chatJoinTask = false;
 };
 
 const chatHide = (msg, socket) => {
     if (msg.isSuccess) {
-        let chat = chats.get(msg.data.gid);
+        const chat = chats.get(msg.data.gid);
         if (chat) {
             chat.hide = msg.data.hide;
             chats.update(chat);
@@ -147,7 +146,7 @@ const chatHide = (msg, socket) => {
 
 const chatChangepublic = (msg, socket) => {
     if (msg.isSuccess) {
-        let chat = chats.get(msg.data.gid);
+        const chat = chats.get(msg.data.gid);
         if (chat) {
             chat.public = msg.data.public;
             chats.update(chat);
@@ -159,14 +158,13 @@ const chatGetpubliclist = (msg, socket) => {
     let publicChats;
     if (msg.isSuccess) {
         publicChats = msg.data.map(x => {
-            let chat = new Chat(x);
+            const chat = new Chat(x);
             chat.updateMembersSet(members);
             return chat;
         });
         return publicChats;
-    } else {
-        publicChats = [];
     }
+    publicChats = [];
     chats.updatePublicChats(publicChats);
 };
 

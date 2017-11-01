@@ -1,13 +1,19 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import App from '../../core';
 import FileListItem from '../common/file-list-item';
 
 class MessageContentFileView extends Component {
+    static propTypes = {
+        className: PropTypes.string,
+        message: PropTypes.object.isRequired,
+    };
+
+    static defaultProps = {
+        className: null,
+    };
 
     render() {
-        let {
+        const {
             message,
             className,
             ...other
@@ -15,7 +21,7 @@ class MessageContentFileView extends Component {
 
         const content = message.fileContent;
 
-        return <FileListItem className="app-message-content-file layer rounded flex-inline shadow-2 list-item" file={content} {...other}/>;
+        return <FileListItem className={HTML.classes('app-message-content-file layer rounded flex-inline shadow-2 list-item', className)} file={content} {...other} />;
     }
 }
 

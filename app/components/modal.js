@@ -104,12 +104,10 @@ const show = (props = {}, callback = null) => {
         </footer>);
     }
 
-    const header = (title || closeButton) ? <header className={HTML.classes("heading", headingClassName)}>
+    const header = (title || closeButton) ? (<header className={HTML.classes('heading', headingClassName)}>
         <div className="title">{title}</div>
-        {closeButton && <nav style={{overflow: 'visible'}} data-hint={Lang.string('common.close')} className="nav hint--bottom"><a className="close" onClick={() => {
-            Display.remove(props.id);
-        }}><Icon name="close"/></a></nav>}
-    </header> : null;
+        {closeButton && <nav style={{ overflow: 'visible' }} data-hint={Lang.string('common.close')} className="nav hint--bottom"><a className="close" onClick={() => (Display.remove(props.id))}><Icon name="close" /></a></nav>}
+    </header>) : null;
 
     props = Object.assign({}, props, {className, header, footer, closeButton, plugName: 'modal'});
     delete props.title;
@@ -126,7 +124,7 @@ const show = (props = {}, callback = null) => {
 const alert = (content, props, callback) => {
     return show(Object.assign({
         modal: true,
-        content: content
+        content
     }, props), callback);
 };
 

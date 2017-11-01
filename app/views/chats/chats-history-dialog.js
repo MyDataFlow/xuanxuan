@@ -1,9 +1,6 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Modal from '../../components/modal';
 import ChatsHistory from './chats-history';
-import Lang from '../../lang';
-import App from '../../core';
 
 const show = (chat, callback) => {
     const modalId = 'app-chats-history-dialog';
@@ -18,7 +15,7 @@ const show = (chat, callback) => {
         className: 'app-chats-history-dialog dock primary-pale',
         animation: 'enter-from-bottom',
         actions: false,
-        content: <ChatsHistory chat={chat}/>
+        content: <ChatsHistory chat={chat} />
     }, callback);
 };
 
