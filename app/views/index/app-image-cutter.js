@@ -12,7 +12,6 @@ class ImageCutterApp extends Component {
 
         return (<div className="affix">
             <ImageCutter
-                hideAreaSelectorOnBlur
                 onFinish={this.onFinishCutImage}
                 sourceImage={sourceImageFile}
             />

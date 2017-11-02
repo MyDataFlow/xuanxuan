@@ -1,6 +1,7 @@
-import Entity from '../models/entity';
-import Member from '../models/member';
-import Chat from '../models/chat';
-import ChatMessage from '../models/chat-message';
+import Entity from './entity';
+import Member from './member';
+import Chat from './chat';
+import ChatMessage from './chat-message';
+import EntitySchema from './entity-schema';
 
-export {Entity, Member, Chat, ChatMessage};
+export {Entity, Member, Chat, ChatMessage, EntitySchema};
