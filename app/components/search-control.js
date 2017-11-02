@@ -93,6 +93,9 @@ class SearchControl extends Component {
             children,
             onSearchChange,
             changeDelay,
+            onFocus,
+            onChange,
+            onBlur,
             ...other
         } = this.props;
 
