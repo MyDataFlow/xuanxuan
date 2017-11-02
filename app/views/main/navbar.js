@@ -31,15 +31,15 @@ const NavLink = ({item}) => (
 /* eslint-enable */
 
 class Navbar extends Component {
-    // static defaultProps = {
-    //     className: PropTypes.string,
-    //     userStatus: PropTypes.any,
-    // };
+    static propTypes = {
+        className: PropTypes.string,
+        userStatus: PropTypes.any,
+    };
 
-    // static propTypes = {
-    //     className: null,
-    //     userStatus: null,
-    // };
+    static defaultProps = {
+        className: null,
+        userStatus: null,
+    };
 
     constructor(props) {
         super(props);
@@ -77,6 +77,8 @@ class Navbar extends Component {
             userStatus,
             ...other
         } = this.props;
+
+        console.log('>', className, userStatus);
 
         const navbarWidth = Config.ui['navbar.width'];
         const userConfig = App.profile.userConfig;

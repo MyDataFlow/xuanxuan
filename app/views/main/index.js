@@ -13,15 +13,15 @@ const mainViews = [
 ];
 
 class MainView extends Component {
-    // static defaultProps = {
-    //     className: PropTypes.string,
-    //     userStatus: PropTypes.any,
-    // };
+    static propTypes = {
+        className: PropTypes.string,
+        userStatus: PropTypes.any,
+    };
 
-    // static propTypes = {
-    //     className: null,
-    //     userStatus: null,
-    // };
+    static defaultProps = {
+        className: null,
+        userStatus: null,
+    };
 
     componentDidMount() {
         this.onUserConfigChange = App.profile.onUserConfigChange(() => {

@@ -9,4 +9,3 @@ ReactDOM.render(<IndexView />, appElement, () => {
     const loadingElement = document.getElementById('loading');
     loadingElement.parentNode.removeChild(loadingElement);
 });
-

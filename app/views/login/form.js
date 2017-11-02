@@ -30,13 +30,13 @@ const simpleServerUrl = serverUrl => {
 };
 
 class FormView extends Component {
-    // static defaultProps = {
-    //     className: PropTypes.string,
-    // };
+    static propTypes = {
+        className: PropTypes.string,
+    };
 
-    // static propTypes = {
-    //     className: null,
-    // };
+    static defaultProps = {
+        className: null,
+    };
 
     constructor(props) {
         super(props);

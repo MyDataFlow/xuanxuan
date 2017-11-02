@@ -8,13 +8,13 @@ import Avatar from '../../components/avatar';
 const CONNECT_TIME_TICK = 5;
 
 class GlobalMessage extends Component {
-    // static defaultProps = {
-    //     className: PropTypes.string,
-    // };
+    static propTypes = {
+        className: PropTypes.string,
+    };
 
-    // static propTypes = {
-    //     className: null,
-    // };
+    static defaultProps = {
+        className: null,
+    };
 
     constructor(props) {
         super(props);
