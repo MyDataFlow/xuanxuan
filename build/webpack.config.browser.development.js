@@ -60,7 +60,7 @@ export default validate(merge(baseConfig, {
             Platform: 'platform/browser',
             Config: 'config/index.js',
         },
-        root: path.join(__dirname, 'app')
+        root: path.join(__dirname, '../app')
     },
 
     plugins: [

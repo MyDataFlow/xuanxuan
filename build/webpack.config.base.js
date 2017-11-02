@@ -6,7 +6,7 @@ import path from 'path';
 import validate from 'webpack-validator';
 import {
     dependencies as externals
-} from './app/package.json';
+} from '../app/package.json';
 
 export default validate({
     module: {
@@ -22,7 +22,7 @@ export default validate({
     },
 
     output: {
-        path: path.join(__dirname, 'app'),
+        path: path.join(__dirname, '../app'),
         filename: 'bundle.js',
 
         // https://github.com/webpack/webpack/issues/1114
@@ -37,7 +37,7 @@ export default validate({
             Platform: 'platform/electron',
             Config: 'config/index.js',
         },
-        root: path.join(__dirname, 'app')
+        root: path.join(__dirname, '../app')
     },
 
     plugins: [],

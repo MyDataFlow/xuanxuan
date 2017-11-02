@@ -27,6 +27,7 @@ const app = express();
 const compiler = webpack(config);
 const PORT = process.env.PORT || 3000;
 
+
 // 创建 Webpack 开发中间件
 const wdm = webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath,

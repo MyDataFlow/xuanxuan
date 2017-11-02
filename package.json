@@ -5,19 +5,15 @@
   "description": "企业即时通讯平台",
   "main": "main.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --retries 2 --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.spec.js",
-    "test-watch": "npm test -- --watch",
-    "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --retries 2 --compilers js:babel-register --require ./test/setup.js ./test/e2e.js",
-    "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r babel-register server.js",
-    "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
-    "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
-    "build-renderer-debug": "cross-env NODE_ENV=debug node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.debug.js --progress --profile --colors",
-    "build-main-debug": "cross-env NODE_ENV=debug node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
-    "build-browser": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.browser.js --progress --profile --colors",
+    "hot-server": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r babel-register ./build/server.js",
+    "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config ./build/webpack.config.electron.js --progress --profile --colors",
+    "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config ./build/webpack.config.production.js --progress --profile --colors",
+    "build-renderer-debug": "cross-env NODE_ENV=debug node -r babel-register ./node_modules/webpack/bin/webpack --config ./build/webpack.config.debug.js --progress --profile --colors",
+    "build-main-debug": "cross-env NODE_ENV=debug node -r babel-register ./node_modules/webpack/bin/webpack --config ./build/webpack.config.electron.js --progress --profile --colors",
+    "build-browser": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config ./build/webpack.config.browser.js --progress --profile --colors",
     "build": "npm run build-main && npm run build-renderer",
     "build-debug": "npm run build-main-debug && npm run build-renderer-debug",
     "start": "cross-env NODE_ENV=production electron ./app/",
-    "flow-typed-install": "flow-typed install",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.development",
     "postinstall": "concurrently \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
     "dev": "npm run hot-server -- --start-hot",
@@ -47,61 +43,7 @@
     "start-browser": "http-server ./app -a 127.0.0.1 -p 8088"
   },
   "build": {
-    "productName": "xuanxuan",
-    "appId": "com.cnezsoft.xuanxuan",
-    "compression": "maximum",
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ],
-      "title": "喧喧 ${version}"
-    },
-    "files": [
-      "dist/",
-      "assets/",
-      "media/",
-      "index.html",
-      "main.js",
-      "main.js.map",
-      "package.json"
-    ],
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "rpm",
-        "AppImage",
-        "tar.gz"
-      ],
-      "icon": "./resources/icons/"
-    },
-    "mac": {
-      "icon": "./resources/icon.icns"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "artifactName": "${productName}-${version}-${os}${env.PKG_ARCH}-setup.${ext}",
-      "deleteAppDataOnUninstall": false
-    },
-    "directories": {
-      "buildResources": "resources",
-      "output": "release"
-    }
+    "extends": "./build/electron-builder.json"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -165,6 +107,7 @@
     "eslint": "^4.9.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-formatter-pretty": "^1.1.0",
+    "eslint-import-resolver-babel-module": "^4.0.0-beta.3",
     "eslint-import-resolver-webpack": "^0.8.3",
     "eslint-plugin-compat": "^1.0.4",
     "eslint-plugin-import": "^2.6.0",

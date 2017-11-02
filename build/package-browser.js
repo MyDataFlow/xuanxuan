@@ -2,7 +2,7 @@ import cpx from 'cpx';
 import ghpages from 'gh-pages';
 import minimist from 'minimist';
 import fse from 'fs-extra';
-import pkg from './package.json';
+import pkg from '../app/package.json';
 
 const argv = minimist(process.argv.slice(2));
 
