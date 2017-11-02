@@ -1,7 +1,6 @@
 import {remote} from 'electron';
 
 const Menu = remote.Menu;
-const MenuItem = remote.MenuItem;
 
 const createContextMenu = menu => {
     if (Array.isArray(menu) && !menu.popup) {
