@@ -2,6 +2,7 @@ import Entity from './entity';
 import Status from '../../utils/status';
 import Lang from '../../lang';
 import Pinyin from '../../utils/pinyin';
+import { ChatMessage } from './index';
 
 const STATUS = new Status({
     local: 0,
@@ -55,6 +56,17 @@ class Chat extends Entity {
                 this.onStatusChange(newStatus, this);
             }
         };
+
+        this._maxMsgOrder = 0;
+    }
+
+    get maxMsgOrder() {
+        return this._maxMsgOrder;
+    }
+
+    newMsgOrder() {
+        this._maxMsgOrder += 1;
+        return this._maxMsgOrder;
     }
 
     ensureGid() {
@@ -529,6 +541,9 @@ class Chat extends Entity {
                 if (lastActiveTime < message.date) {
                     lastActiveTime = message.date;
                 }
+                if (message.order) {
+                    this._maxMsgOrder = Math.max(this._maxMsgOrder, message.order);
+                }
             } else if (DEBUG) {
                 console.warn('The message date is not defined.', message);
             }
@@ -537,16 +552,7 @@ class Chat extends Entity {
         this.noticeCount = noticeCount;
 
         if (newMessageCount) {
-            this._messages.sort((x, y) => {
-                let orderResult = x.date - y.date;
-                if (orderResult === 0) {
-                    orderResult = (x.id || Number.MAX_SAFE_INTEGER) - (y.id || Number.MAX_SAFE_INTEGER);
-                }
-                if (orderResult === 0) {
-                    orderResult = x.order - y.order;
-                }
-                return orderResult;
-            });
+            this._messages = ChatMessage.sort(this._messages);
         }
 
         if (limitSize && this._messages.length > MAX_MESSAGE_COUNT) {

@@ -312,6 +312,8 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
     }
 
     messages.forEach(message => {
+        message.order = chat.newMsgOrder();
+
         const command = message.getCommand();
         if (command) {
             if (command.action === 'rename') {

@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `im_message` (
   `cgid` char(40) NOT NULL DEFAULT '',
   `user` varchar(30) NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `order` mediumint(8) unsigned NOT NULL,
   `type` enum('normal', 'broadcast') NOT NULL DEFAULT 'normal',
   `content` text NOT NULL DEFAULT '',
   `contentType` enum('text', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
@@ -69,5 +70,5 @@ CREATE TABLE IF NOT EXISTS `im_usermessage`(
   KEY `muser` (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline'; 
+ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline';
 ALTER TABLE `sys_file` CHANGE `pathname` `pathname` char(100) NOT NULL;

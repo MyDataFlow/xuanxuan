@@ -34,6 +34,7 @@ class ChatMessage extends Entity {
     static SCHEMA = Entity.SCHEMA.extend({
         cgid: {type: 'string', indexed: true},
         user: {type: 'int', indexed: true},
+        order: {type: 'int', indexed: true},
         date: {type: 'timestamp', indexed: true},
         type: {type: 'string', indexed: true, defaultValue: TYPES.normal},
         contentType: {type: 'string', indexed: true, defaultValue: CONTENT_TYPES.text},
@@ -51,9 +52,6 @@ class ChatMessage extends Entity {
                 this.onStatusChange(newStatus, this);
             }
         };
-        if (!this.$.order) {
-            this.$.order = TimeSequence();
-        }
         if (!this.$.contentType) {
             this.$.contentType = CONTENT_TYPES.text;
         }
@@ -73,7 +71,8 @@ class ChatMessage extends Entity {
             contentType: this.contentType,
             content: this.content,
             date: '',
-            user: this.senderId
+            user: this.senderId,
+            order: this.order,
         };
     }
 
@@ -91,11 +90,11 @@ class ChatMessage extends Entity {
     }
 
     get order() {
-        return this.$.order;
+        return this.$get('order', 0);
     }
 
     set order(order) {
-        this.$.order = order;
+        this.$set('order', order);
     }
 
     // ChatMessage status
@@ -404,6 +403,19 @@ class ChatMessage extends Entity {
             return chatMessage;
         }
         return new ChatMessage(chatMessage);
+    }
+
+    static sort(messages) {
+        return messages.sort((x, y) => {
+            let orderResult = x.order - y.order;
+            if (orderResult === 0) {
+                orderResult = x.date - y.date;
+            }
+            if (orderResult === 0) {
+                orderResult = (x.id || Number.MAX_SAFE_INTEGER) - (y.id || Number.MAX_SAFE_INTEGER);
+            }
+            return orderResult;
+        });
     }
 }
 

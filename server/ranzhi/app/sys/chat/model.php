@@ -2,21 +2,21 @@
 class chatModel extends model
 {
     /**
-     * Reset user status. 
-     * 
-     * @param  string $status 
+     * Reset user status.
+     *
+     * @param  string $status
      * @access public
      * @return bool
      */
-    public function resetUserStatus($status = 'offline')    
+    public function resetUserStatus($status = 'offline')
     {
         $this->dao->update(TABLE_USER)->set('status')->eq($status)->exec();
         return !dao::isError();
     }
 
     /**
-     * Create a system chat. 
-     * 
+     * Create a system chat.
+     *
      * @access public
      * @return bool
      */
@@ -39,11 +39,11 @@ class chatModel extends model
     }
 
     /**
-     * Get signed time. 
-     * 
-     * @param  string $account 
+     * Get signed time.
+     *
+     * @param  string $account
      * @access public
-     * @return string | int 
+     * @return string | int
      */
     public function getSignedTime($account = '')
     {
@@ -52,16 +52,16 @@ class chatModel extends model
 
         $attend = $this->dao->select('*')->from(TABLE_ATTEND)->where('account')->eq($account)->andWhere('`date`')->eq(date('Y-m-d'))->fetch();
         if($attend) return strtotime("$attend->date $attend->signIn");
-        
-        return time(); 
+
+        return time();
     }
 
     /**
-     * Get a user. 
-     * 
-     * @param  int    $userID 
+     * Get a user.
+     *
+     * @param  int    $userID
      * @access public
-     * @return object 
+     * @return object
      */
     public function getUserByUserID($userID = 0)
     {
@@ -75,10 +75,10 @@ class chatModel extends model
 
         return $user;
     }
-    
+
     /**
-     * Get user list. 
-     * 
+     * Get user list.
+     *
      * @param  string $status
      * @param  array  $idList
      * @access public
@@ -91,7 +91,7 @@ class chatModel extends model
             ->beginIF($status && $status == 'online')->andWhere('status')->ne('offline')->fi()
             ->beginIF($status && $status != 'online')->andWhere('status')->eq($status)->fi()
             ->beginIF($idList)->andWhere('id')->in($idList)->fi();
-        if($idAsKey) 
+        if($idAsKey)
         {
             $users = $dao->fetchAll('id');
         }
@@ -100,7 +100,7 @@ class chatModel extends model
             $users = $dao->fetchAll();
         }
 
-        foreach($users as $user) 
+        foreach($users as $user)
         {
             $user->id     = (int)$user->id;
             $user->dept   = (int)$user->dept;
@@ -109,13 +109,13 @@ class chatModel extends model
 
         return $users;
     }
-    
+
     /**
-     * Edit a user. 
-     * 
-     * @param  object $user 
+     * Edit a user.
+     *
+     * @param  object $user
      * @access public
-     * @return object 
+     * @return object
      */
     public function editUser($user = null)
     {
@@ -125,9 +125,9 @@ class chatModel extends model
     }
 
     /**
-     * Get member list by gid.  
-     * 
-     * @param  string $gid 
+     * Get member list by gid.
+     *
+     * @param  string $gid
      * @access public
      * @return array
      */
@@ -148,7 +148,7 @@ class chatModel extends model
                 ->beginIF($gid)->andWhere('cgid')->eq($gid)->fi()
                 ->fetchPairs();
         }
-        
+
         $members = array();
         foreach($memberList as $member) $members[] = (int)$member;
 
@@ -156,11 +156,11 @@ class chatModel extends model
     }
 
     /**
-     * Get message list. 
-     * 
-     * @param  array  $idList 
+     * Get message list.
+     *
+     * @param  array  $idList
      * @access public
-     * @return array 
+     * @return array
      */
     public function getMessageList($idList = array(), $pager = null)
     {
@@ -172,9 +172,10 @@ class chatModel extends model
             ->page($pager)
             ->fetchAll();
 
-        foreach($messages as $message) 
+        foreach($messages as $message)
         {
             $message->id   = (int)$message->id;
+            $message->order= (int)$message->order;
             $message->user = (int)$message->user;
             $message->date = strtotime($message->date);
         }
@@ -183,9 +184,9 @@ class chatModel extends model
     }
 
     /**
-     * Get message list by cgid.  
-     * 
-     * @param  string $cgid 
+     * Get message list by cgid.
+     *
+     * @param  string $cgid
      * @access public
      * @return array
      */
@@ -200,6 +201,7 @@ class chatModel extends model
         foreach($messages as $message)
         {
             $message->id   = (int)$message->id;
+            $message->order= (int)$message->order;
             $message->user = (int)$message->user;
             $message->date = strtotime($message->date);
         }
@@ -208,17 +210,17 @@ class chatModel extends model
     }
 
     /**
-     * Get chat list. 
-     * 
-     * @param  bool   $public 
+     * Get chat list.
+     *
+     * @param  bool   $public
      * @access public
-     * @return array 
+     * @return array
      */
     public function getList($public = true)
     {
         $chats = $this->dao->select('*')->from(TABLE_IM_CHAT)->where('public')->eq($public)->fetchAll();
 
-        foreach($chats as $chat) 
+        foreach($chats as $chat)
         {
             $chat->id             = (int)$chat->id;
             $chat->subject        = (int)$chat->subject;
@@ -232,8 +234,8 @@ class chatModel extends model
     }
 
     /**
-     * Get chat list by userID.  
-     * 
+     * Get chat list by userID.
+     *
      * @param  int    $userID
      * @param  bool   $star
      * @access public
@@ -273,12 +275,12 @@ class chatModel extends model
     }
 
     /**
-     * Get a chat by gid.  
-     * 
-     * @param  string $gid 
+     * Get a chat by gid.
+     *
+     * @param  string $gid
      * @param  bool   $members
      * @access public
-     * @return object 
+     * @return object
      */
     public function getByGID($gid = '', $members = false)
     {
@@ -299,11 +301,11 @@ class chatModel extends model
     }
 
     /**
-     * Get offline messages. 
-     * 
-     * @param  int    $userID 
+     * Get offline messages.
+     *
+     * @param  int    $userID
      * @access public
-     * @return array 
+     * @return array
      */
     public function getOfflineMessages($userID = 0)
     {
@@ -318,17 +320,17 @@ class chatModel extends model
     }
 
     /**
-     * Create a chat. 
-     * 
-     * @param  string $gid 
-     * @param  string $name 
-     * @param  string $type 
-     * @param  array  $members 
-     * @param  int    $subjectID 
+     * Create a chat.
+     *
+     * @param  string $gid
+     * @param  string $name
+     * @param  string $type
+     * @param  array  $members
+     * @param  int    $subjectID
      * @param  bool   $public
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return object
      */
     public function create($gid = '', $name = '', $type = '', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
@@ -356,8 +358,8 @@ class chatModel extends model
     }
 
     /**
-     * Update a chat. 
-     * 
+     * Update a chat.
+     *
      * @param  object $chat
      * @param  int    $userID
      * @access public
@@ -378,11 +380,11 @@ class chatModel extends model
     }
 
     /**
-     * Set admins of a chat. 
-     * 
-     * @param  string $gid 
-     * @param  array  $admins 
-     * @param  bool   $isAdmin 
+     * Set admins of a chat.
+     *
+     * @param  string $gid
+     * @param  array  $admins
+     * @param  bool   $isAdmin
      * @access public
      * @return object
      */
@@ -409,13 +411,13 @@ class chatModel extends model
     }
 
     /**
-     * Star or cancel star a chat. 
-     * 
-     * @param  string $gid 
-     * @param  bool   $star 
+     * Star or cancel star a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $star
      * @param  int    $userID
      * @access public
-     * @return object 
+     * @return object
      */
     public function starChat($gid = '', $star = true, $userID = 0)
     {
@@ -429,13 +431,13 @@ class chatModel extends model
     }
 
     /**
-     * Hide or display a chat. 
-     * 
-     * @param  string $gid 
-     * @param  bool   $hide 
+     * Hide or display a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $hide
      * @param  int    $userID
      * @access public
-     * @return bool 
+     * @return bool
      */
     public function hideChat($gid = '', $hide = true, $userID = 0)
     {
@@ -449,11 +451,11 @@ class chatModel extends model
     }
 
     /**
-     * Join or quit a chat. 
-     * 
-     * @param  string $gid 
-     * @param  int    $userID 
-     * @param  bool   $join 
+     * Join or quit a chat.
+     *
+     * @param  string $gid
+     * @param  int    $userID
+     * @param  bool   $join
      * @access public
      * @return bool
      */
@@ -463,7 +465,7 @@ class chatModel extends model
         {
             /* Join chat. */
             $data = $this->dao->select('*')->from(TABLE_IM_CHATUSER)->where('cgid')->eq($gid)->andWhere('user')->eq($userID)->fetch();
-            if($data) 
+            if($data)
             {
                 /* If user hasn't quit the chat then return. */
                 if($data->quit == '0000-00-00 00:00:00') return true;
@@ -486,7 +488,7 @@ class chatModel extends model
             $this->dao->insert(TABLE_IM_CHATUSER)->data($data)->exec();
 
             $id = $this->dao->lastInsertID();
-            
+
             $this->dao->update(TABLE_IM_CHATUSER)->set('`order`')->eq($id)->where('id')->eq($id)->exec();
         }
         else
@@ -498,12 +500,12 @@ class chatModel extends model
     }
 
     /**
-     * Create messages.  
-     * 
-     * @param  array  $messageList 
+     * Create messages.
+     *
+     * @param  array  $messageList
      * @param  int    $userID
      * @access public
-     * @return array 
+     * @return array
      */
     public function createMessage($messageList = array(), $userID = 0)
     {
@@ -524,7 +526,7 @@ class chatModel extends model
             {
                 if(!(isset($message->user) && $message->user)) $message->user = $userID;
                 if(!(isset($message->date) && $message->date)) $message->date = helper::now();
-                
+
                 $this->dao->insert(TABLE_IM_MESSAGE)->data($message)->exec();
                 $idList[] = $this->dao->lastInsertID();
             }
@@ -538,12 +540,12 @@ class chatModel extends model
     }
 
     /**
-     * Save offline messages. 
-     * 
+     * Save offline messages.
+     *
      * @param  array  $messages
      * @param  array  $users
      * @access public
-     * @return bool 
+     * @return bool
      */
     public function saveOfflineMessages($messages = array(), $users = array())
     {
@@ -558,15 +560,15 @@ class chatModel extends model
     }
 
     /**
-     * Upgrade xuanxuan. 
-     * 
+     * Upgrade xuanxuan.
+     *
      * @access public
      * @return void
      */
     public function upgrade()
     {
         $version = $this->getVersion();
-        if(version_compare($this->config->xuanxuan->version, $version, '<=')) 
+        if(version_compare($this->config->xuanxuan->version, $version, '<='))
         {
             $output = <<<EOT
 <html>
@@ -621,7 +623,7 @@ EOT;
 
     /**
      * Get version of xuanxuan.
-     * 
+     *
      * @access public
      * @return string
      */
@@ -632,9 +634,9 @@ EOT;
     }
 
     /**
-     * Get upgrade file. 
-     * 
-     * @param  string $version 
+     * Get upgrade file.
+     *
+     * @param  string $version
      * @access public
      * @return string
      */
