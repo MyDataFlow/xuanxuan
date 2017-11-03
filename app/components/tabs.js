@@ -59,6 +59,10 @@ class Tabs extends Component {
             ...other
         } = this.props;
 
+        if (!Array.isArray(children)) {
+            children = [children];
+        }
+
         return (<div className={HTML.classes('tabs', className)} {...other}>
             <nav className={HTML.classes('nav', navClassName)}>
                 {
