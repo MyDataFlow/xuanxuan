@@ -83,7 +83,7 @@ const login = (user) => {
         return Promise.resolve(user);
     }).catch(error => {
         user.endLogin(false);
-        Events.emit(EVENT.login, false, error);
+        Events.emit(EVENT.login, user, error);
         return Promise.reject(error);
     });
 };

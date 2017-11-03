@@ -79,8 +79,8 @@ onAppLinkClick('Member', target => {
     MemberProfileDialog.show(target);
 });
 
-Server.onUserLogin(user => {
-    if (user.isFirstSignedToday) {
+Server.onUserLogin((user, loginError) => {
+    if (!loginError && user.isFirstSignedToday) {
         Messager.show(Lang.string('login.signed'), {
             type: 'success',
             icon: 'calendar-check',

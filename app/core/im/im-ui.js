@@ -437,7 +437,10 @@ chats.onChatsInit(initChats => {
 if (Platform.screenshot && Platform.shortcut) {
     const name = 'captureScreenShortcut';
     let lastRegisterHotkey = null;
-    const registerShortcut = () => {
+    const registerShortcut = (loginUser, loginError) => {
+        if (loginError) {
+            return;
+        }
         const userConfig = profile.userConfig;
         if (userConfig) {
             const captureScreenHotkey = userConfig.captureScreenHotkey;
