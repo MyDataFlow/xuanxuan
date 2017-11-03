@@ -1,50 +1,4 @@
-import Lang from '../../lang';
-
-const exts = [{
-    name: 'home',
-    display: Lang.string('exts.home.label'),
-    description: Lang.string('exts.home.desc'),
-    buildIn: {
-        fixed: true,
-        asDefault: true,
-    },
-    type: 'app',
-    appIcon: 'mdi-apps',
-    appAccentColor: '#6200ea',
-    appType: 'insideView',
-}, {
-    name: 'extensions',
-    display: Lang.string('exts.extensions.label'),
-    description: Lang.string('exts.extensions.desc'),
-    buildIn: {},
-    type: 'app',
-    appIcon: 'mdi-puzzle',
-    appAccentColor: '#6200ea',
-    appType: 'insideView',
-}];
-
-// TODO: Load other exts here
-
-// Grouped extensions
-const all = {
-    exts,
-    apps: exts.filter(x => x.type === 'app'),
-    themes: exts.filter(x => x.type === 'theme'),
-    plugins: exts.filter(x => x.type === 'plugin'),
-};
-
-const getExt = (name, type) => {
-    if (type) {
-        const allExts = all[`${type}s`];
-        return allExts && allExts.find(x => x.name === name);
-    }
-    return exts.find(x => x.name === name);
-};
-
-const detaultApp = all.apps.find(x => x.buildIn && x.buildIn.asDefault) || exts.apps[0];
-const getApp = name => (getExt(name, 'app'));
-const getPlugin = name => (getExt(name, 'plugin'));
-const getTheme = name => (getExt(name, 'theme'));
+import {detaultApp, getApp} from './exts';
 
 const defaultOpenedApp = {
     name: detaultApp.name,
@@ -52,6 +6,7 @@ const defaultOpenedApp = {
     app: detaultApp,
     fixed: true,
     openTime: 0,
+    embed: {tab: true}
 };
 const openedApps = [
     defaultOpenedApp,
@@ -63,7 +18,7 @@ const getOpenedAppIndex = name => {
     return openedApps.findIndex(x => x.name === name);
 };
 let currentOpenedApp = null;
-const openApp = name => {
+const openApp = (name, embedType = 'tab') => {
     let theOpenedApp = isAppOpen(name);
     if (!theOpenedApp) {
         const theApp = getApp(name);
@@ -73,6 +28,7 @@ const openApp = name => {
                 app: theApp,
                 time: new Date().getTime(),
                 openTime: 0,
+                embedType,
             };
         } else {
             return false;
@@ -121,10 +77,6 @@ export default {
         return openedApps;
     },
 
-    get all() {
-        return all;
-    },
-
     get currentOpenedApp() {
         return currentOpenedApp;
     },
@@ -133,9 +85,4 @@ export default {
     openApp,
     closeApp,
     closeAllApp,
-
-    getExt,
-    getApp,
-    getPlugin,
-    getTheme,
 };
