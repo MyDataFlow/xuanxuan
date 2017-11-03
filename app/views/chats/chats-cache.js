@@ -6,9 +6,9 @@ import ChatView from './chat';
 class ChatsCacheView extends Component {
     static propTypes = {
         className: PropTypes.string,
-        chatId: PropTypes.string,
+        chatId: PropTypes.any,
         children: PropTypes.any,
-        filterType: PropTypes.string,
+        filterType: PropTypes.any,
     };
 
     static defaultProps = {

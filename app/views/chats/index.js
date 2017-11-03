@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Redirect} from 'react-router-dom';
-import Config from 'Config';
 import HTML from '../../utils/html-helper';
 import Menu from './menu';
 import ChatsCacheView from './chats-cache';
@@ -10,20 +9,27 @@ import ChatsDndContainer from './chats-dnd-container';
 class IndexView extends Component {
     static propTypes = {
         match: PropTypes.object.isRequired,
+        hidden: PropTypes.bool,
+        className: PropTypes.string,
+    };
+
+    static defaultProps = {
+        hidden: false,
+        className: null,
     };
 
     render() {
         const {
+            hidden,
+            className,
             match
         } = this.props;
 
         App.im.ui.activeChat(match.params.id);
 
-        const menuWidth = HTML.rem(Config.ui['menu.width']);
-
-        return (<div className="dock app-chats">
-            <Menu className="dock-left" filter={match.params.filterType} style={{width: menuWidth}} />
-            <ChatsCacheView style={{left: menuWidth}} className="dock-right" filterType={match.params.filterType} chatId={match.params.id}>
+        return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
+            <Menu className="dock-left" filter={match.params.filterType} />
+            <ChatsCacheView className="dock-right" filterType={match.params.filterType} chatId={match.params.id}>
                 <ChatsDndContainer className="dock" />
             </ChatsCacheView>
             <Route

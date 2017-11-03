@@ -7,6 +7,7 @@ import Lang from '../../lang';
 import App from '../../core';
 import ChatTitle from './chat-title';
 import MessageList from './message-list';
+import ChatMessage from '../../core/models/chat-message';
 import Pager from '../../components/pager';
 import MessageListItem from './message-list-item';
 
@@ -155,6 +156,7 @@ class ChatHistory extends Component {
         }
 
         App.im.chats.loadChatMessages(chat, msg => !!msg.id, pager.recPerPage, pager.recPerPage * (pager.page - 1), false).then(messages => {
+            messages = ChatMessage.sort(messages);
             pager.pageRecCount = messages.length;
             this.setState({
                 pager,

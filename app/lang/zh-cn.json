@@ -241,6 +241,10 @@
     "navbar.chats.label": "最近聊天",
     "navbar.contacts.label": "联系人",
     "navbar.groups.label": "讨论组",
+    "navbar.exts.label": "扩展应用",
+
+    "exts.home.label": "应用",
+    "exts.home.desc": "浏览我的应用",
 
     "usermenu.openProfile": "个人资料",
     "usermenu.changePassword": "更改密码",

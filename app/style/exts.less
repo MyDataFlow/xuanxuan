@@ -1,0 +1,67 @@
+.app-exts {
+  background-color: @color-primary;
+  background-image: linear-gradient(45deg, #3949ab 0%, #3f51b5 50%, #673ab7 100%);
+}
+
+.app-exts-nav {
+  > a {
+    min-width: (100*@rem);
+    padding-right: (30*@rem);
+
+    > .icon {
+      line-height: (30*@rem);
+      height: (30*@rem);
+      width: (30*@rem);
+      text-align: center;
+      font-size: (24*@rem);
+      margin-right: (8*@rem);
+    }
+
+    > .close {
+      line-height: (24*@rem);
+      height: (24*@rem);
+      width: (24*@rem);
+      text-align: center;
+      cursor: pointer;
+      position: absolute;
+      top: (8*@rem);
+      right: (5*@rem);
+      z-index: 10;
+      opacity: 0;
+      transition: @animation-speed-fast @animation-type;
+      transition-property: opacity, background;
+
+      &:hover {
+        background-color: rgba(0,0,0,.2);
+      }
+    }
+
+    &:hover {
+      > .close {
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      position: relative;
+      z-index: 10;
+      font-weight: normal;
+      background-color: rgba(255,255,255,.1);
+      .shadow-1;
+    }
+  }
+}
+
+.app-exts-apps {
+  top: (40*@rem);
+}
+
+.app-exts-app {
+  background-color: @color-back;
+  color: @color-fore;
+}
+
+.app-exts-app-home {
+  background-color: rgba(255,255,255,.1);
+  color: @color-white;
+}

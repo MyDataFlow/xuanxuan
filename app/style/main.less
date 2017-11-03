@@ -16,8 +16,11 @@
   }
 }
 
+@app-navbar-width: (50*@rem);
+
 .app-navbar {
   z-index: 1040;
+  width: @app-navbar-width;
 
   .nav-item {
     > .badge {
@@ -31,6 +34,10 @@
       top: (55*@rem);
     }
   }
+}
+
+.app-main-container {
+  left: @app-navbar-width;
 }
 
 .app-usermenu {

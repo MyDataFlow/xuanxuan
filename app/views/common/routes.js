@@ -18,5 +18,15 @@ export default {
             __: '/chats/groups',
             id: (id) => (`/chats/groups/${id}`)
         }
-    }
+    },
+    exts: {
+        _: '/exts',
+        app: {
+            __: '/exts/app/:id',
+            id: (id) => (`/exts/app/${id}`)
+        }
+    },
+    apps: {
+        __: '/:app/:filterType?/:id?',
+    },
 };

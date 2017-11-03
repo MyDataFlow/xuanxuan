@@ -1,3 +1,9 @@
+@app-chat-menu-width: (200*@rem);
+
+.app-chats-menu {
+  width: @app-chat-menu-width;
+}
+
 .app-chats-menu-header {
   z-index: 1040;
   padding: @space-sm;
@@ -56,6 +62,10 @@
       }
     }
   }
+}
+
+.app-chats-cache {
+  left: @app-chat-menu-width;
 }
 
 .app-chat-header {
