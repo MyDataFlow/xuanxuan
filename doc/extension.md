@@ -33,7 +33,7 @@
         //   * webView：完整的网页视图
         "appType": "insideView",
 
-        // 当 appType 为 webView 时加载的页面地址，可以包含以下两种格式的地址：
+        // 当 appType 为 webView 时加载的页面地址，可以包含以下格式的地址：
         //   * 使用 http:// 或 https:// 协议开头的网站页面地址，例如 http://zui.sexy/m
         //   * 使用相对扩展包目录的相对地址，通常指向一个 html 文件，例如 lib/page/index.html
         "webViewUrl": "http://zui.sexy/m",
@@ -50,8 +50,7 @@
         // 扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff
         "appBackColor": "#fff",
 
-        // 扩展类型 plugin 或 app - 应用主要入口脚本文件位置，可以包含以下两种格式的地址：
-        //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/lib/js/zui.js
+        // 扩展类型 plugin 或 app - 应用主要入口脚本文件位置，可以包含以下格式的地址：
         //   * 使用相对扩展包目录的相对地址，例如 lib/index.js
         "main": "lib/index.js",
 
@@ -73,7 +72,33 @@
                 //   * override 替代默认样式
                 "inject": "override",
             }
-        ]
+        ],
+
+        // 扩展配置
+        "configurations": [
+            {
+                // 配置项名称
+                "name": "cfg1", 
+
+                // 配置项显示名称
+                "displayName": "配置项一",
+
+                // 配置项描述
+                "description": "配置项一的说明",
+
+                // 配置项默认值
+                "defaultValue": "默认值",
+
+                // 配置项值类型，可选值包括
+                "valueType": "string",
+
+                // 用于验证配置值是否合法的正则表达式
+                "matchReg": "[a-zA-Z0-9]+", 
+            }
+        ],
+
+        // 是否在使用的时候才加载主模块
+        "lazy": true
     },
 
     // 扩展的版本
