@@ -20,7 +20,7 @@ const hexToRgb = hex => {
 
         const hexChange = [];
         for (let i = 1; i < 7; i += 2) {
-            hexChange.push(Number.parseInt(`0x${hex.slice(i, i + 2)}`, 10));
+            hexChange.push(Number.parseInt(`0x${hex.slice(i, i + 2)}`, 16));
         }
         return {
             r: hexChange[0],
@@ -290,7 +290,7 @@ export default class Color {
     }
 
     darken(amount) {
-        const hsl = this.hsl();
+        const hsl = this.hsl;
 
         hsl.l -= amount / 100;
         hsl.l = clamp(hsl.l, 1);
