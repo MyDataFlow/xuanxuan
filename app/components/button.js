@@ -24,7 +24,8 @@ export default class Button extends Component {
         label: null,
         className: null,
         style: null,
-        children: null
+        children: null,
+        type: 'button'
     }
 
     /**
@@ -40,7 +41,8 @@ export default class Button extends Component {
         label: PropTypes.any,
         className: PropTypes.string,
         style: PropTypes.object,
-        children: PropTypes.any
+        children: PropTypes.any,
+        type: PropTypes.string.isRequired
     }
 
     /**
@@ -57,6 +59,7 @@ export default class Button extends Component {
             className,
             children,
             style,
+            type,
             ...other
         } = this.props;
 
@@ -78,6 +81,9 @@ export default class Button extends Component {
 
         const buttonStyle = Object.assign(skin ? Skin.style(skin) : {}, style);
 
-        return <button {...other} type="button" className={HTML.classes('btn', className)} style={buttonStyle}>{iconView}{labelView}{children}</button>;
+        if (type === 'a') {
+            return <a {...other} className={HTML.classes('btn', className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</a>;
+        }
+        return <button {...other} type={type} className={HTML.classes('btn', className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</button>;
     }
 }

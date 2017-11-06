@@ -41,7 +41,8 @@ export default class Avatar extends Component {
         imageClassName: null,
         iconClassName: null,
         style: null,
-        children: null
+        children: null,
+        auto: null,
     }
 
     /**
@@ -52,9 +53,10 @@ export default class Avatar extends Component {
      * @return {Object}
      */
     static propTypes = {
+        auto: PropTypes.any,
         skin: PropTypes.any,
-        image: PropTypes.string,
-        icon: PropTypes.string,
+        image: PropTypes.any,
+        icon: PropTypes.any,
         label: PropTypes.any,
         size: PropTypes.number,
         iconSize: PropTypes.number,
@@ -73,6 +75,7 @@ export default class Avatar extends Component {
      */
     render() {
         let {
+            auto,
             skin,
             image,
             icon,
@@ -97,10 +100,49 @@ export default class Avatar extends Component {
             }
         }
 
+        if (auto) {
+            if (typeof auto === 'string') {
+                if (auto.startsWith('mdi-') || auto.startsWith('icon-')) {
+                    icon = auto;
+                } else if (auto.length === 1) {
+                    label = auto;
+                } else {
+                    image = auto;
+                }
+            } else {
+                icon = auto;
+            }
+        }
+
+        let imageView = null;
+        if (image) {
+            if (React.isValidElement(image)) {
+                imageView = image;
+            } else {
+                imageView = <img alt={image} src={image} className={imageClassName} />;
+            }
+        }
+        let iconView = null;
+        if (!image && icon) {
+            if (React.isValidElement(icon)) {
+                iconView = icon;
+            } else {
+                iconView = <Icon className={iconClassName} name={icon} size={iconSize} />;
+            }
+        }
+        let labelView = null;
+        if (!image && !icon && label) {
+            if (React.isValidElement(label)) {
+                labelView = label;
+            } else {
+                labelView = <span className="text">{label}</span>;
+            }
+        }
+
         return (<div className={HTML.classes('avatar', className)} {...other} style={style}>
-            {image && <img alt={image} src={image} className={imageClassName} />}
-            {!image && icon && <Icon className={iconClassName} name={icon} size={iconSize} />}
-            {!image && !icon && label}
+            {imageView}
+            {iconView}
+            {labelView}
             {children}
         </div>);
     }

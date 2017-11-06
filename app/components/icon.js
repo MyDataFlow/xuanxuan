@@ -75,6 +75,14 @@ export default class MDIcon extends Component {
             style.height = style.fontSize;
             style.width = style.fontSize;
         }
-        return <i style={style} {...other} className={HTML.classes(`icon mdi mdi-${name}`, className)}>{children}</i>;
+        let iconName = '';
+        if (name.startsWith('mdi-')) {
+            iconName = `mdi ${name}`;
+        } else if (name.startsWith('icon-')) {
+            iconName = name;
+        } else {
+            iconName = `mdi mdi-${name}`;
+        }
+        return <i style={style} {...other} className={HTML.classes(`icon ${iconName}`, className)}>{children}</i>;
     }
 }
