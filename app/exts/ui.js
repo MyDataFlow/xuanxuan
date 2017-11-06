@@ -44,6 +44,9 @@ const openApp = (name, embedType = 'tab') => {
             };
             openedApps.push(theOpenedApp);
         } else {
+            if (DEBUG) {
+                console.color('Extension', 'greenBg', name, 'redPale', `Cannot open app '${name}', because cannot find it.`);
+            }
             return false;
         }
     }
@@ -53,6 +56,11 @@ const openApp = (name, embedType = 'tab') => {
         window.location.hash = appRoutePaht;
     }
     currentOpenedApp = theOpenedApp;
+    if (DEBUG) {
+        console.collapse('Extension', 'greenBg', name, 'greenPale', 'Opened', 'green');
+        console.trace('app', theOpenedApp);
+        console.groupEnd();
+    }
     return true;
 };
 

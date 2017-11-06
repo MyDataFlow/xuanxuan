@@ -2,12 +2,26 @@ import StringHelper from '../utils/string-helper';
 import loadExtensionModule from './extension-module-loader';
 import ExtensionConfig from './extension-config';
 import timeSequence from '../utils/time-sequence';
+import SearchScore from '../utils/search-score';
+import PinYin from '../utils/pinyin';
 
 export const TYPES = {
     app: 'app',
     theme: 'theme',
     plugin: 'plugin',
 };
+
+const MATCH_SCORE_MAP = [
+    {name: 'name', equal: 100, include: 50},
+    {name: 'displayName', equal: 100, include: 50},
+    {name: 'pinyinNames', equal: 50, include: 25, array: true},
+    {name: 'description', include: 25},
+    {name: 'keywords', equal: 50, include: 10, array: true},
+    {name: 'type', equal: 100, prefix: ':'},
+    {name: 'author', equal: 100, prefix: '@'},
+    {name: 'publisher', equal: 100, prefix: '@'},
+    {name: 'homepage', include: 25},
+];
 
 export default class Extension {
     static TYPES = TYPES;
@@ -59,6 +73,13 @@ export default class Extension {
 
     get hasError() {
         return this._errors && this._errors.length;
+    }
+
+    get pinyinNames() {
+        if (!this._pinyinName) {
+            this._pinyinName = PinYin(this.displayName, 'default', false);
+        }
+        return this._pinyinName;
     }
 
     get config() {
@@ -144,5 +165,9 @@ export default class Extension {
 
     get module() {
         return this._module || this.loadModule();
+    }
+
+    getMatchScore(keys) {
+        return SearchScore.matchScore(MATCH_SCORE_MAP, this, keys);
     }
 }

@@ -16,10 +16,10 @@ export default class AppExtension extends Extension {
         this._appType = APP_TYPES[pkg.appType];
         if (!this._appType) {
             this._appType = pkg.webViewUrl ? APP_TYPES.webView : pkg.webViewUrl.insideView;
-            this.addError('appType', `AppType (${this._pkg.appType}) must be one of '${Object.keys(APP_TYPES).join(',')}', set to ‘${this._appType}’ temporarily.`);
+            this.addError('appType', `AppType (${pkg.appType}) must be one of '${Object.keys(APP_TYPES).join(',')}', set to ‘${this._appType}’ temporarily.`);
         }
 
-        if (this._appType === APP_TYPES.webView && this._pkg.webViewUrl) {
+        if (this._appType === APP_TYPES.webView && !pkg.webViewUrl) {
             this.addError('webViewUrl', 'The webViewUrl attribute must be set when appType is \'webView\'.');
         }
     }

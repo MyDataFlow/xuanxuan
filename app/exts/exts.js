@@ -36,18 +36,13 @@ const searchApps = keys => {
     keys = keys.trim().toLowerCase().split(' ');
     const result = [];
     apps.forEach(app => {
-        let isMatch = true;
-        for (const key of keys) {
-            if (!app.name.includes(key) && !app.description.includes(key)) {
-                isMatch = false;
-                break;
-            }
-        }
-        if (isMatch) {
-            result.push(app);
+        const score = app.getMatchScore(keys);
+        if (score) {
+            result.push({score, app});
         }
     });
-    return result;
+    result.sort((x, y) => y.score - x.score);
+    return result.map(x => x.app);
 };
 
 export default {
