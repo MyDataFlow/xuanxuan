@@ -28,6 +28,24 @@ const getApp = name => (getExt(name, 'app'));
 const getPlugin = name => (getExt(name, 'plugin'));
 const getTheme = name => (getExt(name, 'theme'));
 
+const searchApps = keys => {
+    keys = keys.trim().toLowerCase().split(' ');
+    const result = [];
+    apps.forEach(app => {
+        let isMatch = true;
+        for (const key of keys) {
+            if (!app.name.includes(key) && !app.description.includes(key)) {
+                isMatch = false;
+                break;
+            }
+        }
+        if (isMatch) {
+            result.push(app);
+        }
+    });
+    return result;
+};
+
 export default {
     get exts() {
         return exts;
@@ -49,4 +67,6 @@ export default {
     getApp,
     getPlugin,
     getTheme,
+
+    searchApps,
 };

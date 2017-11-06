@@ -1,7 +1,13 @@
 import all from './exts';
 import ui from './ui';
 
-export default {
+const exts = {
     all,
     ui,
 };
+
+if (DEBUG) {
+    global.$.exts = exts;
+}
+
+export default exts;

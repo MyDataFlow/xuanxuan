@@ -217,3 +217,29 @@
 .app-user-change-pwd-dialog {
   width: (400*@rem);
 }
+
+.app-avatar {
+  padding: (10*@rem) (15*@rem);
+
+  .avatar {
+    width: (50*@rem);
+    height: (50*@rem);
+
+    > .icon {
+      font-size: (36*@rem);
+    }
+
+    > .text {
+      font-size: (30*@rem);
+      font-weight: bold;
+      line-height: 1;
+    }
+  }
+
+  > .text {
+    text-align: center;
+    .text-ellipsis;
+    margin: (5*@rem) (-10*@rem) 0;
+    .small;
+  }
+}

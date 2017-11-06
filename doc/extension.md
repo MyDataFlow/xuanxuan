@@ -40,12 +40,15 @@
 
         // 扩展类型 app - 应用图标，可以使用如下值
         //   * 使用 Material Design Icons (https://materialdesignicons.com/)，使用 mdi- 前缀，例如 mdi-star
-        //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/lib/js/zui.js
+        //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/img/icon.png
         //   * 使用相对扩展包目录的相对地址，例如 img/icon.png
         "appIcon": "mdi-star",
 
         // 扩展类型 app - 应用配色，可能被用到图标上
         "appAccentColor": "#aa00ff",
+
+        // 扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff
+        "appBackColor": "#fff",
 
         // 扩展类型 plugin 或 app - 应用主要入口脚本文件位置，可以包含以下两种格式的地址：
         //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/lib/js/zui.js
@@ -158,6 +161,10 @@
     <tr>
       <td><code>onReceiveChatMessage(message, chat, user)</code></td>
       <td>当用户接收到聊天消息时调用</td>
+    </tr>
+    <tr>
+      <td><code>MainView</code></td>
+      <td>当作为内嵌应用时的 React 实现的界面主组件</td>
     </tr>
   </tbody>
 </table>

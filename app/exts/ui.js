@@ -1,6 +1,6 @@
 import {detaultApp, getApp} from './exts';
 
-const defaultOpenedApp = {
+const defaultApp = {
     name: detaultApp.name,
     time: new Date().getTime(),
     app: detaultApp,
@@ -8,16 +8,28 @@ const defaultOpenedApp = {
     openTime: 0,
     embed: {tab: true}
 };
+
 const openedApps = [
-    defaultOpenedApp,
+    defaultApp,
 ];
+
+const isDefaultApp = name => {
+    return name === defaultApp.name;
+};
+
 const isAppOpen = name => {
     return openedApps.find(x => x.name === name);
 };
+
 const getOpenedAppIndex = name => {
     return openedApps.findIndex(x => x.name === name);
 };
+
 let currentOpenedApp = null;
+const isCurrentOpenedApp = name => {
+    return currentOpenedApp && currentOpenedApp.name === name;
+};
+
 const openApp = (name, embedType = 'tab') => {
     let theOpenedApp = isAppOpen(name);
     if (!theOpenedApp) {
@@ -30,6 +42,7 @@ const openApp = (name, embedType = 'tab') => {
                 openTime: 0,
                 embedType,
             };
+            openedApps.push(theOpenedApp);
         } else {
             return false;
         }
@@ -42,6 +55,7 @@ const openApp = (name, embedType = 'tab') => {
     currentOpenedApp = theOpenedApp;
     return true;
 };
+
 const openNextApp = () => {
     let theMaxOpenTime = 0;
     let theMaxOpenedName = null;
@@ -51,19 +65,25 @@ const openNextApp = () => {
             theMaxOpenedName = theOpenedApp.name;
         }
     });
-    openApp(theMaxOpenedName || defaultOpenedApp.name);
+    openApp(theMaxOpenedName || defaultApp.name);
 };
+
 const closeApp = (name, openNext = true) => {
     const theOpenedAppIndex = getOpenedAppIndex(name);
     if (theOpenedAppIndex > -1) {
         openedApps.splice(theOpenedAppIndex, 1);
-        if (openNext) {
-            openNextApp();
+        if (isCurrentOpenedApp(name)) {
+            currentOpenedApp = null;
+            if (openNext) {
+                openNextApp();
+                return true;
+            }
         }
-    } else {
-        return false;
+        return 'refresh';
     }
+    return false;
 };
+
 const closeAllApp = () => {
     openedApps.map(x => x.name).forEach(theOpenedApp => {
         if (!theOpenedApp.fixed) {
@@ -72,15 +92,22 @@ const closeAllApp = () => {
     });
 };
 
+
 export default {
     get openedApps() {
         return openedApps;
     },
 
     get currentOpenedApp() {
-        return currentOpenedApp;
+        return currentOpenedApp || defaultApp;
     },
 
+    get defaultApp() {
+        return defaultApp;
+    },
+
+    isDefaultApp,
+    isCurrentOpenedApp,
     isAppOpen,
     openApp,
     closeApp,

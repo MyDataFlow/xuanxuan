@@ -1,20 +1,37 @@
-.app-exts {
-  background-color: @color-primary;
-  background-image: linear-gradient(45deg, #3949ab 0%, #3f51b5 50%, #673ab7 100%);
-}
 
 .app-exts-nav {
+  background-color: @color-pale;
+  box-shadow: inset rgba(0, 0, 0, 0.1) 0 (-1*@rem) (1*@rem);
+  overflow: hidden;
+
   > a {
     min-width: (100*@rem);
-    padding-right: (30*@rem);
+    max-width: (160*@rem);
+    padding-right: (32*@rem);
+    border-right: (@rem) solid rgba(0,0,0,.2);
 
-    > .icon {
-      line-height: (30*@rem);
-      height: (30*@rem);
-      width: (30*@rem);
-      text-align: center;
-      font-size: (24*@rem);
+    &.ext-nav-item-home {
+      width: (100*@rem);
+      padding-right: (10*@rem);
+    }
+
+    > .text {
+      .text-ellipsis;
+      display: block;
+    }
+
+    > .avatar {
       margin-right: (8*@rem);
+      width: (30*@rem);
+      color: @color-gray-dark;
+
+      > .icon {
+        font-size: (24*@rem);
+      }
+
+      > .text {
+        font-size: (20*@rem);
+      }
     }
 
     > .close {
@@ -25,7 +42,7 @@
       cursor: pointer;
       position: absolute;
       top: (8*@rem);
-      right: (5*@rem);
+      right: (4*@rem);
       z-index: 10;
       opacity: 0;
       transition: @animation-speed-fast @animation-type;
@@ -46,14 +63,86 @@
       position: relative;
       z-index: 10;
       font-weight: normal;
-      background-color: rgba(255,255,255,.1);
+      background-color: @color-white;
       .shadow-1;
+    }
+  }
+
+  > .app-exts-nav-arrows {
+    position: absolute;
+    right: (-48*@rem);
+    top: 0;
+    z-index: 10;
+    width: (48*@rem);
+    transition: @animation-speed-fast @animation-type right;
+    box-shadow: inset rgba(0, 0, 0, 0.1) 0 (-1*@rem) (1*@rem);
+    border-left: (@rem) solid rgba(0,0,0,.2);
+
+    > a {
+      padding: 0;
+      width: (24*@rem);
+      min-width: (24*@rem);
+    }
+  }
+
+  &.app-exts-nav-scrolled {
+    margin-right: (48*@rem);
+
+    > .app-exts-nav-arrows {
+      right: 0;
+    }
+  }
+}
+.app-exts-nav-compact {
+  > a {
+    padding: 0 (10*@rem);
+    min-width: (50*@rem);
+    max-width: (50*@rem);
+    transition: @animation-speed-fast @animation-type;
+    transition-property: padding, max-width;
+
+    > .avatar {
+      margin-right: 0;
+    }
+
+    > .close {
+      display: none;
+    }
+
+    > .text {
+      max-width: 0;
+      opacity: 0;
+      transition: @animation-speed-fast @animation-type;
+      transition-property: opacity, width;
+    }
+
+    &.active {
+      padding: 0 (32*@rem) 0 (10*@rem);
+      min-width: (50*@rem);
+      max-width: (190*@rem);
+
+      > .avatar {
+        margin-right: (8*@rem);
+      }
+
+      > .close {
+        display: block;
+      }
+
+      > .text {
+        max-width: (100*@rem);
+        opacity: 1;
+      }
+
+      &.ext-nav-item-home {
+        padding-right: (10*@rem);
+      }
     }
   }
 }
 
 .app-exts-apps {
-  top: (40*@rem);
+  position: relative;
 }
 
 .app-exts-app {
@@ -61,7 +150,33 @@
   color: @color-fore;
 }
 
-.app-exts-app-home {
-  background-color: rgba(255,255,255,.1);
-  color: @color-white;
+.app-exts-dark {
+  background-color: @color-primary;
+  background-image: linear-gradient(45deg, #3949ab 0%, #3f51b5 50%, #673ab7 100%);
+
+  .app-exts-app-home {
+    background-color: rgba(255,255,255,.1);
+    color: @color-white;
+  }
+
+  .app-exts-nav {
+    color: @color-primary;
+    color: @color-white;
+
+    > a.active {
+      color: @color-fore;
+
+      &.ext-nav-item-home {
+        background-color: rgba(255,255,255,.1);
+        color: #fff;
+      }
+    }
+  }
+}
+
+.app-ext-home-header {
+  .search {
+    width: (250*@rem);
+    margin: 0 auto;
+  }
 }
