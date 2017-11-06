@@ -1,7 +1,11 @@
 import buildIns from './build-in';
+import {createExtension} from './extension';
 
 const exts = [];
-exts.push(...buildIns);
+
+buildIns.forEach(buildIn => {
+    exts.push(createExtension(buildIn));
+});
 
 // TODO: Load other exts here
 

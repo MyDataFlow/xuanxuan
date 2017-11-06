@@ -65,9 +65,20 @@ const isNotEmpty = (s) => {
     return s !== undefined && s !== null && s !== '';
 };
 
+/**
+ * Return default string if the first string is empty
+ *
+ * @param {String} str
+ * @param {String} thenStr
+ */
+const ifEmptyThen = (str, thenStr) => {
+    return isEmpty(str) ? thenStr : str;
+};
+
 export default {
     format,
     isEmpty,
     isNotEmpty,
     formatBytes,
+    ifEmptyThen,
 };
