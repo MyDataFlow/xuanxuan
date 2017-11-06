@@ -16,6 +16,7 @@ const DEFAULT_OPTIONS = {
     paleLight: 0.92,
     saturation: 0.7,
     lightness: 0.6,
+    longShadow: false,
     // name: '',
 };
 
@@ -26,6 +27,19 @@ const getCodeFromString = (str) => {
     return str.split('')
         .map(char => char.charCodeAt(0))
         .reduce((current, previous) => previous + current);
+};
+
+const longShadow = (longShadow, color, returnShadow = false, darkenAmount = 8) => {
+    if (typeof longShadow !== 'number') {
+        longShadow = 40;
+    }
+    const shadowColor = Color.create(color).darken(darkenAmount).css;
+    const textShadowArr = [];
+    for (let i = 1; i <= longShadow; ++i) {
+        textShadowArr.push(`${shadowColor} ${i}px ${i}px`);
+    }
+    const textShadow = textShadowArr.join(',');
+    return returnShadow ? textShadow : {textShadow};
 };
 
 const style = (skinCode, options = {}) => {
@@ -54,6 +68,7 @@ const style = (skinCode, options = {}) => {
         saturation,
         lightness,
         name,
+        longShadow: thisLongShadow,
         ...other
     } = options;
 
@@ -127,6 +142,9 @@ const style = (skinCode, options = {}) => {
     if (backColor) style.backgroundColor = backColor.css || backColor;
     if (borderColor) style.borderColor = borderColor.css || borderColor;
     if (fontColor) style.color = fontColor.css || fontColor;
+    if (thisLongShadow) {
+        style.textShadow = longShadow(thisLongShadow, backColor, true);
+    }
     return style;
 };
 
@@ -137,4 +155,5 @@ const text = (skinCode, options) => {
 export default {
     style,
     text,
+    longShadow,
 };
