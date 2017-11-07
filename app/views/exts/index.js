@@ -9,6 +9,7 @@ import Messager from '../../components/messager';
 import HomeView from './home';
 import ExtensionsView from './extensions';
 import Exts from '../../exts';
+import WebApp from './web-app';
 
 const buildInView = {
     home: HomeView,
@@ -30,7 +31,8 @@ export default class ExtsIndexView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            navScrolled: false
+            navScrolled: false,
+            loading: {}
         };
     }
 
@@ -83,6 +85,12 @@ export default class ExtsIndexView extends Component {
         this.appsNav.scrollLeft += (direction === 'left' ? -1 : 1) * Math.min(150, Math.floor(this.appsNav.clientWidth / 2));
     }
 
+    handleAppLoadingChange(openApp, isLoading) {
+        const {loading} = this.state;
+        loading[openApp.id] = isLoading;
+        this.setState({loading});
+    }
+
     render() {
         const {
             hidden,
@@ -120,6 +128,7 @@ export default class ExtsIndexView extends Component {
                             title={openedApp.app.description ? `${openedApp.app.displayName} - ${openedApp.app.description}` : openedApp.app.displayName}
                         >
                             <Avatar style={navStyle} auto={openedApp.app.appIcon} className="rounded" />
+                            {this.state.loading[openedApp.id] && <Avatar icon="loading spin" className="circle loading-icon" />}
                             <span className="text">{openedApp.app.displayName}</span>
                             {!openedApp.isFixed && <div title={Lang.string('common.close')} className="close rounded"><Icon name="close" onClick={this.handleAppCloseBtnClick.bind(this, openedApp)} /></div>}
                         </NavLink>);
@@ -136,9 +145,14 @@ export default class ExtsIndexView extends Component {
                         let appView = null;
                         if (openedApp.app.MainView) {
                             appView = <openedApp.app.MainView />;
-                        } else if (openedApp.app.buildIn) {
+                        } else if (openedApp.app.buildIn && buildInView[openedApp.id]) {
                             const TheAppView = buildInView[openedApp.id];
                             appView = TheAppView && <TheAppView />;
+                        } else {
+                            const webViewUrl = openedApp.app.webViewUrl;
+                            if (webViewUrl) {
+                                appView = <WebApp onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} app={openedApp.app} />;
+                            }
                         }
                         if (!appView) {
                             appView = <div className="box">{Lang.string('exts.appNoView')}({openedApp.id})</div>;

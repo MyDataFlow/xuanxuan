@@ -34,6 +34,15 @@
       }
     }
 
+    > .loading-icon {
+      position: absolute;
+      top: (5*@rem);
+      left: (10*@rem);
+      background-color: rgba(255,255,255,.7);
+      color: @color-secondary;
+      text-shadow: 0 0 (5*@rem) #fff;
+    }
+
     > .close {
       line-height: (24*@rem);
       height: (24*@rem);
@@ -174,15 +183,17 @@
   }
 }
 
+.app-ext-extensions-header,
 .app-ext-home-header {
   .search {
     width: (250*@rem);
     margin: 0 auto;
   }
 
+  > .nav,
   > .title,
   > .toolbar {
-    width: (150*@rem);
+    width: (200*@rem);
   }
 
   > .toolbar {
