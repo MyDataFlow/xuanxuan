@@ -27,6 +27,6 @@ export default {
         }
     },
     apps: {
-        __: '/:app/:filterType?/:id?/:appFilter?/:actionId?',
+        __: '/:app/:filterType?/:id?/:params?',
     },
 };

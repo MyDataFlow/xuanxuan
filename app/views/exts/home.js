@@ -43,7 +43,7 @@ export default class ExitsHomeView extends Component {
                 </div>
                 <nav className="toolbar flex-none">
                     <div className="nav-item hint--bottom has-padding-sm" data-hint={Lang.string('ext.home.manageInExtensionsApp')}>
-                        <Button type="a" href={`#${ROUTES.exts.app.id('extensions?type=apps')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
+                        <Button type="a" href={`#${ROUTES.exts.app.id('extensions/type=apps')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
                     </div>
                     <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.addMoreApps')}>
                         <Button className="iconbutton rounded" icon="plus-box text-gray icon-2x" />

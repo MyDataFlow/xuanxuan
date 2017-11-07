@@ -138,7 +138,7 @@ export default class OpenedApp {
             let route = `/exts/app/${this.id}`;
             if (this.params) {
                 const params = Object.keys(this.params).map(x => `${x}=${this.params[x]}`).join('&');
-                route += `?${params}`;
+                route += `/${params}`;
             }
             this._hashRoute = route;
         }
