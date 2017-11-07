@@ -17,11 +17,14 @@ const classes = (...args) => (
 
 const rem = (value, rootValue = 20) => (`${value / rootValue}rem`);
 
-const getSearchParam = key => {
+const getSearchParam = (key, search = null) => {
     const params = {};
-    const search = window.location.search;
+    search = search === null ? window.location.search : search;
     if (search.length > 1) {
-        const searchArr = search.substr(1).split('&');
+        if (search[0] === '?') {
+            search = search.substr(1);
+        }
+        const searchArr = search.split('&');
         for (const pair of searchArr) {
             const pairValues = pair.split('=', 2);
             if (pairValues.length > 1) {
