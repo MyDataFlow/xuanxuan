@@ -1,47 +1,43 @@
-import {detaultApp, getApp} from './exts';
+import {defaultApp, getApp} from './exts';
+import OpenedApp from './opened-app';
 
-const defaultApp = {
-    name: detaultApp.name,
-    time: new Date().getTime(),
-    app: detaultApp,
-    fixed: true,
-    openTime: 0,
-    embed: {tab: true}
-};
+const defaultOpenedApp = new OpenedApp(defaultApp);
 
 const openedApps = [
-    defaultApp,
+    defaultOpenedApp,
 ];
 
-const isDefaultApp = name => {
-    return name === defaultApp.name;
+const isDefaultApp = id => {
+    return id === defaultOpenedApp.id;
 };
 
-const isAppOpen = name => {
-    return openedApps.find(x => x.name === name);
+const isAppOpen = id => {
+    return openedApps.find(x => x.id === id);
 };
 
-const getOpenedAppIndex = name => {
-    return openedApps.findIndex(x => x.name === name);
+const getOpenedAppIndex = id => {
+    return openedApps.findIndex(x => x.id === id);
 };
 
 let currentOpenedApp = null;
-const isCurrentOpenedApp = name => {
-    return currentOpenedApp && currentOpenedApp.name === name;
+const isCurrentOpenedApp = id => {
+    return currentOpenedApp && currentOpenedApp.id === id;
 };
 
-const openApp = (name, embedType = 'tab') => {
-    let theOpenedApp = isAppOpen(name);
+const openApp = (name, pageName = null, params = null) => {
+    if (name instanceof OpenedApp) {
+        const app = name;
+        name = app.appName;
+        params = pageName;
+        pageName = app.pageName;
+    }
+
+    const id = OpenedApp.createId(name, pageName);
+    let theOpenedApp = isAppOpen(id);
     if (!theOpenedApp) {
         const theApp = getApp(name);
         if (theApp) {
-            theOpenedApp = {
-                name,
-                app: theApp,
-                time: new Date().getTime(),
-                openTime: 0,
-                embedType,
-            };
+            theOpenedApp = new OpenedApp(theApp, pageName, params);
             openedApps.push(theOpenedApp);
         } else {
             if (DEBUG) {
@@ -50,37 +46,48 @@ const openApp = (name, embedType = 'tab') => {
             return false;
         }
     }
-    theOpenedApp.openTime = new Date().getTime();
-    const appRoutePaht = `#/exts/app/${theOpenedApp.name}`;
+    theOpenedApp.updateOpenTime();
+    if (params !== null) theOpenedApp.params = params;
+    const appRoutePaht = theOpenedApp.hashRoute;
     if (!window.location.hash.startsWith(appRoutePaht)) {
         window.location.hash = appRoutePaht;
     }
     currentOpenedApp = theOpenedApp;
     if (DEBUG) {
-        console.collapse('Extension', 'greenBg', name, 'greenPale', 'Opened', 'green');
+        console.collapse('Extension', 'greenBg', id, 'greenPale', 'Opened', 'green');
         console.trace('app', theOpenedApp);
         console.groupEnd();
     }
     return true;
 };
 
-const openNextApp = () => {
-    let theMaxOpenTime = 0;
-    let theMaxOpenedName = null;
-    openedApps.forEach(theOpenedApp => {
-        if (theOpenedApp.openTime > theMaxOpenTime) {
-            theMaxOpenTime = theOpenedApp.openTime;
-            theMaxOpenedName = theOpenedApp.name;
-        }
-    });
-    openApp(theMaxOpenedName || defaultApp.name);
+const openAppById = (id, params = null) => {
+    let name = id;
+    let pageName = null;
+    const indexOfAt = id.indexOf('@');
+    if (indexOfAt > 0) {
+        name = id.substr(0, indexOfAt);
+        pageName = id.substr(indexOfAt + 1);
+    }
+    return openApp(name, pageName, params);
 };
 
-const closeApp = (name, openNext = true) => {
-    const theOpenedAppIndex = getOpenedAppIndex(name);
+const openNextApp = () => {
+    let theMaxOpenTimeApp = null;
+    openedApps.forEach(theOpenedApp => {
+        if (!theMaxOpenTimeApp || theOpenedApp.openTime > theMaxOpenTimeApp.openTime) {
+            theMaxOpenTimeApp = theOpenedApp;
+        }
+    });
+    theMaxOpenTimeApp = theMaxOpenTimeApp || defaultOpenedApp;
+    openApp(theMaxOpenTimeApp);
+};
+
+const closeApp = (id, openNext = true) => {
+    const theOpenedAppIndex = getOpenedAppIndex(id);
     if (theOpenedAppIndex > -1) {
         openedApps.splice(theOpenedAppIndex, 1);
-        if (isCurrentOpenedApp(name)) {
+        if (isCurrentOpenedApp(id)) {
             currentOpenedApp = null;
             if (openNext) {
                 openNextApp();
@@ -100,24 +107,24 @@ const closeAllApp = () => {
     });
 };
 
-
 export default {
     get openedApps() {
         return openedApps;
     },
 
     get currentOpenedApp() {
-        return currentOpenedApp || defaultApp;
+        return currentOpenedApp || defaultOpenedApp;
     },
 
-    get defaultApp() {
-        return defaultApp;
+    get defaultOpenedApp() {
+        return defaultOpenedApp;
     },
 
     isDefaultApp,
     isCurrentOpenedApp,
     isAppOpen,
     openApp,
+    openAppById,
     closeApp,
     closeAllApp,
 };

@@ -110,19 +110,18 @@ export default class ExtsIndexView extends Component {
             >
                 {
                     openedApps.map(openedApp => {
-                        const isCurrentApp = Exts.ui.isCurrentOpenedApp(openedApp.name);
-                        const navId = `ext-nav-item-${openedApp.name}`;
+                        const isCurrentApp = Exts.ui.isCurrentOpenedApp(openedApp.id);
                         const navStyle = isCurrentApp ? {color: openedApp.app.appAccentColor} : null;
                         return (<NavLink
-                            key={openedApp.name}
-                            to={ROUTES.exts.app.id(openedApp.name)}
-                            className={navId}
-                            id={navId}
+                            key={openedApp.id}
+                            to={openedApp.routePath}
+                            className={`ext-nav-item-${openedApp.appName}`}
+                            id={`ext-nav-item-${openedApp.name}`}
                             title={openedApp.app.description ? `${openedApp.app.displayName} - ${openedApp.app.description}` : openedApp.app.displayName}
                         >
                             <Avatar style={navStyle} auto={openedApp.app.appIcon} className="rounded" />
                             <span className="text">{openedApp.app.displayName}</span>
-                            {!openedApp.fixed && <div title={Lang.string('common.close')} className="close rounded"><Icon name="close" onClick={this.handleAppCloseBtnClick.bind(this, openedApp)} /></div>}
+                            {!openedApp.isFixed && <div title={Lang.string('common.close')} className="close rounded"><Icon name="close" onClick={this.handleAppCloseBtnClick.bind(this, openedApp)} /></div>}
                         </NavLink>);
                     })
                 }
@@ -138,15 +137,15 @@ export default class ExtsIndexView extends Component {
                         if (openedApp.app.MainView) {
                             appView = <openedApp.app.MainView />;
                         } else if (openedApp.app.buildIn) {
-                            const TheAppView = buildInView[openedApp.name];
+                            const TheAppView = buildInView[openedApp.id];
                             appView = TheAppView && <TheAppView />;
                         }
                         if (!appView) {
-                            appView = <div className="box">{Lang.string('exts.appNoView')}({openedApp.name})</div>;
+                            appView = <div className="box">{Lang.string('exts.appNoView')}({openedApp.id})</div>;
                         }
                         return (<div
-                            key={openedApp.name}
-                            className={HTML.classes(`app-exts-app app-exts-app-${openedApp.name} dock scroll-y`, {hidden: !Exts.ui.isCurrentOpenedApp(openedApp.name)})}
+                            key={openedApp.id}
+                            className={HTML.classes(`app-exts-app app-exts-app-${openedApp.id} dock scroll-y`, {hidden: !Exts.ui.isCurrentOpenedApp(openedApp.id)})}
                             style={{backgroundColor: openedApp.app.appBackColor}}
                         >{appView}</div>);
                     })

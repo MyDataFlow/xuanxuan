@@ -43,4 +43,18 @@ export default class AppExtension extends Extension {
         const theModule = this.module;
         return theModule && theModule.MainView;
     }
+
+    get buildIn() {
+        return this._pkg.buildIn;
+    }
+
+    get isDefault() {
+        const buildIn = this.buildIn;
+        return buildIn && buildIn.asDefault;
+    }
+
+    get isFixed() {
+        const buildIn = this.buildIn;
+        return buildIn && (buildIn.asDefault || buildIn.fixed);
+    }
 }

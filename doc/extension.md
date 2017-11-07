@@ -12,7 +12,7 @@
 
 ```json
 {
-    // 扩展对名称
+    // 扩展的名称，扩展名称只能包含字母、数字、短横线及下划线
     "name": "simple-extension", 
 
     // 扩展在界面上显示的名称
@@ -49,6 +49,25 @@
 
         // 扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff
         "appBackColor": "#fff",
+
+        // 扩展类型 app - 应用子界面，允许在独立的窗口或标签页中打开
+        "appPages": {
+
+            // pageName 为对应的子界面名称，名称只能包含字母、数字、短横线及下划线
+            "pageName": {
+
+                // 子界面图标，图标可取值与 appIcon 相同
+                "icon": "mdi-flag",
+
+                // 子界面配色
+                "accentColor": "#aa00ff",
+
+                // 子界面背景色
+                "backColor": "#fff",
+            },
+
+            // ... 更多子界面配置
+        },
 
         // 扩展类型 plugin 或 app - 应用主要入口脚本文件位置，可以包含以下格式的地址：
         //   * 使用相对扩展包目录的相对地址，例如 lib/index.js
@@ -112,8 +131,12 @@
 
     // 扩展要求的运行环境
     "engines": {
+
+        // 扩展对喧喧版本的支持
         "xuanxuan": "^1.3.0",
-        "type": "electron,nwjs",
+
+        // 扩展所支持的平台
+        "platform": "electron,nwjs",
     },
 
     // 扩展版权声明

@@ -27,7 +27,7 @@ const getExt = (name, type) => {
     }
 };
 
-const detaultApp = apps.find(x => x.buildIn && x.buildIn.asDefault) || exts.apps[0];
+const defaultApp = apps.find(x => x.buildIn && x.buildIn.asDefault) || exts.apps[0];
 const getApp = name => (getExt(name, 'app'));
 const getPlugin = name => (getExt(name, 'plugin'));
 const getTheme = name => (getExt(name, 'theme'));
@@ -58,8 +58,8 @@ export default {
     get plugins() {
         return plugins;
     },
-    get detaultApp() {
-        return detaultApp;
+    get defaultApp() {
+        return defaultApp;
     },
 
     getExt,

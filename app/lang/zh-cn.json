@@ -245,7 +245,7 @@
 
     "exts.home.label": "应用",
     "exts.home.desc": "浏览我的应用",
-    "exts.extensions.label": "扩展",
+    "exts.extensions.label": "扩展管理",
     "exts.extensions.desc": "管理我的扩展，包括应用、主题和插件",
     "exts.themes.label": "主题",
     "exts.themes.desc": "更换不一样的界面风格",

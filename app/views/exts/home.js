@@ -43,7 +43,7 @@ export default class ExitsHomeView extends Component {
                 </div>
                 <nav className="toolbar flex-none">
                     <div className="nav-item hint--bottom has-padding-sm" data-hint={Lang.string('ext.home.manageInExtensionsApp')}>
-                        <Button type="a" href={`#${ROUTES.exts.app.id('extensions/apps')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
+                        <Button type="a" href={`#${ROUTES.exts.app.id('extensions?type=apps')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
                     </div>
                     <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.addMoreApps')}>
                         <Button className="iconbutton rounded" icon="plus-box text-gray icon-2x" />
@@ -53,7 +53,7 @@ export default class ExitsHomeView extends Component {
             <div className="app-exts-apps row has-padding">
                 {
                     apps.map(app => {
-                        if ((app.buildIn && app.buildIn.fixed) || app.hidden) {
+                        if (app.isFixed || app.hidden) {
                             return null;
                         }
                         return <AppAvatar key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={{auto: app.appIcon, skin: {code: app.appAccentColor}, className: 'rounded shadow-1'}} label={app.displayName} />;

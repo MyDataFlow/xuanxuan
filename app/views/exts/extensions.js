@@ -19,7 +19,7 @@ export default class ExitsHomeView extends Component {
 
 
         return (<div className={HTML.classes('app-ext-extensions', className)}>
-            extensions
+
         </div>);
     }
 }
