@@ -20,10 +20,10 @@ export default class ExtensionListItem extends Component {
         } = this.props;
 
         return (<a className={HTML.classes('app-ext-list-item', className)} {...other}>
-            <Avatar className="rounded shadow-1" auto={extension.icon} skin={{code: extension.accentColor}} />
+            <Avatar className="rounded shadow-1 flex-none" auto={extension.icon} skin={{code: extension.accentColor}} />
             <div className="content">
                 <div className="title"><strong>{extension.displayName}</strong> &nbsp; <small className="text-gray">{extension.version}</small></div>
-                <div className="small">{extension.description}</div>
+                <div className="small text-ellipsis">{extension.description}</div>
                 <div className="text-gray small">{extension.author}</div>
             </div>
         </a>);
