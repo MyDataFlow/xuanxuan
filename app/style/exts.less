@@ -199,4 +199,48 @@
   > .toolbar {
     text-align: right;
   }
+
+  > .nav {
+    > a {
+      &.active {
+        color: @color-primary;
+      }
+    }
+  }
+}
+
+.app-exts-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  > .heading {
+    width: 100%;
+  }
+
+  .app-ext-list-item {
+    flex: 1;
+    min-width: (300*@rem);
+    max-width: (450*@rem);
+
+    > .avatar {
+      width: (50*@rem);
+      height: (50*@rem);
+      margin-right: (10*@rem);
+
+      > .icon {
+        font-size: (36*@rem);
+      }
+
+      > .text {
+        font-weight: bold;
+        font-size: (30*@rem);
+      }
+    }
+
+    > .content {
+      > .title {
+        margin-bottom: (5*@rem);
+      }
+    }
+  }
 }

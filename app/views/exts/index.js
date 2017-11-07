@@ -104,7 +104,7 @@ export default class ExtsIndexView extends Component {
         if (match.url.startsWith(ROUTES.exts._)) {
             if (!match.params.filterType || !match.params.id) {
                 redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.currentOpenedApp.name)} />;
-            } else if (match.params.id && !Exts.ui.openApp(match.params.id)) {
+            } else if (match.params.id && !Exts.ui.openAppById(match.params.id, match.params.params)) {
                 this.appNotFound = match.params.id;
                 redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.defaultApp.name)} />;
             }
@@ -144,10 +144,10 @@ export default class ExtsIndexView extends Component {
                     openedApps.map(openedApp => {
                         let appView = null;
                         if (openedApp.app.MainView) {
-                            appView = <openedApp.app.MainView />;
+                            appView = <openedApp.app.MainView app={openedApp} />;
                         } else if (openedApp.app.buildIn && buildInView[openedApp.id]) {
                             const TheAppView = buildInView[openedApp.id];
-                            appView = TheAppView && <TheAppView />;
+                            appView = TheAppView && <TheAppView app={openedApp} />;
                         } else {
                             const webViewUrl = openedApp.app.webViewUrl;
                             if (webViewUrl) {

@@ -1,4 +1,5 @@
 import StringHelper from '../utils/string-helper';
+import HTML from '../utils/html-helper';
 
 /**
  * 打开的应用实例 ID
@@ -120,6 +121,9 @@ export default class OpenedApp {
      * 设置应用访问的参数
      */
     set params(params) {
+        if (typeof params === 'string') {
+            params = HTML.getSearchParam(null, params);
+        }
         this._params = params;
     }
 

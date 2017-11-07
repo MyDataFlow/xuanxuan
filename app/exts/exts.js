@@ -1,9 +1,19 @@
 import buildIns from './build-in';
 import {createExtension} from './extension';
+import Config from 'Config';
 
 const exts = [];
 
 buildIns.forEach(buildIn => {
+    if (!buildIn.publisher) {
+        buildIn.publisher = '易软天创';
+    }
+    if (!buildIn.author) {
+        buildIn.author = '易软天创';
+    }
+    if (!buildIn.version) {
+        buildIn.version = Config.pkg.version;
+    }
     exts.push(createExtension(buildIn));
 });
 
@@ -14,17 +24,21 @@ const apps = exts.filter(x => x.type === 'app');
 const themes = exts.filter(x => x.type === 'theme');
 const plugins = exts.filter(x => x.type === 'plugin');
 
-const getExt = (name, type) => {
+const getTypeList = type => {
     switch (type) {
     case 'app':
-        return apps.find(x => x.name === name);
+        return apps;
     case 'theme':
-        return themes.find(x => x.name === name);
+        return themes;
     case 'plugin':
-        return plugins.find(x => x.name === name);
+        return plugins;
     default:
-        return type ? apps.find(x => x.name === name && x.type === type) : apps.find(x => x.name === name);
+        return exts;
     }
+};
+
+const getExt = (name, type) => {
+    return getTypeList(type).find(x => x.name === name);
 };
 
 const defaultApp = apps.find(x => x.buildIn && x.buildIn.asDefault) || exts.apps[0];
@@ -32,17 +46,21 @@ const getApp = name => (getExt(name, 'app'));
 const getPlugin = name => (getExt(name, 'plugin'));
 const getTheme = name => (getExt(name, 'theme'));
 
-const searchApps = keys => {
+const search = (keys, type = 'app') => {
     keys = keys.trim().toLowerCase().split(' ');
     const result = [];
-    apps.forEach(app => {
-        const score = app.getMatchScore(keys);
+    getTypeList(type).forEach(theExt => {
+        const score = theExt.getMatchScore(keys);
         if (score) {
-            result.push({score, app});
+            result.push({score, ext: theExt});
         }
     });
     result.sort((x, y) => y.score - x.score);
-    return result.map(x => x.app);
+    return result.map(x => x.ext);
+};
+
+const searchApps = keys => {
+    return search(keys);
 };
 
 export default {
@@ -62,10 +80,12 @@ export default {
         return defaultApp;
     },
 
+    getTypeList,
     getExt,
     getApp,
     getPlugin,
     getTheme,
 
+    search,
     searchApps,
 };
