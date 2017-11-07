@@ -118,6 +118,8 @@ export default class Extension {
         return this._pkg.configurations || [];
     }
 
+    get icon() {return this._pkg.icon;}
+    get accentColor() {return this._pkg.accentColor;}
     get description() {return this._pkg.description;}
     get version() {return this._pkg.version;}
     get author() {return this._pkg.author;}

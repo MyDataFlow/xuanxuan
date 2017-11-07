@@ -27,6 +27,16 @@
         // 扩展类型
         "type": "app",
 
+        // 扩展图标，可以使用如下值
+        //   * 使用 Material Design Icons (https://materialdesignicons.com/)，使用 mdi- 前缀，例如 mdi-star
+        //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/img/icon.png
+        //   * 使用相对扩展包目录的相对地址，例如 img/icon.png
+        // 如果不指定则会使用扩展图标
+        "icon": "mdi-star",
+
+        // 扩展显示颜色，可能被用到图标上
+        "accentColor": "#aa00ff",
+
         // 扩展类型 app - 应用界面类型
         // 可选值包括：
         //   * insideView：提供 React component 作为视图
@@ -42,9 +52,10 @@
         //   * 使用 Material Design Icons (https://materialdesignicons.com/)，使用 mdi- 前缀，例如 mdi-star
         //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/img/icon.png
         //   * 使用相对扩展包目录的相对地址，例如 img/icon.png
+        // 如果不指定则会使用扩展图标
         "appIcon": "mdi-star",
 
-        // 扩展类型 app - 应用配色，可能被用到图标上
+        // 扩展类型 app - 应用配色，可能被用到图标上，如果不指定会使用扩展的 accentColor
         "appAccentColor": "#aa00ff",
 
         // 扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff

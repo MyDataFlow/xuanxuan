@@ -35,8 +35,8 @@ export default class AppExtension extends Extension {
         return this._pkg.webViewUrl;
     }
 
-    get appIcon() {return this._pkg.appIcon;}
-    get appAccentColor() {return this._pkg.appAccentColor;}
+    get appIcon() {return this._pkg.appIcon || this.icon;}
+    get appAccentColor() {return this._pkg.appAccentColor || this.accentColor;}
     get appBackColor() {return this._pkg.appBackColor;}
 
     get MainView() {
