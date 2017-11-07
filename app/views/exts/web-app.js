@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import {AppExtension} from '../../exts/extension';
-import { fail } from 'assert';
+import Platform from 'Platform';
 
 export default class WebApp extends Component {
     static propTypes = {
@@ -31,6 +31,7 @@ export default class WebApp extends Component {
         this.webview.addEventListener('did-finish-load', this.handleLoadingStop);
         this.webview.addEventListener('page-title-updated', this.handlePageTitleChange);
         this.webview.addEventListener('did-fail-load', this.handleLoadFail);
+        this.webview.addEventListener('new-window', this.handleNewWindow);
     }
 
     componentWillUnmount() {
@@ -38,16 +39,23 @@ export default class WebApp extends Component {
         this.webview.removeEventListener('did-finish-load', this.handleLoadingStop);
         this.webview.removeEventListener('page-title-updated', this.handlePageTitleChange);
         this.webview.removeEventListener('did-fail-load', this.handleLoadFail);
+        this.webview.removeEventListener('new-window', this.handleNewWindow);
     }
 
     reloadWebview() {
         this.webview.reload();
     }
 
-    handlePageTitleChange = (title, explicitSet) => {
+    handleNewWindow = e => {
+        if (Platform.ui.openExternal) {
+            Platform.ui.openExternal(e.url);
+        }
+    };
+
+    handlePageTitleChange = e => {
         const {onPageTitleChange} = this.props;
         if (onPageTitleChange) {
-            onPageTitleChange(title, explicitSet);
+            onPageTitleChange(e.title, e.explicitSet);
         }
     };
 
