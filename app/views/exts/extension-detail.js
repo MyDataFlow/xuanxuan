@@ -47,8 +47,7 @@ export default class ExtensionDetail extends Component {
     }
 
     handleUninstallBtnClick(extension) {
-        Exts.ui.uninstallExtension(extension);
-        this.requestClose();
+        Exts.ui.uninstallExtension(extension, this.requestClose.bind(this));
     }
 
     handleOpenBtnClick(extension) {

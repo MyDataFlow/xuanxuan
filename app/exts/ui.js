@@ -110,9 +110,24 @@ const closeAllApp = () => {
     });
 };
 
-const uninstallExtension = extension => {
-    manager.uninstall(extension).then(x => {
+const uninstallExtension = (extension, confirm = true, callback = null) => {
+    if (typeof confirm === 'function') {
+        callback = confirm;
+        confirm = true;
+    }
+    if (confirm) {
+        return App.ui.modal.confirm(Lang.format('ext.uninstallConfirm.format', extension.displayName)).then(confirmed => {
+            if (confirmed) {
+                return uninstallExtension(extension, false, callback);
+            }
+            return Promise.reject();
+        });
+    }
+    return manager.uninstall(extension).then(x => {
         App.ui.showMessger(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'success'});
+        if (callback) {
+            callback();
+        }
     }).catch(error => {
         if (error) {
             App.ui.showMessger(Lang.error(error), {type: 'danger'});
@@ -136,6 +151,12 @@ const installExtension = () => {
 
 const createSettingContextMenu = extension => {
     const items = [];
+    if (extension.isApp) {
+        items.push({
+            label: Lang.string('ext.openApp'),
+            click: openApp.bind(null, extension.name)
+        });
+    }
     if (extension.buildIn) {
         items.push({
             label: Lang.string('ext.cannotUninstallBuidIn'),

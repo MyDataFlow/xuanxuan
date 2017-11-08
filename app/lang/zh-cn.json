@@ -281,6 +281,7 @@
     "ext.openApp": "打开应用",
     "ext.buildIn": "内置扩展",
     "ext.cannotUninstallBuidIn": "内置扩展无法卸载",
+    "ext.uninstallConfirm.format": "确定卸载扩展 【{0}】？",
     "ext.installSuccess.format": "扩展 【{0}】 安装成功。",
     "ext.installFail": "安装失败。",
     "ext.uninstallSuccess.format": "扩展 【{0}】 已卸载",

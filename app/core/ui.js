@@ -3,6 +3,7 @@ import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
 import ContextMenu from '../components/context-menu';
+import modal from '../components/modal';
 import HTML from '../utils/html-helper';
 import Lang from '../lang';
 import Events from './events';
@@ -265,5 +266,6 @@ export default {
     quit,
     showMessger: Messager.show,
     showContextMenu: ContextMenu.show,
+    modal,
     createImageContextMenuItems
 };
