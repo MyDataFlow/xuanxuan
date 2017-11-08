@@ -154,7 +154,7 @@ const createSettingContextMenu = extension => {
     if (extension.isApp) {
         items.push({
             label: Lang.string('ext.openApp'),
-            click: openApp.bind(null, extension.name)
+            click: openApp.bind(null, extension.name, null, null)
         });
     }
     if (extension.buildIn) {

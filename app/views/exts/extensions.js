@@ -99,7 +99,7 @@ export default class ExtensionsView extends Component {
             </header>
             <div className="app-exts-list list has-padding multi-lines with-avatar">
                 <div className="heading">
-                    <div className="title">{Lang.string(search ? 'ext.extensions.searchResult' : 'ext.extensions.installed')} ({extensions.length})</div>
+                    <div className="title">{Lang.string(search ? 'ext.extensions.searchResult' : 'ext.extensions.installed')}{type ? ` - ${Lang.string('ext.type.' + type)}` : ''} ({extensions.length})</div>
                 </div>
                 {
                     extensions.map(ext => {
