@@ -7,6 +7,7 @@ import OpenedApp from '../../exts/opened-app';
 import Exts from '../../exts';
 import ExtensionListItem from './extension-list-item';
 import App from '../../core';
+import ExtensionDetailDialog from './extension-detail-dialog';
 
 const extensionTypes = [
     {type: '', label: Lang.string('ext.extensions.all')},
@@ -58,20 +59,15 @@ export default class ExtensionsView extends Component {
         const menuItems = Exts.ui.createSettingContextMenu(ext);
         App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menuItems);
         e.preventDefault();
+        e.stopPropagation();
+    }
+
+    handleExtensionItemClick(ext, e) {
+        ExtensionDetailDialog.show(ext);
     }
 
     handleInstallBtnClick = () => {
-        Exts.manager.openInstallDialog((extension, error) => {
-            if (extension) {
-                App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
-            } else {
-                let msg = Lang.string('ext.installFail');
-                if (error) {
-                    msg += Lang.error(error);
-                }
-                App.ui.showMessger(msg, {type: 'danger'});
-            }
-        });
+        Exts.ui.installExtension();
     }
 
     render() {
@@ -97,7 +93,7 @@ export default class ExtensionsView extends Component {
                 </div>
                 <nav className="toolbar flex-none">
                     <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
-                        <Button onClick={this.handleInstallBtnClick} className="rounded outline green" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
+                        <Button onClick={this.handleInstallBtnClick} className="rounded outline green hover-solid" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
                     </div>
                 </nav>
             </header>
@@ -108,7 +104,15 @@ export default class ExtensionsView extends Component {
                 {
                     extensions.map(ext => {
                         const onContextMenu = this.handleSettingBtnClick.bind(this, ext);
-                        return <ExtensionListItem key={ext.name} onContextMenu={onContextMenu} onSettingBtnClick={onContextMenu} className="item flex-middle" extension={ext} />;
+                        return (<ExtensionListItem
+                            showType={!type}
+                            key={ext.name}
+                            onContextMenu={onContextMenu}
+                            onSettingBtnClick={onContextMenu}
+                            onClick={this.handleExtensionItemClick.bind(this, ext)}
+                            className="item flex-middle"
+                            extension={ext}
+                        />);
                     })
                 }
             </div>

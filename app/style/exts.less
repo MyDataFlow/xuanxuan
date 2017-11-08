@@ -259,4 +259,59 @@
       }
     }
   }
+
+  .app-ext-list-item-type-label {
+    display: inline-block;
+    margin-right: (5*@rem);
+  }
+}
+
+.app-ext-detail-dialog {
+  min-width: (750*@rem);
+  overflow: hidden;
+
+  > header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+
+    .close {
+      color: #fff;
+    }
+  }
+
+  > .content {
+    padding: 0;
+  }
+}
+
+.app-ext-detail-header {
+  padding: (40*@rem) @space @space @space;
+  background-color: rgba(0,0,0,.3);
+
+  > .avatar {
+    margin-right: @space-sm;
+    width: (100*@rem);
+    height: (100*@rem);
+
+    > .icon {
+      font-size: (72*@rem);
+    }
+
+    > .text {
+      font-weight: bold;
+      font-size: (64*@rem);
+    }
+  }
+
+  > .content {
+    > .title {
+      > strong {font-size: (18*@rem);}
+    }
+
+    > .actions {
+      .btn + .btn {margin-left: @space-sm;}
+    }
+  }
 }

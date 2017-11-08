@@ -110,6 +110,30 @@ const closeAllApp = () => {
     });
 };
 
+const uninstallExtension = extension => {
+    manager.uninstall(extension).then(x => {
+        App.ui.showMessger(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'success'});
+    }).catch(error => {
+        if (error) {
+            App.ui.showMessger(Lang.error(error), {type: 'danger'});
+        }
+    });
+};
+
+const installExtension = () => {
+    manager.openInstallDialog((extension, error) => {
+        if (extension) {
+            App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
+        } else {
+            let msg = Lang.string('ext.installFail');
+            if (error) {
+                msg += Lang.error(error);
+            }
+            App.ui.showMessger(msg, {type: 'danger'});
+        }
+    });
+};
+
 const createSettingContextMenu = extension => {
     const items = [];
     if (extension.buildIn) {
@@ -121,13 +145,7 @@ const createSettingContextMenu = extension => {
         items.push({
             label: Lang.string('ext.uninstall'),
             click: () => {
-                manager.uninstall(extension).then(x => {
-                    App.ui.showMessger(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'info'});
-                }).catch(error => {
-                    if (error) {
-                        App.ui.showMessger(Lang.error(error), {type: 'danger'});
-                    }
-                });
+                uninstallExtension(extension);
             }
         });
     }
@@ -156,4 +174,13 @@ export default {
     closeAllApp,
 
     createSettingContextMenu,
+
+    typeColors: {
+        app: '#304ffe',
+        theme: '#f50057',
+        plugin: '#00c853',
+    },
+
+    installExtension,
+    uninstallExtension,
 };

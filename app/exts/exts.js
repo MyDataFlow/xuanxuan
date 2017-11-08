@@ -17,9 +17,9 @@ buildIns.forEach((buildIn, idx) => {
     if (!buildIn.author) {
         buildIn.author = '易软天创';
     }
-    if (!buildIn.version) {
-        buildIn.version = Config.pkg.version;
-    }
+    ['version', 'license', 'homepage', 'bugs', 'repository'].forEach(key => {
+        buildIn[key] = Config.pkg[key];
+    });
     exts.push(createExtension(buildIn, {installTime: idx}));
 });
 

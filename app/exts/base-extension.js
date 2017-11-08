@@ -17,7 +17,7 @@ const MATCH_SCORE_MAP = [
     {name: 'pinyinNames', equal: 50, include: 25, array: true},
     {name: 'description', include: 25},
     {name: 'keywords', equal: 50, include: 10, array: true},
-    {name: 'type', equal: 100, prefix: ':'},
+    {name: 'type', equal: 100, prefix: '#'},
     {name: 'author', equal: 100, prefix: '@'},
     {name: 'publisher', equal: 100, prefix: '@'},
     {name: 'homepage', include: 25},
@@ -132,6 +132,8 @@ export default class Extension {
     get keywords() {return this._pkg.keywords;}
     get engines() {return this._pkg.engines;}
     get mainFile() {return this._pkg.main;}
+    get repository() {return this._pkg.repository;}
+    get bugs() {return this._pkg.bugs;}
     get lazy() {return this._pkg.lazy;}
 
     get storeData() {
