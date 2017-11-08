@@ -11,6 +11,7 @@ class MemberListItem extends Component {
         showStatusDot: PropTypes.bool,
         className: PropTypes.string,
         avatarClassName: PropTypes.string,
+        children: PropTypes.any,
     }
 
     static defaultProps = {
@@ -18,6 +19,7 @@ class MemberListItem extends Component {
         showStatusDot: true,
         className: 'flex-middle',
         avatarClassName: null,
+        children: null,
     };
 
     render() {
@@ -27,6 +29,7 @@ class MemberListItem extends Component {
             avatarClassName,
             showStatusDot,
             className,
+            children,
             ...other
         } = this.props;
 
@@ -37,6 +40,7 @@ class MemberListItem extends Component {
             <UserAvatar className={avatarClassName} size={avatarSize} user={member} />
             {showStatusDot && <StatusDot status={member.status} />}
             <div className="title">{member.displayName}</div>
+            {children}
         </a>);
     }
 }
