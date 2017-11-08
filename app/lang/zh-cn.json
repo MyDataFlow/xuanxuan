@@ -272,6 +272,8 @@
     "ext.type.plugin": "插件",
     "ext.type.theme": "主题",
     "ext.author": "作者",
+    "ext.publisher": "发布者",
+    "ext.publisher.format": "由 {0} 发布",
     "ext.homepage": "官方网站",
     "ext.license": "许可证",
     "ext.repository": "代码库",

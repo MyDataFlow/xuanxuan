@@ -91,22 +91,40 @@ export default class ExtensionDetail extends Component {
             sectionView = <section className="has-padding-lg gray"><div className="markdown-content" dangerouslySetInnerHTML={{__html: this.readmeContent}} /></section>;
         }
 
+        const titleViews = [<span className="text" key="ext-name">{extension.displayName}</span>];
+        if (extension.buildIn) {
+            titleViews.push(<span key="ext-buildIn-label" data-hint={Lang.string('ext.buildIn')} className="hint--top"><Icon name="star-circle text-yellow" /></span>);
+        }
+        titleViews.push(<span key="ext-type" className="muted circle label darken-3 code">#{Lang.string(`ext.type.${extension.type}`)} ∗ {extension.name}</span>);
+
+        const attrViews = [];
+        if (extension.version) {
+            attrViews.push(<span key="ext-version">v{extension.version}</span>);
+        }
+        if (extension.author || extension.publisher) {
+            let authorView = null;
+            if (extension.author && extension.publisher) {
+                authorView = `${Lang.string('ext.author')}: ${extension.author} · ${Lang.format('ext.publisher.format', extension.publisher)}`;
+            } else if (extension.author) {
+                authorView = `${Lang.string('ext.author')}: ${extension.author}`;
+            } else {
+                authorView = Lang.format('ext.publisher.format', extension.publisher);
+            }
+            attrViews.push(<span key="ext-author">{authorView}</span>);
+        }
+        if (extension.license) {
+            attrViews.push(<span key="ext-license">{`${Lang.string('ext.license')}: ${extension.license}`}</span>);
+        }
+
         return (<div className={HTML.classes('app-ext-detail', className)} {...other}>
             <header style={Skin.style({code: extension.accentColor || '#333', textTint: false})}>
                 <div className="app-ext-detail-header list-item with-avatar multi-lines relative">
                     <Avatar className="rounded shadow-1 flex-none" auto={extension.icon} skin={{code: extension.accentColor}} />
                     <div className="content">
-                        <div className="title space-xs"><strong>{extension.displayName}</strong> &nbsp; {extension.buildIn ? <span data-hint={Lang.string('ext.buildIn')} className="hint--top"><Icon name="star-circle text-yellow" /></span> : null}</div>
-                        <div className="space-sm"><small className="muted rounded label darken-2">{extension.name}</small>  &nbsp; <small className="muted">{extension.version}</small></div>
+                        <div className="title space-sm">{titleViews}</div>
+                        <div className="space-sm attrs">{attrViews}</div>
                         {extension.description ? <div className="space-sm">{extension.description}</div> : null}
-                        <div className="muted space">
-                            <span className="app-ext-list-item-type-label label outline gray circle">{Lang.string(`ext.type.${extension.type}`)}</span>
-                            <small className="hint--top" data-hint={Lang.string('ext.author')}> &nbsp; | &nbsp; {extension.author}</small>
-                            {extension.license && <span> &nbsp; | &nbsp; <small>{`${Lang.string('ext.license')}: ${extension.license}`}</small></span>}
-                        </div>
-                        <div className="actions">
-                            {buttons}
-                        </div>
+                        <div className="actions">{buttons}</div>
                     </div>
                     {loadingView}
                 </div>

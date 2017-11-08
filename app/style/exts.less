@@ -307,7 +307,7 @@
 
 .app-ext-detail-header {
   padding: (40*@rem) @space (30*@rem);
-  background-color: rgba(0,0,0,.3);
+  background-color: rgba(0,0,0,.4);
 
   > .avatar {
     margin-right: @space-sm;
@@ -326,10 +326,31 @@
 
   > .content {
     > .title {
-      > strong {font-size: (18*@rem);}
+      .flex;
+      .flex-middle;
+      > span {margin-right: (10*@rem);}
+      > .text {font-size: (24*@rem);}
+    }
+
+    > .attrs {
+      font-size: (12*@rem);
+      .muted;
+
+      > span {
+        display: inline-block;
+        + span {
+          &:before {
+            content: '|';
+            display: inline-block;
+            width: (20*@rem);
+            text-align: center;
+          }
+        }
+      }
     }
 
     > .actions {
+      margin-top: @space;
       .btn + .btn {margin-left: @space-sm;}
     }
   }
