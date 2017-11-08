@@ -26,7 +26,7 @@ const MATCH_SCORE_MAP = [
 export default class Extension {
     static TYPES = TYPES;
 
-    constructor(pkgData) {
+    constructor(pkgData, data) {
         const pkg = Object.assign({}, pkgData, pkgData.xxext);
         if (pkg.xxext) {
             delete pkg.xxext;
@@ -46,6 +46,8 @@ export default class Extension {
         this._pkg = pkg;
 
         this._config = new ExtensionConfig(this.name, this.configurations);
+
+        this._data = Object.assign({}, data);
 
         if (!this.lazy) {
             this.loadModule();
@@ -118,6 +120,7 @@ export default class Extension {
         return this._pkg.configurations || [];
     }
 
+    get pkg() {return this._pkg;}
     get icon() {return this._pkg.icon;}
     get accentColor() {return this._pkg.accentColor;}
     get description() {return this._pkg.description;}
@@ -130,6 +133,21 @@ export default class Extension {
     get engines() {return this._pkg.engines;}
     get mainFile() {return this._pkg.main;}
     get lazy() {return this._pkg.lazy;}
+
+    get storeData() {
+        return {
+            data: this._data,
+            pkg: this._pkg
+        };
+    }
+
+    get installTime() {
+        return this._data.installTime;
+    }
+
+    set installTime(time) {
+        this._data.installTime = time;
+    }
 
     get hasModule() {
         return this.mainFile;

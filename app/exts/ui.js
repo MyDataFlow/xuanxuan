@@ -1,5 +1,8 @@
 import {defaultApp, getApp} from './exts';
 import OpenedApp from './opened-app';
+import Lang from '../lang';
+import manager from './manager';
+import App from '../core';
 
 const defaultOpenedApp = new OpenedApp(defaultApp);
 
@@ -107,6 +110,30 @@ const closeAllApp = () => {
     });
 };
 
+const createSettingContextMenu = extension => {
+    const items = [];
+    if (extension.buildIn) {
+        items.push({
+            label: Lang.string('ext.cannotUninstallBuidIn'),
+            disabled: true,
+        });
+    } else {
+        items.push({
+            label: Lang.string('ext.uninstall'),
+            click: () => {
+                manager.uninstall(extension).then(x => {
+                    App.ui.showMessger(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'info'});
+                }).catch(error => {
+                    if (error) {
+                        App.ui.showMessger(Lang.error(error), {type: 'danger'});
+                    }
+                });
+            }
+        });
+    }
+    return items;
+};
+
 export default {
     get openedApps() {
         return openedApps;
@@ -127,4 +154,6 @@ export default {
     openAppById,
     closeApp,
     closeAllApp,
+
+    createSettingContextMenu,
 };

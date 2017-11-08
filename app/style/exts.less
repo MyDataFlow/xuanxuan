@@ -202,7 +202,9 @@
 
   > .nav {
     > a {
+      opacity: 0.7;
       &.active {
+        opacity: 1;
         color: @color-primary;
       }
     }
@@ -238,9 +240,22 @@
     }
 
     > .content {
-      width: calc(100% - (80*@rem));
+      width: calc(100% - (110*@rem));
       > .title {
         margin-bottom: (5*@rem);
+      }
+    }
+
+    > .btn {
+      position: relative;
+      z-index: 10;
+      opacity: 0;
+      transition: @animation-type @animation-speed-fast opacity;
+    }
+
+    &:hover {
+      > .btn {
+        opacity: 1;
       }
     }
   }

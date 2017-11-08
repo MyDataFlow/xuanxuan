@@ -1,8 +1,8 @@
 import Extension from './base-extension';
 
 export default class ThemeExtension extends Extension {
-    constructor(pkg) {
-        super(pkg);
+    constructor(pkg, data) {
+        super(pkg, data);
 
         if (!this.isTheme) {
             throw new Error(`Cannot create a theme extension from the type '${this.type}'.`);

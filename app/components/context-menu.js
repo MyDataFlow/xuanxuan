@@ -54,14 +54,16 @@ const show = (position, menus, props = {}, callback = null) => {
                     className,
                     click,
                     render,
+                    type,
+                    disabled,
                     ...other
                 } = item;
                 if (render) {
                     return render(item);
-                } else if (item.type === 'divider' || item.type === 'separator') {
+                } else if (type === 'divider' || type === 'separator') {
                     return <div key={id || idx} className={HTML.classes('divider', className)} {...other} />;
                 }
-                return (<a onClick={handleItemClick.bind(null, item)} key={id || idx} className={HTML.classes('item', itemClassName, className)} {...other}>
+                return (<a onClick={handleItemClick.bind(null, item)} key={id || idx} className={HTML.classes('item', itemClassName, className, {disabled})} {...other}>
                     {item.icon && <Icon name={item.icon} />}
                     {item.label && <span className="title">{item.label}</span>}
                     {item.checked && <Icon name="checked" />}

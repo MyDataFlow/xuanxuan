@@ -6,8 +6,8 @@ export const APP_TYPES = {
 };
 
 export default class AppExtension extends Extension {
-    constructor(pkg) {
-        super(pkg);
+    constructor(pkg, data) {
+        super(pkg, data);
 
         if (!this.isApp) {
             throw new Error(`Cannot create a app extension from the type '${this.type}'.`);

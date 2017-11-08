@@ -6,6 +6,7 @@ import Button from '../../components/button';
 import OpenedApp from '../../exts/opened-app';
 import Exts from '../../exts';
 import ExtensionListItem from './extension-list-item';
+import App from '../../core';
 
 const extensionTypes = [
     {type: '', label: Lang.string('ext.extensions.all')},
@@ -34,6 +35,16 @@ export default class ExtensionsView extends Component {
         };
     }
 
+    componentDidMount() {
+        this.onExtChangeHandler = Exts.all.onExtensionChange(() => {
+            this.forceUpdate();
+        });
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.onExtChangeHandler);
+    }
+
     handleNavItemClick(extType) {
         this.props.app.params = {type: extType.type};
         this.setState({type: extType.type});
@@ -42,6 +53,26 @@ export default class ExtensionsView extends Component {
     handleSearchChange = search => {
         this.setState({search});
     };
+
+    handleSettingBtnClick(ext, e) {
+        const menuItems = Exts.ui.createSettingContextMenu(ext);
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menuItems);
+        e.preventDefault();
+    }
+
+    handleInstallBtnClick = () => {
+        Exts.manager.openInstallDialog((extension, error) => {
+            if (extension) {
+                App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
+            } else {
+                let msg = Lang.string('ext.installFail');
+                if (error) {
+                    msg += Lang.error(error);
+                }
+                App.ui.showMessger(msg, {type: 'danger'});
+            }
+        });
+    }
 
     render() {
         const {
@@ -57,7 +88,7 @@ export default class ExtensionsView extends Component {
                 <nav className="nav">
                     {
                         extensionTypes.map(extType => {
-                            return <a onClick={this.handleNavItemClick.bind(this, extType)} className={extType.type === this.state.type ? 'active' : ''}>{extType.label}</a>;
+                            return <a key={extType.type} onClick={this.handleNavItemClick.bind(this, extType)} className={extType.type === type ? 'active' : ''}>{extType.label}</a>;
                         })
                     }
                 </nav>
@@ -66,7 +97,7 @@ export default class ExtensionsView extends Component {
                 </div>
                 <nav className="toolbar flex-none">
                     <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
-                        <Button className="rounded outline green" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
+                        <Button onClick={this.handleInstallBtnClick} className="rounded outline green" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
                     </div>
                 </nav>
             </header>
@@ -76,7 +107,8 @@ export default class ExtensionsView extends Component {
                 </div>
                 {
                     extensions.map(ext => {
-                        return <ExtensionListItem className="item flex-middle" extension={ext} />;
+                        const onContextMenu = this.handleSettingBtnClick.bind(this, ext);
+                        return <ExtensionListItem key={ext.name} onContextMenu={onContextMenu} onSettingBtnClick={onContextMenu} className="item flex-middle" extension={ext} />;
                     })
                 }
             </div>

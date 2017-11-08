@@ -104,15 +104,6 @@ const exts = [{
     appAccentColor: '#eee',
     appType: 'webView',
     webViewUrl: 'https://easysoft.github.io/xuanxuan/1.2.0/'
-}, {
-    name: 'xuanxuan-dev-docs',
-    displayName: '喧喧开发文档',
-    description: '浏览喧喧开发文档',
-    type: 'app',
-    appIcon: 'mdi-file-document-box',
-    appAccentColor: '#33691e',
-    appType: 'webView',
-    webViewUrl: 'https://github.com/easysoft/xuanxuan/tree/master/doc'
 }];
 
 export default exts;

@@ -1,10 +1,16 @@
 import buildIns from './build-in';
 import {createExtension} from './extension';
 import Config from 'Config';
+import db from './extensions-db';
+import Events from '../core/events';
+
+const EVENT = {
+    onChange: 'Extension.onChange'
+};
 
 const exts = [];
 
-buildIns.forEach(buildIn => {
+buildIns.forEach((buildIn, idx) => {
     if (!buildIn.publisher) {
         buildIn.publisher = '易软天创';
     }
@@ -14,15 +20,33 @@ buildIns.forEach(buildIn => {
     if (!buildIn.version) {
         buildIn.version = Config.pkg.version;
     }
-    exts.push(createExtension(buildIn));
+    exts.push(createExtension(buildIn, {installTime: idx}));
 });
 
 // TODO: Load other exts here
+exts.push(...db.installs);
+
+exts.sort((x, y) => (x.installTime - y.installTime));
 
 // Grouped extensions
-const apps = exts.filter(x => x.type === 'app');
-const themes = exts.filter(x => x.type === 'theme');
-const plugins = exts.filter(x => x.type === 'plugin');
+let apps = exts.filter(x => x.type === 'app');
+let themes = exts.filter(x => x.type === 'theme');
+let plugins = exts.filter(x => x.type === 'plugin');
+
+db.setOnChangeListener((ext, changeAction) => {
+    if (changeAction === 'add') {
+        exts.splice(0, 0, ext);
+    } else if (changeAction === 'remove') {
+        const index = exts.findIndex(x => x.name === ext.name);
+        if (index > -1) {
+            exts.splice(index, 1);
+        }
+    }
+    apps = exts.filter(x => x.type === 'app');
+    themes = exts.filter(x => x.type === 'theme');
+    plugins = exts.filter(x => x.type === 'plugin');
+    Events.emit(EVENT.onChange, ext, changeAction);
+});
 
 const getTypeList = type => {
     switch (type) {
@@ -63,6 +87,10 @@ const searchApps = keys => {
     return search(keys);
 };
 
+const onExtensionChange = listener => {
+    return Events.on(EVENT.onChange, listener);
+};
+
 export default {
     get exts() {
         return exts;
@@ -88,4 +116,5 @@ export default {
 
     search,
     searchApps,
+    onExtensionChange,
 };
