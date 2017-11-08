@@ -264,6 +264,13 @@
     display: inline-block;
     margin-right: (5*@rem);
   }
+
+  .app-ext-list-item-buildIn-label {
+    line-height: 1;
+    position: relative;
+    top: (-1*@rem);
+    z-index: 10;
+  }
 }
 
 .app-ext-detail-dialog {
@@ -284,10 +291,22 @@
   > .content {
     padding: 0;
   }
+
+  .markdown-content {
+    p {margin-bottom: @space-sm;}
+
+    h1, h2, h3 {
+      margin-top: @space;
+    }
+
+    h4, h5, h6 {
+      margin-top: @space-sm;
+    }
+  }
 }
 
 .app-ext-detail-header {
-  padding: (40*@rem) @space @space @space;
+  padding: (40*@rem) @space (30*@rem);
   background-color: rgba(0,0,0,.3);
 
   > .avatar {

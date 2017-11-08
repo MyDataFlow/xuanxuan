@@ -53,12 +53,12 @@ export default class ExitsHomeView extends Component {
                     <SearchControl onSearchChange={this.handleSearchChange} />
                 </div>
                 <nav className="toolbar flex-none">
-                    <div className="nav-item hint--bottom has-padding-sm" data-hint={Lang.string('ext.home.manageInExtensionsApp')}>
+                    <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.manageInExtensionsApp')}>
                         <Button type="a" href={`#${ROUTES.exts.app.id('extensions/type=app')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
                     </div>
-                    <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.addMoreApps')}>
+                    {/* <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.addMoreApps')}>
                         <Button className="iconbutton rounded" icon="plus-box text-gray icon-2x" />
-                    </div>
+                    </div> */}
                 </nav>
             </header>
             <div className="app-exts-apps row has-padding">

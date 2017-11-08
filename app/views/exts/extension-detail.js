@@ -3,8 +3,12 @@ import HTML from '../../utils/html-helper';
 import Skin from '../../utils/skin';
 import Avatar from '../../components/avatar';
 import Button from '../../components/button';
+import Icon from '../../components/icon';
+import Spinner from '../../components/spinner';
 import Lang from '../../lang';
 import Exts from '../../exts';
+import Markdown from '../../utils/markdown';
+import Emojione from '../../components/emojione';
 
 export default class ExtensionDetail extends Component {
     static propTypes = {
@@ -17,6 +21,23 @@ export default class ExtensionDetail extends Component {
         className: null,
         onRequestClose: null,
     };
+
+    constructor(props) {
+        super(props);
+        this.state = {loadingReadme: true};
+    }
+
+    componentDidMount() {
+        const {extension} = this.props;
+        Exts.manager.loadReadmeMarkdown(extension).then(readme => {
+            readme = Markdown(readme);
+            readme = Emojione.toImage(readme);
+            this.readmeContent = readme;
+            this.setState({loadingReadme: false});
+        }).catch(() => {
+            this.setState({loadingReadme: false});
+        });
+    }
 
     requestClose() {
         const {onRequestClose} = this.props;
@@ -47,7 +68,9 @@ export default class ExtensionDetail extends Component {
         if (extension.isApp) {
             buttons.push(<Button onClick={this.handleOpenBtnClick.bind(this, extension)} key="open" icon="open-in-app" className="rounded green-pale outline hover-solid" label={Lang.string('ext.openApp')} />);
         }
-        buttons.push(<Button onClick={this.handleUninstallBtnClick.bind(this, extension)} key="uninstall" icon="delete" className="rounded danger-pale outline hover-solid" label={Lang.string('ext.uninstall')} />);
+        if (!extension.buildIn) {
+            buttons.push(<Button onClick={this.handleUninstallBtnClick.bind(this, extension)} key="uninstall" icon="delete" className="rounded danger-pale outline hover-solid" label={Lang.string('ext.uninstall')} />);
+        }
         if (extension.homepage) {
             buttons.push(<Button key="homepage" type="a" href={extension.homepage} target="_blank" icon="home" className="rounded gray outline hover-solid" label={Lang.string('ext.homepage')} />);
         }
@@ -61,25 +84,35 @@ export default class ExtensionDetail extends Component {
             buttons.push(<Button key="bugs" type="a" href={bugsUrl} target="_blank" icon="bug" className="rounded gray outline hover-solid" label={Lang.string('ext.bugs')} />);
         }
 
+        let loadingView = null;
+        let sectionView = null;
+        if (this.state.loadingReadme) {
+            loadingView = <Spinner className="dock dock-bottom" iconClassName="text-white spin inline-block" />;
+        } else if (this.readmeContent) {
+            sectionView = <section className="has-padding-lg gray"><div className="markdown-content" dangerouslySetInnerHTML={{__html: this.readmeContent}} /></section>;
+        }
+
         return (<div className={HTML.classes('app-ext-detail', className)} {...other}>
             <header style={Skin.style({code: extension.accentColor || '#333', textTint: false})}>
-                <div className="app-ext-detail-header list-item with-avatar multi-lines">
+                <div className="app-ext-detail-header list-item with-avatar multi-lines relative">
                     <Avatar className="rounded shadow-1 flex-none" auto={extension.icon} skin={{code: extension.accentColor}} />
                     <div className="content">
-                        <div className="title space-xs"><strong>{extension.displayName}</strong></div>
+                        <div className="title space-xs"><strong>{extension.displayName}</strong> &nbsp; {extension.buildIn ? <span data-hint={Lang.string('ext.buildIn')} className="hint--top"><Icon name="star-circle text-yellow" /></span> : null}</div>
                         <div className="space-sm"><small className="muted rounded label darken-2">{extension.name}</small>  &nbsp; <small className="muted">{extension.version}</small></div>
                         {extension.description ? <div className="space-sm">{extension.description}</div> : null}
                         <div className="muted space">
                             <span className="app-ext-list-item-type-label label outline gray circle">{Lang.string(`ext.type.${extension.type}`)}</span>
-                            <small> &nbsp; | &nbsp; {extension.author}</small>
+                            <small className="hint--top" data-hint={Lang.string('ext.author')}> &nbsp; | &nbsp; {extension.author}</small>
                             {extension.license && <span> &nbsp; | &nbsp; <small>{`${Lang.string('ext.license')}: ${extension.license}`}</small></span>}
                         </div>
                         <div className="actions">
                             {buttons}
                         </div>
                     </div>
+                    {loadingView}
                 </div>
             </header>
+            {sectionView}
         </div>);
     }
 }

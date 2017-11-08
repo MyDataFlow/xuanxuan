@@ -88,11 +88,17 @@ const openInstallDialog = (callback) => {
     });
 };
 
+const loadReadmeMarkdown = extension => {
+    const filePath = Path.join(createSavePath(extension), 'README.md');
+    return fse.readFile(filePath, 'utf8');
+};
+
 export default {
     db,
     createSavePath,
     uninstall,
     installFromXextFile,
     openInstallDialog,
+    loadReadmeMarkdown,
 };
 
