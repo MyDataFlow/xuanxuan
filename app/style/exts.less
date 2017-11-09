@@ -290,6 +290,8 @@
 
   > .content {
     padding: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   .markdown-content {
@@ -301,6 +303,23 @@
 
     h4, h5, h6 {
       margin-top: @space-sm;
+    }
+  }
+
+  .app-ext-detail {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+
+    > header {
+      flex: none;
+    }
+
+    > section {
+      flex: auto;
+      overflow-y: auto;
     }
   }
 }
