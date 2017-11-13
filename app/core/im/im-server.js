@@ -421,13 +421,13 @@ const sendFileMessage = (file, chat) => {
         sendChatMessage(message, chat);
         API.uploadFile(profile.user, file, {gid: chat.gid}, progress => {
             message.updateFileContent({send: progress});
-            sendChatMessage(message, chat);
+            return sendChatMessage(message, chat);
         }).then(data => {
             message.updateFileContent(Object.assign({}, data, {send: true}));
-            sendChatMessage(message, chat);
+            return sendChatMessage(message, chat);
         }).catch(error => {
             message.updateFileContent({send: false, error: error && Lang.error(error)});
-            sendChatMessage(message, chat);
+            return sendChatMessage(message, chat);
         });
     } else {
         Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(file.size)), {type: 'warning'});

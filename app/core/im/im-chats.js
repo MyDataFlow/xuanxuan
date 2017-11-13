@@ -150,9 +150,9 @@ const countChatMessages = (cgid, filter) => {
 };
 
 const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = false, rawData = false, returnCount = false) => {
-    const cgid = chat.gid;
+    const cgid = chat ? chat.gid : null;
     let collection = db.database.chatMessages.orderBy('id').and(x => {
-        return x.cgid === cgid && (!queryCondition || queryCondition(x));
+        return (!cgid || x.cgid === cgid) && (!queryCondition || queryCondition(x));
     });
     if (reverse) {
         collection = collection.reverse();
@@ -171,7 +171,7 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
     return collection.toArray(chatMessages => {
         if (chatMessages && chatMessages.length) {
             const result = rawData ? chatMessages : chatMessages.map(ChatMessage.create);
-            if (!skipAdd) {
+            if (!skipAdd && cgid) {
                 chat.addMessages(result, profile.userId, true, true);
                 Events.emitDataChange({chats: {[cgid]: chat}});
             }
