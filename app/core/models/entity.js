@@ -69,6 +69,10 @@ class Entity {
         } else {
             const schema = this.schema;
             if (schema) {
+                const meta = schema.of(key);
+                if (meta && meta.aliasFor) {
+                    key = meta.aliasFor;
+                }
                 val = schema.convertSetterValue(key, val, this);
             }
             this.$[key] = val;
@@ -85,6 +89,10 @@ class Entity {
         let value = this.$[key];
         const schema = this.schema;
         if (schema) {
+            const meta = schema.of(key);
+            if (meta && meta.aliasFor) {
+                key = meta.aliasFor;
+            }
             value = schema.convertGetterValue(key, value, this);
         }
         if (value === undefined) {
