@@ -7,13 +7,13 @@ import User from '../../core/profile/user';
 import UserListItem from '../common/user-list-item';
 
 class SwapUser extends Component {
-    static defaultProps = {
+    static propTypes = {
         className: PropTypes.string,
         identify: PropTypes.string,
         onSelectUser: PropTypes.func,
     };
 
-    static propTypes = {
+    static defaultProps = {
         className: null,
         identify: null,
         onSelectUser: null,
