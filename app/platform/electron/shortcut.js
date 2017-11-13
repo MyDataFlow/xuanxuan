@@ -37,6 +37,8 @@ const registerGlobalShortcut = (name, accelerator, callback) => {
         if (DEBUG) {
             console.color(`GLOBAL HOTKEY BIND ${name}: ${accelerator}`, 'purpleOutline');
         }
+    } else if (DEBUG) {
+        console.color(`GLOBAL HOTKEY BIND ${name}: error`, 'purpleOutline', 'Cannot bind empty accelerator', 'red');
     }
 };
 
