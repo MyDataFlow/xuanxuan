@@ -1,13 +1,19 @@
 const calcConditionScore = (condition, key, obj) => {
     let score = 0;
-    const source = obj[condition.name];
+    let source = obj[condition.name];
     if (source === undefined || source === null) {
         return score;
     }
+    source = `${source}`;
     let searchKey = key;
     if (condition.prefix) {
         if (key.startsWith(condition.prefix) && key.length > condition.prefix.length) {
-            searchKey = key.substr(condition.prefix.length);
+            const cIndex = key.lastIndexOf('(');
+            if (key[key.length - 1] === ')' && cIndex > -1) {
+                searchKey = key.substring(cIndex + 1, key.length - 1);
+            } else {
+                searchKey = key.substr(condition.prefix.length);
+            }
         } else {
             return score;
         }
