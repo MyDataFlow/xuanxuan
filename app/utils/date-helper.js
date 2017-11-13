@@ -41,7 +41,7 @@ const isToday = (date, now) => (isSameDay(now || new Date(), date));
 
 const isYestoday = (date, now) => (isSameDay((now || new Date()).getTime() - TIME_DAY, date));
 
-const formatDate = (date, format) => {
+const formatDate = (date, format = 'yyyy-MM-dd hh:ss') => {
     date = createDate(date);
 
     let dateInfo = {
