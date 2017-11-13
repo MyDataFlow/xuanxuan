@@ -183,17 +183,17 @@
   }
 }
 
-.app-ext-extensions-header,
-.app-ext-home-header {
+.app-ext-common-header {
   .search {
     width: (250*@rem);
     margin: 0 auto;
   }
 
+  > .search-box,
   > .nav,
   > .title,
   > .toolbar {
-    width: (200*@rem);
+    flex: 1;
   }
 
   > .toolbar {

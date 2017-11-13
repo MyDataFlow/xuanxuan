@@ -10,6 +10,7 @@ import API from '../../network/api';
 import MDIFileIcon from '../../utils/mdi-file-icon';
 import StringHelper from '../../utils/string-helper';
 import UserAvatar from './user-avatar';
+import DateHelper from '../../utils/date-helper';
 
 class FileListItem extends Component {
     static propTypes = {
@@ -17,12 +18,14 @@ class FileListItem extends Component {
         smallIcon: PropTypes.bool,
         showSender: PropTypes.bool,
         className: PropTypes.string,
+        showDate: PropTypes.bool,
     };
 
     static defaultProps = {
         className: 'flex-middle',
         smallIcon: false,
         showSender: false,
+        showDate: false,
     };
 
     constructor(props) {
@@ -72,6 +75,7 @@ class FileListItem extends Component {
             className,
             smallIcon,
             showSender,
+            showDate,
             ...other
         } = this.props;
 
@@ -111,6 +115,7 @@ class FileListItem extends Component {
                     {fileStatus}
                     {sender ? <span><UserAvatar size={16} user={sender} /> <small className="muted">{sender.displayName}</small></span> : null}
                     <span className="muted small">{StringHelper.formatBytes(file.size)}</span>
+                    {showDate && <span className="small muted">{DateHelper.formatDate(file.date)}</span>}
                 </div>
             </div>
             {actions && <div className="actions">{actions}</div>}

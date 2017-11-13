@@ -47,12 +47,12 @@ export default class ExitsHomeView extends Component {
         const apps = search ? Exts.all.searchApps(search) : Exts.all.apps;
 
         return (<div className={HTML.classes('app-ext-home', className)}>
-            <header className="app-ext-home-header has-padding heading divider">
-                <div className="title text-gray small flex-none">{Lang.format(search ? 'ext.home.findAppsCount.format' : 'ext.home.appsCount.format', apps.length)}</div>
-                <div className="flex-auto">
+            <header className="app-ext-home-header app-ext-common-header has-padding heading divider">
+                <div className="title text-gray small">{Lang.format(search ? 'ext.home.findAppsCount.format' : 'ext.home.appsCount.format', apps.length)}</div>
+                <div className="search-box">
                     <SearchControl onSearchChange={this.handleSearchChange} />
                 </div>
-                <nav className="toolbar flex-none">
+                <nav className="toolbar">
                     <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.manageInExtensionsApp')}>
                         <Button type="a" href={`#${ROUTES.exts.app.id('extensions/type=app')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
                     </div>

@@ -6,14 +6,16 @@ import ROUTES from '../common/routes';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import Messager from '../../components/messager';
-import HomeView from './home';
-import ExtensionsView from './extensions';
+import HomeView from './app-home';
+import ExtensionsView from './app-extensions';
+import FilesView from './app-files';
 import Exts from '../../exts';
 import WebApp from './web-app';
 
 const buildInView = {
     home: HomeView,
-    extensions: ExtensionsView
+    extensions: ExtensionsView,
+    files: FilesView
 };
 
 export default class ExtsIndexView extends Component {

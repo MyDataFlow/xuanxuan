@@ -80,7 +80,7 @@ export default class ExtensionsView extends Component {
         const extensions = search ? Exts.all.search(search, type) : Exts.all.getTypeList(type);
 
         return (<div className={HTML.classes('app-ext-extensions', className)}>
-            <header className="app-ext-extensions-header has-padding heading divider">
+            <header className="app-ext-extensions-header app-ext-common-header has-padding heading divider">
                 <nav className="nav">
                     {
                         extensionTypes.map(extType => {
@@ -88,10 +88,10 @@ export default class ExtensionsView extends Component {
                         })
                     }
                 </nav>
-                <div className="flex-auto">
+                <div className="search-box">
                     <SearchControl onSearchChange={this.handleSearchChange} />
                 </div>
-                <nav className="toolbar flex-none">
+                <nav className="toolbar">
                     <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
                         <Button onClick={this.handleInstallBtnClick} className="rounded outline green hover-solid" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
                     </div>

@@ -27,7 +27,7 @@ class FileList extends Component {
             className={HTML.classes('app-file-list list', className)}
         >
             {
-                files.map(file => (<FileListItem {...listItemProps} key={file.id} file={file} />))
+                files && files.map(file => (<FileListItem {...listItemProps} key={file.id} file={file} />))
             }
         </div>);
     }
