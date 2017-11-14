@@ -68,6 +68,10 @@ const lang = {
     string,
     error,
 
+    get data() {
+        return langData;
+    },
+
     get name() {
         return currentLangName;
     }
