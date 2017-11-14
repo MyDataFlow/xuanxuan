@@ -527,16 +527,13 @@ class Chat extends Entity {
                     checkMessage.reset(message);
                 } else {
                     this._messages.push(message);
-                    newMessageCount++;
+                    newMessageCount += 1;
                     if (!localMessage && userId !== message.senderId) {
                         message.unread = true;
-                        noticeCount++;
+                        noticeCount += 1;
                     } else {
                         message.unread = false;
                     }
-                    // if(message.unread) {
-                    //     noticeCount++;
-                    // }
                 }
                 if (lastActiveTime < message.date) {
                     lastActiveTime = message.date;
