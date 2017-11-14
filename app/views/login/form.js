@@ -166,12 +166,14 @@ class FormView extends Component {
         const {serverUrl, account} = this.state;
         const identify = (serverUrl && account) ? User.createIdentify(serverUrl, account) : null;
         SwapUserDialog.show(identify, user => {
-            this.setState({
+            const newState = {
                 serverUrl: simpleServerUrl(user.serverUrl),
                 account: user.account,
                 password: user.passwordMD5WithFlag,
                 message: ''
-            });
+            };
+            newState.submitable = StringHelper.isNotEmpty(newState.serverUrl) && StringHelper.isNotEmpty(newState.account) && StringHelper.isNotEmpty(newState.password);
+            this.setState(newState);
         });
     }
 
@@ -212,7 +214,7 @@ class FormView extends Component {
             <button
                 type="button"
                 disabled={!this.state.submitable || this.state.logining}
-                className={HTML.classes('btn block rounded space-sm', this.state.submitable ? 'primary' : 'gray')}
+                className={HTML.classes('btn block rounded space-sm', this.state.submitable ? 'primary outline hover-solid' : 'gray')}
                 onClick={this.handleLoginBtnClick}
             >
                 {Lang.string(this.state.logining ? 'login.btn.logining' : 'login.btn.label')}
