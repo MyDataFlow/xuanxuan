@@ -4,7 +4,9 @@ const calcConditionScore = (condition, key, obj) => {
     if (source === undefined || source === null) {
         return score;
     }
-    source = `${source}`;
+    if (typeof source === 'number') {
+        source = `${source}`;
+    }
     let searchKey = key;
     if (condition.prefix) {
         if (key.startsWith(condition.prefix) && key.length > condition.prefix.length) {
