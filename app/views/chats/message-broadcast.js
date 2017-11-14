@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Avatar from '../../components/avatar';
 import App from '../../core';
+import StringHelper from '../../utils/string-helper';
 
 class MessageBroadcast extends Component {
     static propTypes = {
@@ -30,7 +31,7 @@ class MessageBroadcast extends Component {
         } = this.props;
 
         let content = message.renderedTextContent(App.im.ui.linkMembersInText);
-        if (prefix !== undefined) {
+        if (StringHelper.isNotEmpty(prefix)) {
             content = prefix + content;
         }
 
