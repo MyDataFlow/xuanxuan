@@ -337,7 +337,8 @@ class ChatMessage extends Entity {
             send: content.send,
             type: content.type,
             id: content.id,
-            time: content.time
+            time: content.time,
+            isImage: content.type && content.type.startsWith('image')
         });
         this._fileContent = content;
     }

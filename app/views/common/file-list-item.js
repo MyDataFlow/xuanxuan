@@ -139,7 +139,7 @@ class FileListItem extends Component {
             {...other}
             className={HTML.classes('app-file-list-item item row flex-middle single', className)}
         >
-            {smallIcon ? null : <Avatar skin={{code: ext, pale: true}} className="circle flex-none" icon={MDIFileIcon.getIcon(ext)} />}
+            {smallIcon ? null : <Avatar skin={{code: ext, pale: true}} className="flex-none" icon={MDIFileIcon.getIcon(ext)} />}
             <div className="content">
                 <div className="title">{fileName}</div>
                 <div className="sub-content">

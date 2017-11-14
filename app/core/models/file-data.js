@@ -146,6 +146,11 @@ export default class FileData extends Entity {
         this.$set('type', type);
     }
 
+    get isImage() {
+        const type = this.type;
+        return type && type.startsWith('image');
+    }
+
     get size() {
         return this.$get('size');
     }
