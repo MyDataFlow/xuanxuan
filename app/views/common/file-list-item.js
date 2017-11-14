@@ -12,6 +12,8 @@ import StringHelper from '../../utils/string-helper';
 import UserAvatar from './user-avatar';
 import DateHelper from '../../utils/date-helper';
 
+const isBrowserPlatform = Platform.type === 'browser';
+
 class FileListItem extends Component {
     static propTypes = {
         file: PropTypes.object.isRequired,
@@ -31,8 +33,32 @@ class FileListItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            download: false
+            download: false,
+            localPath: '',
         };
+    }
+
+    componentDidMount() {
+        this.checkLocalPath();
+    }
+
+    componentDidUpdate() {
+        this.checkLocalPath();
+    }
+
+    checkLocalPath() {
+        const {file} = this.props;
+        const {localPath} = this.state;
+        if (!isBrowserPlatform && file.send === true && localPath !== false && !localPath) {
+            API.isFileExists(file, App.user).then(existsPath => {
+                this.setState({localPath: existsPath});
+            }).catch(error => {
+                if (DEBUG) {
+                    console.error('API.isFileExists error', error);
+                }
+                this.setState({localPath: false});
+            });
+        }
     }
 
     handleDownloadBtnClick(file) {
@@ -44,7 +70,7 @@ class FileListItem extends Component {
                     API.downloadFile(App.user, file, progress => {
                         this.setState({download: progress});
                     }).then(theFile => {
-                        this.setState({download: false});
+                        this.setState({download: false, localPath: filename});
                         return Messager.show(Lang.format('file.fileSavedAt.format', filename), {
                             actions: [{
                                 label: Lang.string('file.open'),
@@ -90,12 +116,17 @@ class FileListItem extends Component {
             actions = <Avatar className="avatar secondary outline small circle" label={`${percent}%`} />;
         } else if (file.send === true) {
             file.url = API.createFileDownloadUrl(App.profile.user, file);
-            if (Platform.type === 'browser') {
+            if (isBrowserPlatform) {
                 actions = <div className="hint--top" data-hint={Lang.string('file.download')}><a href={file.url} download={fileName} target="_blank" className="btn iconbutton text-primary rounded"><Icon name="download" /></a></div>;
             } else {
                 if (this.state.download !== false) {
                     fileStatus = <span className="text-primary small">{Lang.string('file.downloading')} </span>;
                     actions = <Avatar className="avatar secondary outline small circle" label={Math.floor(this.state.download) + '%'} />;
+                } else if(this.state.localPath) {
+                    actions = [
+                        <div key="action-open" className="hint--top" data-hint={Lang.string('file.open')}><button onClick={Platform.ui.openFileItem.bind(this, this.state.localPath)} type="button" className="btn iconbutton text-primary rounded"><Icon name="open-in-app" /></button></div>,
+                        <div key="action-open-folder" className="hint--top-left" data-hint={Lang.string('file.openFolder')}><button onClick={Platform.ui.showItemInFolder.bind(this, this.state.localPath)} type="button" className="btn iconbutton text-primary rounded"><Icon name="folder-outline" /></button></div>
+                    ];
                 } else {
                     actions = <div className="hint--top" data-hint={Lang.string('file.download')}><button onClick={this.handleDownloadBtnClick.bind(this, file)} type="button" className="btn iconbutton text-primary rounded"><Icon name="download" /></button></div>;
                 }

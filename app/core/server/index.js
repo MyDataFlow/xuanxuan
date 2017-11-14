@@ -1,6 +1,6 @@
 import compareVersions from 'compare-versions';
-import Config from 'Config';
 import Platform from 'Platform';
+import pkg from '../../package.json';
 import Socket from '../../network/socket';
 import serverHandlers from './server-handlers';
 import profile from '../profile';
@@ -23,21 +23,23 @@ profile.onSwapUser(user => {
     socket.close();
 });
 
+const MIN_SUPPORT_VERSION = '1.2.0';
+
 const checkServerVersion = serverVersion => {
-    if(!serverVersion) {
+    if (!serverVersion) {
         return 'SERVER_VERSION_UNKNOWN';
     }
-    if(serverVersion[0].toLowerCase() === 'v') {
+    if (serverVersion[0].toLowerCase() === 'v') {
         serverVersion = serverVersion.substr(1);
     }
-    if(compareVersions(serverVersion, '1.1.0') < 0) {
+    if (compareVersions(serverVersion, MIN_SUPPORT_VERSION) < 0) {
         const error = new Error('SERVER_VERSION_NOT_SUPPORT');
-        error.formats = [Config.pkg.version, serverVersion, '1.1.0'];
+        error.formats = [pkg.version, serverVersion, MIN_SUPPORT_VERSION];
         return error;
     }
-    if(Platform.type === 'browser' && compareVersions(serverVersion, '1.2.0') < 0) {
+    if (Platform.type === 'browser' && compareVersions(serverVersion, '1.2.0') < 0) {
         const error = new Error('SERVER_VERSION_NOT_SUPPORT_IN_BROWSER');
-        error.formats = [Config.pkg.version, serverVersion, '1.2.0'];
+        error.formats = [pkg.version, serverVersion, '1.2.0'];
         return error;
     }
     return false;
@@ -46,23 +48,23 @@ const checkServerVersion = serverVersion => {
 const login = (user) => {
     user = profile.createUser(user);
 
-    if(user) {
+    if (user) {
         user = profile.setUser(user);
     } else {
         user = profile.user;
     }
-    if(DEBUG) {
+    if (DEBUG) {
         console.collapse('Server.login', 'tealBg', user.identify, 'tealPale');
         console.log('user', user);
         console.groupEnd();
     }
-    if(!user) {
-        let error = new Error('User is not set.');
+    if (!user) {
+        const error = new Error('User is not set.');
         error.code = 'USER_INFO_REQUIRED';
         return Promise.reject(error);
     }
-    if(user.isLogging) {
-        let error = new Error('Last login request not finish, please wait a minute.');
+    if (user.isLogging) {
+        const error = new Error('Last login request not finish, please wait a minute.');
         error.code = 'SERVER_IS_BUSY';
         return Promise.reject(error);
     }
@@ -70,7 +72,7 @@ const login = (user) => {
     user.beginLogin();
     return limitTimePromise(API.requestServerInfo(user), TIMEOUT).then(user => {
         const versionError = checkServerVersion(user.serverVersion);
-        if(versionError) {
+        if (versionError) {
             return Promise.reject(versionError);
         }
         return socket.login(user, {onClose: (socket, code, reason, unexpected) => {
@@ -103,7 +105,7 @@ const onUserLoginout = listener => {
 const logout = () => {
     notice.update();
     socket.logout();
-    if(profile.user) {
+    if (profile.user) {
         profile.user.markUnverified();
     }
 };

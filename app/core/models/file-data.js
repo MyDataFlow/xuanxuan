@@ -23,7 +23,6 @@ export default class FileData extends Entity {
         cgid: {type: 'string', indexed: true},
         senderId: {type: 'int', indexed: true},
         size: {type: 'int', indexed: true},
-        time: {aliasFor: 'date'},
         date: {type: 'timestamp', indexed: true},
         type: {type: 'string', indexed: true},
         name: {type: 'string', indexed: true},
@@ -53,6 +52,9 @@ export default class FileData extends Entity {
 
     constructor(data, entityType = FileData.NAME) {
         super(data, entityType);
+        if (data.time) {
+            this.date = data.time;
+        }
     }
 
     get schema() {
@@ -98,7 +100,7 @@ export default class FileData extends Entity {
     }
 
     get time() {
-        return this.date;
+        return Math.floor(this.date / 1000);
     }
 
     set time(time) {

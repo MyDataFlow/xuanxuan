@@ -107,7 +107,8 @@ const API = {
     createFileDownloadUrl,
     getRanzhiServerInfo,
     ranzhiServerLogin,
-    changeRanzhiUserPassword
+    changeRanzhiUserPassword,
+    isFileExists: Platform.net.isFileExists || (() => false)
 };
 
 if (DEBUG) {
