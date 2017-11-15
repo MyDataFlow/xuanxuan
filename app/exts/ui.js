@@ -42,6 +42,11 @@ const openApp = (name, pageName = null, params = null) => {
         if (theApp) {
             theOpenedApp = new OpenedApp(theApp, pageName, params);
             openedApps.push(theOpenedApp);
+            if (DEBUG) {
+                console.collapse('Extension Open App', 'greenBg', id, 'greenPale');
+                console.trace('app', theOpenedApp);
+                console.groupEnd();
+            }
         } else {
             if (DEBUG) {
                 console.color('Extension', 'greenBg', name, 'redPale', `Cannot open app '${name}', because cannot find it.`);
@@ -57,7 +62,7 @@ const openApp = (name, pageName = null, params = null) => {
     }
     currentOpenedApp = theOpenedApp;
     if (DEBUG) {
-        console.collapse('Extension', 'greenBg', id, 'greenPale', 'Opened', 'green');
+        console.collapse('Extension Active App', 'greenBg', id, 'greenPale');
         console.trace('app', theOpenedApp);
         console.groupEnd();
     }

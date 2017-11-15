@@ -26,7 +26,11 @@ buildIns.forEach((buildIn, idx) => {
 // TODO: Load other exts here
 exts.push(...db.installs);
 
-exts.sort((x, y) => (x.installTime - y.installTime));
+exts.sort((x, y) => {
+    let result = (x.devPath ? 1 : 0) - (y.devPath ? 1 : 0);
+    result = x.installTime - y.installTime;
+    return result;
+});
 
 // Grouped extensions
 let apps = exts.filter(x => x.type === 'app');
@@ -90,6 +94,15 @@ const searchApps = keys => {
 const onExtensionChange = listener => {
     return Events.on(EVENT.onChange, listener);
 };
+
+if (DEBUG) {
+    console.collapse('Extensions Init', 'greenBg', `Total: ${exts.length}, Apps: ${apps.length}, Plugins: ${plugins.length}, Themes: ${themes.length}`, 'greenPale');
+    console.log('exts', exts);
+    console.log('apps', apps);
+    console.log('themes', themes);
+    console.log('plugins', plugins);
+    console.groupEnd();
+}
 
 export default {
     get exts() {

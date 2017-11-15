@@ -24,7 +24,9 @@ const saveInstall = extension => {
     if (alreadyInstalled) {
         return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
     }
-    extension.installTime = new Date().getTime();
+    if (extension.installTime === undefined) {
+        extension.installTime = new Date().getTime();
+    }
     installs.push(extension);
     saveToStore();
     if (onChangeListener) {

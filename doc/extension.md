@@ -12,19 +12,22 @@
 
 ```json
 {
-    // 扩展的名称，扩展名称只能包含字母、数字、短横线及下划线
+    // 扩展的名称，扩展名称只能包含字母、数字、短横线及下划线，且第一个字符必须为字母
     "name": "simple-extension", 
 
     // 扩展在界面上显示的名称
     "displayName": "简单扩展",
 
     // 扩展的描述或介绍文本
-    "description": "这是一个简单扩展对例子",
+    "description": "这是一个简单扩展的例子。",
 
     // 扩展配置
     "xxext": {
 
-        // 扩展类型
+        // 扩展类型，目前支持的类型包括：
+        //   * app    -  应用扩展
+        //   * plugin -  插件扩展
+        //   * theme  -  主题扩展
         "type": "app",
 
         // 扩展图标，可以使用如下值
@@ -34,10 +37,10 @@
         // 如果不指定则会使用扩展图标
         "icon": "mdi-star",
 
-        // 扩展显示颜色，可能被用到图标上
+        // 扩展显示颜色，可能被用到自动生成的图标上或作为部分界面背景
         "accentColor": "#aa00ff",
 
-        // 扩展类型 app - 应用界面类型
+        // 针对扩展类型 app - 应用界面类型
         // 可选值包括：
         //   * insideView：提供 React component 作为视图
         //   * webView：完整的网页视图
@@ -48,20 +51,20 @@
         //   * 使用相对扩展包目录的相对地址，通常指向一个 html 文件，例如 lib/page/index.html
         "webViewUrl": "http://zui.sexy/m",
 
-        // 扩展类型 app - 应用图标，可以使用如下值
+        // 针对扩展类型 app - 应用图标，可以使用如下值
         //   * 使用 Material Design Icons (https://materialdesignicons.com/)，使用 mdi- 前缀，例如 mdi-star
         //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/img/icon.png
         //   * 使用相对扩展包目录的相对地址，例如 img/icon.png
         // 如果不指定则会使用扩展图标
         "appIcon": "mdi-star",
 
-        // 扩展类型 app - 应用配色，可能被用到图标上，如果不指定会使用扩展的 accentColor
+        // 针对扩展类型 app - 应用配色，可能被用到图标上，如果不指定会使用扩展的 accentColor
         "appAccentColor": "#aa00ff",
 
-        // 扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff
+        // 针对扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff
         "appBackColor": "#fff",
 
-        // 扩展类型 app - 应用子界面，允许在独立的窗口或标签页中打开
+        // 针对扩展类型 app - 应用子界面，允许在独立的窗口或标签页中打开
         "appPages": {
 
             // pageName 为对应的子界面名称，名称只能包含字母、数字、短横线及下划线
@@ -80,11 +83,11 @@
             // ... 更多子界面配置
         },
 
-        // 扩展类型 plugin 或 app - 应用主要入口脚本文件位置，可以包含以下格式的地址：
+        // 针对扩展类型 plugin 或 app - 应用主要入口脚本文件位置，可以包含以下格式的地址：
         //   * 使用相对扩展包目录的相对地址，例如 lib/index.js
         "main": "lib/index.js",
 
-        // 扩展类型 theme - 主题列表
+        // 针对扩展类型 theme - 主题列表
         // 通过一个对象数组，声明多个主题配置
         "themes": [
             {
@@ -148,6 +151,9 @@
 
         // 扩展所支持的平台
         "platform": "electron,nwjs",
+
+        // 扩展所依赖的其他扩展
+        "extensions": [],
     },
 
     // 扩展版权声明
@@ -169,7 +175,7 @@
 [+] extension-dir/
     - package.json    描述文件（必须）
     - icon.png        扩展图标文件 (必须)
-    - README.md       说明文件 （必须）
+    - README.md       说明文件 （不是必须，但推荐）
     - index.js        扩展主入口文件（当扩展类型为插件时必须提供）
     - theme.css       扩展主题样式表（当扩展类型为主题时必须提供）
     ... 其他文件目录
@@ -268,7 +274,7 @@ module.export = {
 
 ## 全局扩展对象
 
-在扩展主入口模块或新开 WebView 窗口中都可以访问全局扩展对象 `global.xxext`，全局扩展对象包含了喧喧所有内置等关键模块，主要包括如下内容：
+在扩展主入口模块或新开 WebView 窗口中都可以访问全局扩展对象 `global.Xext`，全局扩展对象包含了喧喧所有内置的关键模块，主要包括如下内容：
 
 <table>
   <thead>

@@ -7,7 +7,7 @@ import db from './extensions-db';
 import {createExtension} from './extension';
 
 const createSavePath = extension => {
-    return Path.join(env.dataPath, 'xexts', extension.name);
+    return extension.devPath || Path.join(env.dataPath, 'xexts', extension.name);
 };
 
 const uninstall = extension => {
@@ -31,11 +31,14 @@ const extractInstallFile = filePath => {
     });
 };
 
-const installFromDir = (dir, deleteDir = false) => {
+const installFromDir = (dir, deleteDir = false, devMode = false) => {
     const pkgFilePath = Path.join(dir, 'package.json');
     let extension = null;
     return fse.readJSON(pkgFilePath).then(pkg => {
         extension = createExtension(pkg);
+        if (devMode) {
+            extension.devPath = dir;
+        }
         return db.saveInstall(extension);
     }).then(extension => {
         const savedPath = createSavePath(extension);
@@ -44,12 +47,16 @@ const installFromDir = (dir, deleteDir = false) => {
         });
     }).then(() => {
         if (deleteDir) {
-            return fse.remove(dir);
+            return fse.remove(dir).then(() => {
+                return Promise.resolve(extension);
+            });
         }
-        return Promise.resolve();
-    }).then(() => {
         return Promise.resolve(extension);
     });
+};
+
+const installFromDevDir = (dir) => {
+    return installFromDir(dir, false, true);
 };
 
 const installFromXextFile = filePath => {
@@ -58,13 +65,13 @@ const installFromXextFile = filePath => {
     });
 };
 
-const openInstallDialog = (callback) => {
-    dialog.showOpenDialog('.xext,.json,.zip', files => {
+const openInstallDialog = (callback, devMode = false) => {
+    dialog.showOpenDialog(devMode ? '.json' : '.xext,.json,.zip', files => {
         if (files.length) {
             const filePath = files[0].path;
             const extName = Path.extname(filePath).toLowerCase();
             if (extName === '.json' && Path.basename(filePath) === 'package.json') {
-                installFromDir(Path.dirname(filePath)).then(extension => {
+                installFromDir(Path.dirname(filePath), false, devMode).then(extension => {
                     if (callback) callback(extension);
                 }).catch(error => {
                     if (callback) callback(false, error);
@@ -100,5 +107,6 @@ export default {
     installFromXextFile,
     openInstallDialog,
     loadReadmeMarkdown,
+    installFromDevDir,
 };
 

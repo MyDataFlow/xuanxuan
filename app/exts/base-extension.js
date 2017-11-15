@@ -48,10 +48,6 @@ export default class Extension {
         this._config = new ExtensionConfig(this.name, this.configurations);
 
         this._data = Object.assign({}, data);
-
-        if (!this.lazy) {
-            this.loadModule();
-        }
     }
 
     addError(name, error) {
@@ -151,6 +147,14 @@ export default class Extension {
         this._data.installTime = time;
     }
 
+    get devPath() {
+        return this._data.devPath;
+    }
+
+    set devPath(time) {
+        this._data.devPath = time;
+    }
+
     get hasModule() {
         return this.mainFile;
     }
@@ -158,14 +162,22 @@ export default class Extension {
     /**
      * 重新载入扩展
      */
-    loadModule() {
+    loadModule(api) {
         if (this.mainFile) {
             const start = new Date().getTime();
             this._module = loadExtensionModule(this.name, this.mainFile);
-            this._loadTime = new Date().getTime() - start;
 
             if (this._module && this._module.onAttach) {
-                this._module.onAttach(this);
+                this._module.onAttach(api, this);
+            }
+
+            this._loadTime = new Date().getTime() - start;
+
+            if (DEBUG) {
+                console.collapse('Extension Attach', 'greenBg', this.name, 'greenPale', `spend time: ${this._loadTime}ms`, 'orange');
+                console.log('extension', this);
+                console.log('module', this._module);
+                console.groupEnd();
             }
         }
         return this._module;
@@ -176,6 +188,11 @@ export default class Extension {
             this._module.onDetach(this);
         }
         this._module = null;
+        if (DEBUG) {
+            console.collapse('Extension Detach', 'greenBg', this.name, 'greenPale');
+            console.log('extension', this);
+            console.groupEnd();
+        }
     }
 
     /**
