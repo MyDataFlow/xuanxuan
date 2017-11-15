@@ -71,7 +71,7 @@ export default class ExtensionListItem extends Component {
                 <div className="small">{isDev ? <span><small className="label primary circle">{Lang.string('ext.extensions.developing')}</small> &nbsp;</span> : null}{typeLabelView}<span className="text-gray">{extension.author ? `@${extension.authorName}` : ''}</span></div>
                 {isDev && <div className="has-padding small infos">
                     <ul className="no-margin">
-                        <li><strong>{Lang.string('ext.extension.loadPath')}</strong>: <span className="code">{extension.devPath}</span></li>
+                        <li><strong>{Lang.string('ext.extension.loadPath')}</strong>: <span className="code">{extension.localPath}</span></li>
                         <li><strong>{Lang.string('ext.extension.installTime')}</strong>: <span className="code">{DateHelper.formatDate(extension.installTime, 'yyyy-MM-dd hh:mm:ss')}</span></li>
                         <li><strong>{Lang.string('ext.extension.updateTime')}</strong>: <span className="code">{DateHelper.formatDate(extension.updateTime, 'yyyy-MM-dd hh:mm:ss')}</span></li>
                         {extension.loadTime ? <li><strong>{Lang.string('ext.extension.loadTime')}</strong>: <span className="code">{extension.loadTime}</span></li> : null}
@@ -82,7 +82,7 @@ export default class ExtensionListItem extends Component {
                     <ul className="no-margin">
                         {
                             extension.errors.map(error => {
-                                return <li><strong className="code">{error.name}</strong>: {error.error}</li>;
+                                return <li key={error.name}><strong className="code">{error.name}</strong>: {error.error}</li>;
                             })
                         }
                     </ul>

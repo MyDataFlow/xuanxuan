@@ -27,8 +27,7 @@ const saveInstall = (extension, override = false) => {
         return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
     }
 
-    extension.updateTime = new Date().getTime();
-    if (oldExtensionIndex) {
+    if (oldExtensionIndex > -1) {
         const oldExtension = installs[oldExtensionIndex];
         extension.installTime = oldExtension.installTime;
         extension.updateTime = new Date().getTime();

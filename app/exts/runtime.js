@@ -7,7 +7,7 @@ global.Xext = Xext;
 // load exts modules
 const loadModules = () => {
     Exts.exts.forEach(ext => {
-        if (ext.devPath) {
+        if (ext.isDev) {
             manager.reloadDevExtension(ext);
         }
 

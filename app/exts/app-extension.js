@@ -1,3 +1,4 @@
+import Path from 'path';
 import Extension from './base-extension';
 
 export const APP_TYPES = {
@@ -35,11 +36,22 @@ export default class AppExtension extends Extension {
         return this._pkg.webViewUrl;
     }
 
-    get appIcon() {return this._pkg.appIcon || this._pkg.icon;}
     get appAccentColor() {return this._pkg.appAccentColor || this._pkg.accentColor;}
     get appBackColor() {return this._pkg.appBackColor;}
 
-    get icon() {return this._pkg.icon || this._pkg.appIcon;}
+    get appIcon() {
+        const appIcon = this._pkg.appIcon;
+        if (appIcon && !this._appIcon) {
+            if (appIcon.startsWith('~/')) {
+                this._appIcon = Path.join(this.localPath, appIcon.substr(2));
+            } else {
+                this._appIcon = appIcon;
+            }
+        }
+        return this._appIcon || this.icon;
+    }
+
+    get icon() {return super.icon || this.appIcon;}
     get accentColor() {return this._pkg.accentColor || this._pkg.appAccentColor;}
 
     get MainView() {

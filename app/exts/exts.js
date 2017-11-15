@@ -27,7 +27,7 @@ buildIns.forEach((buildIn, idx) => {
 exts.push(...db.installs);
 
 exts.sort((x, y) => {
-    let result = (y.devPath ? 1 : 0) - (x.devPath ? 1 : 0);
+    let result = (y.isDev ? 1 : 0) - (x.isDev ? 1 : 0);
     result = y.installTime - x.installTime;
     return result;
 });

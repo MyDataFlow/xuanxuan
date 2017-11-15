@@ -7,12 +7,12 @@ import db from './extensions-db';
 import {createExtension} from './extension';
 
 const createSavePath = extension => {
-    return extension.devPath || Path.join(env.dataPath, 'xexts', extension.name);
+    return extension.localPath || Path.join(env.dataPath, 'xexts', extension.name);
 };
 
 const uninstall = extension => {
     return db.removeInstall(extension).then(() => {
-        if (extension.devPath) {
+        if (extension.isDev) {
             return Promise.resolve();
         }
         const savedPath = createSavePath(extension);
@@ -34,16 +34,13 @@ const extractInstallFile = filePath => {
     });
 };
 
-const reloadDevExtension = (extension, path) => {
-    if (!path) {
-        path = extension.devPath;
-    }
+const reloadDevExtension = extension => {
+    const path = extension.localPath;
     if (path) {
         const pkgFilePath = Path.join(path, 'package.json');
         const pkg = fse.readJSONSync(pkgFilePath, {throws: false});
         if (pkg) {
-            extension = createExtension(pkg);
-            extension.devPath = path;
+            extension = createExtension(pkg, extension.data);
             db.saveInstall(extension, true);
             if (DEBUG) {
                 console.collapse('Extension Reload for Dev', 'greenBg', extension.name, 'greenPale');
@@ -58,16 +55,16 @@ const reloadDevExtension = (extension, path) => {
 
 const installFromDir = (dir, deleteDir = false, devMode = false) => {
     const pkgFilePath = Path.join(dir, 'package.json');
+    const savedPath = devMode ? dir : createSavePath(extension);
     let extension = null;
     return fse.readJSON(pkgFilePath).then(pkg => {
-        extension = createExtension(pkg);
-        if (devMode) {
-            extension.devPath = dir;
-        }
+        extension = createExtension(pkg, {
+            localPath: savedPath,
+            isDev: devMode
+        });
         return db.saveInstall(extension);
     }).then(() => {
         if (!devMode) {
-            const savedPath = createSavePath(extension);
             return fse.emptyDir(savedPath).then(() => {
                 return fse.copy(dir, savedPath);
             });

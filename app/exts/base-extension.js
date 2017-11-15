@@ -1,3 +1,4 @@
+import Path from 'path';
 import StringHelper from '../utils/string-helper';
 import loadExtensionModule from './extension-module-loader';
 import ExtensionConfig from './extension-config';
@@ -117,7 +118,6 @@ export default class Extension {
     }
 
     get pkg() {return this._pkg;}
-    get icon() {return this._pkg.icon;}
     get accentColor() {return this._pkg.accentColor;}
     get description() {return this._pkg.description;}
     get version() {return this._pkg.version;}
@@ -132,8 +132,16 @@ export default class Extension {
     get bugs() {return this._pkg.bugs;}
     get lazy() {return this._pkg.lazy;}
 
-    get isDev() {
-        return !!this.devPath;
+    get icon() {
+        const icon = this._pkg.icon;
+        if (icon && !this._icon) {
+            if (icon.startsWith('~/')) {
+                this._icon = Path.join(this.localPath, icon.substr(2));
+            } else {
+                this._icon = icon;
+            }
+        }
+        return this._icon;
     }
 
     get authorName() {
@@ -146,6 +154,10 @@ export default class Extension {
             data: this._data,
             pkg: this._pkg
         };
+    }
+
+    get data() {
+        return this._data;
     }
 
     get installTime() {
@@ -165,12 +177,29 @@ export default class Extension {
         this._data.updateTime = time;
     }
 
-    get devPath() {
-        return this._data.devPath;
+    // get devPath() {
+    //     return this.isDev ? this.localPath : null;
+    // }
+
+    // set devPath(devPath) {
+    //     this.localPath = devPath;
+    //     this.isDev = true;
+    // }
+
+    get localPath() {
+        return this._data.localPath;
     }
 
-    set devPath(time) {
-        this._data.devPath = time;
+    set localPath(localPath) {
+        this._data.localPath = localPath;
+    }
+
+    get isDev() {
+        return this._data.isDev;
+    }
+
+    set isDev(flag) {
+        this._data.isDev = flag;
     }
 
     get hasModule() {

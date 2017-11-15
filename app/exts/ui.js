@@ -181,8 +181,9 @@ const createSettingContextMenu = extension => {
 };
 
 const showDevFolder = extension => {
-    if (extension.devPath) {
-        Platform.ui.showItemInFolder(Path.join(extension.devPath, 'package.json'));
+    const localPath = extension.localPath;
+    if (localPath) {
+        Platform.ui.showItemInFolder(Path.join(localPath, 'package.json'));
         return true;
     }
     return false;
