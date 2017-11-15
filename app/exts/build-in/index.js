@@ -40,16 +40,6 @@ const exts = [{
     appAccentColor: '#ff9100',
     appType: 'insideView',
 }, {
-    name: 'firefoxSend',
-    displayName: Lang.string('exts.firefoxSend.label'),
-    description: Lang.string('exts.firefoxSend.desc'),
-    buildIn: {},
-    type: 'app',
-    appIcon: 'mdi-cube-send',
-    appAccentColor: '#ef5350',
-    appType: 'webView',
-    webViewUrl: 'https://send.firefox.com/'
-}, {
     name: 'zui',
     displayName: 'ZUI',
     description: '一个基于Bootstrap 深度定制开源前端实践方案',

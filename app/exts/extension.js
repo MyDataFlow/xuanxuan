@@ -3,10 +3,23 @@ import AppExtension from './app-extension';
 import PluginExtension from './plugin-extension';
 import ThemeExtension from './theme-extension';
 
-const createExtension = (pkg, data) => {
+const createExtension = (pkg, data, buildIn = false) => {
     if (pkg.pkg && !data) {
         data = pkg.data;
         pkg = pkg.pkg;
+    }
+
+    if (buildIn !== true) {
+        if (pkg && pkg.buildIn) {
+            delete pkg.buildIn;
+        }
+        if (data && data.buildIn) {
+            delete data.buildIn;
+        }
+    }
+
+    if (typeof data !== 'object') {
+        data = null;
     }
 
     switch (pkg.type) {

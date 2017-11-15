@@ -1,6 +1,6 @@
 import buildIns from './build-in';
-import {createExtension} from './extension';
 import Config from 'Config';
+import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';
 
@@ -20,15 +20,15 @@ buildIns.forEach((buildIn, idx) => {
     ['version', 'license', 'homepage', 'bugs', 'repository'].forEach(key => {
         buildIn[key] = Config.pkg[key];
     });
-    exts.push(createExtension(buildIn, {installTime: idx}));
+    exts.push(createExtension(buildIn, {installTime: idx}, true));
 });
 
-// TODO: Load other exts here
+// Load user installed extensions
 exts.push(...db.installs);
 
 exts.sort((x, y) => {
-    let result = (x.devPath ? 1 : 0) - (y.devPath ? 1 : 0);
-    result = x.installTime - y.installTime;
+    let result = (y.devPath ? 1 : 0) - (x.devPath ? 1 : 0);
+    result = y.installTime - x.installTime;
     return result;
 });
 
@@ -44,6 +44,13 @@ db.setOnChangeListener((ext, changeAction) => {
         const index = exts.findIndex(x => x.name === ext.name);
         if (index > -1) {
             exts.splice(index, 1);
+        }
+    } else if (changeAction === 'update') {
+        const index = exts.findIndex(x => x.name === ext.name);
+        if (index > -1) {
+            exts.splice(index, 1, ext);
+        } else {
+            exts.splice(0, 0, ext);
         }
     }
     apps = exts.filter(x => x.type === 'app');

@@ -104,9 +104,9 @@ export default class ExtensionDetail extends Component {
         if (extension.author || extension.publisher) {
             let authorView = null;
             if (extension.author && extension.publisher) {
-                authorView = `${Lang.string('ext.author')}: ${extension.author} · ${Lang.format('ext.publisher.format', extension.publisher)}`;
+                authorView = `${Lang.string('ext.author')}: ${extension.authorName} · ${Lang.format('ext.publisher.format', extension.publisher)}`;
             } else if (extension.author) {
-                authorView = `${Lang.string('ext.author')}: ${extension.author}`;
+                authorView = `${Lang.string('ext.author')}: ${extension.authorName}`;
             } else {
                 authorView = Lang.format('ext.publisher.format', extension.publisher);
             }

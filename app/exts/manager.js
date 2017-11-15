@@ -11,8 +11,11 @@ const createSavePath = extension => {
 };
 
 const uninstall = extension => {
-    const savedPath = createSavePath(extension);
     return db.removeInstall(extension).then(() => {
+        if (extension.devPath) {
+            return Promise.resolve();
+        }
+        const savedPath = createSavePath(extension);
         return fse.remove(savedPath);
     });
 };
@@ -31,6 +34,28 @@ const extractInstallFile = filePath => {
     });
 };
 
+const reloadDevExtension = (extension, path) => {
+    if (!path) {
+        path = extension.devPath;
+    }
+    if (path) {
+        const pkgFilePath = Path.join(path, 'package.json');
+        const pkg = fse.readJSONSync(pkgFilePath, {throws: false});
+        if (pkg) {
+            extension = createExtension(pkg);
+            extension.devPath = path;
+            db.saveInstall(extension, true);
+            if (DEBUG) {
+                console.collapse('Extension Reload for Dev', 'greenBg', extension.name, 'greenPale');
+                console.log('extension', extension);
+                console.groupEnd();
+            }
+            return extension;
+        }
+    }
+    return false;
+};
+
 const installFromDir = (dir, deleteDir = false, devMode = false) => {
     const pkgFilePath = Path.join(dir, 'package.json');
     let extension = null;
@@ -40,11 +65,14 @@ const installFromDir = (dir, deleteDir = false, devMode = false) => {
             extension.devPath = dir;
         }
         return db.saveInstall(extension);
-    }).then(extension => {
-        const savedPath = createSavePath(extension);
-        return fse.emptyDir(savedPath).then(() => {
-            return fse.copy(dir, savedPath);
-        });
+    }).then(() => {
+        if (!devMode) {
+            const savedPath = createSavePath(extension);
+            return fse.emptyDir(savedPath).then(() => {
+                return fse.copy(dir, savedPath);
+            });
+        }
+        return Promise.resolve(extension);
     }).then(() => {
         if (deleteDir) {
             return fse.remove(dir).then(() => {
@@ -108,5 +136,6 @@ export default {
     openInstallDialog,
     loadReadmeMarkdown,
     installFromDevDir,
+    reloadDevExtension,
 };
 

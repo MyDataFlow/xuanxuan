@@ -64,14 +64,25 @@ export default class ExtensionsView extends Component {
 
     handleExtensionItemClick(ext, e) {
         ExtensionDetailDialog.show(ext);
+        if (DEBUG) {
+            console.collapse('Extension View', 'greenBg', ext.displayName, 'greenPale');
+            console.log('extension', ext);
+            console.groupEnd();
+        }
     }
 
     handleInstallBtnClick = () => {
         Exts.ui.installExtension();
     }
 
-    handleMenuBtnClick = () => {
-
+    handleMenuBtnClick = e => {
+        const menu = [{
+            label: Lang.string('ext.extensions.installDevExtension'),
+            click: () => {
+                Exts.ui.installExtension(true);
+            }
+        }];
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
     }
 
     render() {
@@ -99,7 +110,7 @@ export default class ExtensionsView extends Component {
                     <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
                         <Button onClick={this.handleInstallBtnClick} className="rounded outline green hover-solid" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
                     </div>
-                    <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
+                    <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.moreActions')}>
                         <Button onClick={this.handleMenuBtnClick} className="rounded outline primary hover-solid" icon="menu" />
                     </div>
                 </nav>

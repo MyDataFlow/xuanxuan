@@ -5,10 +5,12 @@ const STORE_KEY = 'EXTENSIONS::database';
 
 let onChangeListener = null;
 
-const installs = Store.get(STORE_KEY, []).map(createExtension);
+const installs = Store.get(STORE_KEY, []).map(data => {
+    return createExtension(data);
+});
 
 const saveToStore = () => {
-    Store.set(STORE_KEY, installs.map(x => x.pkg));
+    Store.set(STORE_KEY, installs.map(x => x.storeData));
 };
 
 const getInstall = name => {
@@ -19,18 +21,22 @@ const getInstallIndex = name => {
     return installs.findIndex(x => x.name === name);
 };
 
-const saveInstall = extension => {
-    const alreadyInstalled = getInstall(extension.name);
-    if (alreadyInstalled) {
+const saveInstall = (extension, override = false) => {
+    const oldExtensionIndex = getInstallIndex(extension.name);
+    if (!override && oldExtensionIndex > -1) {
         return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
     }
     if (extension.installTime === undefined) {
         extension.installTime = new Date().getTime();
     }
-    installs.push(extension);
+    if (oldExtensionIndex) {
+        installs.splice(oldExtensionIndex, 1, extension);
+    } else {
+        installs.push(extension);
+    }
     saveToStore();
     if (onChangeListener) {
-        onChangeListener(extension, 'add');
+        onChangeListener(extension, oldExtensionIndex ? 'update': 'add');
     }
     return Promise.resolve(extension);
 };

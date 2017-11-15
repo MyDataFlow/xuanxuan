@@ -1,3 +1,5 @@
+import Platform from 'Platform';
+import Path from 'path';
 import {defaultApp, getApp} from './exts';
 import OpenedApp from './opened-app';
 import Lang from '../lang';
@@ -140,7 +142,7 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
     });
 };
 
-const installExtension = () => {
+const installExtension = (devMode = false) => {
     manager.openInstallDialog((extension, error) => {
         if (extension) {
             App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
@@ -151,7 +153,7 @@ const installExtension = () => {
             }
             App.ui.showMessger(msg, {type: 'danger'});
         }
-    });
+    }, devMode);
 };
 
 const createSettingContextMenu = extension => {
@@ -176,6 +178,14 @@ const createSettingContextMenu = extension => {
         });
     }
     return items;
+};
+
+const showDevFolder = extension => {
+    if (extension.devPath) {
+        Platform.ui.showItemInFolder(Path.join(extension.devPath, 'package.json'));
+        return true;
+    }
+    return false;
 };
 
 export default {
@@ -209,4 +219,6 @@ export default {
 
     installExtension,
     uninstallExtension,
+
+    showDevFolder,
 };

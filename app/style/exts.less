@@ -253,6 +253,11 @@
       transition: @animation-type @animation-speed-fast opacity;
     }
 
+    > .toolbar {
+      position: relative;
+      z-index: 10;
+    }
+
     &:hover {
       > .btn {
         opacity: 1;
@@ -270,6 +275,20 @@
     position: relative;
     top: (-1*@rem);
     z-index: 10;
+  }
+
+  .app-ext-list-item-dev {
+    width: 100%;
+    max-width: initial;
+    flex: auto;
+    margin-bottom: (10*@rem);
+    background-color: @color-pale;
+
+    .errors {
+      margin-top: (10*@rem);
+      background-color: @color-danger-pale;
+      border-left: (4*@rem) solid @color-red;
+    }
   }
 }
 

@@ -132,6 +132,15 @@ export default class Extension {
     get bugs() {return this._pkg.bugs;}
     get lazy() {return this._pkg.lazy;}
 
+    get isDev() {
+        return !!this.devPath;
+    }
+
+    get authorName() {
+        const author = this.author;
+        return author && (author.name || author);
+    }
+
     get storeData() {
         return {
             data: this._data,
