@@ -12,7 +12,7 @@ const MATCH_SCORE_MAP = [
 
 const CATEGORIES = [
     {name: 'doc', like: new Set(['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'key', 'page', 'number', 'pdf', 'txt', 'md', 'rtf', 'wps', 'html', 'htm', 'chtml', 'epub', ''])},
-    {name: 'image', like: new Set(['jpg', 'jpeg', 'sketch', 'psd', 'png', 'gif', 'tiff', 'ico', 'icns'])},
+    {name: 'image', like: new Set(['jpg', 'jpeg', 'sketch', 'psd', 'png', 'gif', 'tiff', 'ico', 'icns', 'svg'])},
     {name: 'program', like: new Set(['js', 'exe', 'app', 'dmg', 'msi', 'bat', 'sh'])}
 ];
 
