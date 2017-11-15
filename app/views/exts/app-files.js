@@ -53,7 +53,7 @@ export default class ExtensionsView extends Component {
 
     loadFiles(search = null, type = null) {
         if (this.state.loading) {
-            App.ui.showMessger(Lang.string('common.waiting'));
+            // App.ui.showMessger(Lang.string('common.waiting'));
             return;
         }
         const state = {search: this.state.search, type: this.state.type};
@@ -98,8 +98,8 @@ export default class ExtensionsView extends Component {
             showFiles = showFiles.slice(0, MAX_SHOW_FILES_COUNT);
         }
 
-        return (<div className={HTML.classes('app-ext-files', className)}>
-            <header className="app-ext-files-header app-ext-common-header has-padding heading divider">
+        return (<div className={HTML.classes('app-ext-files dock single column', className)}>
+            <header className="app-ext-files-header app-ext-common-header has-padding heading divider flex-none">
                 <nav className="nav">
                     {
                         fileTypes.map(fileType => {
@@ -111,12 +111,14 @@ export default class ExtensionsView extends Component {
                     <SearchControl onSearchChange={this.handleSearchChange} />
                 </div>
             </header>
-            {filesCount ? <div className="heading gray">
-                <div className="title strong muted small">{Lang.format('ext.files.findCount.format', filesCount)}</div>
-            </div> : null}
-            <FileList listItemProps={{showDate: true, showSender: true}} files={showFiles} className="app-ext-files-list multi-lines with-avatar" />
-            {showFiles.length < filesCount && <div className="heading divider-top"><small className="title muted">{Lang.format('ext.files.findToMany.format', filesCount, showFiles.length, filesCount - showFiles.length)}</small></div>}
-            {loading && <Spinner className="has-padding-lg" label={Lang.string('common.loading')} />}
+            <div className="flex-auto content-start scroll-y">
+                {filesCount ? <div className="heading gray">
+                    <div className="title strong muted small">{Lang.format('ext.files.findCount.format', filesCount)}</div>
+                </div> : null}
+                <FileList listItemProps={{showDate: true, showSender: true}} files={showFiles} className="app-ext-files-list multi-lines with-avatar" />
+                {showFiles.length < filesCount && <div className="heading divider-top"><small className="title muted">{Lang.format('ext.files.findToMany.format', filesCount, showFiles.length, filesCount - showFiles.length)}</small></div>}
+                {loading && <Spinner className="has-padding-lg" label={Lang.string('common.loading')} />}
+            </div>
         </div>);
     }
 }

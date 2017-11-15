@@ -46,8 +46,8 @@ export default class ExitsHomeView extends Component {
         const {search} = this.state;
         const apps = search ? Exts.all.searchApps(search) : Exts.all.apps;
 
-        return (<div className={HTML.classes('app-ext-home', className)}>
-            <header className="app-ext-home-header app-ext-common-header has-padding heading divider">
+        return (<div className={HTML.classes('app-ext-home dock column single', className)}>
+            <header className="app-ext-home-header app-ext-common-header has-padding heading divider flex-none">
                 <div className="title text-gray small">{Lang.format(search ? 'ext.home.findAppsCount.format' : 'ext.home.appsCount.format', apps.length)}</div>
                 <div className="search-box">
                     <SearchControl onSearchChange={this.handleSearchChange} />
@@ -61,7 +61,7 @@ export default class ExitsHomeView extends Component {
                     </div> */}
                 </nav>
             </header>
-            <div className="app-exts-apps row has-padding">
+            <div className="app-exts-apps row has-padding flex-auto scroll-y content-start">
                 {
                     apps.map(app => {
                         if (app.isFixed || app.hidden) {
@@ -71,7 +71,6 @@ export default class ExitsHomeView extends Component {
                     })
                 }
             </div>
-            <footer className="heading" />
         </div>);
     }
 }

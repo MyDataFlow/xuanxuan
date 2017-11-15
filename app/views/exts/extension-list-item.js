@@ -42,7 +42,7 @@ export default class ExtensionListItem extends Component {
                 <div className="small">{typeLabelView}<span className="text-gray">@{extension.author}</span></div>
             </div>
             {}
-            <Button onClick={onSettingBtnClick} icon="settings" className="iconbutton rounded primary outline" />
+            <Button onClick={onSettingBtnClick} icon="dots-vertical" className="iconbutton rounded primary outline" />
         </a>);
     }
 }

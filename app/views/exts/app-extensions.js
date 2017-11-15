@@ -70,6 +70,10 @@ export default class ExtensionsView extends Component {
         Exts.ui.installExtension();
     }
 
+    handleMenuBtnClick = () => {
+
+    }
+
     render() {
         const {
             className,
@@ -79,8 +83,8 @@ export default class ExtensionsView extends Component {
         const {search, type} = this.state;
         const extensions = search ? Exts.all.search(search, type) : Exts.all.getTypeList(type);
 
-        return (<div className={HTML.classes('app-ext-extensions', className)}>
-            <header className="app-ext-extensions-header app-ext-common-header has-padding heading divider">
+        return (<div className={HTML.classes('app-ext-extensions dock column single', className)}>
+            <header className="app-ext-extensions-header app-ext-common-header has-padding heading divider flex-none">
                 <nav className="nav">
                     {
                         extensionTypes.map(extType => {
@@ -95,9 +99,12 @@ export default class ExtensionsView extends Component {
                     <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
                         <Button onClick={this.handleInstallBtnClick} className="rounded outline green hover-solid" icon="package-variant" label={Lang.string('ext.extensions.installLocalExtension')} />
                     </div>
+                    <div className="nav-item has-padding-sm hint--left" data-hint={Lang.string('ext.extensions.installLocalExtTip')}>
+                        <Button onClick={this.handleMenuBtnClick} className="rounded outline primary hover-solid" icon="menu" />
+                    </div>
                 </nav>
             </header>
-            <div className="app-exts-list list has-padding multi-lines with-avatar">
+            <div className="app-exts-list list has-padding multi-lines with-avatar flex-auto scroll-y content-start">
                 <div className="heading">
                     <div className="title">{Lang.string(search ? 'ext.extensions.searchResult' : 'ext.extensions.installed')}{type ? ` - ${Lang.string('ext.type.' + type)}` : ''} ({extensions.length})</div>
                 </div>
