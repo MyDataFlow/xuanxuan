@@ -1,0 +1,22 @@
+{
+    "name": "firefox-send-example",
+    "displayName": "火狐传送",
+    "version": "1.0.0",
+    "description": "安全方便的发送文件给任何人。",
+    "type": "app",
+    "appIcon": "~/resources/icon.png",
+    "appAccentColor": "#0098fb",
+    "appType": "webView",
+    "author": {
+        "name": "Firefox Test Pilot"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://send.firefox.com/",
+    "repository": {
+        "url": "https://github.com/mozilla/send.git",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/mozilla/send/issues"
+    }
+}
