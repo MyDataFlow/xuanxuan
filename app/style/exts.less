@@ -217,6 +217,7 @@
 
   > .heading {
     width: 100%;
+    max-height: (40*@rem);
   }
 
   .app-ext-list-item {
@@ -277,17 +278,27 @@
     z-index: 10;
   }
 
-  .app-ext-list-item-dev {
+  > .app-ext-list-item-dev {
     width: 100%;
     max-width: initial;
     flex: auto;
-    margin-bottom: (10*@rem);
     background-color: @color-pale;
+    margin-bottom: (10*@rem);
+
+    + .app-ext-list-item-dev {
+      margin-top: (-10*@rem);
+    }
 
     .errors {
       margin-top: (10*@rem);
       background-color: @color-danger-pale;
-      border-left: (4*@rem) solid @color-red;
+      border-left: (4*@rem) solid @color-danger;
+    }
+
+    .infos {
+      margin-top: (10*@rem);
+      background-color: @color-info-pale;
+      border-left: (4*@rem) solid @color-info;
     }
   }
 }

@@ -154,6 +154,15 @@ export default class Extension {
 
     set installTime(time) {
         this._data.installTime = time;
+        this.updateTime = time;
+    }
+
+    get updateTime() {
+        return this._data.updateTime;
+    }
+
+    set updateTime(time) {
+        this._data.updateTime = time;
     }
 
     get devPath() {

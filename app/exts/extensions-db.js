@@ -26,12 +26,17 @@ const saveInstall = (extension, override = false) => {
     if (!override && oldExtensionIndex > -1) {
         return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
     }
-    if (extension.installTime === undefined) {
-        extension.installTime = new Date().getTime();
-    }
+
+    extension.updateTime = new Date().getTime();
     if (oldExtensionIndex) {
+        const oldExtension = installs[oldExtensionIndex];
+        extension.installTime = oldExtension.installTime;
+        extension.updateTime = new Date().getTime();
         installs.splice(oldExtensionIndex, 1, extension);
     } else {
+        if (extension.installTime === undefined) {
+            extension.installTime = new Date().getTime();
+        }
         installs.push(extension);
     }
     saveToStore();

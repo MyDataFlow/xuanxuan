@@ -6,6 +6,7 @@ import Icon from '../../components/icon';
 import Lang from '../../lang';
 import Exts from '../../exts';
 import App from '../../core';
+import DateHelper from '../../utils/date-helper';
 
 export default class ExtensionListItem extends Component {
     static propTypes = {
@@ -43,13 +44,15 @@ export default class ExtensionListItem extends Component {
             ...other,
         } = this.props;
 
+        const isDev = extension.isDev;
+
         let typeLabelView = null;
         if (showType) {
             typeLabelView = <span className="app-ext-list-item-type-label" style={{color: Exts.ui.typeColors[extension.type]}}>#{Lang.string(`ext.type.${extension.type}`)}</span>;
         }
 
         let actionsView = null;
-        if (extension.isDev) {
+        if (isDev) {
             actionsView = (<div className="toolbar row flex-none">
                 <div className="hint--top" data-hint={Lang.string('ext.extensions.reload')}><Button onClick={this.handleReloadBtnClick} icon="reload" className="iconbutton rounded" /></div>
                 <div className="hint--top" data-hint={Lang.string('ext.extensions.showFolder')}><Button onClick={this.handleShowFolderBtnClick} icon="folder-outline" className="iconbutton rounded" /></div>
@@ -60,13 +63,21 @@ export default class ExtensionListItem extends Component {
             actionsView = <Button onClick={onSettingBtnClick} icon="dots-vertical" className="iconbutton rounded" />;
         }
 
-        return (<a className={HTML.classes('app-ext-list-item', className, {'app-ext-list-item-dev': extension.isDev})} {...other}>
-            <Avatar className={'rounded shadow-1 flex-none' + (extension.isDev ? ' align-self-start' : '')} auto={extension.icon} skin={{code: extension.accentColor}} />
+        return (<a className={HTML.classes('app-ext-list-item', className, {'app-ext-list-item-dev': isDev})} {...other}>
+            <Avatar className={'rounded shadow-1 flex-none' + (isDev ? ' align-self-start' : '')} auto={extension.icon} skin={{code: extension.accentColor}} />
             <div className="content">
                 <div className="title"><strong>{extension.displayName}</strong>{extension.buildIn ? <span data-hint={Lang.string('ext.buildIn')} className="hint--top app-ext-list-item-buildIn-label"> <Icon name="star-circle icon-sm text-yellow" /></span> : null} &nbsp;<small className="text-gray">{extension.version ? `v${extension.version}` : ''}</small></div>
                 <div className="small text-ellipsis space-xs">{extension.description}</div>
-                <div className="small">{extension.isDev ? <span><small className="label primary circle">{Lang.string('ext.extensions.developing')}</small> &nbsp;</span> : null}{typeLabelView}<span className="text-gray">{extension.author ? `@${extension.authorName}` : ''}</span></div>
-                {extension.hasError && <div className="has-padding small errors">
+                <div className="small">{isDev ? <span><small className="label primary circle">{Lang.string('ext.extensions.developing')}</small> &nbsp;</span> : null}{typeLabelView}<span className="text-gray">{extension.author ? `@${extension.authorName}` : ''}</span></div>
+                {isDev && <div className="has-padding small infos">
+                    <ul className="no-margin">
+                        <li><strong>{Lang.string('ext.extension.loadPath')}</strong>: <span className="code">{extension.devPath}</span></li>
+                        <li><strong>{Lang.string('ext.extension.installTime')}</strong>: <span className="code">{DateHelper.formatDate(extension.installTime, 'yyyy-MM-dd hh:mm:ss')}</span></li>
+                        <li><strong>{Lang.string('ext.extension.updateTime')}</strong>: <span className="code">{DateHelper.formatDate(extension.updateTime, 'yyyy-MM-dd hh:mm:ss')}</span></li>
+                        {extension.loadTime ? <li><strong>{Lang.string('ext.extension.loadTime')}</strong>: <span className="code">{extension.loadTime}</span></li> : null}
+                    </ul>
+                </div>}
+                {(isDev && extension.hasError) && <div className="has-padding small errors">
                     <div>{Lang.string('ext.extension.pkgHasError')}</div>
                     <ul className="no-margin">
                         {
