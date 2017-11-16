@@ -74,7 +74,7 @@ export default class ExtensionListItem extends Component {
                         <li><strong>{Lang.string('ext.extension.loadPath')}</strong>: <span className="code">{extension.localPath}</span></li>
                         <li><strong>{Lang.string('ext.extension.installTime')}</strong>: <span className="code">{DateHelper.formatDate(extension.installTime, 'yyyy-MM-dd hh:mm:ss')}</span></li>
                         <li><strong>{Lang.string('ext.extension.updateTime')}</strong>: <span className="code">{DateHelper.formatDate(extension.updateTime, 'yyyy-MM-dd hh:mm:ss')}</span></li>
-                        {extension.loadTime ? <li><strong>{Lang.string('ext.extension.loadTime')}</strong>: <span className="code">{extension.loadTime}ms</span></li> : null}
+                        {extension.loadTime ? <li><strong>{Lang.string('ext.extension.loadTime')}</strong>: <span className={'code' + (extension.loadTime > 50 ? ' text-red' : '')}>{extension.loadTime}ms</span></li> : null}
                     </ul>
                 </div>}
                 {(isDev && extension.hasError) && <div className="has-padding small errors">
