@@ -1,5 +1,4 @@
-import fse, { exists } from 'fs-extra';
-import Request from 'request';
+import fse from 'fs-extra';
 import Path from 'path';
 import uuid from 'uuid/v4';
 import network from '../common/network';
