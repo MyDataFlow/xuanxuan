@@ -15,6 +15,7 @@ import ChatInvitePopover from '../../views/chats/chat-invite-popover';
 import ChatTipPopover from '../../views/chats/chat-tip-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
+import Markdown from '../../utils/markdown';
 import Emojione from '../../components/emojione';
 import CoreServer from '../server';
 import ChatChangeFontPopover from '../../views/chats/chat-change-font-popover';
@@ -400,6 +401,23 @@ const linkMembersInText = (text, format = '<a class="app-link {className}" data-
     return text;
 };
 
+let onRenderChatMessageContentListener = null;
+const renderChatMessageContent = (messageContent) => {
+    if (typeof messageContent === 'string' && messageContent.length) {
+        messageContent = messageContent.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
+        messageContent = Markdown(messageContent);
+        messageContent = Emojione.toImage(messageContent);
+        if (onRenderChatMessageContentListener) {
+            messageContent = onRenderChatMessageContentListener(messageContent);
+        }
+    }
+    return messageContent;
+};
+
+const onRenderChatMessageContent = listener => {
+    onRenderChatMessageContentListener = listener;
+};
+
 const createGroupChat = (members) => {
     return Modal.prompt(Lang.string('chat.create.newChatNameTip'), '', {
         placeholder: Lang.string('chat.rename.newTitle'),
@@ -475,6 +493,7 @@ export default {
     createChatToolbarItems,
     createSendboxToolbarItems,
     linkMembersInText,
+    renderChatMessageContent,
     createChatContextMenuItems,
     chatExitConfirm,
     chatRenamePrompt,
@@ -483,6 +502,7 @@ export default {
     sendContentToChat,
     onSendContentToChat,
     createChatMemberContextMenuItems,
+    onRenderChatMessageContent,
 
     get currentActiveChatId() {
         return activedChatId;

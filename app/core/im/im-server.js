@@ -328,11 +328,11 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
         }
     });
 
-    chats.updateChatMessages(messages);
-
     if (!isSystemMessage) {
         Events.emit(EVENT.message_send, messages, chat);
     }
+
+    chats.updateChatMessages(messages);
 
     return sendSocketMessageForChat({
         method: 'message',

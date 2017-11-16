@@ -22,7 +22,7 @@ class MessageContentTextView extends Component {
             ...other
         } = this.props;
 
-        const content = message.renderedTextContent(App.im.ui.linkMembersInText);
+        const content = message.renderedTextContent(App.im.ui.linkMembersInText, App.im.ui.renderChatMessageContent);
 
         return (<div
             {...other}

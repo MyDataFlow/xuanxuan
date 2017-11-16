@@ -41,6 +41,11 @@ module.exports = {
 
     onSendChatMessages: (messages, chat, user) => {
         console.log('用户发送了消息', {messages, chat, user});
+
+        // 在每条文本消息末尾加上个性签名
+        messages.forEach(message => {
+            message.content = `${message.content} -- 来自插件示例`;
+        });
     },
 
     onReceiveChatMessages: (messages, user) => {

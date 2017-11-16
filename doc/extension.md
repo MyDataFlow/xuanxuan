@@ -227,6 +227,10 @@
       <td>当用户接收到聊天消息时调用</td>
     </tr>
     <tr>
+      <td><code>onRenderChatMessageContent(content)</code></td>
+      <td>当在界面上需要转化 markdown 格式的消息文本为 html 时会调用此回调方法</td>
+    </tr>
+    <tr>
       <td><code>MainView</code></td>
       <td>当作为内嵌应用时的 React 实现的界面主组件</td>
     </tr>

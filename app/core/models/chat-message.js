@@ -1,9 +1,6 @@
 import Entity from './entity';
 import Status from '../../utils/status';
 import Member from './member';
-import Markdown from '../../utils/markdown';
-import Emojione from '../../components/emojione';
-import TimeSequence from '../../utils/time-sequence';
 
 const STATUS = new Status({
     draft: 0,
@@ -250,15 +247,14 @@ class ChatMessage extends Entity {
         }
     }
 
-    renderedTextContent(converter) {
+    renderedTextContent(...converters) {
         if (this._renderedTextContent === undefined) {
             let content = this.content;
             if (typeof content === 'string' && content.length) {
-                content = content.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
-                content = Markdown(content);
-                content = Emojione.toImage(content);
-                if (converter) {
-                    content = converter(content);
+                if (converters && converters.length) {
+                    converters.forEach(converter => {
+                        content = converter(content);
+                    });
                 }
                 this._renderedTextContent = content;
                 this._isBlockContent = content && (content.includes('<h1 id="') || content.includes('<h2 id="') || content.includes('<h3 id="'));

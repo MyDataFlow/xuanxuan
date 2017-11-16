@@ -271,7 +271,7 @@ export default class Extension {
     callModuleMethod(methodName, ...params) {
         const extModule = this.module;
         if (extModule && extModule[methodName]) {
-            extModule[methodName](...params);
+            return extModule[methodName](...params);
         }
     }
 

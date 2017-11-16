@@ -62,6 +62,16 @@ App.im.server.onReceiveChatMessages((messages) => {
     });
 });
 
+App.im.ui.onRenderChatMessageContent(content => {
+    Exts.exts.forEach(ext => {
+        const result = ext.callModuleMethod('onRenderChatMessageContent', content);
+        if (result !== undefined) {
+            content = result;
+        }
+    });
+    return content;
+});
+
 export default {
     loadModules,
 };
