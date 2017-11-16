@@ -96,7 +96,7 @@ export default class WebApp extends Component {
         } = this.props;
 
         return (<div className={HTML.classes('app-web-app', className)}>
-            <webview ref={e => {this.webview = e;}} src={app.webViewUrl} className="dock" />
+            <webview ref={e => {this.webview = e;}} src={app.webViewUrl} className="dock" nodeintegration={app.isLocalWebView} />
             {this.state.errorCode && <div className="dock box">
                 <h1>{this.state.errorCode}</h1>
                 <div>{this.state.errorDescription}</div>

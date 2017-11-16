@@ -36,12 +36,19 @@ export default class AppExtension extends Extension {
         const webViewUrl = this._pkg.webViewUrl;
         if (webViewUrl && !this._webViewUrl) {
             if (!webViewUrl.startsWith('http://') && !webViewUrl.startsWith('https://')) {
+                this._isLocalWebView = true;
                 this._webViewUrl = Path.join(this.localPath, webViewUrl);
             } else {
+                this._isLocalWebView = false;
                 this._webViewUrl = webViewUrl;
             }
         }
         return this._webViewUrl;
+    }
+
+    get isLocalWebView() {
+        const webViewUrl = this.webViewUrl; // this line can ensure _isLocalWebView be set value
+        return this._isLocalWebView;
     }
 
     get appAccentColor() {return this._pkg.appAccentColor || this._pkg.accentColor;}
