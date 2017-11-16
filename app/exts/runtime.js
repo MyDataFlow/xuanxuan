@@ -8,7 +8,10 @@ global.Xext = Xext;
 const loadModules = () => {
     Exts.exts.forEach(ext => {
         if (ext.isDev) {
-            manager.reloadDevExtension(ext);
+            const reloadExt = manager.reloadDevExtension(ext);
+            if (reloadExt) {
+                ext = reloadExt;
+            }
         }
 
         if (ext.hasModule) {

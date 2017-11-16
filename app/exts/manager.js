@@ -12,6 +12,7 @@ const createSavePath = extension => {
 
 const uninstall = extension => {
     return db.removeInstall(extension).then(() => {
+        extension.detach();
         if (extension.isDev) {
             return Promise.resolve();
         }

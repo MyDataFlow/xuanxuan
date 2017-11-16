@@ -1,6 +1,5 @@
 import Path from 'path';
 import StringHelper from '../utils/string-helper';
-import loadExtensionModule from './extension-module-loader';
 import ExtensionConfig from './extension-config';
 import timeSequence from '../utils/time-sequence';
 import SearchScore from '../utils/search-score';
@@ -127,16 +126,23 @@ export default class Extension {
     get homepage() {return this._pkg.homepage;}
     get keywords() {return this._pkg.keywords;}
     get engines() {return this._pkg.engines;}
-    get mainFile() {return this._pkg.main;}
     get repository() {return this._pkg.repository;}
     get bugs() {return this._pkg.bugs;}
     get lazy() {return this._pkg.lazy;}
 
+    get mainFile() {
+        const mainFile = this.pkg.main;
+        if (mainFile && !this._mainFile) {
+            this._mainFile = Path.join(this.localPath, mainFile);
+        }
+        return this._mainFile;
+    }
+
     get icon() {
         const icon = this._pkg.icon;
         if (icon && !this._icon) {
-            if (icon.startsWith('~/')) {
-                this._icon = Path.join(this.localPath, icon.substr(2));
+            if (icon.length > 1 && !icon.startsWith('http://') && !icon.startsWith('https://') && !icon.startsWith('mdi-') && !icon.startsWith('icon')) {
+                this._icon = Path.join(this.localPath, icon);
             } else {
                 this._icon = icon;
             }
@@ -212,13 +218,14 @@ export default class Extension {
     loadModule(api) {
         if (this.mainFile) {
             const start = new Date().getTime();
-            this._module = loadExtensionModule(this.name, this.mainFile);
+            this._module = __non_webpack_require__(this.mainFile);
 
             if (this._module && this._module.onAttach) {
-                this._module.onAttach(api, this);
+                this._module.onAttach(this, api);
             }
 
             this._loadTime = new Date().getTime() - start;
+            this._loaded = true;
 
             if (DEBUG) {
                 console.collapse('Extension Attach', 'greenBg', this.name, 'greenPale', `spend time: ${this._loadTime}ms`, 'orange');
@@ -228,6 +235,14 @@ export default class Extension {
             }
         }
         return this._module;
+    }
+
+    get isModuleLoaded() {
+        return this._loaded;
+    }
+
+    get needRestart() {
+        return this.mainFile && !this._loaded;
     }
 
     detach() {

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import SearchControl from '../../components/search-control';
+import Icon from '../../components/icon';
 import Button from '../../components/button';
 import OpenedApp from '../../exts/opened-app';
 import Exts from '../../exts';
@@ -73,7 +74,7 @@ export default class ExtensionsView extends Component {
 
     handleInstallBtnClick = () => {
         Exts.ui.installExtension();
-    }
+    };
 
     handleMenuBtnClick = e => {
         const menu = [{
@@ -83,7 +84,11 @@ export default class ExtensionsView extends Component {
             }
         }];
         App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
-    }
+    };
+
+    handleRestartBtnClick = () => {
+        App.ui.reloadWindow();
+    };
 
     render() {
         const {
@@ -93,6 +98,7 @@ export default class ExtensionsView extends Component {
 
         const {search, type} = this.state;
         const extensions = search ? Exts.all.search(search, type) : Exts.all.getTypeList(type);
+        const needRestartExts = extensions && extensions.filter(x => x.needRestart);
 
         return (<div className={HTML.classes('app-ext-extensions dock column single', className)}>
             <header className="app-ext-extensions-header app-ext-common-header has-padding heading divider flex-none">
@@ -115,6 +121,13 @@ export default class ExtensionsView extends Component {
                     </div>
                 </nav>
             </header>
+            {
+                needRestartExts && needRestartExts.length ? <div className="warning-pale text-warning flex-none center-content"><div className="heading">
+                    <Icon name="information" />
+                    <div className="title">{Lang.format('ext.extensions.needRestartTip.format', needRestartExts.length)}</div>
+                    <Button onClick={this.handleRestartBtnClick} className="outline warning hover-solid rounded" label={Lang.string('ext.extensions.restart')} />
+                </div></div> : null
+            }
             <div className="app-exts-list list has-padding multi-lines with-avatar flex-auto scroll-y content-start">
                 <div className="heading">
                     <div className="title">{Lang.string(search ? 'ext.extensions.searchResult' : 'ext.extensions.installed')}{type ? ` - ${Lang.string('ext.type.' + type)}` : ''} ({extensions.length})</div>

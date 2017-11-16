@@ -42,8 +42,8 @@ export default class AppExtension extends Extension {
     get appIcon() {
         const appIcon = this._pkg.appIcon;
         if (appIcon && !this._appIcon) {
-            if (appIcon.startsWith('~/')) {
-                this._appIcon = Path.join(this.localPath, appIcon.substr(2));
+            if (appIcon.length > 1 && !appIcon.startsWith('http://') && !appIcon.startsWith('https://') && !appIcon.startsWith('mdi-') && !appIcon.startsWith('icon')) {
+                this._appIcon = Path.join(this.localPath, appIcon);
             } else {
                 this._appIcon = appIcon;
             }
