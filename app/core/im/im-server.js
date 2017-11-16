@@ -19,6 +19,8 @@ const EVENT = {
     history: 'im.chats.history',
     history_start: 'im.chats.history.start',
     history_end: 'im.chats.history.end',
+    message_send: 'im.server.message.send',
+    message_receive: 'im.server.message.receive',
 };
 
 let chatJoinTask = null;
@@ -328,6 +330,10 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
 
     chats.updateChatMessages(messages);
 
+    if (!isSystemMessage) {
+        Events.emit(EVENT.message_send, messages, chat);
+    }
+
     return sendSocketMessageForChat({
         method: 'message',
         params: {
@@ -469,6 +475,19 @@ const exitChat = (chat) => {
     });
 };
 
+const handleReceiveChatMessages = messages => {
+    chats.updateChatMessages(messages);
+    Events.emit(EVENT.message_receive, messages);
+};
+
+const onSendChatMessages = listener => {
+    return Events.on(EVENT.message_send, listener);
+};
+
+const onReceiveChatMessages = listener => {
+    return Events.on(EVENT.message_receive, listener);
+};
+
 export default {
     fetchChatsHistory,
     onChatHistoryStart,
@@ -496,6 +515,9 @@ export default {
     createEmojiChatMessage,
     sendTextMessage,
     sendEmojiMessage,
+    handleReceiveChatMessages,
+    onSendChatMessages,
+    onReceiveChatMessages,
 
     get chatJoinTask() {
         return chatJoinTask;

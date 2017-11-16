@@ -78,7 +78,7 @@ const chatMessage = (msg, socket) => {
         }
 
         if (messages && messages.length) {
-            chats.updateChatMessages(messages);
+            imServer.handleReceiveChatMessages(messages);
         }
     }
 };

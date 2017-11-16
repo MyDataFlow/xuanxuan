@@ -268,6 +268,13 @@ export default class Extension {
         return this._module || this.loadModule();
     }
 
+    callModuleMethod(methodName, ...params) {
+        const extModule = this.module;
+        if (extModule && extModule[methodName]) {
+            extModule[methodName](...params);
+        }
+    }
+
     getMatchScore(keys) {
         return SearchScore.matchScore(MATCH_SCORE_MAP, this, keys);
     }
