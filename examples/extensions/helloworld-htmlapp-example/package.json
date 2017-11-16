@@ -12,9 +12,9 @@
         "name": "Catouse"
     },
     "publisher": "易软天创",
-    "homepage": "https://github.com/easysoft/xuanxuan",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/helloworld-htmlapp-example",
     "repository": {
-        "url": "https://github.com/easysoft/xuanxuan.git",
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/helloworld-htmlapp-example",
         "type": "git"
     },
     "bugs": {

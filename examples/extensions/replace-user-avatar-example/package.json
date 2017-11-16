@@ -11,9 +11,9 @@
         "name": "Catouse"
     },
     "publisher": "易软天创",
-    "homepage": "https://github.com/easysoft/xuanxuan",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/replace-user-avatar-example",
     "repository": {
-        "url": "https://github.com/easysoft/xuanxuan.git",
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/replace-user-avatar-example",
         "type": "git"
     },
     "bugs": {
