@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import Avatar from '../../components/avatar';
 import HTML from '../../utils/html-helper';
-import StatusDot from './status-dot';
 import App from '../../core';
+import {StatusDot} from './status-dot';
+import replaceViews from '../replace-views';
 
 class UserAvatar extends Component {
     static propTypes = {
@@ -16,6 +17,10 @@ class UserAvatar extends Component {
         showStatusDot: null,
         user: null,
     };
+
+    static get UserAvatar() {
+        return replaceViews('common/user-avatar');
+    }
 
     render() {
         const {

@@ -2,15 +2,16 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
+import Messager from '../../components/messager';
+import SearchControl from '../../components/search-control';
+import Spinner from '../../components/spinner';
 import Lang from '../../lang';
 import App from '../../core';
-import SearchControl from '../../components/search-control';
-import Messager from '../../components/messager';
 import ROUTES from '../common/routes';
-import ChatListItem from './chat-list-item';
-import Spinner from '../../components/spinner';
+import {ChatListItem} from './chat-list-item';
+import replaceViews from '../replace-views';
 
-class ChatCreateGroups extends Component {
+class ChatJoinPublic extends Component {
     static propTypes = {
         className: PropTypes.string,
         children: PropTypes.any,
@@ -22,6 +23,10 @@ class ChatCreateGroups extends Component {
         children: null,
         onRequestClose: null,
     };
+
+    static get ChatJoinPublic() {
+        return replaceViews('chats/chat-join-public', ChatJoinPublic);
+    }
 
     constructor(props) {
         super(props);
@@ -144,4 +149,4 @@ class ChatCreateGroups extends Component {
     }
 }
 
-export default ChatCreateGroups;
+export default ChatJoinPublic;

@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
+import {Tabs, TabPane} from '../../components/tabs';
 import Lang from '../../lang';
 import App from '../../core';
-import {Tabs, TabPane} from '../../components/tabs';
-import ChatSidebarPeoples from './chat-sidebar-peoples';
-import ChatSidebarFiles from './chat-sidebar-files';
-import ChatSidebarProfile from './chat-sidebar-profile';
+import {ChatSidebarPeoples} from './chat-sidebar-peoples';
+import {ChatSidebarFiles} from './chat-sidebar-files';
+import {ChatSidebarProfile} from './chat-sidebar-profile';
+import replaceViews from '../replace-views';
 
 class ChatSidebar extends Component {
     static propTypes = {
@@ -22,6 +23,10 @@ class ChatSidebar extends Component {
         children: null,
         closeButton: true,
     };
+
+    static get ChatSidebar() {
+        return replaceViews('chats/chat-sidebar', ChatSidebar);
+    }
 
     handleCloseBtnClick = () => {
         App.profile.userConfig.setChatSidebarHidden(this.props.chat.gid, true);

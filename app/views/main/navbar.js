@@ -5,11 +5,12 @@ import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import Avatar from '../../components/avatar';
 import App from '../../core';
-import UserAvatar from '../common/user-avatar';
-import StatusDot from '../common/status-dot';
 import ROUTES from '../common/routes';
-import UserMenu from './user-menu';
 import UserSettingDialog from '../common/user-setting-dialog';
+import {UserAvatar} from '../common/user-avatar';
+import {StatusDot} from '../common/status-dot';
+import {UserMenu} from './user-menu';
+import replaceViews from '../replace-views';
 
 const navbarItems = [
     {to: ROUTES.chats.recents.__, label: Lang.string('navbar.chats.label'), icon: 'comment-outline', activeIcon: 'comment-processing'},
@@ -32,6 +33,10 @@ const NavLink = ({item}) => (
 /* eslint-enable */
 
 class Navbar extends Component {
+    static get Navbar() {
+        return replaceViews('main/navbar', Navbar);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         userStatus: PropTypes.any,

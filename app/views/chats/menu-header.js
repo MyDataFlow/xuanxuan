@@ -4,6 +4,7 @@ import SearchControl from '../../components/search-control';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import ChatCreateDialog from './chat-create-dialog';
+import replaceViews from '../replace-views';
 
 class MenuHeader extends Component {
     static propTypes = {
@@ -21,6 +22,10 @@ class MenuHeader extends Component {
         defaultSearch: null,
         filter: null
     };
+
+    static get MenuHeader() {
+        return replaceViews('chats/menu-header', MenuHeader);
+    }
 
     handleCreateBtnClick = () => {
         ChatCreateDialog.show();

@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../components/modal';
-import SwapUser from './swap-user';
+import {SwapUser} from './swap-user';
 import Lang from '../../lang';
 
 const show = (identify, onSelectUser, callback) => {

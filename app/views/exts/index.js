@@ -6,19 +6,24 @@ import ROUTES from '../common/routes';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import Messager from '../../components/messager';
-import HomeView from './app-home';
-import ExtensionsView from './app-extensions';
-import FilesView from './app-files';
 import Exts from '../../exts';
-import WebApp from './web-app';
+import {WebApp} from './web-app';
+import {AppHome} from './app-home';
+import {AppExtensions} from './app-extensions';
+import {AppFiles} from './app-files';
+import replaceViews from '../replace-views';
 
 const buildInView = {
-    home: HomeView,
-    extensions: ExtensionsView,
-    files: FilesView
+    home: AppHome,
+    extensions: AppExtensions,
+    files: AppFiles
 };
 
-export default class ExtsIndexView extends Component {
+export default class Index extends Component {
+    static get Index() {
+        return replaceViews('exts/index', Index);
+    }
+
     static propTypes = {
         match: PropTypes.object.isRequired,
         hidden: PropTypes.bool,

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import Lang from '../../lang';
+import replaceViews from '../replace-views';
 
 class MessageDivider extends Component {
     static propTypes = {
@@ -15,6 +16,10 @@ class MessageDivider extends Component {
         date: null,
         children: null,
     };
+
+    static get MessageDivider() {
+        return replaceViews('chats/message-divider', MessageDivider);
+    }
 
     render() {
         const {

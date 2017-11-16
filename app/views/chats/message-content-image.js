@@ -3,15 +3,16 @@ import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
+import API from '../../network/api';
 import Emojione from '../../components/emojione';
 import Icon from '../../components/icon';
-import API from '../../network/api';
 import Avatar from '../../components/avatar';
 import ImageViewer from '../../components/image-viewer';
+import replaceViews from '../replace-views';
 
 const isBrowser = Platform.type === 'browser';
 
-class MessageContentImageView extends Component {
+class MessageContentImage extends Component {
     static propTypes = {
         className: PropTypes.string,
         message: PropTypes.object.isRequired,
@@ -20,6 +21,10 @@ class MessageContentImageView extends Component {
     static defaultProps = {
         className: null,
     };
+
+    static get MessageContentImage() {
+        return replaceViews('chats/message-content-image', MessageContentImage);
+    }
 
     constructor(props) {
         super(props);
@@ -33,7 +38,6 @@ class MessageContentImageView extends Component {
             this.state.url = API.createFileDownloadUrl(App.user, image);
         }
     }
-
 
     componentDidMount() {
         const {message} = this.props;
@@ -134,4 +138,4 @@ class MessageContentImageView extends Component {
     }
 }
 
-export default MessageContentImageView;
+export default MessageContentImage;

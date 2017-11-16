@@ -1,13 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
-import Avatar from '../../components/avatar';
 import Lang from '../../lang';
 import App from '../../core';
+import Icon from '../../components/icon';
+import Avatar from '../../components/avatar';
 import SearchControl from '../../components/search-control';
-import MemberListItem from '../common/member-list-item';
 import Messager from '../../components/messager';
+import {MemberListItem} from '../common/member-list-item';
 import ROUTES from '../common/routes';
+import replaceViews from '../replace-views';
 
 class ChatCreateGroups extends Component {
     static propTypes = {
@@ -21,6 +22,10 @@ class ChatCreateGroups extends Component {
         className: null,
         children: null,
     };
+
+    static get ChatCreateGroups() {
+        return replaceViews('chats/chat-create-groups', ChatCreateGroups);
+    }
 
     constructor(props) {
         super(props);

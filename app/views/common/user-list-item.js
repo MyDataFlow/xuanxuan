@@ -1,8 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import UserAvatar from './user-avatar';
+import {UserAvatar} from './user-avatar';
+import replaceViews from '../replace-views';
 
 export default class UserListItem extends Component {
+    static get UserListItem() {
+        return replaceViews('common/user-list-item', UserListItem);
+    }
+
     static propTypes = {
         user: PropTypes.object.isRequired,
         className: PropTypes.string,

@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import MessageListItem from './message-list-item';
+import {MessageListItem} from './message-list-item';
+import replaceViews from '../replace-views';
 
 class MessageList extends Component {
     static propTypes = {
@@ -26,6 +27,9 @@ class MessageList extends Component {
         listItemCreator: null,
     };
 
+    static get MessageList() {
+        return replaceViews('chats/message-list', MessageList);
+    }
 
     componentDidMount() {
         if (this.props.stayBottom) {

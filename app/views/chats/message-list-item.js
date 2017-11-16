@@ -1,17 +1,18 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
-import MessageDivider from './message-divider';
-import UserAvatar from '../common/user-avatar';
 import App from '../../core';
-import MessageContentFile from './message-content-file';
-import MessageContentImage from './message-content-image';
-import MessageContentText from './message-content-text';
-import MemberProfileDialog from '../common/member-profile-dialog';
+import Lang from '../../lang';
 import ContextMenu from '../../components/context-menu';
 import Icon from '../../components/icon';
-import MessageBroadcast from './message-broadcast';
-import Lang from '../../lang';
+import MemberProfileDialog from '../common/member-profile-dialog';
+import {UserAvatar} from '../common/user-avatar';
+import {MessageDivider} from './message-divider';
+import {MessageContentFile} from './message-content-file';
+import {MessageContentImage} from './message-content-image';
+import {MessageContentText} from './message-content-text';
+import {MessageBroadcast} from './message-broadcast';
+import replaceViews from '../replace-views';
 
 const showTimeLabelInterval = 1000 * 60 * 5;
 
@@ -44,6 +45,10 @@ class MessageListItem extends Component {
         ignoreStatus: false,
         textContentConverter: null,
     };
+
+    static get MessageListItem() {
+        return replaceViews('chats/message-list-item', MessageListItem);
+    }
 
     componentDidMount() {
         if (!this.props.ignoreStatus) {

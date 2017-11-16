@@ -1,10 +1,15 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import UserAvatar from './user-avatar';
+import {UserAvatar} from './user-avatar';
 import StatusDot from './status-dot';
 import Member from '../../core/models/member';
+import replaceViews from '../replace-views';
 
 class MemberListItem extends Component {
+    static get MemberListItem() {
+        return replaceViews('common/member-list-item', MemberListItem);
+    }
+
     static propTypes = {
         member: PropTypes.instanceOf(Member).isRequired,
         avatarSize: PropTypes.number,

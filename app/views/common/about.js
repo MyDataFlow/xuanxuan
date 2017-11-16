@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import Config from 'Config';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
-import BuildInfo from '../common/build-info';
+import {BuildInfo} from '../common/build-info';
+import replaceViews from '../replace-views';
 
 class About extends Component {
     static propTypes = {
@@ -12,6 +13,10 @@ class About extends Component {
     static defaultProps = {
         className: null,
     };
+
+    static get About() {
+        return replaceViews('common/about', About);
+    }
 
     render() {
         const {

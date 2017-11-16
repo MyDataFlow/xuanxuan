@@ -4,12 +4,13 @@ import Icon from '../../components/icon';
 import ClickOutsideWrapper from '../../components/click-outside-wrapper';
 import Lang from '../../lang';
 import App from '../../core';
-import StatusDot from '../common/status-dot';
+import {StatusDot} from '../common/status-dot';
 import User from '../../core/profile/user';
 import UserProfileDialog from '../common/user-profile-dialog';
 import AboutDialog from '../common/about-dialog';
 import UserSettingDialog from '../common/user-setting-dialog';
 import UserChangePasswordDialog from '../common/user-change-password-dialog';
+import replaceViews from '../replace-views';
 
 const allStatus = [
     User.STATUS.getName(User.STATUS.online),
@@ -18,6 +19,10 @@ const allStatus = [
 ];
 
 class UserMenu extends Component {
+    static get UserMenu() {
+        return replaceViews('main/user-menu', UserMenu);
+    }
+
     static defaultProps = {
         onRequestClose: null,
         children: null,

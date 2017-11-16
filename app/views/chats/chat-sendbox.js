@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
+import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
-import DraftEditor from '../common/draft-editor';
-import Emojione from '../../components/emojione';
+import {DraftEditor} from '../common/draft-editor';
 import MessagesPreivewDialog from './messages-preview-dialog';
+import replaceViews from '../replace-views';
 
 class ChatSendbox extends Component {
     static propTypes = {
@@ -17,6 +18,10 @@ class ChatSendbox extends Component {
         className: null,
         chat: null,
     };
+
+    static get ChatSendbox() {
+        return replaceViews('chats/chat-sendbox', ChatSendbox);
+    }
 
     constructor(props) {
         super(props);

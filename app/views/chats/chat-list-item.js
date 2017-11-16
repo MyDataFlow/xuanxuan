@@ -4,8 +4,9 @@ import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import ROUTES from '../common/routes';
-import ChatAvatar from './chat-avatar';
+import {ChatAvatar} from './chat-avatar';
 import App from '../../core';
+import replaceViews from '../replace-views';
 
 class ChatListItem extends Component {
     static propTypes = {
@@ -25,6 +26,10 @@ class ChatListItem extends Component {
         badge: null,
         notUserLink: false,
     };
+
+    static get ChatListItem() {
+        return replaceViews('chats/chat-list-item', ChatListItem);
+    }
 
     render() {
         let {

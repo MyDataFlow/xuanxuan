@@ -3,6 +3,7 @@ import HTML from '../../utils/html-helper';
 import {STATUS} from '../../core/models/member';
 import Lang from '../../lang';
 import App from '../../core';
+import replaceViews from '../replace-views';
 
 const statusColors = {
     unverified: '#ccc',
@@ -15,6 +16,10 @@ const statusColors = {
 
 
 class StatusDot extends Component {
+    static get StatusDot() {
+        return replaceViews('common/status-dot', StatusDot);
+    }
+
     static propTypes = {
         size: PropTypes.number,
         className: PropTypes.string,

@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from '../../components/modal';
-import ExtensionDetail from './extension-detail';
-import Lang from '../../lang';
+import {ExtensionDetail} from './extension-detail';
 
 const show = (extension, callback) => {
     const modalId = 'app-ext-detail-dialog';

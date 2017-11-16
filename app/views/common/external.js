@@ -7,7 +7,7 @@ import Routes from './routes';
 import DraftEditor from './draft-editor';
 import StatusDot from './status-dot';
 import EmojiPopover from './emoji-popover';
-import UserAvatar from './user-avatar';
+import {UserAvatar} from './user-avatar';
 import UserChangePasswordDialog from './user-change-password-dialog';
 import FileListItem from './file-list-item';
 import UserListItem from './user-list-item';

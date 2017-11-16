@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import App from '../../core';
-import ChatTitle from './chat-title';
+import {ChatTitle} from './chat-title';
+import replaceViews from '../replace-views';
 
 class ChatHeader extends Component {
     static propTypes = {
@@ -18,6 +19,10 @@ class ChatHeader extends Component {
         children: null,
         showSidebarIcon: 'auto'
     };
+
+    static get ChatHeader() {
+        return replaceViews('chats/chat-header', ChatHeader);
+    }
 
     render() {
         const {

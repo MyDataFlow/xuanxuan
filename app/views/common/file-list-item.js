@@ -1,20 +1,25 @@
 import React, {Component, PropTypes} from 'react';
 import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
+import MDIFileIcon from '../../utils/mdi-file-icon';
+import StringHelper from '../../utils/string-helper';
+import DateHelper from '../../utils/date-helper';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import Messager from '../../components/messager';
 import Lang from '../../lang';
 import App from '../../core';
 import API from '../../network/api';
-import MDIFileIcon from '../../utils/mdi-file-icon';
-import StringHelper from '../../utils/string-helper';
-import UserAvatar from './user-avatar';
-import DateHelper from '../../utils/date-helper';
+import {UserAvatar} from './user-avatar';
+import replaceViews from '../replace-views';
 
 const isBrowserPlatform = Platform.type === 'browser';
 
 class FileListItem extends Component {
+    static get FileListItem() {
+        return replaceViews('common/file-list-item', FileListItem);
+    }
+
     static propTypes = {
         file: PropTypes.object.isRequired,
         smallIcon: PropTypes.bool,

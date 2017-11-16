@@ -5,6 +5,7 @@ import HotkeyInputControl from '../../components/hotkey-input-control';
 import Lang from '../../lang';
 import Checkbox from '../../components/checkbox';
 import SelectBox from '../../components/select-box';
+import replaceViews from '../replace-views';
 
 const isBrowser = Platform.type === 'browser';
 
@@ -165,6 +166,10 @@ const configs = [
 ];
 
 class UserSetting extends Component {
+    static get UserSetting() {
+        return replaceViews('common/user-setting', UserSetting);
+    }
+
     static propTypes = {
         settings: PropTypes.object.isRequired,
         className: PropTypes.string,

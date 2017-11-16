@@ -4,10 +4,11 @@ import HTML from '../../utils/html-helper';
 import Avatar from '../../components/avatar';
 import Lang from '../../lang';
 import App from '../../core';
-import ChatHeader from './chat-header';
-import ChatMessages from './chat-messages';
-import ChatSendbox from './chat-sendbox';
-import ChatSidebar from './chat-sidebar';
+import {ChatHeader} from './chat-header';
+import {ChatMessages} from './chat-messages';
+import {ChatSendbox} from './chat-sendbox';
+import {ChatSidebar} from './chat-sidebar';
+import replaceViews from '../replace-views';
 
 class ChatView extends Component {
     static propTypes = {
@@ -23,6 +24,10 @@ class ChatView extends Component {
         children: null,
         hidden: false,
     };
+
+    static get ChatView() {
+        return replaceViews('chats/chat-view', ChatView);
+    }
 
     componentDidMount() {
         const {chatGid} = this.props;

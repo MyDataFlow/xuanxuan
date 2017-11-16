@@ -1,13 +1,18 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import HTML from '../../utils/html-helper';
-import Navbar from './navbar';
 import ROUTES from '../common/routes';
 import App from '../../core';
-import GlobalMessage from './global-message';
-import CacheContainer from './cache-container';
+import {Navbar} from './navbar';
+import {GlobalMessage} from './global-message';
+import {CacheContainer} from './cache-container';
+import replaceViews from '../replace-views';
 
-class MainView extends Component {
+class Index extends Component {
+    static get Index() {
+        return replaceViews('main/index', Index);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         userStatus: PropTypes.any,
@@ -57,4 +62,4 @@ class MainView extends Component {
     }
 }
 
-export default MainView;
+export default Index;

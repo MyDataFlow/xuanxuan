@@ -2,9 +2,10 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import App from '../../core';
-import FileList from '../common/file-list';
 import Emojione from '../../components/emojione';
 import Spinner from '../../components/spinner';
+import {FileList} from '../common/file-list';
+import replaceViews from '../replace-views';
 
 const renderLoading = () => {
     return (<div className="dock center-content" style={{top: HTML.rem(50)}}>
@@ -37,6 +38,10 @@ class ChatSidebarFiles extends Component {
         chat: null,
         children: null,
     };
+
+    static get ChatSidebarFiles() {
+        return replaceViews('chats/chat-sidebar-files', ChatSidebarFiles);
+    }
 
     constructor(props) {
         super(props);

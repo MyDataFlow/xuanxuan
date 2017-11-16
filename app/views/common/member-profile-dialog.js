@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../components/modal';
 import App from '../../core';
-import MemberProfile from './member-profile';
+import {MemberProfile} from './member-profile';
 
 const show = (member, callback) => {
     if (typeof member !== 'object') {

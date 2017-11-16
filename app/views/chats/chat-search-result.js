@@ -4,13 +4,14 @@ import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import Lang from '../../lang';
 import App from '../../core';
-import MessageList from './message-list';
-import MessageListItem from './message-list-item';
+import {MessageList} from './message-list';
+import {MessageListItem} from './message-list-item';
+import replaceViews from '../replace-views';
 
 const MANY_RESULT_COUNT = 200;
 const MAX_RESULT_COUNT = 500;
 
-class ChatHistory extends Component {
+class ChatSearchResult extends Component {
     static propTypes = {
         className: PropTypes.string,
         children: PropTypes.any,
@@ -30,6 +31,10 @@ class ChatHistory extends Component {
         searchCount: 0,
         searchFilterTime: 0,
     };
+
+    static get ChatSearchResult() {
+        return replaceViews('chats/chat-search-result', ChatSearchResult);
+    }
 
     constructor(props) {
         super(props);
@@ -182,4 +187,4 @@ class ChatHistory extends Component {
     }
 }
 
-export default ChatHistory;
+export default ChatSearchResult;

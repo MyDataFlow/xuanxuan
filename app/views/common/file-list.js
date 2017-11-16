@@ -1,8 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import FileListItem from './file-list-item';
+import {FileListItem} from './file-list-item';
+import replaceViews from '../replace-views';
 
 class FileList extends Component {
+    static get FileList() {
+        return replaceViews('common/file-list', FileList);
+    }
+
     static propTypes = {
         files: PropTypes.array.isRequired,
         listItemProps: PropTypes.object,

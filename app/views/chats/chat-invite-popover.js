@@ -1,6 +1,6 @@
 import React from 'react';
 import Popover from '../../components/popover';
-import ChatInvite from './chat-invite';
+import {ChatInvite} from './chat-invite';
 
 const show = (position, chat, callback) => {
     const popoverId = 'app-chat-invite-popover';

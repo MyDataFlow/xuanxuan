@@ -6,9 +6,10 @@ import Icon from '../../components/icon';
 import Button from '../../components/button';
 import OpenedApp from '../../exts/opened-app';
 import Exts from '../../exts';
-import ExtensionListItem from './extension-list-item';
 import App from '../../core';
 import ExtensionDetailDialog from './extension-detail-dialog';
+import {ExtensionListItem} from './extension-list-item';
+import replaceViews from '../replace-views';
 
 const extensionTypes = [
     {type: '', label: Lang.string('ext.extensions.all')},
@@ -17,7 +18,11 @@ const extensionTypes = [
     {type: 'theme', label: Lang.string('ext.extensions.themes')},
 ];
 
-export default class ExtensionsView extends Component {
+export default class AppExtensions extends Component {
+    static get AppExtensions() {
+        return replaceViews('exts/app-extensions', AppExtensions);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         app: PropTypes.instanceOf(OpenedApp).isRequired,
@@ -125,7 +130,7 @@ export default class ExtensionsView extends Component {
                 needRestartExts && needRestartExts.length ? <div className="warning-pale text-warning flex-none center-content"><div className="heading">
                     <Icon name="information" />
                     <div className="title">{Lang.format('ext.extensions.needRestartTip.format', needRestartExts.length)}</div>
-                    <Button onClick={this.handleRestartBtnClick} className="outline warning hover-solid rounded" label={Lang.string('ext.extensions.restart')} />
+                    <Button onClick={this.handleRestartBtnClick} className="outline warning hover-solid rounded" label={Lang.string('ext.extensions.restart')} icon="restart" />
                 </div></div> : null
             }
             <div className="app-exts-list list has-padding multi-lines with-avatar flex-auto scroll-y content-start">

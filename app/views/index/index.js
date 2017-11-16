@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import {HashRouter as Router, Route, Switch} from 'react-router-dom';
-import AppView from './app';
 import ImageCutterApp from './app-image-cutter';
+import {AppView} from './app-view';
+import replaceViews from '../replace-views';
 
-class IndexView extends Component {
+class Index extends Component {
+    static get Index() {
+        return replaceViews('index/index', Index);
+    }
+
     render() {
         return (<Router>
             <Switch>
@@ -14,4 +19,4 @@ class IndexView extends Component {
     }
 }
 
-export default IndexView;
+export default Index;

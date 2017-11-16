@@ -5,10 +5,11 @@ import Modal from '../../components/modal';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import HTML from '../../utils/html-helper';
-import App from '../../core';
 import StringHelper from '../../utils/string-helper';
-import SwapUserDialog from './swap-user-dialog';
+import App from '../../core';
 import User from '../../core/profile/user';
+import SwapUserDialog from './swap-user-dialog';
+import replaceViews from '../replace-views';
 
 const simpleServerUrl = serverUrl => {
     if (serverUrl) {
@@ -30,6 +31,10 @@ const simpleServerUrl = serverUrl => {
 };
 
 class FormView extends Component {
+    static get Form() {
+        return replaceViews('login/form', FormView);
+    }
+
     static propTypes = {
         className: PropTypes.string,
     };

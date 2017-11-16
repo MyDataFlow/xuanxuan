@@ -4,8 +4,9 @@ import Avatar from '../../components/avatar';
 import Messager from '../../components/messager';
 import Lang from '../../lang';
 import App from '../../core';
-import MemberListItem from '../common/member-list-item';
+import {MemberListItem} from '../common/member-list-item';
 import ROUTES from '../common/routes';
+import replaceViews from '../replace-views';
 
 class ChatInvite extends Component {
     static propTypes = {
@@ -21,6 +22,10 @@ class ChatInvite extends Component {
         children: null,
         onRequestClose: null,
     };
+
+    static get ChatInvite() {
+        return replaceViews('chats/chat-invite', ChatInvite);
+    }
 
     constructor(props) {
         super(props);

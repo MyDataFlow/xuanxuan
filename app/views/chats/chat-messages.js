@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import MessageList from './message-list';
 import App from '../../core';
+import {MessageList} from './message-list';
+import replaceViews from '../replace-views';
 
 class ChatMessages extends Component {
     static propTypes = {
@@ -15,6 +16,10 @@ class ChatMessages extends Component {
         children: null,
         chat: null,
     };
+
+    static get ChatMessages() {
+        return replaceViews('chats/chat-messages', ChatMessages);
+    }
 
     render() {
         const {

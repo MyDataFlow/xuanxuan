@@ -6,6 +6,7 @@ import App from '../../core';
 import Chat from '../../core/models/chat';
 import SelectBox from '../../components/select-box';
 import Checkbox from '../../components/checkbox';
+import replaceViews from '../replace-views';
 
 class ChatCommittersSetting extends Component {
     static propTypes = {
@@ -19,6 +20,10 @@ class ChatCommittersSetting extends Component {
         className: null,
         children: null,
     };
+
+    static get ChatCommittersSetting() {
+        return replaceViews('chats/chat-committers-setting', ChatCommittersSetting);
+    }
 
     constructor(props) {
         super(props);

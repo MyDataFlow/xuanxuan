@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../components/modal';
 import Lang from '../../lang';
-import MessagesList from './message-list';
+import {MessagesList} from './message-list';
 
 const show = (messages, props, callback) => {
     const modalId = 'app-messages-preview-dialog';

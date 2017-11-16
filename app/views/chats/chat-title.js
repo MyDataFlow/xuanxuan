@@ -3,9 +3,10 @@ import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
-import ChatAvatar from './chat-avatar';
-import StatusDot from '../common/status-dot';
+import {ChatAvatar} from './chat-avatar';
+import {StatusDot} from '../common/status-dot';
 import MemberProfileDialog from '../common/member-profile-dialog';
+import replaceViews from '../replace-views';
 
 class ChatTitle extends Component {
     static propTypes = {
@@ -19,6 +20,10 @@ class ChatTitle extends Component {
         chat: null,
         children: null,
     };
+
+    static get ChatTitle() {
+        return replaceViews('chats/chat-title', ChatTitle);
+    }
 
     render() {
         const {

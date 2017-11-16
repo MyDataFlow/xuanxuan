@@ -2,13 +2,14 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
-import Lang from '../../lang';
-import App from '../../core';
-import ChatListItem from './chat-list-item';
-import ChatHistory from './chat-history';
 import SearchControl from '../../components/search-control';
 import SelectBox from '../../components/select-box';
-import ChatSearchResult from './chat-search-result';
+import Lang from '../../lang';
+import App from '../../core';
+import {ChatListItem} from './chat-list-item';
+import {ChatHistory} from './chat-history';
+import {ChatSearchResult} from './chat-search-result';
+import replaceViews from '../replace-views';
 
 class ChatsHistory extends Component {
     static propTypes = {
@@ -22,6 +23,10 @@ class ChatsHistory extends Component {
         chat: null,
         children: null,
     };
+
+    static get ChatsHistory() {
+        return replaceViews('chats/chats-hitory', ChatsHistory);
+    }
 
     constructor(props) {
         super(props);

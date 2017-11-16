@@ -4,8 +4,9 @@ import Lang from '../../lang';
 import SearchControl from '../../components/search-control';
 import OpenedApp from '../../exts/opened-app';
 import App from '../../core';
-import FileList from '../common/file-list';
 import Spinner from '../../components/spinner';
+import {FileList} from '../common/file-list';
+import replaceViews from '../replace-views';
 
 const fileTypes = [
     {type: '', label: Lang.string('ext.files.all')},
@@ -17,7 +18,11 @@ const fileTypes = [
 
 const MAX_SHOW_FILES_COUNT = 200;
 
-export default class ExtensionsView extends Component {
+export default class AppFiles extends Component {
+    static get AppFiles() {
+        return replaceViews('exts/app-files', AppFiles);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         app: PropTypes.instanceOf(OpenedApp).isRequired,

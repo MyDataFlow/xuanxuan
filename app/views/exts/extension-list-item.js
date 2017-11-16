@@ -7,8 +7,13 @@ import Lang from '../../lang';
 import Exts from '../../exts';
 import App from '../../core';
 import DateHelper from '../../utils/date-helper';
+import replaceViews from '../replace-views';
 
 export default class ExtensionListItem extends Component {
+    static get ExtensionListItem() {
+        return replaceViews('exts/extension-list-item', ExtensionListItem);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         extension: PropTypes.object.isRequired,

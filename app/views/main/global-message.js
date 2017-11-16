@@ -4,10 +4,15 @@ import App from '../../core';
 import Lang from '../../lang';
 import Member from '../../core/models/member';
 import Avatar from '../../components/avatar';
+import replaceViews from '../replace-views';
 
 const CONNECT_TIME_TICK = 5;
 
 class GlobalMessage extends Component {
+    static get GlobalMessage() {
+        return replaceViews('main/global-message', GlobalMessage);
+    }
+
     static propTypes = {
         className: PropTypes.string,
     };

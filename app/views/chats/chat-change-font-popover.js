@@ -3,6 +3,7 @@ import Popover from '../../components/popover';
 import Lang from '../../lang';
 import App from '../../core';
 import DelayAction from '../../utils/delay-action';
+import replaceViews from '../replace-views';
 
 const DEFAULT_CONFIG = {
     size: 13,
@@ -56,6 +57,10 @@ const CONFIGS = [
 ];
 
 class ChangeFontView extends Component {
+    static get ChangeFontView() {
+        return replaceViews('chats/chat-change-font-popover', ChangeFontView);
+    }
+
     constructor(props) {
         super(props);
         this.state = {select: 1};

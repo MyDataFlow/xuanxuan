@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
-import UserAvatar from '../common/user-avatar';
 import App from '../../core';
 import Chat from '../../core/models/chat';
+import {UserAvatar} from '../common/user-avatar';
+import replaceViews from '../replace-views';
 
 const chatIcons = {
     group: {name: 'comment-multiple-outline', colorClass: 'text-info'},
@@ -31,6 +32,10 @@ class ChatAvatar extends Component {
         avatarClassName: PropTypes.string,
         iconClassName: PropTypes.string,
     };
+
+    static get ChatAvatar() {
+        return replaceViews('chats/chat-avatar', ChatAvatar);
+    }
 
     render() {
         const {

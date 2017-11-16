@@ -1,10 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Emojione from '../../components/emojione';
+import StringHelper from '../../utils/string-helper';
 import Lang from '../../lang';
 import App from '../../core';
 import API from '../../network/api';
-import StringHelper from '../../utils/string-helper';
+import Emojione from '../../components/emojione';
+import replaceViews from '../replace-views';
 
 class ChatsDndContainer extends Component {
     static propTypes = {
@@ -14,6 +15,10 @@ class ChatsDndContainer extends Component {
     static defaultProps = {
         className: null,
     };
+
+    static get ChatsDndContainer() {
+        return replaceViews('chats/chats-dnd-container', ChatsDndContainer);
+    }
 
     handleDndEnter = e => {
         e.target.classList.add('hover');

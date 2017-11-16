@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import ROUTES from '../common/routes';
-import ChatsView from '../chats';
-import ExtsView from '../exts';
+import {Index as ChatsView} from '../chats';
+import {Index as ExtsView} from '../exts';
+import replaceViews from '../replace-views';
 
 const mainViews = [
     {path: ROUTES.chats._, view: ChatsView},
@@ -9,6 +10,10 @@ const mainViews = [
 ];
 
 class CacheContainer extends Component {
+    static get CacheContainer() {
+        return replaceViews('main/cache-container', CacheContainer);
+    }
+
     render() {
         let {
             match,

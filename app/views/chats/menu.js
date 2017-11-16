@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import MenuHeader from './menu-header';
-import MenuList from './menu-list';
+import {MenuHeader} from './menu-header';
+import {MenuList} from './menu-list';
+import replaceViews from '../replace-views';
 
 class Menu extends Component {
     static propTypes = {
@@ -15,6 +16,10 @@ class Menu extends Component {
         filter: null,
         children: null,
     };
+
+    static get Menu() {
+        return replaceViews('chats/menu', Menu);
+    }
 
     constructor(props) {
         super(props);

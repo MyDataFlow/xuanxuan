@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import FileListItem from '../common/file-list-item';
+import {FileListItem} from '../common/file-list-item';
+import replaceViews from '../replace-views';
 
-class MessageContentFileView extends Component {
+class MessageContentFile extends Component {
     static propTypes = {
         className: PropTypes.string,
         message: PropTypes.object.isRequired,
@@ -11,6 +12,10 @@ class MessageContentFileView extends Component {
     static defaultProps = {
         className: null,
     };
+
+    static get MessageContentFile() {
+        return replaceViews('chats/chat-content-file', MessageContentFile);
+    }
 
     render() {
         const {
@@ -25,4 +30,4 @@ class MessageContentFileView extends Component {
     }
 }
 
-export default MessageContentFileView;
+export default MessageContentFile;

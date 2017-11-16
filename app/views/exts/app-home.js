@@ -2,13 +2,18 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import AppAvatar from '../../components/app-avatar';
-import Exts from '../../exts';
-import ROUTES from '../common/routes';
 import SearchControl from '../../components/search-control';
 import Button from '../../components/button';
+import Exts from '../../exts';
+import ROUTES from '../common/routes';
 import App from '../../core';
+import replaceViews from '../replace-views';
 
-export default class ExitsHomeView extends Component {
+export default class AppHome extends Component {
+    static get AppHome() {
+        return replaceViews('exts/app-home', AppHome);
+    }
+
     static propTypes = {
         className: PropTypes.string,
     };

@@ -3,13 +3,14 @@ import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
+import Pager from '../../components/pager';
 import Lang from '../../lang';
 import App from '../../core';
-import ChatTitle from './chat-title';
-import MessageList from './message-list';
 import ChatMessage from '../../core/models/chat-message';
-import Pager from '../../components/pager';
-import MessageListItem from './message-list-item';
+import {ChatTitle} from './chat-title';
+import {MessageList} from './message-list';
+import {MessageListItem} from './message-list-item';
+import replaceViews from '../replace-views';
 
 class ChatHistory extends Component {
     static propTypes = {
@@ -19,6 +20,10 @@ class ChatHistory extends Component {
         gotoMessage: PropTypes.object,
         searchKeys: PropTypes.string,
     };
+
+    static get ChatHistory() {
+        return replaceViews('chats/chat-history', ChatHistory);
+    }
 
     static defaultProps = {
         chat: null,

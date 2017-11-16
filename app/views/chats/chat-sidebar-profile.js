@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
-import MemberProfile from '../common/member-profile';
+import {MemberProfile} from '../common/member-profile';
+import replaceViews from '../replace-views';
 
 class ChatSidebarProfile extends Component {
     static propTypes = {
@@ -15,6 +16,10 @@ class ChatSidebarProfile extends Component {
         chat: null,
         children: null,
     };
+
+    static get ChatSidebarProfile() {
+        return replaceViews('chats/chat-sidebar-profile', ChatSidebarProfile);
+    }
 
     constructor(props) {
         super(props);

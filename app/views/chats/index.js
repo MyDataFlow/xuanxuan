@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import HTML from '../../utils/html-helper';
-import Menu from './menu';
-import ChatsCacheView from './chats-cache';
 import App from '../../core';
-import ChatsDndContainer from './chats-dnd-container';
+import {Menu} from './menu';
+import {ChatsCache} from './chats-cache';
+import {ChatsDndContainer} from './chats-dnd-container';
+import replaceViews from '../replace-views';
 
-class IndexView extends Component {
+class Index extends Component {
     static propTypes = {
         match: PropTypes.object.isRequired,
         hidden: PropTypes.bool,
@@ -17,6 +18,10 @@ class IndexView extends Component {
         hidden: false,
         className: null,
     };
+
+    static get Index() {
+        return replaceViews('chats/index', Index);
+    }
 
     render() {
         const {
@@ -29,9 +34,9 @@ class IndexView extends Component {
 
         return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
             <Menu className="dock-left" filter={match.params.filterType} />
-            <ChatsCacheView className="dock-right" filterType={match.params.filterType} chatId={match.params.id}>
+            <ChatsCache className="dock-right" filterType={match.params.filterType} chatId={match.params.id}>
                 <ChatsDndContainer className="dock" />
-            </ChatsCacheView>
+            </ChatsCache>
             <Route
                 path="/chats/:filterType"
                 exact
@@ -47,4 +52,4 @@ class IndexView extends Component {
     }
 }
 
-export default IndexView;
+export default Index;

@@ -253,6 +253,14 @@ export default class Extension {
         }
     }
 
+    get hasReplaceViews() {
+        return this._module && this._module.replaceViews;
+    }
+
+    get replaceViews() {
+        return this.module.replaceViews;
+    }
+
     /**
      * 获取上次加载此扩展所花费的时间，单位为毫秒
      */

@@ -5,6 +5,8 @@ import App from '../core';
 
 global.Xext = Xext;
 
+const replaceViews = {};
+
 // load exts modules
 const loadModules = () => {
     Exts.exts.forEach(ext => {
@@ -24,6 +26,10 @@ const loadModules = () => {
                 }
             } else {
                 ext.loadModule(Xext);
+            }
+
+            if (ext.hasReplaceViews) {
+                Object.assign(replaceViews, ext.replaceViews);
             }
         }
     });
@@ -71,6 +77,8 @@ App.im.ui.onRenderChatMessageContent(content => {
     });
     return content;
 });
+
+global.replaceViews = replaceViews;
 
 export default {
     loadModules,

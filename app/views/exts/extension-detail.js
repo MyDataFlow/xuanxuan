@@ -9,8 +9,13 @@ import Lang from '../../lang';
 import Exts from '../../exts';
 import Markdown from '../../utils/markdown';
 import Emojione from '../../components/emojione';
+import replaceViews from '../replace-views';
 
 export default class ExtensionDetail extends Component {
+    static get ExtensionDetail() {
+        return replaceViews('exts/extension-detail', ExtensionDetail);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         onRequestClose: PropTypes.func,

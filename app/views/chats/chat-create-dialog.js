@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../components/modal';
-import ChatCreateView from './chat-create';
+import {ChatCreateView} from './chat-create';
 import Lang from '../../lang';
 
 const show = (chat, callback) => {

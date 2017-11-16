@@ -1,10 +1,15 @@
 import React, {Component, PropTypes} from 'react';
+import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import {AppExtension} from '../../exts/extension';
-import Platform from 'Platform';
 import timeSequence from '../../utils/time-sequence';
+import replaceViews from '../replace-views';
 
 export default class WebApp extends Component {
+    static get WebApp() {
+        return replaceViews('exts/web-app', WebApp);
+    }
+
     static propTypes = {
         app: PropTypes.instanceOf(AppExtension).isRequired,
         className: PropTypes.string,

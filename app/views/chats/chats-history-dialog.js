@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../../components/modal';
-import ChatsHistory from './chats-history';
+import {ChatsHistory} from './chats-history';
 
 const show = (chat, callback) => {
     const modalId = 'app-chats-history-dialog';

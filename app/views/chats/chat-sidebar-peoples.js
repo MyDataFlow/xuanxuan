@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
+import ContextMenu from '../../components/context-menu';
 import Lang from '../../lang';
 import App from '../../core';
-import MemberList from '../common/member-list';
 import Member from '../../core/models/member';
-import ContextMenu from '../../components/context-menu';
+import {MemberList} from '../common/member-list';
+import replaceViews from '../replace-views';
 
 const handleMemberItemClick = member => {
     App.im.ui.sendContentToChat(`@${member.displayName} `);
@@ -23,6 +24,10 @@ class ChatSidebarPeoples extends Component {
         chat: null,
         children: null,
     };
+
+    static get ChatSidebarPeoples() {
+        return replaceViews('chats/chat-sidebar-peoples', ChatSidebarPeoples);
+    }
 
     componentDidMount() {
         this.dataChangeEventHandler = App.events.onDataChange(data => {

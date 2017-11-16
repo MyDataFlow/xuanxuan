@@ -3,7 +3,7 @@ import ChatTipPopover from './chat-tip-popover';
 import ChatChangeFontPopover from './chat-change-font-popover';
 import ChatTitle from './chat-title';
 import ChatCommittersSettingDialog from './chat-committers-setting-dialog';
-import Chat from './chat';
+import ChatView from './chat-view';
 import ChatCommittersSetting from './chat-committers-setting';
 import ChatsCache from './chats-cache';
 import ChatCreateDialog from './chat-create-dialog';
@@ -44,7 +44,7 @@ export default {
     ChatChangeFontPopover,
     ChatTitle,
     ChatCommittersSettingDialog,
-    Chat,
+    ChatView,
     ChatCommittersSetting,
     ChatsCache,
     ChatCreateDialog,

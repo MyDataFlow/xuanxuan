@@ -4,9 +4,14 @@ import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import User from '../../core/profile/user';
-import UserListItem from '../common/user-list-item';
+import {UserListItem} from '../common/user-list-item';
+import replaceViews from '../replace-views';
 
 class SwapUser extends Component {
+    static get SwapUser() {
+        return replaceViews('login/swap-user', SwapUser);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         identify: PropTypes.string,

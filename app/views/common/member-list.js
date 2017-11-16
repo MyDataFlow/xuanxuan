@@ -1,9 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Member from '../../core/models/member';
-import MemberListItem from './member-list-item';
+import {MemberListItem} from './member-list-item';
+import replaceViews from '../replace-views';
 
 class MemberList extends Component {
+    static get MemberList() {
+        return replaceViews('common/member-list', MemberList);
+    }
+
     static propTypes = {
         members: PropTypes.arrayOf(PropTypes.instanceOf(Member)).isRequired,
         listItemProps: PropTypes.object,

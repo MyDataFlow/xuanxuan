@@ -13,6 +13,7 @@ import Emojione from '../../components/emojione';
 import App from '../../core';
 import timeSequence from '../../utils/time-sequence';
 import Lang from '../../lang';
+import replaceViews from '../replace-views';
 
 /* eslint-disable */
 const AtomicComponent = props => {
@@ -36,7 +37,6 @@ const AtomicComponent = props => {
     }
     return null;
 };
-
 
 const findWithRegex = (regex, contentBlock, callback) => {
     const text = contentBlock.getText();
@@ -96,6 +96,10 @@ const draftDecorator = new CompositeDecorator([{
 /* eslint-enable */
 
 class DraftEditor extends Component {
+    static get DraftEditor() {
+        return replaceViews('common/draft-editor', DraftEditor);
+    }
+
     static propTypes = {
         placeholder: PropTypes.string,
         onChange: PropTypes.func,

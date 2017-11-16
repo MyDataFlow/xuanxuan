@@ -1,9 +1,9 @@
 import Chats from './app-image-cutter';
-import App from './app';
+import AppView from './app-view';
 import Index from './index';
 
 export default {
     Chats,
-    App,
+    AppView,
     Index,
 };

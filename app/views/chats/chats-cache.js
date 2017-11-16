@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
-import ChatView from './chat';
+import {ChatView} from './chat-view';
+import replaceViews from '../replace-views';
 
-class ChatsCacheView extends Component {
+class ChatsCache extends Component {
     static propTypes = {
         className: PropTypes.string,
         chatId: PropTypes.any,
@@ -17,6 +18,10 @@ class ChatsCacheView extends Component {
         children: null,
         filterType: false,
     };
+
+    static get ChatsCache() {
+        return replaceViews('chats/chat-caches', ChatsCache);
+    }
 
     render() {
         const {
@@ -47,4 +52,4 @@ class ChatsCacheView extends Component {
     }
 }
 
-export default ChatsCacheView;
+export default ChatsCache;

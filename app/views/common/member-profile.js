@@ -1,15 +1,20 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
+import Avatar from '../../components/avatar';
 import Lang from '../../lang';
 import App from '../../core';
 import Member from '../../core/models/member';
-import UserAvatar from './user-avatar';
-import Avatar from '../../components/avatar';
-import StatusDot from './status-dot';
 import ROUTES from '../common/routes';
+import {UserAvatar} from './user-avatar';
+import {StatusDot} from './status-dot';
+import replaceViews from '../replace-views';
 
 class MemberProfile extends Component {
+    static get MemberProfile() {
+        return replaceViews('common/member-profile', MemberProfile);
+    }
+
     static propTypes = {
         member: PropTypes.instanceOf(Member).isRequired,
         className: PropTypes.string,

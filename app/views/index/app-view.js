@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import App from '../../core';
-import LoginView from '../login';
-import MainView from '../main';
+import {Index as LoginView} from '../login';
+import {Index as MainView} from '../main';
+import replaceViews from '../replace-views';
 
 class AppView extends Component {
+    static get AppView() {
+        return replaceViews('index/app-view', AppView);
+    }
+
     constructor(props) {
         super(props);
 

@@ -3,6 +3,7 @@ import HTML from '../../utils/html-helper';
 import Avatar from '../../components/avatar';
 import App from '../../core';
 import StringHelper from '../../utils/string-helper';
+import replaceViews from '../replace-views';
 
 class MessageBroadcast extends Component {
     static propTypes = {
@@ -19,6 +20,10 @@ class MessageBroadcast extends Component {
         children: null,
         contentConverter: null,
     };
+
+    static get MessageBroadcast() {
+        return replaceViews('chats/message-broadcast', MessageBroadcast);
+    }
 
     render() {
         const {

@@ -1,10 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
-import ChatListItem from './chat-list-item';
-import MemberListItem from '../common/member-list-item';
-import UserProfileDialog from '../common/user-profile-dialog';
 import ContextMenu from '../../components/context-menu';
+import {ChatListItem} from './chat-list-item';
+import {MemberListItem} from '../common/member-list-item';
+import UserProfileDialog from '../common/user-profile-dialog';
+import replaceViews from '../replace-views';
 
 const loadChats = (filter, search) => {
     let chats = null;
@@ -41,6 +42,10 @@ class MenuList extends Component {
         filter: null,
         children: null,
     };
+
+    static get MenuList() {
+        return replaceViews('chats/menu-list', MenuList);
+    }
 
     componentDidMount() {
         this.dataChangeHandler = App.events.onDataChange(data => {

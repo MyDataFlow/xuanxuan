@@ -1,21 +1,26 @@
 import React, {Component, PropTypes} from 'react';
 import Config from 'Config';
 import HTML from '../../utils/html-helper';
-import LoginForm from './form';
-import BuildInfo from '../common/build-info';
+import {Form as LoginForm} from './form';
+import {BuildInfo} from '../common/build-info';
 import App from '../../core';
+import replaceViews from '../replace-views';
 
-class IndexView extends Component {
-    // static propTypes = {
-    //     className: null,
-    //     userStatus: null,
-    //     children: null,
-    // };
-    // static defaultProps = {
-    //     className: PropTypes.string,
-    //     userStatus: PropTypes.any,
-    //     children: PropTypes.any,
-    // };
+class Index extends Component {
+    static get Index() {
+        return replaceViews('login/index', Index);
+    }
+
+    static defaultProps = {
+        className: null,
+        userStatus: null,
+        children: null,
+    };
+    static propTypes = {
+        className: PropTypes.string,
+        userStatus: PropTypes.any,
+        children: PropTypes.any,
+    };
 
     render() {
         const {
@@ -39,4 +44,4 @@ class IndexView extends Component {
     }
 }
 
-export default IndexView;
+export default Index;
