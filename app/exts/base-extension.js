@@ -220,9 +220,7 @@ export default class Extension {
             const start = new Date().getTime();
             this._module = __non_webpack_require__(this.mainFile);
 
-            if (this._module && this._module.onAttach) {
-                this._module.onAttach(this, api);
-            }
+            this.callModuleMethod('onAttach', this, api);
 
             this._loadTime = new Date().getTime() - start;
             this._loaded = true;
@@ -246,9 +244,7 @@ export default class Extension {
     }
 
     detach() {
-        if (this._module && this._module.onDetach) {
-            this._module.onDetach(this);
-        }
+        this.callModuleMethod('onDetach', this);
         this._module = null;
         if (DEBUG) {
             console.collapse('Extension Detach', 'greenBg', this.name, 'greenPale');
