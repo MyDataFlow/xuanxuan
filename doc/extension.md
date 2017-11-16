@@ -98,12 +98,15 @@
                 "displayName": "暗色",
 
                 // 主题 CSS 文件位置，可以是相对包的路径或者一个可访问的网址
-                "style": "lib/thems/dark.css",
+                "style": "lib/themes/dark.css",
 
                 // 主题载入方式，可取值包括：
                 //   * append   在默认样式的基础上附加样式
                 //   * override 替代默认样式
                 "inject": "override",
+
+                // 主题的预览图片地址
+                "preview": "lib/themes/preview-dark.png"
             }
         ],
 
@@ -204,10 +207,6 @@
       <td>当扩展被卸载时调用，此时应该将扩展使用的资源进行释放，例如销毁定时器等</td>
     </tr>
     <tr>
-      <td><code>onUserChange(user)</code></td>
-      <td>当当前登录的用户账号变化时调用</td>
-    </tr>
-    <tr>
       <td><code>onUserLogin(user, error)</code></td>
       <td>当用户登录完成时调用；</td>
     </tr>
@@ -220,11 +219,11 @@
       <td>当用户状态发生变化时调用</td>
     </tr>
     <tr>
-      <td><code>onSendChatMessage(message, chat, user)</code></td>
+      <td><code>onSendChatMessages(messages, chat, user)</code></td>
       <td>当用户发送聊天消息时调用</td>
     </tr>
     <tr>
-      <td><code>onReceiveChatMessage(message, chat, user)</code></td>
+      <td><code>onReceiveChatMessages(messages, user)</code></td>
       <td>当用户接收到聊天消息时调用</td>
     </tr>
     <tr>
@@ -242,12 +241,12 @@ const {
   app,
   components,
   utils
-} = global.xxext;
+} = global.Xext;
 
 // 用于存储计时器标志
 let timerTask = null;
 
-module.export = {
+module.exports = {
     onAttach: (ext) => {
         // 扩展加载完毕了, 此时设置一个计时器，在加载完成 10 秒中之后在界面上显示一个消息
         timerTask = setTimeout(() => {
