@@ -1,0 +1,23 @@
+{
+    "name": "helloworld-app-example",
+    "displayName": "示例应用",
+    "version": "1.0.0",
+    "description": "此扩展用于演示喧喧的应用扩展机制。",
+    "type": "app",
+    "appIcon": "mdi-gamepad-variant",
+    "appAccentColor": "#aa00ff",
+    "appType": "insideView",
+    "main": "lib/index.js",
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan.git",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}
