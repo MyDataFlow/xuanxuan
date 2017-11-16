@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "description": "安全方便的发送文件给任何人。",
     "type": "app",
-    "appIcon": "~/resources/icon.png",
+    "appIcon": "resources/icon.png",
     "appAccentColor": "#0098fb",
     "appType": "webView",
     "author": {
@@ -12,6 +12,7 @@
     },
     "publisher": "易软天创",
     "homepage": "https://send.firefox.com/",
+    "webViewUrl": "https://send.firefox.com/",
     "repository": {
         "url": "https://github.com/mozilla/send.git",
         "type": "git"
