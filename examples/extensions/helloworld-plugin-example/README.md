@@ -14,7 +14,7 @@
 
 主要代码如下：
 
-```js
+```helloworld-plugin-example/lib/index.js
 // 从全局扩展对象中引入模块
 const {
     app,
