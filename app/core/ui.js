@@ -257,7 +257,10 @@ const reloadWindow = () => {
     if (Platform.ui.reloadWindow) {
         return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
             if (confirmed) {
-                Platform.ui.reloadWindow();
+                Server.logout();
+                setTimeout(() => {
+                    Platform.ui.reloadWindow();
+                }, 1000);
             }
             return Promise.resolve(confirm);
         });
