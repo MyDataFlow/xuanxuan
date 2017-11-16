@@ -157,4 +157,12 @@ export default class OpenedApp {
     updateOpenTime(time) {
         this._openTime = time || new Date().getTime();
     }
+
+    get webview() {
+        return this._webview;
+    }
+
+    set webview(webview) {
+        this._webview = webview;
+    }
 }

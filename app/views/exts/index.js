@@ -12,6 +12,7 @@ import {AppHome} from './app-home';
 import {AppExtensions} from './app-extensions';
 import {AppFiles} from './app-files';
 import replaceViews from '../replace-views';
+import App from '../../core';
 
 const buildInView = {
     home: AppHome,
@@ -80,7 +81,7 @@ export default class Index extends Component {
     }
 
     handleAppCloseBtnClick(app, e) {
-        const result = Exts.ui.closeApp(app.name);
+        const result = Exts.ui.closeApp(app.id);
         if (result === 'refresh') {
             this.forceUpdate();
         }
@@ -96,6 +97,17 @@ export default class Index extends Component {
         const {loading} = this.state;
         loading[openApp.id] = isLoading;
         this.setState({loading});
+    }
+
+    handleOpenedAppContextMenu(openedApp, e) {
+        const menuItems = Exts.ui.createOpenedAppContextMenu(openedApp, () => {
+            this.forceUpdate();
+        });
+        if (menuItems && menuItems.length) {
+            App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menuItems);
+            e.preventDefault();
+            e.stopPropagation();
+        }
     }
 
     render() {
@@ -128,6 +140,7 @@ export default class Index extends Component {
                         const isCurrentApp = Exts.ui.isCurrentOpenedApp(openedApp.id);
                         const navStyle = isCurrentApp ? {color: openedApp.app.appAccentColor} : null;
                         return (<NavLink
+                            onContextMenu={this.handleOpenedAppContextMenu.bind(this, openedApp)}
                             key={openedApp.id}
                             to={openedApp.routePath}
                             className={`ext-nav-item-${openedApp.appName}`}
@@ -158,7 +171,7 @@ export default class Index extends Component {
                         } else {
                             const webViewUrl = openedApp.app.webViewUrl;
                             if (webViewUrl) {
-                                appView = <WebApp onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} app={openedApp.app} />;
+                                appView = <WebApp onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} app={openedApp} />;
                             }
                         }
                         if (!appView) {

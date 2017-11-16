@@ -7,7 +7,6 @@ import Button from '../../components/button';
 import OpenedApp from '../../exts/opened-app';
 import Exts from '../../exts';
 import App from '../../core';
-import ExtensionDetailDialog from './extension-detail-dialog';
 import {ExtensionListItem} from './extension-list-item';
 import replaceViews from '../replace-views';
 
@@ -69,7 +68,7 @@ export default class AppExtensions extends Component {
     }
 
     handleExtensionItemClick(ext, e) {
-        ExtensionDetailDialog.show(ext);
+        Exts.ui.showExtensionDetailDialog(ext);
         if (DEBUG) {
             console.collapse('Extension View', 'greenBg', ext.displayName, 'greenPale');
             console.log('extension', ext);

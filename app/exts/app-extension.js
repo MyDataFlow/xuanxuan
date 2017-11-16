@@ -25,6 +25,10 @@ export default class AppExtension extends Extension {
         }
     }
 
+    get isWebview() {
+        return this._appType === APP_TYPES.webView;
+    }
+
     get appType() {
         return this._appType;
     }

@@ -43,6 +43,11 @@ export default class AppHome extends Component {
         this.setState({search});
     };
 
+    handleAppContextMenu(app, e) {
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, Exts.ui.createAppContextMenu(app));
+        e.preventDefault();
+    }
+
     render() {
         const {
             className,
@@ -72,7 +77,7 @@ export default class AppHome extends Component {
                         if (app.isFixed || app.hidden) {
                             return null;
                         }
-                        return <AppAvatar key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={{auto: app.appIcon, skin: {code: app.appAccentColor}, className: 'rounded shadow-1'}} label={app.displayName} />;
+                        return <AppAvatar onContextMenu={this.handleAppContextMenu.bind(this, app)} key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={{auto: app.appIcon, skin: {code: app.appAccentColor}, className: 'rounded shadow-1'}} label={app.displayName} />;
                     })
                 }
             </div>
