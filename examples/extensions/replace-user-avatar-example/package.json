@@ -1,0 +1,22 @@
+{
+    "name": "replace-user-avatar-example",
+    "displayName": "用户头像定制示例",
+    "version": "1.0.0",
+    "description": "此插件演示使用自定义的 React 组件替换内置的用户头像组件。将所有人的头像设置为一个可爱的 emojione 表情，并且每天更新一次！！！",
+    "type": "plugin",
+    "icon": "mdi-account-box-outline",
+    "accentColor": "#00b8d4",
+    "main": "lib/index.js",
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan.git",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}
