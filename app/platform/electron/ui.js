@@ -136,6 +136,10 @@ const openDevTools = () => {
     window.DEBUG = true;
 };
 
+const reloadWindow = () => {
+    browserWindow.reload();
+};
+
 browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
@@ -165,6 +169,7 @@ export default {
     showAndFocusWindow,
     showQuitConfirmDialog,
     quit,
+    reloadWindow,
 
     get isWindowFocus() {
         return browserWindow.isFocused();
