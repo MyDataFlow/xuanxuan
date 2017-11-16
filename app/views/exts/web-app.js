@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Lang from '../../lang';
 import {AppExtension} from '../../exts/extension';
 import Platform from 'Platform';
+import timeSequence from '../../utils/time-sequence';
 
 export default class WebApp extends Component {
     static propTypes = {
@@ -24,26 +24,30 @@ export default class WebApp extends Component {
             errorCode: null,
             errorDescription: null
         };
+        this.webviewId = `webview-${timeSequence()}`;
     }
 
     componentDidMount() {
-        this.webview.addEventListener('did-start-loading', this.handleLoadingStart);
-        this.webview.addEventListener('did-finish-load', this.handleLoadingStop);
-        this.webview.addEventListener('page-title-updated', this.handlePageTitleChange);
-        this.webview.addEventListener('did-fail-load', this.handleLoadFail);
-        this.webview.addEventListener('new-window', this.handleNewWindow);
+        const webview = document.getElementById(this.webviewId);
+        webview.addEventListener('did-start-loading', this.handleLoadingStart);
+        webview.addEventListener('did-finish-load', this.handleLoadingStop);
+        webview.addEventListener('page-title-updated', this.handlePageTitleChange);
+        webview.addEventListener('did-fail-load', this.handleLoadFail);
+        webview.addEventListener('new-window', this.handleNewWindow);
     }
 
     componentWillUnmount() {
-        this.webview.removeEventListener('did-start-loading', this.handleLoadingStart);
-        this.webview.removeEventListener('did-finish-load', this.handleLoadingStop);
-        this.webview.removeEventListener('page-title-updated', this.handlePageTitleChange);
-        this.webview.removeEventListener('did-fail-load', this.handleLoadFail);
-        this.webview.removeEventListener('new-window', this.handleNewWindow);
+        const webview = document.getElementById(this.webviewId);
+        webview.removeEventListener('did-start-loading', this.handleLoadingStart);
+        webview.removeEventListener('did-finish-load', this.handleLoadingStop);
+        webview.removeEventListener('page-title-updated', this.handlePageTitleChange);
+        webview.removeEventListener('did-fail-load', this.handleLoadFail);
+        webview.removeEventListener('new-window', this.handleNewWindow);
     }
 
     reloadWebview() {
-        this.webview.reload();
+        const webview = document.getElementById(this.webviewId);
+        webview.reload();
     }
 
     handleNewWindow = e => {
@@ -95,8 +99,10 @@ export default class WebApp extends Component {
             onPageTitleChange,
         } = this.props;
 
+        const webviewHtml = `<webview id="${this.webviewId}" src="${app.webViewUrl}" class="dock" ${app.isLocalWebView ? 'nodeintegration' : ''} />`;
+
         return (<div className={HTML.classes('app-web-app', className)}>
-            <webview ref={e => {this.webview = e;}} src={app.webViewUrl} className="dock" nodeintegration={app.isLocalWebView} />
+            <div className="dock" dangerouslySetInnerHTML={{__html: webviewHtml}} />
             {this.state.errorCode && <div className="dock box">
                 <h1>{this.state.errorCode}</h1>
                 <div>{this.state.errorDescription}</div>
