@@ -33,7 +33,15 @@ export default class AppExtension extends Extension {
         if (this._appType !== APP_TYPES.webView) {
             return null;
         }
-        return this._pkg.webViewUrl;
+        const webViewUrl = this._pkg.webViewUrl;
+        if (webViewUrl && !this._webViewUrl) {
+            if (!webViewUrl.startsWith('http://') && !webViewUrl.startsWith('https://')) {
+                this._webViewUrl = Path.join(this.localPath, webViewUrl);
+            } else {
+                this._webViewUrl = webViewUrl;
+            }
+        }
+        return this._webViewUrl;
     }
 
     get appAccentColor() {return this._pkg.appAccentColor || this._pkg.accentColor;}
