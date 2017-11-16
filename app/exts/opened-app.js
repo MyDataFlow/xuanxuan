@@ -1,3 +1,4 @@
+import Platform from 'Platform';
 import StringHelper from '../utils/string-helper';
 import HTML from '../utils/html-helper';
 
@@ -163,6 +164,9 @@ export default class OpenedApp {
     }
 
     set webview(webview) {
+        if (!this._webview && Platform.webview) {
+            Platform.webview.initWebview(webview);
+        }
         this._webview = webview;
     }
 }

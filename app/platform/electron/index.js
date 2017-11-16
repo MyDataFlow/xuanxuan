@@ -16,6 +16,7 @@ import net from './net';
 import crypto from './crypto';
 import Socket from './socket';
 import clipboard from './clipboard';
+import webview from './webview';
 
 if (process.type !== 'renderer') {
     throw new Error('platform/electron/index.js must run in renderer process.');
@@ -39,7 +40,8 @@ const platform = {
     crypto,
     Socket,
     notify,
-    clipboard
+    clipboard,
+    webview,
 };
 
 if (DEBUG) {

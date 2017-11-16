@@ -34,8 +34,6 @@ export default class WebApp extends Component {
 
     componentDidMount() {
         const webview = document.getElementById(this.webviewId);
-        const {app} = this.props;
-        app.webview = webview;
         webview.addEventListener('did-start-loading', this.handleLoadingStart);
         webview.addEventListener('did-finish-load', this.handleLoadingStop);
         webview.addEventListener('page-title-updated', this.handlePageTitleChange);
@@ -71,7 +69,8 @@ export default class WebApp extends Component {
     };
 
     handleLoadingStart = () => {
-        const {onLoadingChange} = this.props;
+        const {onLoadingChange, app} = this.props;
+        app.webview = document.getElementById(this.webviewId);
         if (onLoadingChange) {
             onLoadingChange(true);
         }
