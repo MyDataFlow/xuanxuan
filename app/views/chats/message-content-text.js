@@ -27,7 +27,7 @@ class MessageContentText extends Component {
             ...other
         } = this.props;
 
-        const content = message.renderedTextContent(App.im.ui.linkMembersInText, App.im.ui.renderChatMessageContent);
+        const content = message.renderedTextContent(App.im.ui.renderChatMessageContent, App.im.ui.linkMembersInText);
 
         return (<div
             {...other}
