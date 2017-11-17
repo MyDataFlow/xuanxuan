@@ -33,7 +33,9 @@ if (process.env.HOT) {
 const applyTheme = theme => {
     theme = theme || currentTheme;
     if (!theme || theme === 'default') {
-        themeLinkElement.href = theDefaultThemeStyle;
+        if (themeLinkElement.href !== theDefaultThemeStyle) {
+            themeLinkElement.href = theDefaultThemeStyle;
+        }
         const appendLinkElement = document.getElementById('appendTheme');
         if (appendLinkElement) {
             appendLinkElement.remove();
@@ -45,7 +47,9 @@ const applyTheme = theme => {
             return 'THEME_HAS_NO_CSS_FILE';
         }
         if (theme.isAppend) {
-            themeLinkElement.href = theDefaultThemeStyle;
+            if (themeLinkElement.href !== theDefaultThemeStyle) {
+                themeLinkElement.href = theDefaultThemeStyle;
+            }
             let appendLinkElement = document.getElementById('appendTheme');
             if (!appendLinkElement) {
                 appendLinkElement = document.createElement('link');
@@ -63,6 +67,12 @@ const applyTheme = theme => {
                 appendLinkElement.remove();
             }
         }
+    }
+
+    if (DEBUG) {
+        console.collapse('Extension Apply Theme', 'greenBg', theme ? theme.displayName : (theme || 'default'), 'greenPale');
+        console.log('theme', theme);
+        console.groupEnd();
     }
 };
 
@@ -107,14 +117,18 @@ const search = (keys) => {
             const themes = [];
             extThemes.forEach(extTheme => {
                 const themeScore = extTheme.getMatchScore(keys);
-                searchGroup.score += themeScore;
-                extTheme.matchScore = themeScore;
-                themes.push(extTheme);
+                if (themeScore) {
+                    searchGroup.score += themeScore;
+                    extTheme.matchScore = themeScore;
+                    themes.push(extTheme);
+                }
             });
-            themes.sort((x, y) => y.score - x.score);
-            searchGroup.themes = themes;
-            if (searchGroup.score) {
-                result.push(searchGroup);
+            if (themes.length) {
+                themes.sort((x, y) => y.matchScore - x.matchScore);
+                searchGroup.themes = themes;
+                if (searchGroup.score) {
+                    result.push(searchGroup);
+                }
             }
         }
     });

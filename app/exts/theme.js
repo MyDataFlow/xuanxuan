@@ -18,7 +18,7 @@ const MATCH_SCORE_MAP = [
     {name: 'extKeywords', equal: 50, include: 10, array: true},
     {name: 'extDisplayName', equal: 50, include: 25},
     {name: 'extName', equal: 50, include: 25},
-    {name: 'extPinyinNames', equal: 50, include: 25},
+    {name: 'extPinyinNames', equal: 50, include: 25, array: true},
 ];
 
 export default class Theme {

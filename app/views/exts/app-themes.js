@@ -64,6 +64,7 @@ export default class AppThemes extends Component {
 
         const {search} = this.state;
         const themeExts = search ? Exts.themes.search(search) : Exts.themes.all;
+        const showDefaultTheme = !search || 'default'.includes(search) || Lang.string('ext.themes.default').includes(search);
 
         let themesCount = 1;
         const themeViews = themeExts.map(themeExt => {
@@ -102,7 +103,7 @@ export default class AppThemes extends Component {
                 <nav className="toolbar" />
             </header>
             <div className="app-themes flex-auto scroll-y content-start has-padding">
-                <div className="app-themes-list list">
+                {showDefaultTheme && <div className="app-themes-list list">
                     <div className="heading">
                         <Avatar style={{color: app.app.accentColor}} auto={app.app.icon} className="rounded no-margin avatar-sm" />
                         <div className="title">{Lang.string('ext.themes.inside')}</div>
@@ -113,7 +114,7 @@ export default class AppThemes extends Component {
                         </div>
                         {isCurrentDefault && <Icon name="bookmark-check active-icon  icon-3x text-shadow-white" />}
                     </a>
-                </div>
+                </div>}
                 {themeViews}
             </div>
         </div>);
