@@ -409,3 +409,46 @@
     }
   }
 }
+
+.app-themes-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  > .heading {
+    flex: auto;
+    width: 100%;
+    margin: @space-sm @space-sm (-1*@space-xs) @space-sm;
+  }
+
+  > .item {
+    flex: 1;
+    min-width: (300*@rem);
+    margin: @space-sm;
+    height: (100*@rem);
+    transition: box-shadow @animation-type @animation-speed-normal;
+
+    > .active-icon {
+      color: #64dd17;
+    }
+
+    > .content {
+      display: flex;
+      align-items: flex-end;
+
+      > .title {
+        .flex-middle;
+        display: flex;
+        font-size: (18*@rem);
+
+        > .label {
+          font-size: (12*@rem);
+          margin-left: @space-sm;
+        }
+      }
+    }
+
+    &.active {
+      .shadow-3;
+    }
+  }
+}

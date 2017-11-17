@@ -94,11 +94,17 @@
                 // 主题内部名称
                 "name": "dark",
 
+                // 主题的描述文本，可能会在界面上显示
+                "description": "这是一个暗黑主题",
+
                 // 主题显示名称
                 "displayName": "暗色",
 
                 // 主题 CSS 文件位置，可以是相对包的路径或者一个可访问的网址
                 "style": "lib/themes/dark.css",
+
+                // 主题的主要颜色
+                "color": "#ff00f1",
 
                 // 主题载入方式，可取值包括：
                 //   * append   在默认样式的基础上附加样式
@@ -233,6 +239,10 @@
     <tr>
       <td><code>MainView</code></td>
       <td>当作为内嵌应用时的 React 实现的界面主组件</td>
+    </tr>
+    <tr>
+      <td><code>replaceViews</code></td>
+      <td>用于配置替换系统内置界面组件</td>
     </tr>
   </tbody>
 </table>

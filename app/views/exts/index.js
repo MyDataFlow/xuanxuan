@@ -11,13 +11,15 @@ import {WebApp} from './web-app';
 import {AppHome} from './app-home';
 import {AppExtensions} from './app-extensions';
 import {AppFiles} from './app-files';
+import {AppThemes} from './app-themes';
 import replaceViews from '../replace-views';
 import App from '../../core';
 
 const buildInView = {
     home: AppHome,
     extensions: AppExtensions,
-    files: AppFiles
+    files: AppFiles,
+    themes: AppThemes
 };
 
 export default class Index extends Component {

@@ -269,6 +269,10 @@
     "ext.app.goBack": "后退",
     "ext.app.goForward": "前进",
     "ext.app.openDevTools": "开发者工具",
+    "ext.themes.count.format": "共 {0} 个主题",
+    "ext.themes.default": "默认主题",
+    "ext.themes.inside": "内置主题",
+    "ext.themes.current": "当前",
     "ext.extensions.all": "全部",
     "ext.extensions.apps": "应用",
     "ext.extensions.plugins": "插件",
@@ -323,6 +327,7 @@
     "error.EXT_NOT_FOUND": "此扩展没有安装。",
     "error.EXT_UNZIP_ERROR": "读取扩展文件时出错。",
     "error.EXT_NOT_EXT_SOURCE": "所选目标是有效的 xext 文件或者 package.json 文件。",
+    "error.THEME_HAS_NO_CSS_FILE": "所选的主题没有找到可用的 CSS 样式文件。",
 
     "usermenu.openProfile": "个人资料",
     "usermenu.changePassword": "更改密码",

@@ -1,4 +1,5 @@
 import Extension from './base-extension';
+import Theme from './theme';
 
 export default class ThemeExtension extends Extension {
     constructor(pkg, data) {
@@ -8,9 +9,14 @@ export default class ThemeExtension extends Extension {
             throw new Error(`Cannot create a theme extension from the type '${this.type}'.`);
         }
 
-        this._themes = this._pkg.themes;
-        if (!this._themes || !this._themes.length) {
-            this.addError('themes', 'At least one theme must be set in the theme extension.');
+        const themes = this._pkg.themes;
+        if (themes && themes.length) {
+            this._themes = themes.map(themeData => {
+                return new Theme(themeData, this);
+            });
+        } else {
+            this._themes = [];
+            this.addError('themes', 'At least one theme must be set with "themes" attribute in package.json for theme extension.');
         }
     }
 
