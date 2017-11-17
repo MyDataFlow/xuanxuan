@@ -285,6 +285,10 @@
     background-color: @color-pale;
     margin-bottom: (10*@rem);
 
+    > .content {
+      width: calc(100% - (170*@rem));
+    }
+
     + .app-ext-list-item-dev {
       margin-top: (-10*@rem);
       border-top: @rem solid @border-color;
