@@ -74,7 +74,7 @@ const applyTheme = theme => {
 
     changingThemeTimer = setTimeout(() => {
         document.body.classList.remove('theme-changing');
-    }, 1500);
+    }, 800);
 
     if (DEBUG) {
         console.collapse('Extension Apply Theme', 'greenBg', theme ? theme.displayName : (theme || 'default'), 'greenPale');

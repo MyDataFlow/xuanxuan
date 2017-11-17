@@ -426,9 +426,39 @@
     margin: @space-sm;
     height: (100*@rem);
     transition: box-shadow @animation-type @animation-speed-normal;
+    position: relative;
+    overflow: hidden;
 
     > .active-icon {
-      color: #64dd17;
+      color: #fff;
+      position: absolute;
+      top: (-20*@rem);
+      right: (-20*@rem);
+      opacity: 0;
+      transition: @animation-speed-normal @animation-type;
+      transition-property: opacity, top, right;
+
+      &:before {
+        position: absolute;
+        z-index: 1;
+        top: (2*@rem);
+        right: (2*@rem);
+      }
+
+      &:after {
+        content: ' ';
+        position: absolute;
+        z-index: 0;
+        width: 0;
+        height: 0;
+        border: (25*@rem) solid transparent;
+        border-top-color: #64dd17;
+        border-right-color: #64dd17;
+        top: (-20*@rem);
+        right: (-20*@rem);
+        transition: @animation-speed-fast @animation-type;
+        transition-property: opacity, top, right;
+      }
     }
 
     > .content {
@@ -449,6 +479,17 @@
 
     &.active {
       .shadow-3;
+
+      > .active-icon {
+        top: 0;
+        right: 0;
+        opacity: 1;
+
+        &:after {
+          top: 0;
+          right: 0;
+        }
+      }
     }
   }
 }

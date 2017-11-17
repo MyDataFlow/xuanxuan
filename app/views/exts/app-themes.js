@@ -85,7 +85,7 @@ export default class AppThemes extends Component {
                             <div className="content">
                                 <div className="title">{theme.displayName}{isCurrentTheme && <small className="label circle white text-black shadow-1">{Lang.string('ext.themes.current')}</small>}</div>
                             </div>
-                            {isCurrentTheme && <Icon name="bookmark-check active-icon  icon-3x text-shadow-white" />}
+                            <Icon name="check active-icon icon-2x text-shadow-white" />
                         </a>);
                     })
                 }
@@ -103,6 +103,7 @@ export default class AppThemes extends Component {
                 <nav className="toolbar" />
             </header>
             <div className="app-themes flex-auto scroll-y content-start has-padding">
+                {themeViews}
                 {showDefaultTheme && <div className="app-themes-list list">
                     <div className="heading">
                         <Avatar style={{color: app.app.accentColor}} auto={app.app.icon} className="rounded no-margin avatar-sm" />
@@ -112,10 +113,9 @@ export default class AppThemes extends Component {
                         <div className="content">
                             <div className="title">{Lang.string('ext.themes.default')} {isCurrentDefault && <small className="label circle white text-black shadow-1">{Lang.string('ext.themes.current')}</small>}</div>
                         </div>
-                        {isCurrentDefault && <Icon name="bookmark-check active-icon  icon-3x text-shadow-white" />}
+                        <Icon name="check active-icon icon-2x text-shadow-white" />
                     </a>
                 </div>}
-                {themeViews}
             </div>
         </div>);
     }
