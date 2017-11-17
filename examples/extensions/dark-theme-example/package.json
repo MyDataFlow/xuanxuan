@@ -1,0 +1,30 @@
+{
+    "name": "dakr-theme-example",
+    "displayName": "暗黑主题",
+    "version": "1.0.0",
+    "description": "提供 1 款暗黑主题外观。快让黑暗降临吧！",
+    "type": "theme",
+    "icon": "mdi-lightbulb",
+    "accentColor": "#1e1e1e",
+    "themes": [
+        {
+            "name": "dark",
+            "displayName": "暗黑",
+            "color": "#252526",
+            "style": "themes/dark.css",
+            "inject": "append"
+        }
+    ],
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/dakr-theme",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/dakr-theme",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}
