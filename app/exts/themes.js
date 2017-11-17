@@ -30,8 +30,11 @@ if (process.env.HOT) {
     themeLinkElement = document.getElementById('theme');
     theDefaultThemeStyle = themeLinkElement.href;
 }
+let changingThemeTimer = null;
 const applyTheme = theme => {
     theme = theme || currentTheme;
+    clearTimeout(changingThemeTimer);
+    document.body.classList.add('theme-changing');
     if (!theme || theme === 'default') {
         if (themeLinkElement.href !== theDefaultThemeStyle) {
             themeLinkElement.href = theDefaultThemeStyle;
@@ -68,6 +71,10 @@ const applyTheme = theme => {
             }
         }
     }
+
+    changingThemeTimer = setTimeout(() => {
+        document.body.classList.remove('theme-changing');
+    }, 1500);
 
     if (DEBUG) {
         console.collapse('Extension Apply Theme', 'greenBg', theme ? theme.displayName : (theme || 'default'), 'greenPale');
