@@ -5,12 +5,12 @@
     "description": "提供 1 款暗黑主题外观。快让黑暗降临吧！",
     "type": "theme",
     "icon": "mdi-lightbulb",
-    "accentColor": "#1e1e1e",
+    "accentColor": "#333",
     "themes": [
         {
             "name": "dark",
             "displayName": "暗黑",
-            "color": "#252526",
+            "color": "#333",
             "style": "themes/dark.css",
             "inject": "append"
         }
