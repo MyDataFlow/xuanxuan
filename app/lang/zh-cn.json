@@ -323,6 +323,8 @@
     "ext.installSuccess.format": "扩展 【{0}】 安装成功。",
     "ext.installFail": "安装失败。",
     "ext.uninstallSuccess.format": "扩展 【{0}】 已卸载",
+    "ext.overrideInstall.format": "你已安装有相同名称的扩展【{0}】（版本为 {1}），当前即将安装的【{2}】版本为 {3}，如果继续将会覆盖原来的版本。是否继续？",
+    "ext.updateInstall.format": "是否将扩展【{0}】从版本 {1} 升级到 {2}？",
     "error.EXT_NAME_ALREADY_INSTALLED": "已安装有相同名称的扩展。",
     "error.EXT_NOT_FOUND": "此扩展没有安装。",
     "error.EXT_UNZIP_ERROR": "读取扩展文件时出错。",

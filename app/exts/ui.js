@@ -147,7 +147,7 @@ const installExtension = (devMode = false) => {
     manager.openInstallDialog((extension, error) => {
         if (extension) {
             App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
-        } else {
+        } else if (error) {
             let msg = Lang.string('ext.installFail');
             if (error) {
                 msg += Lang.error(error);

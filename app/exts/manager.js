@@ -1,10 +1,13 @@
 import {env, dialog} from 'Platform';
 import Path from 'path';
 import fse from 'fs-extra';
+import compareVersions from 'compare-versions';
 import uuid from 'uuid/v4';
 import extractZip from 'extract-zip';
 import db from './extensions-db';
 import {createExtension} from './extension';
+import Modal from '../components/modal';
+import Lang from '../lang';
 
 const createSavePath = extension => {
     return extension.localPath || Path.join(env.dataPath, 'xexts', extension.name);
@@ -56,18 +59,35 @@ const reloadDevExtension = extension => {
 
 const installFromDir = (dir, deleteDir = false, devMode = false) => {
     const pkgFilePath = Path.join(dir, 'package.json');
-    const savedPath = devMode ? dir : createSavePath(extension);
     let extension = null;
     return fse.readJSON(pkgFilePath).then(pkg => {
         extension = createExtension(pkg, {
-            localPath: savedPath,
             isDev: devMode
         });
+        const savedPath = devMode ? dir : createSavePath(extension);
+        extension.localPath = savedPath;
+        const dbExt = db.getInstall(extension.name);
+        if (dbExt) {
+            if (dbExt.version && extension.version && compareVersions(dbExt.version, extension.version) < 0) {
+                return Modal.confirm(Lang.format('ext.updateInstall.format', dbExt.displayName, dbExt.version, extension.version)).then(confirmed => {
+                    if (confirmed) {
+                        return db.saveInstall(extension, true);
+                    }
+                    return Promise.reject();
+                });
+            }
+            return Modal.confirm(Lang.format('ext.overrideInstall.format', dbExt.displayName, dbExt.version || '*', extension.displayName, extension.version || '*')).then(confirmed => {
+                if (confirmed) {
+                    return db.saveInstall(extension, true);
+                }
+                return Promise.reject();
+            });
+        }
         return db.saveInstall(extension);
     }).then(() => {
         if (!devMode) {
-            return fse.emptyDir(savedPath).then(() => {
-                return fse.copy(dir, savedPath);
+            return fse.emptyDir(extension.localPath).then(() => {
+                return fse.copy(dir, extension.localPath);
             });
         }
         return Promise.resolve(extension);
@@ -78,6 +98,13 @@ const installFromDir = (dir, deleteDir = false, devMode = false) => {
             });
         }
         return Promise.resolve(extension);
+    }).catch(error => {
+        if (deleteDir) {
+            return fse.remove(dir).then(() => {
+                return Promise.reject(error);
+            });
+        }
+        return Promise.reject(error);
     });
 };
 

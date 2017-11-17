@@ -26,11 +26,16 @@ buildIns.forEach((buildIn, idx) => {
 // Load user installed extensions
 exts.push(...db.installs);
 
-exts.sort((x, y) => {
-    let result = (y.isDev ? 1 : 0) - (x.isDev ? 1 : 0);
-    result = y.installTime - x.installTime;
-    return result;
-});
+const sortExts = () => {
+    exts.sort((x, y) => {
+        let result = (y.isDev ? 1 : 0) - (x.isDev ? 1 : 0);
+        if (result === 0) {
+            result = y.installTime - x.installTime;
+        }
+        return result;
+    });
+};
+sortExts();
 
 // Grouped extensions
 let apps = exts.filter(x => x.type === 'app');
@@ -40,6 +45,7 @@ let plugins = exts.filter(x => x.type === 'plugin');
 db.setOnChangeListener((ext, changeAction) => {
     if (changeAction === 'add') {
         exts.splice(0, 0, ext);
+        sortExts();
     } else if (changeAction === 'remove') {
         const index = exts.findIndex(x => x.name === ext.name);
         if (index > -1) {
@@ -53,6 +59,7 @@ db.setOnChangeListener((ext, changeAction) => {
             exts.splice(0, 0, ext);
         }
     }
+
     apps = exts.filter(x => x.type === 'app');
     themes = exts.filter(x => x.type === 'theme');
     plugins = exts.filter(x => x.type === 'plugin');

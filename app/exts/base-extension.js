@@ -43,6 +43,10 @@ export default class Extension {
             this.addError('name', `Extension name(${pkg.name}) is not valid, use random name '${this._safeName}'.`);
         }
 
+        if (StringHelper.isEmpty(pkg.version)) {
+            this.addError('version', 'Extension version not set.');
+        }
+
         this._pkg = pkg;
 
         this._config = new ExtensionConfig(this.name, this.configurations);
@@ -182,15 +186,6 @@ export default class Extension {
     set updateTime(time) {
         this._data.updateTime = time;
     }
-
-    // get devPath() {
-    //     return this.isDev ? this.localPath : null;
-    // }
-
-    // set devPath(devPath) {
-    //     this.localPath = devPath;
-    //     this.isDev = true;
-    // }
 
     get localPath() {
         return this._data.localPath;
