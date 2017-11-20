@@ -1,4 +1,4 @@
-import Lang from '../../lang';
+import Lang from '../lang';
 
 const exts = [{
     name: 'home',
