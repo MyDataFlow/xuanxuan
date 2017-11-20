@@ -8,6 +8,7 @@ import validate from 'webpack-validator';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import merge from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 // import BabiliPlugin from 'babili-webpack-plugin';
 import baseConfig from './webpack.config.base';
 
@@ -50,6 +51,8 @@ export default validate(merge(baseConfig, {
     },
 
     plugins: [
+        new new UglifyJsPlugin(),
+
         // for bindings package, see https://github.com/rwaldron/johnny-five/issues/1101#issuecomment-213581938
         new webpack.ContextReplacementPlugin(/bindings$/, /^$/),
 
