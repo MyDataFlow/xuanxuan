@@ -70,7 +70,7 @@ export default class AppExtension extends Extension {
         return this._appIcon || this.icon;
     }
 
-    get icon() {return super.icon || this.appIcon;}
+    get icon() {return this._pkg.icon ? super.icon : this.appIcon;}
     get accentColor() {return this._pkg.accentColor || this._pkg.appAccentColor;}
 
     get MainView() {

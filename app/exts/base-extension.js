@@ -121,7 +121,6 @@ export default class Extension {
     }
 
     get pkg() {return this._pkg;}
-    get accentColor() {return this._pkg.accentColor;}
     get description() {return this._pkg.description;}
     get version() {return this._pkg.version;}
     get author() {return this._pkg.author;}
@@ -133,6 +132,10 @@ export default class Extension {
     get repository() {return this._pkg.repository;}
     get bugs() {return this._pkg.bugs;}
     get lazy() {return this._pkg.lazy;}
+
+    get accentColor() {
+        return this._pkg.accentColor || '#f50057';
+    }
 
     get mainFile() {
         const mainFile = this.pkg.main;
@@ -151,7 +154,7 @@ export default class Extension {
                 this._icon = icon;
             }
         }
-        return this._icon;
+        return this._icon || 'mdi-cube';
     }
 
     get authorName() {
