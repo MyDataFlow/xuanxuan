@@ -684,6 +684,6 @@ module.exports = UserAvatar;
 
 ## 开发模式
 
-当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录下载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
+当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录加载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
 
 ![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-develop.png)
