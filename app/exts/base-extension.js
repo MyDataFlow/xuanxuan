@@ -27,9 +27,9 @@ export default class Extension {
     static TYPES = TYPES;
 
     constructor(pkgData, data) {
-        const pkg = Object.assign({}, pkgData, pkgData.xxext);
-        if (pkg.xxext) {
-            delete pkg.xxext;
+        const pkg = Object.assign({}, pkgData, pkgData.xext);
+        if (pkg.xext) {
+            delete pkg.xext;
         }
 
         this._type = TYPES[pkg.type];
