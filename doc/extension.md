@@ -2,7 +2,7 @@
 
 喧喧在 1.3 中提供了最大程度的定制和功能扩展机制，使得开发者非常方便的为喧喧开发新的功能，并且不受官方版本升级的影响，同时也可以利用此机制来实现自己的定制版本。由于扩展是可插拔的，所以用户使用起来非常灵活。喧喧的扩展机制依赖 nodejs，目前仅支持 Electron 上的扩展，浏览器端将不支持扩展机制。
 
-下图为一个内置的应用扩展“文件”，用于浏览在聊天中发送和接收的所有文件。
+下图为一个内置的应用扩展“文件”，用于浏览在聊天中发送和接收的所有文件。
 
 ![喧喧文件应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-files.png)
 
@@ -119,7 +119,7 @@
 
         // 针对扩展类型 plugin 或 app - 模块主要入口脚本文件位置，可以包含以下格式的地址：
         //   * 使用相对扩展包目录的相对地址，例如 lib/index.js
-        // 当扩展类型为 plugin 时会自动从扩展包目录下寻找 index.js 文件作为模块主入口文件
+        // 当扩展类型为 plugin 时会自动从扩展包目录下寻找 index.js 文件作为模块主入口文件
         "main": "lib/index.js",
 
         // 针对扩展类型 theme - 主题列表
@@ -263,7 +263,7 @@
   </tbody>
 </table>
 
-#### `lang`： 语言模块
+#### `lang`： 语言模块
 
 ##### `lang.name`
 
@@ -306,13 +306,12 @@ const fileSaveSuccessMsg = lang.format('file.fileSavedAt.format', 'c:/1.txt');
 
 #### `app`： 喧喧应用核心模块
 
-app 模块为一个对象，包含了喧喧应用核心功能子模块。
+app 模块为一个对象，包含了喧喧应用核心功能子模块。
 
 <table>
   <thead>
     <tr>
-      <td>子模块名称</td>
-      <td>说明</td>
+      <td>子模块名称</td>
     </tr>
   </thead>
   <tbody>
@@ -383,7 +382,7 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 * 在扩展包中提供一个 html 文件作为页面嵌入，用于开发一个全新的应用，但不想受官方界面样式表和 React 模式限制，可以参考这个例子 [helloworld-htmlapp-example](https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/helloworld-htmlapp-example)，在你的 html 文件中执行的 JS 代码仍然可以使用 nodejs 的内置模块；
 * 在入口模块的 `MainView` 属性上设置一个 React 组件作为嵌入的界面，方便的开发一个与官方界面融合的应用，可以参考这个例子 [helloworld-app-example](https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/helloworld-app-example)，在你的 React 组件中可以使用全部的 nodejs 内置模块，并访问全局扩展对象。
 
-一个最简单的应用扩展只需要在扩展包中包含一个 `package.json` 文件即可实现，下面以将火狐的文件传输应用包装为喧喧的应用扩展示例中的 `package.json` 文件内容：
+一个最简单的应用扩展只需要在扩展包中包含一个 `package.json` 文件即可实现，下面以将火狐的文件传输应用包装为喧喧的应用扩展示例中的 `package.json` 文件内容：
 
 ```json
 {
@@ -396,7 +395,7 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 }
 ```
 
-将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，并修改扩展名为 `.xext` 即可在喧喧中安装此应用扩展。
+将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，并修改扩展名为 `.xext` 即可在喧喧中安装此应用扩展。
 
 ![喧喧火狐传送应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-firefox-send.png)
 
@@ -408,7 +407,7 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 
 ## 插件扩展
 
-插件扩展通常不包含具体的界面，但可以在界面初始化及关键事件触发时得到通知并执行代码。例如可以通过监听用户发送消息，并在消息发送之前修改消息的内容。
+插件扩展通常不包含具体的界面，但可以在界面初始化及关键事件触发时得到通知并执行代码。例如可以通过监听用户发送消息，并在消息发送之前修改消息的内容。
 
 每一个插件扩展需要提供一个入口模块文件，在 `package.json` 文件中通过 `main` 属性指定。如果不指定此文件则默认使用扩展包目录的 `index.js` 文件作为主入口模块文件。扩展主入口模块文件为一个 JavaScript 模块，当喧喧加载完毕时会逐个加载各个扩展的主入口模块。在扩展主入口模块中可以访问全局扩展对象 `global.Xext`。扩展主入口模块应该返回一个对象，该对象可以包含如下生命周期函数：
 
@@ -564,13 +563,13 @@ module.exports = {
 
 ### 应用的插件机制
 
-当一个扩展类型为 `app`(应用)时，同样可以在 `package.json` 文件中使用 `main` 属性指定一个主入口模块文件，从而使得一个应用扩展具备插件扩展的机制。同理，也可以将此方式理解为一个包含应用界面的插件。
+当一个扩展类型为 `app`(应用)时，同样可以在 `package.json` 文件中使用 `main` 属性指定一个主入口模块文件，从而使得一个应用扩展具备插件扩展的机制。同理，也可以将此方式理解为一个包含应用界面的插件。
 
 ### `replaceViews`：界面替换机制
 
 在主入口模块中可以使用 `replaceViews` 字段指定一个对象来替换喧喧默认的界面组件，这些组件在 [`/app/views`](https://github.com/easysoft/xuanxuan/tree/master/app/views) 目录下。<code>replaceViews</code> 对象的键名为要替换的组件路径，键值为要用来替换的 React 组件类或组件函数。通过界面替换机制，可以使用插件的形式来定制喧喧的界面，例如将官方的登录界面替换为自己的实现。
 
-下面的例子将展示使用自定义的 React 组件来替换官方的用户头像组件。这样可以将官方的圆形用户头像替换为方形的头像。更加详细的代码参考官方例子 [replace-user-avatar-example](https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/replace-user-avatar-example)。
+下面的例子将展示使用自定义的 React 组件来替换官方的用户头像组件。这样可以将官方的圆形用户头像替换为方形的头像。更加详细的代码参考官方例子 [replace-user-avatar-example](https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/replace-user-avatar-example)。
 
 ```js
 // 主入口文件 index.js
@@ -585,7 +584,7 @@ module.exports = {
 ```
 
 ```js
-// user-avatar.js 文件
+// user-avatar.js 文件
 
 // 从全局扩展对象中引入模块
 const {
@@ -632,7 +631,7 @@ module.exports = UserAvatar;
 
 ## 主题扩展
 
-主题扩展用于为喧喧提供额外的外观选项。一个主题扩展中可以提供多款主题供用户选择使用。主题扩展所提供的主题在 `package.json` 文件中通过 `themes` 字段进行声明。`themes` 字段为一个对象数组，数组中的每个对象为一个主题配置。
+主题扩展用于为喧喧提供额外的外观选项。一个主题扩展中可以提供多款主题供用户选择使用。主题扩展所提供的主题在 `package.json` 文件中通过 `themes` 字段进行声明。`themes` 字段为一个对象数组，数组中的每个对象为一个主题配置。
 
 下面为官方暗黑主题的 `package.json` 文件:
 
@@ -647,7 +646,7 @@ module.exports = UserAvatar;
     "accentColor": "#333",
     "themes": [
         {
-            // 主题的名称，同一个扩展中的主题名称不能相同
+            // 主题的名称，同一个扩展中的主题名称不能相同
             "name": "dark",
 
             // 主题在界面上显示的名称
@@ -666,16 +665,16 @@ module.exports = UserAvatar;
     // 其他配置
 ```
 
-主题的 css 文件载入方式包括两种：
+主题的 css 文件载入方式包括两种：
 
-* `append`：将 css 文件作为默认样式表的补充，即挂在在默认主题样式的后面；
+* `append`：将 css 文件作为默认样式表的补充，即挂在在默认主题样式的后面；
 * `override`：将 css 文件替换原来的默认样式表。
 
 这个主题可以在 [dark-theme-example](https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/dark-theme-example) 找到源码。
 
 ### 主题管理
 
-可以使用内置的主题管理应用来浏览已经通过扩展安装的主题以及切换使用主题。
+可以使用内置的主题管理应用来浏览已经通过扩展安装的主题以及切换使用主题。
 
 ![喧喧主题管理应用](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-themes.png)
 
@@ -686,8 +685,8 @@ module.exports = UserAvatar;
 ![喧喧扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-extensions.png)
 ![喧喧扩展查看](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-view.png)
 
-## 开发模式
+## 开发模式
 
-当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录下载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
+当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录下载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
 
 ![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-develop.png)
