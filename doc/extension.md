@@ -4,7 +4,7 @@
 
 下图为一个内置的应用扩展“文件”，用于浏览在聊天中发送和接收的所有文件。
 
-![喧喧文件应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/app-files.png)
+![喧喧文件应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-files.png)
 
 ## 扩展机制
 
@@ -16,7 +16,7 @@
 * `app`：应用，提供将用户自行开发的界面或者网页集成到喧喧中；
 * `theme`：主题，提供额外的界面风格供用户切换使用。
 
-![喧喧扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/app-extensions.png)
+![喧喧扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-extensions.png)
 
 ### 扩展包目录结构
 
@@ -34,7 +34,7 @@
 
 强烈推荐在扩展包目录内提供一个 `README.md` 文件，此文件内容会在用户查看扩展详情时显示。
 
-![喧喧扩展readme文件](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/extension-view-readme.png)
+![喧喧扩展readme文件](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-view-readme.png)
 
 ### 扩展描述文件 package.json
 
@@ -398,13 +398,13 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 
 将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，并修改扩展名为 `.xext` 即可在喧喧中安装此应用扩展。
 
-![喧喧火狐传送应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/extension-firefox-send.png)
+![喧喧火狐传送应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-firefox-send.png)
 
 ### 管理应用扩展
 
 喧喧的所以应用扩展都可以通过内置的 “应用” 应用来访问。
 
-![喧喧应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/app-home.png)
+![喧喧应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-home.png)
 
 ## 插件扩展
 
@@ -677,17 +677,17 @@ module.exports = UserAvatar;
 
 可以使用内置的主题管理应用来浏览已经通过扩展安装的主题以及切换使用主题。
 
-![喧喧主题管理应用](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/app-themes.png)
+![喧喧主题管理应用](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-themes.png)
 
 ## 扩展管理
 
 扩展的浏览、安装、卸载通过内置的“扩展”应用实现。对于刚刚安装的插件类型扩展需要重启喧喧后生效。
 
-![喧喧扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/app-extensions.png)
-![喧喧扩展查看](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/extension-view.png)
+![喧喧扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/app-extensions.png)
+![喧喧扩展查看](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-view.png)
 
 ## 开发模式
 
 当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录下载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
 
-![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/extensions/extension-develop.png)
+![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-develop.png)
