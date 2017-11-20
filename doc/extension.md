@@ -311,7 +311,8 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 <table>
   <thead>
     <tr>
-      <td>子模块名称</td>
+      <th>子模块名称</th>
+      <th>说明</th>
     </tr>
   </thead>
   <tbody>
