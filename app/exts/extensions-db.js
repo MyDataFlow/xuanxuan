@@ -40,7 +40,7 @@ const saveInstall = (extension, override = false) => {
     }
     saveToStore();
     if (onChangeListener) {
-        onChangeListener(extension, oldExtensionIndex ? 'update': 'add');
+        onChangeListener(extension, oldExtensionIndex > -1 ? 'update' : 'add');
     }
     return Promise.resolve(extension);
 };
