@@ -45,6 +45,13 @@ export default class AppFiles extends Component {
 
     componentDidMount() {
         this.loadFiles();
+        this.onUserLoginHandler = App.server.onUserLogin(() => {
+            this.loadFiles();
+        });
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.onUserLoginHandler);
     }
 
     handleNavItemClick(fileType) {
