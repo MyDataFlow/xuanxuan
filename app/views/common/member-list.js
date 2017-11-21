@@ -17,6 +17,7 @@ class MemberList extends Component {
         itemRender: PropTypes.func,
         className: PropTypes.string,
         avatarClassName: PropTypes.string,
+        heading: PropTypes.any,
     }
 
     static defaultProps = {
@@ -26,6 +27,7 @@ class MemberList extends Component {
         className: null,
         avatarClassName: null,
         itemRender: null,
+        heading: null
     };
 
     render() {
@@ -37,6 +39,7 @@ class MemberList extends Component {
             onItemClick,
             onItemContextMenu,
             avatarClassName,
+            heading,
             ...other
         } = this.props;
 
@@ -44,6 +47,7 @@ class MemberList extends Component {
             {...other}
             className={HTML.classes('app-member-list list', className)}
         >
+            {heading}
             {
                 members.map(member => {
                     return <MemberListItem avatarClassName={avatarClassName} onContextMenu={onItemContextMenu && onItemContextMenu.bind(null, member)} onClick={onItemClick && onItemClick.bind(null, member)} {...listItemProps} key={member.account} member={member}>{itemRender && itemRender(member)}</MemberListItem>;

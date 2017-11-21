@@ -7,6 +7,7 @@ import App from '../../core';
 import Member from '../../core/models/member';
 import {MemberList} from '../common/member-list';
 import replaceViews from '../replace-views';
+import ChatInviteDialog from './chat-invite-dialog';
 
 const handleMemberItemClick = member => {
     App.im.ui.sendContentToChat(`@${member.displayName} `);
@@ -63,6 +64,10 @@ class ChatSidebarPeoples extends Component {
         e.preventDefault();
     }
 
+    handleInviteBtnClick = e => {
+        ChatInviteDialog.show(this.props.chat);
+    };
+
     render() {
         const {
             chat,
@@ -82,11 +87,30 @@ class ChatSidebarPeoples extends Component {
             return 0;
         }, 'status', 'namePinyin', '-id']);
 
+        let onlineCount = 0;
+        members.forEach(member => {
+            if (member.isOnline) {
+                onlineCount += 1;
+            }
+        });
+
         return (<div
             {...other}
             className={HTML.classes('app-chat-sidebar-peoples has-padding', className)}
         >
-            <MemberList onItemClick={handleMemberItemClick} onItemContextMenu={this.handleItemContextMenu} itemRender={this.handleItemRender} className="white rounded compact" members={members} listItemProps={{avatarSize: 20}} />
+
+            <MemberList
+                onItemClick={handleMemberItemClick}
+                onItemContextMenu={this.handleItemContextMenu}
+                itemRender={this.handleItemRender}
+                className="white rounded compact"
+                members={members}
+                listItemProps={{avatarSize: 20}}
+                heading={<header className="heading divider">
+                    <div className="title small text-gray">{onlineCount}/{members.length}</div>
+                    <nav className="nav">{chat.canInvite(App.user) && <a onClick={this.handleInviteBtnClick}><Icon name="account-multiple-plus" /> &nbsp;{Lang.string('chat.invite')}</a>}</nav>
+                </header>}
+            />
             {children}
         </div>);
     }

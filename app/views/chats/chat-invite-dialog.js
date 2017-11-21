@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '../../components/modal';
 // import {ChatInvite} from './chat-invite';
-import ChatInvite from './chat-invite';
+import {ChatInvite} from './chat-invite';
 import Lang from '../../lang';
 import HTML from '../../utils/html-helper';
 
