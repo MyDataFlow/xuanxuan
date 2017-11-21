@@ -19,7 +19,7 @@ class UserAvatar extends Component {
     };
 
     static get UserAvatar() {
-        return replaceViews('common/user-avatar');
+        return replaceViews('common/user-avatar', UserAvatar);
     }
 
     render() {
