@@ -453,6 +453,15 @@ const inviteMembersToChat = (chat, chatMembers, newChatSetting) => {
     }
 };
 
+const kickOfMemberFromChat = (chat, kickOfWho) => {
+    if (chat.canKickOff(profile.user, kickOfWho)) {
+        return Server.socket.sendAndListen({
+            method: 'addmember',
+            params: [chat.gid, [kickOfWho.id], false]
+        });
+    }
+};
+
 const joinChat = (chat, join = true) => {
     chatJoinTask = true;
     return Server.socket.sendAndListen({
@@ -518,6 +527,7 @@ export default {
     handleReceiveChatMessages,
     onSendChatMessages,
     onReceiveChatMessages,
+    kickOfMemberFromChat,
 
     get chatJoinTask() {
         return chatJoinTask;

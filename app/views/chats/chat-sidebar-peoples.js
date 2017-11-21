@@ -58,7 +58,7 @@ class ChatSidebarPeoples extends Component {
     }
 
     handleItemContextMenu = (member, e) => {
-        const items = App.im.ui.createChatMemberContextMenuItems(member);
+        const items = App.im.ui.createChatMemberContextMenuItems(member, this.props.chat);
         ContextMenu.show({x: e.pageX, y: e.pageY}, items);
         e.preventDefault();
     }

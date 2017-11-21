@@ -196,6 +196,8 @@
     "chat.invite.removeAll": "清除所有",
     "chat.exit.message": "{0} 退出了当前讨论组。",
     "chat.join.message": "我加入了讨论组。",
+    "chat.kickOffFromGroup": "从讨论组移除",
+    "chat.kickOffFromGroup.confirm": "确定从讨论组移除成员 {0}？",
     "chat.committers.setCommitters": "设置白名单",
     "chat.committers.setCommittersFormat": "设置会话【{0}】的白名单",
     "chat.committers.committersSettingTip": "通过设置白名单来决定哪些人可以在该会话中发言。",

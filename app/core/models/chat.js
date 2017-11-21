@@ -275,6 +275,10 @@ class Chat extends Entity {
         return (this.isAdmin(user) || this.isCommitter(user)) && (!this.isSystem);
     }
 
+    canKickOff(user, kickOfWho) {
+        return this.isGroup && !this.isSystem && (!kickOfWho || kickOfWho.id !== user.id) && this.isAdmin(user);
+    }
+
     canMakePublic(user) {
         return this.isAdmin(user) && this.isGroup;
     }

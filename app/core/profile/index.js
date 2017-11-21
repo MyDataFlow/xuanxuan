@@ -97,4 +97,8 @@ export default {
     get userAccount() {
         return user ? user.account : {};
     },
+
+    isCurrentUser(theUser) {
+        return theUser && user && user.id === theUser.id;
+    },
 };

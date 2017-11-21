@@ -361,23 +361,21 @@ const createChatToolbarMoreContextMenuItems = chat => {
     return menu;
 };
 
-const createChatMemberContextMenuItems = member => {
-    let menu = [];
-    if (member.account !== profile.userAccount) {
-        const gid = chats.getOne2OneChatGid([member, profile.user]);
-        if (gid !== activedChatId) {
-            menu.push({
-                label: Lang.string(`chat.atHim.${member.gender}`, Lang.string('chat.atHim')),
-                click: () => {
-                    sendContentToChat(`@${member.displayName} `);
-                }
-            }, {
-                label: Lang.string('chat.sendMessage'),
-                click: () => {
-                    window.location.hash = `#/chats/contacts/${gid}`;
-                }
-            });
-        }
+const createChatMemberContextMenuItems = (member, chat) => {
+    const menu = [];
+    if (member.account !== profile.userAccount && chat.isGroupOrSystem) {
+        const one2OneGid = chats.getOne2OneChatGid([member, profile.user]);
+        menu.push({
+            label: Lang.string(`chat.atHim.${member.gender}`, Lang.string('chat.atHim')),
+            click: () => {
+                sendContentToChat(`@${member.displayName} `);
+            }
+        }, {
+            label: Lang.string('chat.sendMessage'),
+            click: () => {
+                window.location.hash = `#/chats/contacts/${one2OneGid}`;
+            }
+        });
     }
     menu.push({
         label: Lang.string('member.profile.view'),
@@ -385,6 +383,19 @@ const createChatMemberContextMenuItems = member => {
             MemberProfileDialog.show(member);
         }
     });
+    if (chat.canKickOff(profile.user, member.id)) {
+        menu.push({type: 'separator'}, {
+            label: Lang.string('chat.kickOffFromGroup'),
+            click: () => {
+                return Modal.confirm(Lang.format('chat.kickOffFromGroup.confirm', member.displayName)).then(result => {
+                    if (result) {
+                        return Server.kickOfMemberFromChat(chat, member);
+                    }
+                    return Promise.reject();
+                });
+            }
+        });
+    }
     return menu;
 };
 
