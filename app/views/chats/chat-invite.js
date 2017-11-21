@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
-import Avatar from '../../components/avatar';
+import StringHelper from '../../utils/string-helper';
+import SearchControl from '../../components/search-control';
 import Messager from '../../components/messager';
 import Lang from '../../lang';
 import App from '../../core';
@@ -30,9 +31,14 @@ class ChatInvite extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            choosed: {}
+            choosed: {},
+            search: '',
         };
     }
+
+    handleSearchChange = search => {
+        this.setState({search});
+    };
 
     handleMemberItemClick(member) {
         const {choosed} = this.state;
@@ -92,14 +98,15 @@ class ChatInvite extends Component {
             ...other
         } = this.props;
 
-        const {choosed} = this.state;
+        const {choosed, search} = this.state;
         const choosedItems = [];
         const items = [];
+        const keys = StringHelper.isEmpty(search) ? null : search.trim().toLowerCase().split(' ');
         App.members.forEach(member => {
             if (!chat.isMember(member)) {
                 if (choosed[member.id]) {
                     choosedItems.push(member);
-                } else {
+                } else if (!keys || member.getMatchScore(keys)) {
                     items.push(member);
                 }
             }
@@ -107,37 +114,31 @@ class ChatInvite extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-chat-invite single column', className)}
+            className={HTML.classes('app-chat-invite single row outline space', className)}
         >
-            <div className="heading heading-lg flex-none primary-pale">
-                <Avatar icon="account-plus text-gray" />
-                <div className="title">{Lang.string('chat.invite.title')}</div>
-                <div className="has-padding-h">
-                    <button type="button" disabled={!choosedItems.length} className="btn primary rounded btn-wide" onClick={this.handleInviteBtnClick}>{Lang.string('chat.invite')}</button>
+            <div className="cell column single flex-none gray" style={{width: HTML.rem(150)}}>
+                <div className="has-padding-sm flex-none darken">
+                    <SearchControl onSearchChange={this.handleSearchChange} />
+                </div>
+                <div className="list flex-auto scroll-y compact">
+                    {
+                        items.map(member => {
+                            return <MemberListItem avatarSize={24} key={member.id} onClick={this.handleMemberItemClick.bind(this, member)} member={member} />;
+                        })
+                    }
                 </div>
             </div>
-            <div className="flex-auto">
-                <div className="scroll-y" style={{maxHeight: 352}}>
+            <div className="cell column single flex-auto divider-left">
+                <div className="heading flex-none primary-pale">
+                    <div className="title text-accent flex-auto">{Lang.string('chat.invite.choosed')} ({choosedItems.length})</div>
+                    <div className="flex-none has-padding-h"><button type="button" disabled={!choosedItems.length} className="btn primary rounded btn-wide" onClick={this.handleInviteBtnClick}>{Lang.string('chat.invite')}</button></div>
+                </div>
+                <div className="list flex-auto scroll-y compact">
                     {
-                        choosedItems.length ? <div className="list compact divider space-sm">
-                            <div className="heading fluid">
-                                <div className="title text-accent">{Lang.string('chat.invite.choosed')} ({choosedItems.length})</div>
-                            </div>
-                            {
-                                choosedItems.map(member => {
-                                    return <MemberListItem onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member} />;
-                                })
-                            }
-                            <div className="space-sm fluid" />
-                        </div> : null
+                        choosedItems.map(member => {
+                            return <MemberListItem avatarSize={24} onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member} />;
+                        })
                     }
-                    <div className="list compact">
-                        {
-                            items.map(member => {
-                                return <MemberListItem key={member.id} onClick={this.handleMemberItemClick.bind(this, member)} member={member} />;
-                            })
-                        }
-                    </div>
                 </div>
             </div>
         </div>);

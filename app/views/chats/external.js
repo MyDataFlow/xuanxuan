@@ -15,7 +15,7 @@ import ChatsHistory from './chats-history';
 import ChatHeader from './chat-header';
 import ChatHistory from './chat-history';
 import Index from './index';
-import ChatInvitePopover from './chat-invite-popover';
+import ChatInviteDialog from './chat-invite-dialog';
 import MenuHeader from './menu-header';
 import ChatInvite from './chat-invite';
 import MenuList from './menu-list';
@@ -56,7 +56,7 @@ export default {
     ChatHeader,
     ChatHistory,
     Index,
-    ChatInvitePopover,
+    ChatInviteDialog,
     MenuHeader,
     ChatInvite,
     MenuList,

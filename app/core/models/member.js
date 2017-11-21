@@ -1,6 +1,16 @@
 import Entity from './entity';
 import Pinyin from '../../utils/pinyin';
 import Status from '../../utils/status';
+import SearchScore from '../../utils/search-score';
+
+const MATCH_SCORE_MAP = [
+    {name: 'namePinyin', equal: 100, include: 50},
+    {name: 'displayName', equal: 100, include: 50},
+    {name: 'account', equal: 100, include: 50},
+    {name: 'email', equal: 70, include: 30},
+    {name: 'phone', equal: 70, include: 30},
+    {name: 'site', equal: 50, include: 25},
+];
 
 const STATUS = new Status({
     unverified: 0, // 未登录
@@ -139,6 +149,10 @@ class Member extends Entity {
             this._namePinyin = Pinyin(this.displayName);
         }
         return this._namePinyin;
+    }
+
+    getMatchScore(keys) {
+        return SearchScore.matchScore(MATCH_SCORE_MAP, this, keys);
     }
 
 

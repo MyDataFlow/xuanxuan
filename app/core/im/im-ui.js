@@ -11,7 +11,7 @@ import Modal from '../../components/modal';
 import ContextMenu from '../../components/context-menu';
 import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
 import ChatsHistoryDialog from '../../views/chats/chats-history-dialog';
-import ChatInvitePopover from '../../views/chats/chat-invite-popover';
+import ChatInviteDialog from '../../views/chats/chat-invite-dialog';
 import ChatTipPopover from '../../views/chats/chat-tip-popover';
 import EmojiPopover from '../../views/common/emoji-popover';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
@@ -94,7 +94,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             icon: 'account-multiple-plus',
             label: Lang.string('chat.toolbor.invite'),
             click: e => {
-                ChatInvitePopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'bottom'}, chat);
+                ChatInviteDialog.show(chat);
             }
         });
     }
