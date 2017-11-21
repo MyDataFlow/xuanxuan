@@ -36,14 +36,12 @@ const chatAddmember = (msg, socket) => {
     let chat = chats.get(msg.data.gid);
     if (chat) {
         const serverChatMembers = Chat.create(msg.data).members;
-
         chat.resetMembers(Array.from(serverChatMembers).map(x => members.get(x)));
         chats.update(chat);
         return chat;
-    } else {
-        chat = new Chat(msg.data);
-        chats.update(chat);
     }
+    chat = new Chat(msg.data);
+    chats.update(chat);
 };
 
 const chatGetlist = (msg, socket) => {
