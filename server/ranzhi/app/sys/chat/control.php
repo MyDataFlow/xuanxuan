@@ -114,9 +114,21 @@ class chat extends control
         }
         else
         {
+            $this->app->loadLang('user', 'sys');
+            $roles = $this->lang->user->roleList;
+
+            $allDepts = $this->loadModel('tree')->getListByType('dept');
+            $depts = array();
+            foreach ($allDepts as $id => $dept)
+            {
+                $depts[$id] = array('name' => $dept->name, 'order' => (int)$dept->order, 'parent' => (int)$dept->parent);
+            }
+
             $this->output->result = 'success';
             $this->output->users  = !empty($userID) ? array($userID) : array();
             $this->output->data   = $users;
+            $this->output->roles  = $roles;
+            $this->output->depts  = $depts;
         }
 
         die($this->app->encrypt($this->output));
