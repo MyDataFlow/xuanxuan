@@ -33,9 +33,12 @@ const checkServerVersion = serverVersion => {
         serverVersion = serverVersion.substr(1);
     }
     if (compareVersions(serverVersion, MIN_SUPPORT_VERSION) < 0) {
-        const error = new Error('SERVER_VERSION_NOT_SUPPORT');
-        error.formats = [pkg.version, serverVersion, MIN_SUPPORT_VERSION];
-        return error;
+        if (!DEBUG) {
+            const error = new Error('SERVER_VERSION_NOT_SUPPORT');
+            error.formats = [pkg.version, serverVersion, MIN_SUPPORT_VERSION];
+            return error;
+        }
+        console.warn(`The server version '${serverVersion}' not support, require the min version '${MIN_SUPPORT_VERSION}'.`);
     }
     if (Platform.type === 'browser' && compareVersions(serverVersion, '1.2.0') < 0) {
         const error = new Error('SERVER_VERSION_NOT_SUPPORT_IN_BROWSER');
