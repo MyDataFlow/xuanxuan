@@ -823,7 +823,7 @@ class chat extends control
      * @access public
      * @return void
      */
-    public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false, $startDate = '', $userID = 0)
+    public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false, $startDate = 0, $userID = 0)
     {
         if($startDate) $startDate = date('Y-m-d H:i:s', $startDate);
 

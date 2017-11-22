@@ -745,11 +745,12 @@ xxd把client发送的数据转发给rzs。
     method: 'history',
     params: 
     [
-        gid,        // 要获取消息记录的会话gid
-        recPerPage, // 每页记录数
-        pageID,     // 当前也数
-        recTotal,   // 总记录数
-        continued   // 是否继续获取历史记录
+        gid,         // 要获取消息记录的会话gid
+        recPerPage,  // 每页记录数
+        pageID,      // 当前也数
+        recTotal,    // 总记录数
+        continued,   // 是否继续获取历史记录
+        startDate,   // 历史记录最早的日期时间戳(秒)
     ]
 }
 ```
