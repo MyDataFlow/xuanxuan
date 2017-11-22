@@ -339,7 +339,7 @@
     "error.THEME_HAS_NO_CSS_FILE": "所选的主题没有找到可用的 CSS 样式文件。",
 
     "usermenu.openProfile": "个人资料",
-    "usermenu.changePassword": "更改密码",
+    "usermenu.changePassword": "修改密码",
     "usermenu.about": "关于",
     "usermenu.setting": "设置",
     "usermenu.logout": "注销",
