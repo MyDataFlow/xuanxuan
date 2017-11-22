@@ -1,10 +1,10 @@
 <?php
 include 'router.class.php';
-class xuanxuan extends router 
+class xuanxuan extends router
 {
     /**
      * The xuanxuan version.
-     * 
+     *
      * @var string
      * @access public
      */
@@ -12,8 +12,8 @@ class xuanxuan extends router
 
     /**
      *  The request params.
-     * 
-     * @var array 
+     *
+     * @var array
      * @access public
      */
     public $params = array();
@@ -25,11 +25,11 @@ class xuanxuan extends router
      *
      * The construct function.
      * Prepare all the paths, classes, super objects and so on.
-     * Notice: 
+     * Notice:
      * 1. You should use the createApp() method to get an instance of the router.
      * 2. If the $appRoot is empty, the framework will compute the appRoot according the $appName
      *
-     * @param string $appName   the name of the app 
+     * @param string $appName   the name of the app
      * @param string $appRoot   the root path of the app
      * @access public
      * @return void
@@ -39,11 +39,12 @@ class xuanxuan extends router
         parent::__construct($appName, $appRoot);
 
         $this->setViewType();
+        $this->setClientLang('zh-cn');
     }
 
     /**
-     * Set view type. 
-     * 
+     * Set view type.
+     *
      * @access public
      * @return void
      */
@@ -54,7 +55,7 @@ class xuanxuan extends router
 
     /**
      * 加载common模块。
-     *  
+     *
      *  common模块比较特别，它会执行几乎每次请求都需要执行的操作，例如：
      *  打开session，检查权限等等。
      *  加载完$lang, $config, $dbh后，需要在入口文件(www/index.php)中手动调用该方法。
@@ -78,8 +79,8 @@ class xuanxuan extends router
     }
 
     /**
-     * Init aes object. 
-     * 
+     * Init aes object.
+     *
      * @access public
      * @return void
      */
@@ -96,9 +97,9 @@ class xuanxuan extends router
     }
 
     /**
-     * Set params. 
-     * 
-     * @param  array  $params 
+     * Set params.
+     *
+     * @param  array  $params
      * @access public
      * @return void
      */
@@ -110,7 +111,7 @@ class xuanxuan extends router
     /**
      * 解析本次请求的入口方法，根据请求的类型(PATH_INFO GET)，调用相应的方法。
      * The entrance of parseing request. According to the requestType, call related methods.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -122,8 +123,8 @@ class xuanxuan extends router
         $module  = !empty($input->module) ? $input->module : '';
         $method  = !empty($input->method) ? $input->method : '';
         $params  = !empty($input->params) ? $input->params : array();
-        
-        if(!$module or !$method or $module != 'chat') 
+
+        if(!$module or !$method or $module != 'chat')
         {
             $data = new stdclass();
             $data->module = 'chat';
@@ -131,13 +132,13 @@ class xuanxuan extends router
             $data->data   = 'Illegal Requset.';
             die($this->encrypt($data));
         }
-        
+
         if($module == 'chat' && $method == 'login' && is_array($params))
         {
             /* params[0] is the server name. */
             unset($params[0]);
         }
-        if($userID && is_array($params)) 
+        if($userID && is_array($params))
         {
             $params[] = $userID;
         }
@@ -160,7 +161,7 @@ class xuanxuan extends router
      * 2. create the control object.
      * 3. set the params passed in through url.
      * 4. call the method by call_user_function_array
-     * 
+     *
      * @access public
      * @return bool|object  if the module object of die.
      */
@@ -170,7 +171,7 @@ class xuanxuan extends router
         $moduleName = $this->moduleName;
         $methodName = $this->methodName;
 
-        /* 
+        /*
          * 引入该模块的control文件。
          * Include the control file of the module.
          **/
@@ -183,7 +184,7 @@ class xuanxuan extends router
          * Set the class name of the control.
          **/
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
-        if(!class_exists($className)) 
+        if(!class_exists($className))
         {
             $this->triggerError("the control $className not found", __FILE__, __LINE__);
             return false;
@@ -194,7 +195,7 @@ class xuanxuan extends router
          * Create a instance of the control.
          **/
         $module = new $className();
-        if(!method_exists($module, $methodName)) 
+        if(!method_exists($module, $methodName))
         {
             $this->triggerError("the module $moduleName has no $methodName method", __FILE__, __LINE__);
             return false;
@@ -206,9 +207,9 @@ class xuanxuan extends router
         $defaultValueFiles = glob($this->getTmpRoot() . "defaultvalue/*.php");
         if($defaultValueFiles) foreach($defaultValueFiles as $file) include $file;
 
-        /* 
+        /*
          * 使用反射机制获取函数参数的默认值。
-         * Get the default settings of the method to be called using the reflecting. 
+         * Get the default settings of the method to be called using the reflecting.
          *
          * */
         $defaultParams = array();
@@ -236,7 +237,7 @@ class xuanxuan extends router
 
         /* Merge params. */
         $params = array();
-        if(isset($this->params)) 
+        if(isset($this->params))
         {
             $params = $this->mergeParams($defaultParams, (array)$this->params);
         }
@@ -291,9 +292,9 @@ class xuanxuan extends router
     }
 
     /**
-     * Decrypt an input string. 
-     * 
-     * @param  string $input 
+     * Decrypt an input string.
+     *
+     * @param  string $input
      * @access public
      * @return object
      */
@@ -307,11 +308,11 @@ class xuanxuan extends router
         $input = json_decode($input);
         return $input;
     }
-    
+
     /**
      * Encrypt an output object.
-     * 
-     * @param  int    $output 
+     *
+     * @param  int    $output
      * @access public
      * @return string
      */
@@ -328,8 +329,8 @@ class xuanxuan extends router
 
     /**
      * Save a log.
-     * 
-     * @param  string $log 
+     *
+     * @param  string $log
      * @param  string $file
      * @param  string $line
      * @access public
