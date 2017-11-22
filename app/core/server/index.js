@@ -48,6 +48,13 @@ const checkServerVersion = serverVersion => {
     return false;
 };
 
+const checkVersionSupport = serverVersion => {
+    if (compareVersions(serverVersion, '1.3.0') >= 0) {
+        return {messageOrder: true};
+    }
+    return null;
+};
+
 const login = (user) => {
     user = profile.createUser(user);
 
@@ -78,6 +85,7 @@ const login = (user) => {
         if (versionError) {
             return Promise.reject(versionError);
         }
+        user.setVersionSupport(checkVersionSupport(user.serverVersion));
         return socket.login(user, {onClose: (socket, code, reason, unexpected) => {
             Events.emit(EVENT.loginout, user, code, reason, unexpected);
         }});

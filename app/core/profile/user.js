@@ -389,6 +389,19 @@ class User extends Member {
         this.$set('password', newPassword);
     }
 
+    isVersionSupport(name) {
+        return this._versionSupport && this._versionSupport[name];
+    }
+
+    setVersionSupport(flags) {
+        if (flags) {
+            if (!this._versionSupport) {
+                this._versionSupport = {};
+            }
+            Object.assign(this._versionSupport, flags);
+        }
+    }
+
     static create(user) {
         if (user instanceof User) {
             return user;

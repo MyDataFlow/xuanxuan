@@ -49,7 +49,7 @@ class SocketMessage {
             }
             if (typeof json !== 'string') json = json.toString();
             json = json.trim();
-            let lastCharCode = json.charCodeAt(json.length - 1);
+            let lastCharCode;
             while (json.length && (json[json.length - 1] === '\n' || json.charCodeAt(json.length - 1) === 8)) {
                 lastCharCode = json.length && json.charCodeAt(json.length - 1);
                 json = json.substring(0, json.length - 1);

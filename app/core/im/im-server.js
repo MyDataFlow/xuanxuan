@@ -346,7 +346,13 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
     return sendSocketMessageForChat({
         method: 'message',
         params: {
-            messages: messages.map(m => m.plainServer())
+            messages: messages.map(m => {
+                const msgObj = m.plainServer();
+                if (!profile.user.isVersionSupport('messageOrder')) {
+                    delete msgObj.order;
+                }
+                return msgObj;
+            })
         }
     }, chat);
 };

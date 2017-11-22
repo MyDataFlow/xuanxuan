@@ -186,7 +186,6 @@ class Socket {
 
     handleData(rawdata, flags) {
         this.updateStatusFromClient();
-
         let data = null;
         if (flags && flags.binary) {
             if (this.options.encryptEnable) {
@@ -209,12 +208,12 @@ class Socket {
         let data = null;
         if (this.options.encryptEnable) {
             data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
-            if (DEBUG) {
-                console.collapse('ENCRYPT Data', 'blueBg', `length: ${data.length}`, 'bluePale');
-                console.log('data', data);
-                console.log('rawdata', rawdata);
-                console.groupEnd();
-            }
+            // if (DEBUG) {
+            //     console.collapse('ENCRYPT Data', 'blueBg', `length: ${data.length}`, 'bluePale');
+            //     console.log('data', data);
+            //     console.log('rawdata', rawdata);
+            //     console.groupEnd();
+            // }
         }
 
         this.client.send(data, {
