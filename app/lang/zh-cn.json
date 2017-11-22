@@ -104,6 +104,7 @@
     "error.SERVER_DISABLED_UPLOAD": "文件上传失败，因为服务器禁止了文件上传功能",
     "error.TIMEOUT": "网络连接超时。",
     "error.SERVER_IS_BUSY": "服务器正忙，请稍后重试。",
+    "error.STATUS_401": "需要提供正确的用户和密码。",
     "error.USER_INFO_REQUIRED": "用户信息不可用。",
     "error.SOCKET_AbnormalClosure": "与服务器的连接意外终止。",
     "error.Unauthorized": "用户验证失败，用户名或密码不正确。",
