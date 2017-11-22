@@ -10,6 +10,7 @@ import {ChatListItem} from './chat-list-item';
 import {ChatHistory} from './chat-history';
 import {ChatSearchResult} from './chat-search-result';
 import replaceViews from '../replace-views';
+import DateHelper from '../../utils/date-helper';
 
 class ChatsHistory extends Component {
     static propTypes = {
@@ -58,7 +59,7 @@ class ChatsHistory extends Component {
 
     componentDidMount() {
         const updateFetchingMessage = (pager) => {
-            const message = `${Lang.string('chats.history.fetchingMessages')} ${Math.floor(pager.percent)}%`;
+            const message = `${Lang.string('chats.history.fetchingMessages')} ${Math.floor(pager.percent || 0)}%`;
             this.setState({isFetching: true, message});
         };
         this.handleHistoryStart = App.im.server.onChatHistoryStart(updateFetchingMessage);
@@ -86,8 +87,21 @@ class ChatsHistory extends Component {
         });
     }
 
-    handleFetchAllBtnClick = () => {
-        App.im.server.fetchChatsHistory('all');
+    handleFetchAllBtnClick = e => {
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, [
+            {label: Lang.string('chats.history.selectFetchTime'), disabled: true},
+            {label: `${Lang.string('time.oneWeek')} (${Lang.string('chats.history.sync.fast')})`, data: 'oneWeek'},
+            {label: Lang.string('time.oneMonth'), data: 'oneMonth'},
+            {label: Lang.string('time.halfYear'), data: 'halfYear'},
+            {label: Lang.string('time.oneYear'), data: 'oneYear'},
+            {label: Lang.string('time.twoYear'), data: 'twoYear'},
+            {label: `${Lang.string('time.all')} (${Lang.string('chats.history.sync.slow')})`, data: 'all'},
+        ], {onItemClick: (item) => {
+            if (item.data) {
+                const startDate = item.data === 'all' ? 0 : DateHelper.getTimeBeforeDesc(item.data);
+                App.im.server.fetchChatsHistory('all', startDate);
+            }
+        }});
     }
 
     handleSearchChange = search => {

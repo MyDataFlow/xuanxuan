@@ -10,6 +10,7 @@ import Chat from '../models/chat';
 import API from '../../network/api';
 import Messager from '../../components/messager';
 import StringHelper from '../../utils/string-helper';
+import DateHelper from '../../utils/date-helper';
 import ChatMessage from '../../core/models/chat-message';
 import Lang from '../../lang';
 
@@ -34,7 +35,11 @@ const isFetchingHistory = () => {
     return historyFetchingPager;
 };
 
-const fetchChatsHistory = (pager, continued = false) => {
+const fetchChatsHistory = (pager, continued = false, startDate = 0) => {
+    if (continued instanceof Date || typeof continued === 'number') {
+        startDate = continued;
+        continued = false;
+    }
     if (pager === 'all') {
         pager = {queue: chats.query(x => !!x.id, true).map(x => x.gid)};
     }
@@ -48,7 +53,11 @@ const fetchChatsHistory = (pager, continued = false) => {
         continued: true,
         perent: 0,
         finish: [],
+        startDate,
     }, historyFetchingPager, pager);
+    if (pager.startDate) {
+        pager.startDate = DateHelper.createPhpTimestramp(pager.startDate);
+    }
     if (!pager.queue || !pager.queue.length) {
         if (DEBUG) {
             console.error('Cannot fetch history, because the fetch queue is empty.', pager);
@@ -71,7 +80,7 @@ const fetchChatsHistory = (pager, continued = false) => {
     }
     return Server.socket.send({
         method: 'history',
-        params: [pager.gid, pager.recPerPage, pager.pageID, pager.recTotal, pager.continued]
+        params: [pager.gid, pager.recPerPage, pager.pageID, pager.recTotal, pager.continued, pager.startDate]
     });
 };
 

@@ -12,6 +12,10 @@ const createDate = date => {
     return date;
 };
 
+const createPhpTimestramp = date => {
+    return Math.floor(createDate(date)/1000);
+};
+
 const isSameDay = (date1, date2) => {
     if (!date2) {
         date2 = new Date();
@@ -84,10 +88,12 @@ const getTimeBeforeDesc = desc => {
         return now - (TIME_DAY * 31);
     case 'threeMonth':
         return now - (TIME_DAY * 31 * 3);
-    case 'halfYea':
+    case 'halfYear':
         return now - (TIME_DAY * 183);
-    case 'oneYea':
+    case 'oneYear':
         return now - (TIME_DAY * 365);
+    case 'twoYear':
+        return now - (2 * (TIME_DAY * 365));
     default:
         return 0;
     }
@@ -102,5 +108,6 @@ export default {
     isToday,
     isYestoday,
     formatSpan,
-    getTimeBeforeDesc
+    getTimeBeforeDesc,
+    createPhpTimestramp
 };

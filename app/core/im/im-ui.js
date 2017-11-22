@@ -6,6 +6,7 @@ import Lang from '../../lang';
 import Server from './im-server';
 import members from '../members';
 import StringHelper from '../../utils/string-helper';
+import DateHelper from '../../utils/date-helper';
 import MemberProfileDialog from '../../views/common/member-profile-dialog';
 import Modal from '../../components/modal';
 import ContextMenu from '../../components/context-menu';
@@ -458,7 +459,7 @@ chats.onChatsInit(initChats => {
         }
     }
     if (!db.database.isExists) {
-        Server.fetchChatsHistory('all');
+        Server.fetchChatsHistory('all', DateHelper.getTimeBeforeDesc('threeMonth'));
         if (DEBUG) {
             console.color('Fetch all history for new database', 'greenPale');
         }
