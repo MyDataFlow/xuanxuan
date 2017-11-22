@@ -88,6 +88,24 @@ class Member extends Entity {
         return this.$get('gender');
     }
 
+    getDept(app) {
+        const dept = this.$get('dept');
+        if (dept && !this._dept) {
+            this._dept = app.members.getDept(dept);
+        }
+        return this._dept;
+    }
+
+    getDeptName(app) {
+        const dept = this.getDept(app);
+        return dept && dept.name;
+    }
+
+    getDeptFullName(app) {
+        const dept = this.getDept(app);
+        return dept && dept.fullName;
+    }
+
     get isSuperAdmin() {
         return this.$get('admin') === 'super';
     }
@@ -134,6 +152,14 @@ class Member extends Entity {
 
     get role() {
         return this.$get('role');
+    }
+
+    getRoleName(app) {
+        const role = this.role;
+        if (role && !this._role) {
+            this._role = app.members.getRoleName(role);
+        }
+        return this._role;
     }
 
     get displayName() {

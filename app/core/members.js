@@ -1,8 +1,11 @@
 import Member from './models/member';
 import profile from './profile';
 import Events from './events';
+import Lang from '../lang';
 
 let members = null;
+let roles = null;
+let depts = null;
 
 const update = (memberArr) => {
     if (!Array.isArray(memberArr)) {
@@ -21,11 +24,13 @@ const update = (memberArr) => {
     Events.emitDataChange({members: newMembers});
 };
 
-const init = (memberArr) => {
+const init = (memberArr, rolesMap, deptsMap) => {
     members = {};
     if (memberArr && memberArr.length) {
         update(memberArr);
     }
+    roles = rolesMap || {};
+    depts = deptsMap || {};
 };
 
 /**
@@ -123,6 +128,26 @@ const remove = member => {
     return false;
 };
 
+const getRoleName = role => {
+    return role ? (roles[role] || Lang.string(`member.role.${role}`)) : '';
+};
+
+const getDept = deptId => {
+    const dept = depts[deptId];
+    if (dept) {
+        let parent = dept.parent;
+        const parentNames = [];
+        while (parent && depts[parent]) {
+            parentNames.push(depts[parent].name);
+            parent = depts[parent].parent;
+        }
+        if (parentNames.length) {
+            dept.fullName = parentNames.reverse().join('/');
+        }
+    }
+    return dept;
+};
+
 profile.onSwapUser(user => {
     init();
 });
@@ -136,6 +161,8 @@ export default {
     guess,
     query,
     remove,
+    getRoleName,
+    getDept,
     get map() {
         return members;
     },

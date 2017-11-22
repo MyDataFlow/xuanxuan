@@ -74,6 +74,25 @@
 }
 
 .app-member-profile {
+  .infos {
+    flex-wrap: wrap;
+    > div {
+      .flex-middle;
+      display: inline-flex;
+      font-size: (12*@rem);
+      padding-right: (10*@rem);
+      line-height: (25*@rem);
+
+      > .icon {
+        margin-right: (4*@rem);
+      }
+
+      + div {
+        padding-left: (10*@rem);
+      }
+    }
+  }
+
   .app-member-profile-dialog & {
     min-width: (450*@rem);
   }
@@ -88,6 +107,14 @@
         margin: 0;
         padding: @space 0 0!important;
         text-align: center;
+      }
+    }
+
+    .infos {
+      justify-content: center;
+      > div {
+        display: inline-flex;
+        padding: 0 (5*@rem)!important;
       }
     }
 

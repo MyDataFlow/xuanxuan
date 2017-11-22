@@ -40,6 +40,11 @@ class MemberProfile extends Component {
             ...other
         } = this.props;
 
+        const roleName = member.getRoleName(App);
+        const deptName = member.getDeptName(App);
+
+        console.log('member', member);
+
         return (<div
             {...other}
             className={HTML.classes('app-member-profile space user-selectable', className, {compact})}
@@ -48,10 +53,12 @@ class MemberProfile extends Component {
                 <UserAvatar className="avatar-xl flex-none" user={member} />
                 <div className="content has-padding">
                     <h3 className="title strong">{member.displayName} <small className="muted">@{member.account}</small></h3>
-                    <div className="flex flex-middle">
-                        <StatusDot status={member.status} label /> &nbsp; &nbsp;
-                        <span>{Lang.string(`member.gender.${member.gender}`)}</span> &nbsp; &nbsp;
-                        <span>{Lang.string(`member.role.${member.role}`)}</span>
+                    <div className="flex flex-middle infos">
+                        <StatusDot status={member.status} label />
+                        {member.gender ? <div>{member.gender === 'f' ? <Icon name="human-female text-purple" /> : <Icon name="human-male text-blue" />}{Lang.string(`member.gender.${member.gender}`)}</div> : null}
+                        {roleName ? <div><Icon name="account-card-details text-gray" />{roleName}</div> : null}
+                        {(roleName && deptName) ? '·' : null}
+                        {deptName ? <div>{(!roleName) ? <Icon name="account-card-details text-gray" /> : null}{deptName}</div> : null}
                     </div>
                 </div>
                 {!hideChatBtn && member.account !== App.profile.userAccount && <a href={`#${ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))}`} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline" /> {Lang.string('member.profile.sendMessage')}</a>}
