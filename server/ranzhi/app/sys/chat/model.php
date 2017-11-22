@@ -162,12 +162,13 @@ class chatModel extends model
      * @access public
      * @return array
      */
-    public function getMessageList($idList = array(), $pager = null)
+    public function getMessageList($idList = array(), $pager = null, $startDate = '')
     {
         $messages = $this->dao->select('*')
             ->from(TABLE_IM_MESSAGE)
             ->where('1')
             ->beginIF($idList)->andWhere('id')->in($idList)->fi()
+            ->beginIF($startDate)->andWhere('date')->ge($startDate)->fi()
             ->orderBy('id_desc')
             ->page($pager)
             ->fetchAll();
@@ -190,10 +191,11 @@ class chatModel extends model
      * @access public
      * @return array
      */
-    public function getMessageListByCGID($cgid = '', $pager = null)
+    public function getMessageListByCGID($cgid = '', $pager = null, $startDate = '')
     {
         $messages = $this->dao->select('*')->from(TABLE_IM_MESSAGE)
             ->where('cgid')->eq($cgid)
+            ->beginIF($startDate)->andWhere('date')->ge($startDate)->fi()
             ->orderBy('id_desc')
             ->page($pager)
             ->fetchAll();

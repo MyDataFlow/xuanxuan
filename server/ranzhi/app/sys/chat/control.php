@@ -15,7 +15,7 @@ class chat extends control
 
     /**
      * Server start.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -26,9 +26,9 @@ class chat extends control
     }
 
     /**
-     * Login.  
-     * 
-     * @param  string $account 
+     * Login.
+     *
+     * @param  string $account
      * @param  string $password encrypted password
      * @param  string $status   online | away | busy
      * @access public
@@ -39,10 +39,10 @@ class chat extends control
         $password = md5($password . $account);
         $user     = $this->loadModel('user')->identify($account, $password);
 
-        if($user) 
+        if($user)
         {
             $this->output->result = 'success';
-            if($status == 'online') 
+            if($status == 'online')
             {
                 $data = new stdclass();
                 $data->id     = $user->id;
@@ -50,7 +50,7 @@ class chat extends control
                 $user = $this->chat->editUser($data);
 
                 $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
-            
+
                 $users = $this->chat->getUserList($status = 'online');
                 $user->signed = $this->chat->getSignedTime($account);
 
@@ -68,8 +68,8 @@ class chat extends control
     }
 
     /**
-     * Logout. 
-     * 
+     * Logout.
+     *
      * @param  int    $userID
      * @access public
      * @return void
@@ -97,8 +97,8 @@ class chat extends control
     }
 
     /**
-     * Get user list.  
-     * 
+     * Get user list.
+     *
      * @param  int    $userID
      * @access public
      * @return void
@@ -123,17 +123,17 @@ class chat extends control
     }
 
     /**
-     * Change a user. 
-     * 
-     * @param  string $name 
-     * @param  string $name 
-     * @param  string $account 
-     * @param  string $realname 
-     * @param  string $avatar 
-     * @param  string $role 
-     * @param  string $dept 
-     * @param  string $status 
-     * @param  int    $userID 
+     * Change a user.
+     *
+     * @param  string $name
+     * @param  string $name
+     * @param  string $account
+     * @param  string $realname
+     * @param  string $avatar
+     * @param  string $role
+     * @param  string $dept
+     * @param  string $status
+     * @param  int    $userID
      * @access public
      * @return void
      */
@@ -162,7 +162,7 @@ class chat extends control
     /**
      * Keep session active
      *
-     * @param  int    $userID 
+     * @param  int    $userID
      * @access public
      * @return void
      */
@@ -175,8 +175,8 @@ class chat extends control
     }
 
     /**
-     * Get public chat list. 
-     * 
+     * Get public chat list.
+     *
      * @param  int    $userID
      * @access public
      * @return void
@@ -184,7 +184,7 @@ class chat extends control
     public function getPublicList($userID = 0)
     {
         $chatList = $this->chat->getList();
-        foreach($chatList as $chat) 
+        foreach($chatList as $chat)
         {
             $chat->members = $this->chat->getMemberListByGID($chat->gid);
         }
@@ -205,16 +205,16 @@ class chat extends control
     }
 
     /**
-     * Get chat list of a user.  
-     * 
+     * Get chat list of a user.
+     *
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function getList($userID = 0)
     {
         $chatList = $this->chat->getListByUserID($userID);
-        foreach($chatList as $chat) 
+        foreach($chatList as $chat)
         {
             $chat->members = $this->chat->getMemberListByGID($chat->gid);
         }
@@ -233,12 +233,12 @@ class chat extends control
     }
 
     /**
-     * Get members of a chat. 
-     * 
-     * @param  string $gid 
+     * Get members of a chat.
+     *
+     * @param  string $gid
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function members($gid = '', $userID = 0)
     {
@@ -262,9 +262,9 @@ class chat extends control
     }
 
     /**
-     * Get offline messages. 
-     * 
-     * @param  int    $userID 
+     * Get offline messages.
+     *
+     * @param  int    $userID
      * @access public
      * @return void
      */
@@ -287,24 +287,24 @@ class chat extends control
     }
 
     /**
-     * Create a chat. 
-     * 
-     * @param  string $gid 
-     * @param  string $name 
-     * @param  string $type 
-     * @param  array  $members 
-     * @param  int    $subjectID 
+     * Create a chat.
+     *
+     * @param  string $gid
+     * @param  string $name
+     * @param  string $type
+     * @param  array  $members
+     * @param  int    $subjectID
      * @param  bool   $public    true: the chat is public | false: the chat isn't public.
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function create($gid = '', $name = '', $type = 'group', $members = array(), $subjectID = 0, $public = false, $userID = 0)
     {
         $chat = $this->chat->getByGID($gid, true);
 
         if(!$chat)
-        { 
+        {
             $chat = $this->chat->create($gid, $name, $type, $members, $subjectID, $public, $userID);
         }
         $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
@@ -325,14 +325,14 @@ class chat extends control
     }
 
     /**
-     * Set admins of a chat. 
-     * 
-     * @param  string $gid 
-     * @param  array  $admins 
-     * @param  bool   $isAdmin 
+     * Set admins of a chat.
+     *
+     * @param  string $gid
+     * @param  array  $admins
+     * @param  bool   $isAdmin
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function setAdmin($gid = '', $admins = array(), $isAdmin = true, $userID = 0)
     {
@@ -380,13 +380,13 @@ class chat extends control
     }
 
     /**
-     * Join or quit a chat. 
-     * 
-     * @param  string $gid 
+     * Join or quit a chat.
+     *
+     * @param  string $gid
      * @param  bool   $join   true: join a chat | false: quit a chat.
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function joinChat($gid = '', $join = true, $userID = 0)
     {
@@ -446,10 +446,10 @@ class chat extends control
     }
 
     /**
-     * Change the name of a chat.  
-     * 
-     * @param  string $gid 
-     * @param  string $name 
+     * Change the name of a chat.
+     *
+     * @param  string $gid
+     * @param  string $name
      * @param  int    $userID
      * @access public
      * @return void
@@ -495,8 +495,8 @@ class chat extends control
 
     /**
      * Change the committers of a chat
-     * 
-     * @param  string $gid 
+     *
+     * @param  string $gid
      * @param  string $committers
      * @param  int    $userID
      * @access public
@@ -538,12 +538,12 @@ class chat extends control
 
         die($this->app->encrypt($this->output));
     }
-    
+
     /**
-     * Change a chat to be public or not. 
-     * 
-     * @param  string $gid 
-     * @param  bool   $public true: change a chat to be public | false: change a chat to be not public. 
+     * Change a chat to be public or not.
+     *
+     * @param  string $gid
+     * @param  bool   $public true: change a chat to be public | false: change a chat to be not public.
      * @param  int    $userID
      * @access public
      * @return void
@@ -584,12 +584,12 @@ class chat extends control
 
         die($this->app->encrypt($this->output));
     }
-    
+
     /**
-     * Star or cancel star a chat.  
-     * 
-     * @param  string $gid 
-     * @param  bool   $star true: star a chat | false: cancel star a chat. 
+     * Star or cancel star a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $star true: star a chat | false: cancel star a chat.
      * @param  int    $userID
      * @access public
      * @return void
@@ -625,10 +625,10 @@ class chat extends control
     }
 
     /**
-     * Hide or display a chat.  
-     * 
-     * @param  string $gid 
-     * @param  bool   $hide true: hide a chat | false: display a chat. 
+     * Hide or display a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $hide true: hide a chat | false: display a chat.
      * @param  int    $userID
      * @access public
      * @return void
@@ -664,14 +664,14 @@ class chat extends control
     }
 
     /**
-     * Add members to a chat or kick members from a chat. 
-     * 
-     * @param  string $gid 
-     * @param  array  $members  
+     * Add members to a chat or kick members from a chat.
+     *
+     * @param  string $gid
+     * @param  array  $members
      * @param  bool   $join     true: add members to a chat | false: kick members from a chat.
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function addMember($gid = '', $members = array(), $join = true, $userID = 0)
     {
@@ -721,11 +721,11 @@ class chat extends control
 
     /**
      * Send message to a chat.
-     * 
+     *
      * @param  array  $messages
      * @param  int    $userID
      * @access public
-     * @return void 
+     * @return void
      */
     public function message($messages = array(), $userID = 0)
     {
@@ -804,7 +804,7 @@ class chat extends control
         else
         {
             $this->output->result = 'success';
-            $this->output->users  = $onlineUsers; 
+            $this->output->users  = $onlineUsers;
             $this->output->data   = $messages;
         }
 
@@ -813,28 +813,30 @@ class chat extends control
 
     /**
      * Get history messages of a chat.
-     * 
-     * @param  string $gid 
-     * @param  int    $recPerPage 
-     * @param  int    $pageID 
-     * @param  int    $recTotal 
+     *
+     * @param  string $gid
+     * @param  int    $recPerPage
+     * @param  int    $pageID
+     * @param  int    $recTotal
      * @param  bool   $continued
      * @param  int    userID
      * @access public
      * @return void
      */
-    public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false, $userID = 0)
+    public function history($gid = '', $recPerPage = 20, $pageID = 1, $recTotal = 0, $continued = false, $startDate = '', $userID = 0)
     {
+        if($startDate) $startDate = date('Y-m-d H:i:s', $startDate);
+
         $this->app->loadClass('pager', $static = true);
         $pager = new pager($recTotal, $recPerPage, $pageID);
 
         if($gid)
         {
-            $messageList = $this->chat->getMessageListByCGID($gid, $pager);
+            $messageList = $this->chat->getMessageListByCGID($gid,  $pager, $startDate);
         }
         else
         {
-            $messageList = $this->chat->getMessageList($idList = array(), $pager);
+            $messageList = $this->chat->getMessageList($idList = array(), $pager, $startDate);
         }
 
         if(dao::isError())
@@ -863,9 +865,9 @@ class chat extends control
 
     /**
      * Save or get settings.
-     * 
-     * @param  string $account 
-     * @param  string $settings 
+     *
+     * @param  string $account
+     * @param  string $settings
      * @param  int    $userID
      * @access public
      * @return void
@@ -894,13 +896,13 @@ class chat extends control
 
     /**
      * Upload file.
-     * 
-     * @param  string $fileName 
-     * @param  string $path 
-     * @param  int    $size 
-     * @param  int    $time 
-     * @param  string $gid 
-     * @param  int    $userID 
+     *
+     * @param  string $fileName
+     * @param  string $path
+     * @param  int    $size
+     * @param  int    $time
+     * @param  string $gid
+     * @param  int    $userID
      * @access public
      * @return void
      */
@@ -914,12 +916,12 @@ class chat extends control
 
             die($this->app->encrypt($this->output));
         }
-        
+
         $user      = $this->chat->getUserByUserID($userID);
         $users     = $this->chat->getUserList($status = 'online', array_values($chat->members));
         $extension = $this->loadModel('file', 'sys')->getExtension($fileName);
 
-        $file = new stdclass(); 
+        $file = new stdclass();
         $file->pathname    = $path;
         $file->title       = rtrim($fileName, ".$extension");
         $file->extension   = $extension;
@@ -927,14 +929,14 @@ class chat extends control
         $file->objectType  = 'chat';
         $file->objectID    = $chat->id;
         $file->createdBy   = !empty($user->account) ? $user->account : '';
-        $file->createdDate = date(DT_DATETIME1, $time); 
-        
+        $file->createdDate = date(DT_DATETIME1, $time);
+
         $this->dao->insert(TABLE_FILE)->data($file)->exec();
 
         $fileID = $this->dao->lastInsertID();
         $path  .= md5($fileName . $fileID . $time);
         $this->dao->update(TABLE_FILE)->set('pathname')->eq($path)->where('id')->eq($fileID)->exec();
-        
+
         if(dao::isError())
         {
             $this->output->result  = 'fail';
