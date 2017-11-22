@@ -14,7 +14,6 @@ class SearchControl extends Component {
         onBlur: PropTypes.func,
         onFocus: PropTypes.func,
         defaultValue: PropTypes.any,
-        value: PropTypes.any,
         children: PropTypes.any,
         className: PropTypes.string,
     };
@@ -25,8 +24,7 @@ class SearchControl extends Component {
         onSearchChange: null,
         onBlur: null,
         onFocus: null,
-        defaultValue: null,
-        value: null,
+        defaultValue: '',
         className: null,
         children: null,
     };
@@ -74,17 +72,26 @@ class SearchControl extends Component {
         }
     };
 
+    setValue(value, callback) {
+        this.setState({empty: StringHelper.isEmpty(value), value}, () => {
+            if (this.delaySearchChangeTask) {
+                this.delaySearchChangeTask.do(value);
+            }
+            if (callback) {
+                callback(value);
+            }
+        });
+    }
+
     handleOnInputChange = value => {
         value = typeof value === 'string' ? value.trim() : '';
-        this.setState({empty: StringHelper.isEmpty(value), value});
-        if (this.delaySearchChangeTask) {
-            this.delaySearchChangeTask.do(value);
-        }
+        this.setValue(value);
     }
 
     handleOnCloseBtnClick = () => {
-        this.inputControl.setValue('');
-        this.inputControl.focus();
+        this.setValue('', () => {
+            this.inputControl.focus();
+        });
     }
 
     render() {
@@ -94,10 +101,12 @@ class SearchControl extends Component {
             onSearchChange,
             changeDelay,
             onFocus,
-            onChange,
             onBlur,
+            defaultValue,
             ...other
         } = this.props;
+
+        delete other.value;
 
         return (<InputControl
             className={HTML.classes('search', className, {
@@ -105,12 +114,13 @@ class SearchControl extends Component {
                 empty: this.state.empty,
                 normal: !this.state.focus
             })}
+            value={this.state.value}
             label={<Icon name="search" />}
             onFocus={this.handleOnInputFocus}
             onBlur={this.handleOnInputBlur}
             onChange={this.handleOnInputChange}
-            {...other}
             ref={e => {this.inputControl = e;}}
+            {...other}
         >
             <Icon name="close" onClick={this.handleOnCloseBtnClick} className="close state" />
             {children}

@@ -19,7 +19,7 @@ class MenuHeader extends Component {
         className: null,
         onSearchChange: null,
         children: null,
-        defaultSearch: null,
+        defaultSearch: '',
         filter: null
     };
 

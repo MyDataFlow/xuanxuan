@@ -10,21 +10,20 @@ class InputControl extends Component {
         autoFocus: false,
         style: null,
         inputType: 'text',
-        defaultValue: '',
+        value: '',
         helpText: null,
         onChange: null,
         disabled: false,
         inputClassName: 'rounded',
-        name: `control${timeSequence()}`,
+        name: `control-${timeSequence()}`,
         labelStyle: null,
         inputStyle: null,
         inputProps: null,
         children: null,
-        value: '',
     };
 
     static propTypes = {
-        defaultValue: PropTypes.string,
+        value: PropTypes.string,
         label: PropTypes.any,
         className: PropTypes.string,
         placeholder: PropTypes.string,
@@ -40,14 +39,6 @@ class InputControl extends Component {
         inputClassName: PropTypes.string,
         children: PropTypes.any,
         name: PropTypes.string,
-        value: PropTypes.string,
-    }
-
-    constructor(props) {
-        super(props);
-        const {value, defaultValue} = props;
-        this.state = {value: (value !== null && value !== undefined) ? value : defaultValue};
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -66,23 +57,15 @@ class InputControl extends Component {
         }
     }
 
-    handleChange(event) {
+    handleChange = (event) => {
         const value = this.input.value;
-        if (this.state.value !== value) {
-            this.setState({value});
-            if (this.props.onChange) {
-                this.props.onChange(value, event);
-            }
+        if (this.props.onChange) {
+            this.props.onChange(value, event);
         }
     }
 
     focus() {
         this.input.focus();
-    }
-
-    setValue(value = '') {
-        this.input.value = value;
-        this.handleChange();
     }
 
     render() {
@@ -95,13 +78,12 @@ class InputControl extends Component {
             inputType,
             inputStyle,
             inputProps,
-            defaultValue,
+            value,
             helpText,
             onChange,
             className,
             inputClassName,
             disabled,
-            value,
             children,
             ...other
         } = this.props;
@@ -111,7 +93,7 @@ class InputControl extends Component {
             <input
                 disabled={!!disabled}
                 ref={e => {this.input = e;}}
-                value={value !== null ? value : this.state.value === null ? '' : this.state.value}
+                value={value}
                 id={name}
                 type={inputType}
                 className={HTML.classes('input', inputClassName)}

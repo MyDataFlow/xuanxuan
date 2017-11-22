@@ -28,7 +28,6 @@ class HotkeyInputControl extends Component {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
-        this.inputControl.setValue(value);
         this.setState({value});
     }
 
@@ -73,7 +72,7 @@ class HotkeyInputControl extends Component {
         return (<InputControl
             {...other}
             ref={e => {this.inputControl = e;}}
-            defaultValue={defaultValue}
+            value={this.state.value}
             inputProps={Object.assign({onKeyDown: this.handleKeyDownEvent}, inputProps)}
         />);
     }
