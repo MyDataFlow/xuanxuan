@@ -181,7 +181,7 @@ const createMenu = () => {
         }
     } else {
         if(DEBUG) {
-            console.log('Windows menu not avaliable now.');
+            console.log('\n>> Windows menu not avaliable now.');
         }
     }
 };
