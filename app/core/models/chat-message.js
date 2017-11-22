@@ -404,7 +404,10 @@ class ChatMessage extends Entity {
 
     static sort(messages) {
         return messages.sort((x, y) => {
-            let orderResult = x.order - y.order;
+            let orderResult = 0;
+            if (x.order && y.order) {
+                orderResult = x.order - y.order;
+            }
             if (orderResult === 0) {
                 orderResult = x.date - y.date;
             }
