@@ -1,0 +1,14 @@
+{
+    "name": "fix-ranzhi-url",
+    "displayName": "然之设置",
+    "version": "1.0.0",
+    "description": "此插件用于设置然之访问地址，修复然之端口不是80时修改密码失败的问题。",
+    "type": "app",
+    "appType": "insideView",
+    "accentColor": "#b71c1c",
+    "main": "index.js",
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创"
+}
