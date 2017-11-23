@@ -16,7 +16,7 @@ export default class AppExtension extends Extension {
 
         this._appType = APP_TYPES[pkg.appType];
         if (!this._appType) {
-            this._appType = pkg.webViewUrl ? APP_TYPES.webView : pkg.webViewUrl.insideView;
+            this._appType = pkg.webViewUrl ? APP_TYPES.webView : APP_TYPES.insideView;
             this.addError('appType', `AppType (${pkg.appType}) must be one of '${Object.keys(APP_TYPES).join(',')}', set to ‘${this._appType}’ temporarily.`);
         }
 
@@ -67,7 +67,7 @@ export default class AppExtension extends Extension {
                 this._appIcon = appIcon;
             }
         }
-        return this._appIcon || this.icon;
+        return this._appIcon || super.icon;
     }
 
     get icon() {return this._pkg.icon ? super.icon : this.appIcon;}
