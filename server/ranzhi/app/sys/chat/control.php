@@ -676,6 +676,38 @@ class chat extends control
     }
 
     /**
+     * Set group for a chat
+     *
+     * @param  string $gid
+     * @param  string $group
+     * @param  int    $userID
+     * @access public
+     * @return void
+     */
+    public function group($gid = '', $group = '', $userID = 0)
+    {
+        $chatList = $this->chat->groupChat($gid, $group, $userID);
+        if(dao::isError())
+        {
+            $message = 'Set chat group failed.';
+
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
+        }
+        else
+        {
+            $data = new stdclass();
+            $data->gid  = $gid;
+            $data->group = $group;
+
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $data;
+        }
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
      * Add members to a chat or kick members from a chat.
      *
      * @param  string $gid
