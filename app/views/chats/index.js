@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Redirect} from 'react-router-dom';
+import SplitPane from 'react-split-pane';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import {Menu} from './menu';
@@ -33,10 +34,12 @@ class Index extends Component {
         App.im.ui.activeChat(match.params.id);
 
         return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
-            <Menu className="dock-left" filter={match.params.filterType} />
-            <ChatsCache className="dock-right" filterType={match.params.filterType} chatId={match.params.id}>
-                <ChatsDndContainer className="dock" />
-            </ChatsCache>
+            <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200}>
+                <Menu className="dock" filter={match.params.filterType} />
+                <ChatsCache className="dock" filterType={match.params.filterType} chatId={match.params.id}>
+                    <ChatsDndContainer className="dock" />
+                </ChatsCache>
+            </SplitPane>
             <Route
                 path="/chats/:filterType"
                 exact

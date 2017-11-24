@@ -45,12 +45,6 @@ class ChatView extends Component {
         App.events.off(this.dataChangeHandler);
     }
 
-    // handleSplitPaneChange = size => {
-    //     if(size < 150) {
-    //         App.profile.userConfig.setChatSidebarHidden(this.props.chat.gid, true);
-    //     }
-    // }
-
     render() {
         const {
             chatGid,
