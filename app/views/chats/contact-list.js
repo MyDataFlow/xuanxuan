@@ -122,8 +122,11 @@ export default class ContactList extends Component {
     };
 
     defaultExpand = (group) => {
-        return !!group.list.find(chat => {
-            return App.im.ui.isActiveChat(chat.gid);
+        return !!group.list.find(item => {
+            if (item.type === 'group') {
+                return this.defaultExpand(item);
+            }
+            return App.im.ui.isActiveChat(item.gid);
         });
     };
 
