@@ -16,6 +16,7 @@ class MemberListItem extends Component {
         showStatusDot: PropTypes.bool,
         className: PropTypes.string,
         avatarClassName: PropTypes.string,
+        title: PropTypes.any,
         children: PropTypes.any,
     }
 
@@ -24,6 +25,7 @@ class MemberListItem extends Component {
         showStatusDot: true,
         className: 'flex-middle',
         avatarClassName: null,
+        title: null,
         children: null,
     };
 
@@ -35,8 +37,20 @@ class MemberListItem extends Component {
             showStatusDot,
             className,
             children,
+            title,
             ...other
         } = this.props;
+
+        let titleView = null;
+        if (title) {
+            if (React.isValidElement(title)) {
+                titleView = title;
+            } else {
+                titleView = <div className="title">{title}</div>;
+            }
+        } else {
+            titleView = <div className="title">{member.displayName}</div>;
+        }
 
         return (<a
             {...other}
@@ -44,7 +58,7 @@ class MemberListItem extends Component {
         >
             <UserAvatar className={avatarClassName} size={avatarSize} user={member} />
             {showStatusDot && <StatusDot status={member.status} />}
-            <div className="title">{member.displayName}</div>
+            {titleView}
             {children}
         </a>);
     }

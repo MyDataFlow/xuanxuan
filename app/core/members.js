@@ -24,13 +24,53 @@ const update = (memberArr) => {
     Events.emitDataChange({members: newMembers});
 };
 
+const deptsSorter = (d1, d2) => {
+    let result = (d1.order || 0) - (d2.order || 0);
+    if (result === 0 || Number.isNaN(result)) {
+        result = d1.id - d2.id;
+    }
+    return result;
+};
+const initDepts = (deptsMap) => {
+    depts = {};
+    if (deptsMap) {
+        const deptsArr = Object.keys(deptsMap).map(deptId => {
+            const dept = deptsMap[deptId];
+            dept.id = deptId;
+            return deptId;
+        }).sort(deptsSorter);
+        deptsArr.forEach(deptId => {
+            const dept = deptsMap[deptId];
+            let parentDept = dept.parent && deptsMap[dept.parent];
+            if (parentDept) {
+                const parents = [];
+                if (!parentDept.children) {
+                    parentDept.children = [];
+                }
+                parentDept.children.push(dept);
+                while (parentDept) {
+                    parents.push(parentDept);
+                    parentDept = parentDept.parent && deptsMap[parentDept.parent];
+                }
+                dept.parents = parents;
+            }
+            depts[deptId] = dept;
+        });
+    }
+};
+
+const getDeptsTree = () => {
+    return Object.keys(depts).map(x => depts[x]).filter(x => !x.parents).sort(deptsSorter);
+};
+
 const init = (memberArr, rolesMap, deptsMap) => {
     members = {};
     if (memberArr && memberArr.length) {
         update(memberArr);
     }
     roles = rolesMap || {};
-    depts = deptsMap || {};
+
+    initDepts(deptsMap);
 };
 
 /**
@@ -129,23 +169,11 @@ const remove = member => {
 };
 
 const getRoleName = role => {
-    return role ? (roles[role] || Lang.string(`member.role.${role}`)) : '';
+    return role ? (roles[role] || Lang.string(`member.role.${role}`, role)) : '';
 };
 
 const getDept = deptId => {
-    const dept = depts[deptId];
-    if (dept) {
-        let parent = dept.parent;
-        const parentNames = [];
-        while (parent && depts[parent]) {
-            parentNames.push(depts[parent].name);
-            parent = depts[parent].parent;
-        }
-        if (parentNames.length) {
-            dept.fullName = parentNames.reverse().join('/');
-        }
-    }
-    return dept;
+    return depts[deptId];
 };
 
 profile.onSwapUser(user => {
@@ -163,10 +191,15 @@ export default {
     remove,
     getRoleName,
     getDept,
+    getDeptsTree,
+    deptsSorter,
     get map() {
         return members;
     },
     get all() {
         return getAll();
+    },
+    get depts() {
+        return depts;
     }
 };

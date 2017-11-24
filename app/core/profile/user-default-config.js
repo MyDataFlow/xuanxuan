@@ -19,6 +19,10 @@ export default {
     'ui.chat.sendHDEmoticon': true,
     'ui.chat.showMessageTip': true,
     'ui.chat.enableSearchInEmojionePicker': false,
+    'ui.chat.contacts.groupBy': 'normal', // 'normal', 'role', 'dept'
+    'ui.chat.contacts.order.role': {},
+    'ui.chat.contacts.order.normal': {},
+    'ui.chat.contacts.order.dept': {},
     'ui.notify.enableSound': true,
     'ui.notify.playSoundCondition': 'onWindowHide', // or "onWindowBlur", "
     'ui.notify.muteOnUserIsBusy': true,

@@ -43,8 +43,6 @@ class MemberProfile extends Component {
         const roleName = member.getRoleName(App);
         const deptName = member.getDeptName(App);
 
-        console.log('member', member);
-
         return (<div
             {...other}
             className={HTML.classes('app-member-profile space user-selectable', className, {compact})}

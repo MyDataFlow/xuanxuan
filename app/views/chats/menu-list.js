@@ -3,8 +3,7 @@ import HTML from '../../utils/html-helper';
 import App from '../../core';
 import ContextMenu from '../../components/context-menu';
 import {ChatListItem} from './chat-list-item';
-import {MemberListItem} from '../common/member-list-item';
-import UserProfileDialog from '../common/user-profile-dialog';
+import {ContactList} from './contact-list';
 import replaceViews from '../replace-views';
 
 const loadChats = (filter, search) => {
@@ -57,10 +56,6 @@ class MenuList extends Component {
         App.events.off(this.dataChangeHandler);
     }
 
-    handleUserItemClick = () => {
-        UserProfileDialog.show();
-    }
-
     render() {
         const {
             search,
@@ -70,11 +65,12 @@ class MenuList extends Component {
             ...other
         } = this.props;
 
-        const chats = loadChats(filter, search);
-        const user = App.user;
+        if (filter === 'contacts' && !search) {
+            return <ContactList {...this.props} />;
+        }
 
+        const chats = loadChats(filter, search);
         return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
-            {!search && user && filter === 'contacts' && user.config.showMeOnMenu && <MemberListItem member={user} avatarSize={24} showStatusDot={false} onClick={this.handleUserItemClick} />}
             {
                 chats.map(chat => {
                     return <ChatListItem onContextMenu={handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item" />;

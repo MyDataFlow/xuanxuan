@@ -332,17 +332,114 @@ const getContactChat = (member) => {
     return get(gid);
 };
 
-const getContactsChats = (sortList = true) => {
-    const contactsChats = [];
+const getContactsChats = (sortList = true, groupedBy = false) => {
+    const contactChats = [];
     members.forEach(member => {
         if (member.id !== profile.user.id) {
-            contactsChats.push(getContactChat(member, true));
+            contactChats.push(getContactChat(member, true));
         }
     });
-    if (sortList) {
-        Chat.sort(contactsChats, sortList, app);
+    if (groupedBy === 'role') {
+        const groupedContactChats = {};
+        contactChats.forEach(chat => {
+            const member = chat.getTheOtherOne(app);
+            const isMemberOnline = member.isOnline;
+            const role = member.role;
+            if (!groupedContactChats[role]) {
+                groupedContactChats[role] = {id: role, title: members.getRoleName(role), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
+            } else {
+                groupedContactChats[role].list.push(chat);
+                if (isMemberOnline) {
+                    groupedContactChats[role].onlineCount += 1;
+                }
+            }
+        });
+        const orders = profile.user.config.contactsOrderRole;
+        return Object.keys(groupedContactChats).map(role => {
+            const group = groupedContactChats[role];
+            if (sortList) {
+                Chat.sort(group.list, sortList, app);
+            }
+            return group;
+        }).sort((g1, g2) => {
+            let result = (g1.id ? (orders[g1.id] || 1) : 0) - (g2.id ? (orders[g2.id] || 1) : 0);
+            if (result === 0) {
+                result = g1.id > g2.id ? 1 : 0;
+            }
+            return -result;
+        });
+    } else if (groupedBy === 'dept') {
+        const groupsMap = {};
+        Object.keys(members.depts).forEach(deptId => {
+            const dept = members.depts[deptId];
+            groupsMap[deptId] = {
+                id: deptId,
+                title: dept.name,
+                dept,
+                list: [],
+                onlineCount: 0
+            };
+        });
+        contactChats.forEach(chat => {
+            const member = chat.getTheOtherOne(app);
+            const isMemberOnline = member.isOnline;
+            const deptId = member.dept;
+            if (groupsMap[deptId]) {
+                groupsMap[deptId].list.push(chat);
+                if (isMemberOnline) {
+                    groupsMap[deptId].onlineCount += 1;
+                }
+            } else {
+                const dept = members.getDept(deptId);
+                groupsMap[deptId] = {
+                    id: deptId,
+                    title: dept && dept.name,
+                    dept,
+                    list: [chat],
+                    onlineCount: isMemberOnline ? 1 : 0
+                };
+            }
+        });
+        const groupArr = Object.keys(groupsMap).map(deptId => {
+            const group = groupsMap[deptId];
+            const dept = group.dept;
+            if (dept) {
+                if (dept.children) {
+                    group.children = dept.children.map(x => groupsMap[x.id]);
+                }
+                if (dept.parents) {
+                    group.hasParent = true;
+                }
+            }
+            group.type = 'group';
+            group.order = dept && dept.order;
+            if (sortList) {
+                Chat.sort(group.list, sortList, app);
+            }
+            return group;
+        });
+        const deptsSorter = (d1, d2) => {
+            let result = (d2.list && d2.list.length ? 1 : 0) - (d1.list && d1.list.length ? 1 : 0);
+            if (result === 0) {
+                result = (d2.dept ? 1 : 0) - (d1.dept ? 1 : 0);
+            }
+            return result !== 0 ? result : members.deptsSorter(d1, d2);
+        };
+        return groupArr.map(x => {
+            if (x.children) {
+                x.children.sort(deptsSorter);
+                const list = x.children;
+                if (x.list) {
+                    list.push(...x.list);
+                }
+                x.list = list;
+            }
+            return x;
+        }).filter(x => !x.hasParent).sort(deptsSorter);
+    } else if (sortList) {
+        Chat.sort(contactChats, sortList, app);
     }
-    return contactsChats;
+    return contactChats;
 };
 
 const getGroups = (sortList = true) => {
@@ -386,16 +483,12 @@ const search = (search, chatType) => {
         }
 
         let score = 0;
-        const imApp = {
-            members,
-            user: profile.user
-        };
-        const chatName = chat.getDisplayName(imApp, false).toLowerCase();
-        const pinYin = chat.getPinYin(imApp);
+        const chatName = chat.getDisplayName(app, false).toLowerCase();
+        const pinYin = chat.getPinYin(app);
         let theOtherOneAccount = '';
         let theOtherOneContactInfo = '';
         if (chat.isOne2One) {
-            const theOtherOne = chat.getTheOtherOne(imApp);
+            const theOtherOne = chat.getTheOtherOne(app);
             if (theOtherOne) {
                 theOtherOneAccount = theOtherOne.account;
                 theOtherOneContactInfo += (theOtherOne.email || '') + (theOtherOne.mobile || '');

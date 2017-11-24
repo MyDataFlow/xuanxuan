@@ -88,8 +88,12 @@ class Member extends Entity {
         return this.$get('gender');
     }
 
+    get dept() {
+        return this.$get('dept');
+    }
+
     getDept(app) {
-        const dept = this.$get('dept');
+        const dept = this.dept;
         if (dept && !this._dept) {
             this._dept = app.members.getDept(dept);
         }

@@ -47,8 +47,8 @@ const activeChat = chat => {
     }
 };
 
-const isActiveChat = chatId => {
-    return activedChatId === chatId;
+const isActiveChat = chatGid => {
+    return activedChatId === chatGid;
 };
 
 const onActiveChat = listener => {

@@ -45,7 +45,7 @@
 .app-chats-menu-list {
   top: (50*@rem);
 
-  > .item {
+  .item {
     height: (40*@rem);
     padding-top: 0;
     padding-bottom: 0;
@@ -614,5 +614,66 @@
       width: (160*@rem);
       align-items: center;
     }
+  }
+}
+
+.app-contact-list {
+  > .app-member-me {
+    background-color: rgba(0,0,0,.05);
+    box-shadow: 0 @rem 0 rgba(0,0,0,.1);
+    overflow: hidden;
+
+    > .btn-wrapper {
+      z-index: 1;
+      position: absolute;
+      right: (5*@rem);
+      top: (5*@rem);
+    }
+
+    > .title {
+      display: flex;
+      flex-wrap: nowrap;
+      .flex-middle;
+    }
+  }
+
+  > .app-group-list {
+    margin-left: 0;
+
+    .app-group-list {
+      margin-left: (20*@rem);
+    }
+
+    .heading {
+      transition: @animation-type @animation-speed-fast;
+      transition-property: opacity, background-color;
+      cursor: pointer;
+
+      > .icon {
+        margin-left: (4*@rem);
+        opacity: .7;
+        color: @color-primary;
+        transition: opacity @animation-type @animation-speed-fast;
+      }
+
+      > .title {
+        padding-left: (4*@rem);
+        opacity: .7;
+        font-weight: normal;
+      }
+
+      &:hover {
+        .darken;
+        > .title,
+        > .icon {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .app-group-list.is-expand {
+    background-color: rgba(0,0,0,.05);
+    box-shadow: inset 0 (-1*@rem) 0 rgba(0,0,0,.075);
   }
 }

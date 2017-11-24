@@ -26,10 +26,6 @@ const configs = [
         items: [
             {
                 type: 'boolean',
-                name: 'ui.chat.menu.showMe',
-                caption: Lang.string('setting.chats.showMeOnMenu')
-            }, {
-                type: 'boolean',
                 name: 'ui.chat.sendHDEmoticon',
                 caption: Lang.string('setting.chats.sendHDEmoticon')
             }, {

@@ -141,6 +141,12 @@
     "chats.search.groups": "搜索讨论组",
     "chats.search.contacts": "搜索联系人",
 
+    "chats.contacts.switchView": "切换视图",
+    "chats.contacts.groupType.normal": "默认",
+    "chats.contacts.groupType.role": "按角色分组",
+    "chats.contacts.groupType.dept": "按部门分组",
+    "chats.contacts.group.other": "其他",
+
     "chats.history.title": "消息记录",
     "chats.history.group.contacts": "联系人",
     "chats.history.group.groups": "讨论组",

@@ -237,6 +237,38 @@ class UserConfig {
     set hideWindowOnBlur(flag) {
         return this.set('ui.app.hideWindowOnBlur', flag);
     }
+
+    get contactsGroupByType() {
+        return this.get('ui.chat.contacts.groupBy');
+    }
+
+    set contactsGroupByType(type) {
+        return this.set('ui.chat.contacts.groupBy', type);
+    }
+
+    get contactsOrderRole() {
+        return this.get('ui.chat.contacts.order.role', {});
+    }
+
+    set contactsOrderRole(orders) {
+        return this.set('ui.chat.contacts.order.role', orders);
+    }
+
+    get contactsOrderNormal() {
+        return this.get('ui.chat.contacts.order.normal', {});
+    }
+
+    set contactsOrderNormal(orders) {
+        return this.set('ui.chat.contacts.order.normal', orders);
+    }
+
+    get contactsOrderDept() {
+        return this.get('ui.chat.contacts.order.dept', {});
+    }
+
+    set contactsOrderDept(orders) {
+        return this.set('ui.chat.contacts.order.dept', orders);
+    }
 }
 
 export default UserConfig;
