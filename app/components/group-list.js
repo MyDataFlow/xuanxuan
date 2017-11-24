@@ -27,9 +27,9 @@ export default class GroupList extends Component {
         children: null,
         defaultExpand: true,
         toggleWithHeading: true,
-        onClick: null,
         collapseIcon: 'chevron-right',
         expandIcon: 'chevron-down',
+        hideEmptyGroup: true
     }
 
     /**
@@ -40,35 +40,53 @@ export default class GroupList extends Component {
      * @return {Object}
      */
     static propTypes = {
-        onClick: PropTypes.func,
         headingCreator: PropTypes.func,
         itemCreator: PropTypes.func,
         group: PropTypes.object,
         className: PropTypes.string,
         children: PropTypes.any,
-        defaultExpand: PropTypes.bool,
+        defaultExpand: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
         toggleWithHeading: PropTypes.bool,
+        hideEmptyGroup: PropTypes.bool,
         collapseIcon: PropTypes.string,
         expandIcon: PropTypes.string,
     }
 
+    static render(list, props) {
+        return list.map((item, index) => {
+            if (item.type === 'group' || item.list) {
+                if (props.hideEmptyGroup && (!item.list || !item.list.length)) {
+                    return null;
+                }
+                return (<GroupList
+                    key={item.id || index}
+                    group={(props && props.listConverter) ? props.listConverter(item) : item}
+                    itemCreator={props && props.itemCreator}
+                    toggleWithHeading={props && props.toggleWithHeading}
+                    headingCreator={props && props.headingCreator}
+                    defaultExpand={props && props.defaultExpand}
+                    expandIcon={props && props.expandIcon}
+                    collapseIcon={props && props.collapseIcon}
+                    hideEmptyGroup={props && props.hideEmptyGroup}
+                />);
+            }
+            if (props && props.itemCreator) {
+                return props && props.itemCreator(item, index);
+            }
+            return <ListItem key={item.id || index} {...item} />;
+        });
+    }
+
     constructor(props) {
         super(props);
-        let {defaultExpand} = props.defaultExpand;
+        let {defaultExpand} = props;
         if (typeof defaultExpand === 'function') {
-            defaultExpand = defaultExpand(props.group);
+            defaultExpand = defaultExpand(props.group, this);
         }
         this.state = {
             expand: defaultExpand
         };
     }
-
-    handleClick = e => {
-        if (this.props.onClick) {
-            this.props.onClick(e);
-        }
-        console.log('onGroupListClick', Object.assign({}, e));
-    };
 
     toggle(expand, callback) {
         if (expand === undefined) {
@@ -85,6 +103,10 @@ export default class GroupList extends Component {
         this.toggle(false, callback);
     }
 
+    handleHeadingClick = e => {
+        this.toggle();
+    }
+
     /**
      * React render method
      *
@@ -94,6 +116,7 @@ export default class GroupList extends Component {
     render() {
         const {
             headingCreator,
+            hideEmptyGroup,
             itemCreator,
             group,
             toggleWithHeading,
@@ -102,7 +125,6 @@ export default class GroupList extends Component {
             collapseIcon,
             className,
             children,
-            onClick,
             ...other
         } = this.props;
 
@@ -113,7 +135,7 @@ export default class GroupList extends Component {
 
         let headingView = null;
         if (headingCreator) {
-            headingView = headingCreator(group);
+            headingView = headingCreator(group, this);
         } else if (title) {
             if (React.isValidElement(title)) {
                 headingView = title;
@@ -131,7 +153,7 @@ export default class GroupList extends Component {
                         iconView = <Icon name={icon} />;
                     }
                 }
-                headingView = (<header className="heading">
+                headingView = (<header onClick={toggleWithHeading ? this.handleHeadingClick : null} className="heading">
                     {iconView}
                     <div className="title">{title}</div>
                 </header>);
@@ -139,28 +161,11 @@ export default class GroupList extends Component {
         }
 
         return (<div
-            className={HTML.classes('app-group-list list', className)}
-            onClick={this.handleClick}
+            className={HTML.classes('app-group-list list', className, {'is-expand': this.state.expand, 'is-collapse': !this.state.expand})}
             {...other}
         >
             {headingView}
-            {list && list.map((item, index) => {
-                if (item.type === 'group' || item.list) {
-                    return (<GroupList
-                        group={item}
-                        itemCreator={itemCreator}
-                        toggleWithHeading={toggleWithHeading}
-                        headingCreator={headingCreator}
-                        defaultExpand={defaultExpand}
-                        expandIcon={expandIcon}
-                        collapseIcon={collapseIcon}
-                    />);
-                }
-                if (itemCreator) {
-                    return itemCreator(item, index);
-                }
-                return <ListItem {...item} />;
-            })}
+            {this.state.expand && list && GroupList.render(list, this.props)}
             {children}
         </div>);
     }

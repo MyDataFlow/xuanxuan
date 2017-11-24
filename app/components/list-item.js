@@ -69,29 +69,8 @@ export default class ListItem extends Component {
             ...other
         } = this.props;
 
-        let iconView = null;
-        if (icon) {
-            if (React.isValidElement(icon)) {
-                iconView = icon;
-            } else if (typeof icon === 'object') {
-                iconView = <Icon {...icon} />;
-            } else if (icon) {
-                iconView = <Icon name={icon} />;
-            }
-        }
-
-        let avatarView = null;
-        if (avatar) {
-            if (avatar === true && iconView) {
-                avatarView = <Avatar icon={icon} />;
-            } else if (React.isValidElement(avatar)) {
-                avatarView = avatar;
-            } else if (typeof avatar === 'object') {
-                avatarView = <Avatar {...avatar} />;
-            } else if (avatar) {
-                avatarView = <Avatar auto={avatar} />;
-            }
-        }
+        const iconView = Icon.render(icon);
+        const avatarView = Avatar.render(avatar, iconView);
 
         let titleView = null;
         if (title) {

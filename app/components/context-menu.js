@@ -43,38 +43,42 @@ const show = (position, menus, props = {}, callback = null) => {
             Display.remove(props.id);
         }
     };
-    content = (<div className={HTML.classes('list dropdown-menu', menuClassName)}>
-        {
-            menus.map((item, idx) => {
-                if (typeof item === 'string') {
-                    if (item === '-' || item === 'divider' || item === 'separator') {
-                        item = {type: 'divider'};
-                    } else {
-                        item = {label: item};
-                    }
-                }
-                const {
-                    id,
-                    className,
-                    click,
-                    render,
-                    type,
-                    disabled,
-                    data,
-                    ...other
-                } = item;
-                if (render) {
-                    return render(item);
-                } else if (type === 'divider' || type === 'separator') {
-                    return <div key={id || idx} className={HTML.classes('divider', className)} {...other} />;
-                }
-                return (<a onClick={handleItemClick.bind(null, item, idx)} key={id || idx} className={HTML.classes('item', itemClassName, className, {disabled})} {...other}>
-                    {item.icon && <Icon name={item.icon} />}
-                    {item.label && <span className="title">{item.label}</span>}
-                    {item.checked && <Icon name="checked" />}
-                </a>);
-            })
+    let hasIconLeft = false;
+    const itemsView = menus.map((item, idx) => {
+        if (typeof item === 'string') {
+            if (item === '-' || item === 'divider' || item === 'separator') {
+                item = {type: 'divider'};
+            } else {
+                item = {label: item};
+            }
         }
+        const {
+            id,
+            className,
+            click,
+            render,
+            type,
+            disabled,
+            data,
+            ...other
+        } = item;
+        if (render) {
+            return render(item);
+        } else if (type === 'divider' || type === 'separator') {
+            return <div key={id || idx} className={HTML.classes('divider', className)} {...other} />;
+        }
+        const iconView = item.icon && Icon.render(item.icon, {className: 'item-left-icon'});
+        if (iconView) {
+            hasIconLeft = true;
+        }
+        return (<a onClick={handleItemClick.bind(null, item, idx)} key={id || idx} className={HTML.classes('item', itemClassName, className, {disabled})} {...other}>
+            {iconView}
+            {item.label && <span className="title">{item.label}</span>}
+            {item.checked && <Icon name="check" />}
+        </a>);
+    });
+    content = (<div className={HTML.classes('list dropdown-menu', menuClassName, {'has-icon-left': hasIconLeft})}>
+        {itemsView}
         {content}
     </div>);
 

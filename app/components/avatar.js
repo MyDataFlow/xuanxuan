@@ -67,6 +67,22 @@ export default class Avatar extends Component {
         children: PropTypes.any
     }
 
+    static render(avatar, iconView) {
+        let avatarView = null;
+        if (avatar) {
+            if (avatar === true && iconView) {
+                avatarView = <Avatar icon={iconView} />;
+            } else if (React.isValidElement(avatar)) {
+                avatarView = avatar;
+            } else if (typeof avatar === 'object') {
+                avatarView = <Avatar {...avatar} />;
+            } else if (avatar) {
+                avatarView = <Avatar auto={avatar} />;
+            }
+        }
+        return avatarView;
+    }
+
     /**
      * React render method
      *
