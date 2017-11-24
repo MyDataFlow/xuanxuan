@@ -44,6 +44,7 @@ class Chat extends Entity {
         admins: {type: 'set'},
         members: {type: 'set'},
         committers: {type: 'string'},
+        group: {type: 'string'},
     });
 
     constructor(data, entityType = Chat.NAME) {
@@ -127,6 +128,14 @@ class Chat extends Entity {
 
     get isGroup() {
         return this.type === TYPES.group;
+    }
+
+    get group() {
+        return this.$get('group');
+    }
+
+    set group(name) {
+        return this.$set('group', name);
     }
 
     get name() {
