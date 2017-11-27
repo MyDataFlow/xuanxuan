@@ -20,10 +20,12 @@ class InputControl extends Component {
         inputStyle: null,
         inputProps: null,
         children: null,
+        defaultValue: undefined,
     };
 
     static propTypes = {
         value: PropTypes.string,
+        defaultValue: PropTypes.string,
         label: PropTypes.any,
         className: PropTypes.string,
         placeholder: PropTypes.string,
@@ -39,6 +41,12 @@ class InputControl extends Component {
         inputClassName: PropTypes.string,
         children: PropTypes.any,
         name: PropTypes.string,
+    }
+
+    constructor(props) {
+        super(props);
+        const {defaultValue} = props;
+        this.controled = defaultValue === undefined;
     }
 
     componentDidMount() {
@@ -64,6 +72,10 @@ class InputControl extends Component {
         }
     }
 
+    get value() {
+        return this.input.value;
+    }
+
     focus() {
         this.input.focus();
     }
@@ -83,6 +95,7 @@ class InputControl extends Component {
             onChange,
             className,
             inputClassName,
+            defaultValue,
             disabled,
             children,
             ...other
@@ -93,7 +106,8 @@ class InputControl extends Component {
             <input
                 disabled={!!disabled}
                 ref={e => {this.input = e;}}
-                value={value}
+                value={this.controled ? value : undefined}
+                defaultValue={defaultValue}
                 id={name}
                 type={inputType}
                 className={HTML.classes('input', inputClassName)}
