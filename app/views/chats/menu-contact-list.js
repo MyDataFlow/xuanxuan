@@ -40,7 +40,9 @@ export default class MenuContactList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            groupType: 'category'
+            groupType: 'category',
+            dragging: false,
+            dropTarget: null
         };
     }
 
@@ -100,8 +102,46 @@ export default class MenuContactList extends Component {
         e.preventDefault();
     }
 
+    handleDragOver(group, e) {
+        if (!this.state.dropTarget || this.state.dropTarget.id !== group.id) {
+            this.setState({dropTarget: group});
+        }
+    }
+
+    handleDrop(group, e) {
+        const {dragging, dropTarget} = this.state;
+        if (dragging && dropTarget && dragging.id !== dropTarget.id) {
+            if (dropTarget.order < dragging.order) {
+                dragging.order = dropTarget.order - 0.5;
+            } else if (dropTarget.order > dragging.order) {
+                dragging.order = dropTarget.order + 0.5;
+            }
+            const categories = {};
+            this.sortedGroups.sort((x, y) => (x.order - y.order));
+            this.sortedGroups.forEach((x, idx) => {
+                x.order = idx + 1;
+                categories[x.id] = {key: x.key, order: x.order};
+            });
+            App.user.config.contactsCategories = categories;
+        }
+        e.stopPropagation();
+    }
+
+    handleDragStart(group, e) {
+        this.setState({dragging: group});
+        this.sortedGroups = this.groupChats;
+        e.stopPropagation();
+        return true;
+    }
+
+    handleDragEnd(group, e) {
+        this.setState({dragging: false});
+        e.stopPropagation();
+        return true;
+    }
+
     headingCreator = (group, groupList) => {
-        const icon = groupList.state.expand ? groupList.props.expandIcon : groupList.props.collapseIcon;
+        const icon = groupList.isExpand ? groupList.props.expandIcon : groupList.props.collapseIcon;
         let iconView = null;
         if (icon) {
             if (React.isValidElement(icon)) {
@@ -118,7 +158,24 @@ export default class MenuContactList extends Component {
         } else {
             countView = `(${group.onlineCount || 0}/${group.list.length})`;
         }
-        return (<header onContextMenu={this.handleHeadingContextMenu.bind(this, group)} onClick={groupList.props.toggleWithHeading ? groupList.handleHeadingClick : null} className="heading">
+
+        const {dragging, dropTarget} = this.state;
+        const isDragging = dropTarget && dragging && dropTarget.id === group.id && dragging.id !== group.id;
+        const dragClasses = {
+            'is-dragging': isDragging,
+            'drop-top': isDragging && dropTarget.order < dragging.order,
+            'drop-bottom': isDragging && dropTarget.order > dragging.order,
+        };
+        return (<header
+            onContextMenu={this.handleHeadingContextMenu.bind(this, group)}
+            draggable={this.state.groupType === 'category'}
+            onDragOver={this.handleDragOver.bind(this, group)}
+            onDrop={this.handleDrop.bind(this, group)}
+            onDragStart={this.handleDragStart.bind(this, group)}
+            onDragEnd={this.handleDragEnd.bind(this, group)}
+            onClick={groupList.props.toggleWithHeading ? groupList.handleHeadingClick : null}
+            className={HTML.classes('heading', dragClasses)}
+        >
             {iconView}
             <div className="title"><strong>{group.title || Lang.string('chats.menu.group.other')}</strong> {countView}</div>
         </header>);
@@ -145,6 +202,7 @@ export default class MenuContactList extends Component {
         const groupType = this.groupType;
         const chats = App.im.chats.getContactsChats(true, groupType);
         const user = App.user;
+        this.groupChats = chats;
 
         return (<div className={HTML.classes('app-chats-menu-list app-contact-list app-chat-group-list list scroll-y', className)} {...other}>
             {user ? <MemberListItem
@@ -163,6 +221,7 @@ export default class MenuContactList extends Component {
                     itemCreator: this.itemCreator,
                     headingCreator: this.headingCreator,
                     hideEmptyGroup: groupType !== 'category',
+                    forceCollapse: !!this.state.dragging
                 })
             }
             {children}

@@ -658,6 +658,26 @@
           opacity: 1;
         }
       }
+
+      &.drop-top:before,
+      &.drop-bottom:before {
+        content: ' ';
+        display: block;
+        height: (3*@rem);
+        border: @color-accent dotted (1*@rem);
+        left: @space-xs;
+        right: @space-xs;
+        position: absolute;
+        z-index: 10;
+      }
+
+      &.drop-top:before {
+        top: (-1*@rem);
+      }
+
+      &.drop-bottom:before {
+        bottom: (-1*@rem);
+      }
     }
 
     &:before {

@@ -448,12 +448,12 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
             const categoryName = categoryId || user.config.contactsDefaultCategoryName;
             const member = chat.getTheOtherOne(app);
             const isMemberOnline = member.isOnline;
-            if (!groupedChats[categoryName]) {
-                groupedChats[categoryName] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
+            if (!groupedChats[categoryId]) {
+                groupedChats[categoryId] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
             } else {
-                groupedChats[categoryName].list.push(chat);
+                groupedChats[categoryId].list.push(chat);
                 if (isMemberOnline) {
-                    groupedChats[categoryName].onlineCount += 1;
+                    groupedChats[categoryId].onlineCount += 1;
                 }
             }
         });
@@ -478,9 +478,9 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
             }
             return group;
         }).sort((g1, g2) => {
-            let result = g1.order - g2.order;
+            let result = g2.order - g1.order;
             if (result === 0) {
-                result = g1.id > g2.id ? 1 : -1;
+                result = g1.id > g2.id ? -1 : 1;
             }
             return -result;
         });
@@ -505,10 +505,10 @@ const getGroups = (sortList = true, groupedBy = false) => {
         groupChats.forEach(chat => {
             const categoryId = chat.category || '';
             const categoryName = categoryId || user.config.groupsDefaultCategoryName;
-            if (!groupedChats[categoryName]) {
-                groupedChats[categoryName] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat]};
+            if (!groupedChats[categoryId]) {
+                groupedChats[categoryId] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat]};
             } else {
-                groupedChats[categoryName].list.push(chat);
+                groupedChats[categoryId].list.push(chat);
             }
         });
         const groupKeys = Object.keys(groupedChats);
@@ -536,7 +536,7 @@ const getGroups = (sortList = true, groupedBy = false) => {
             }
             return group;
         }).sort((g1, g2) => {
-            let result = g1.order - g2.order;
+            let result = g2.order - g1.order;
             if (result === 0) {
                 result = g1.id > g2.id ? 1 : -1;
             }

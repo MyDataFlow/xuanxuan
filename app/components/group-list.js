@@ -31,6 +31,7 @@ export default class GroupList extends Component {
         expandIcon: 'chevron-down',
         hideEmptyGroup: true,
         checkIsGroup: null,
+        forceCollapse: false,
     }
 
     /**
@@ -49,6 +50,7 @@ export default class GroupList extends Component {
         children: PropTypes.any,
         defaultExpand: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
         toggleWithHeading: PropTypes.bool,
+        forceCollapse: PropTypes.bool,
         hideEmptyGroup: PropTypes.bool,
         collapseIcon: PropTypes.string,
         expandIcon: PropTypes.string,
@@ -71,6 +73,7 @@ export default class GroupList extends Component {
                     collapseIcon={props && props.collapseIcon}
                     hideEmptyGroup={props && props.hideEmptyGroup}
                     checkIsGroup={props && props.checkIsGroup}
+                    forceCollapse={props && props.forceCollapse}
                 />);
             }
             if (props && props.itemCreator) {
@@ -110,6 +113,10 @@ export default class GroupList extends Component {
         this.toggle();
     }
 
+    get isExpand() {
+        return !this.props.forceCollapse && this.state.expand;
+    }
+
     /**
      * React render method
      *
@@ -118,6 +125,7 @@ export default class GroupList extends Component {
      */
     render() {
         const {
+            forceCollapse,
             headingCreator,
             hideEmptyGroup,
             checkIsGroup,
@@ -137,6 +145,8 @@ export default class GroupList extends Component {
             list,
         } = group;
 
+        const expand = this.isExpand;
+
         let headingView = null;
         if (headingCreator) {
             headingView = headingCreator(group, this);
@@ -146,7 +156,7 @@ export default class GroupList extends Component {
             } else if (typeof title === 'object') {
                 headingView = <Heading {...title} />;
             } else if (title) {
-                const icon = this.state.expand ? expandIcon : collapseIcon;
+                const icon = expand ? expandIcon : collapseIcon;
                 let iconView = null;
                 if (icon) {
                     if (React.isValidElement(icon)) {
@@ -165,11 +175,11 @@ export default class GroupList extends Component {
         }
 
         return (<div
-            className={HTML.classes('app-group-list list', className, {'is-expand': this.state.expand, 'is-collapse': !this.state.expand})}
+            className={HTML.classes('app-group-list list', className, {'is-expand': expand, 'is-collapse': !expand})}
             {...other}
         >
             {headingView}
-            {this.state.expand && list && GroupList.render(list, this.props)}
+            {expand && list && GroupList.render(list, this.props)}
             {children}
         </div>);
     }
