@@ -676,20 +676,20 @@ class chat extends control
     }
 
     /**
-     * Set group for a chat
+     * Set category for a chat
      *
-     * @param  string $gid
-     * @param  string $group
+     * @param  array $gids
+     * @param  string $category
      * @param  int    $userID
      * @access public
      * @return void
      */
-    public function group($gid = '', $group = '', $userID = 0)
+    public function category($gids = array(), $category = '', $userID = 0)
     {
-        $chatList = $this->chat->groupChat($gid, $group, $userID);
+        $chatList = $this->chat->categoryChat($gids, $category, $userID);
         if(dao::isError())
         {
-            $message = 'Set chat group failed.';
+            $message = 'Set chat category failed.';
 
             $this->output->result  = 'fail';
             $this->output->message = $message;
@@ -697,8 +697,8 @@ class chat extends control
         else
         {
             $data = new stdclass();
-            $data->gid  = $gid;
-            $data->group = $group;
+            $data->gids  = $gids;
+            $data->category = $category;
 
             $this->output->result = 'success';
             $this->output->users  = array($userID);

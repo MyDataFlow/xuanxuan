@@ -250,7 +250,7 @@ class chatModel extends model
             ->where('type')->eq('system')
             ->fetchAll();
 
-        $chats = $this->dao->select('t1.*, t2.star, t2.hide, t2.mute, t2.group')
+        $chats = $this->dao->select('t1.*, t2.star, t2.hide, t2.mute, t2.category')
             ->from(TABLE_IM_CHAT)->alias('t1')
             ->leftjoin(TABLE_IM_CHATUSER)->alias('t2')->on('t1.gid=t2.cgid')
             ->where('t2.quit')->eq('0000-00-00 00:00:00')
@@ -453,19 +453,19 @@ class chatModel extends model
     }
 
     /**
-     * Set group for a chat
+     * Set category for a chat
      *
-     * @param  string $gid
-     * @param  string $group
+     * @param  array  $gids
+     * @param  string $category
      * @param  int    $userID
      * @access public
      * @return void
      */
-    public function groupChat($gid = '', $group = '', $userID = 0)
+    public function categoryChat($gids = array(), $category = '', $userID = 0)
     {
         $this->dao->update(TABLE_IM_CHATUSER)
-            ->set('group')->eq($group)
-            ->where('cgid')->eq($gid)
+            ->set('category')->eq($category)
+            ->where('cgid')->in($gids)
             ->andWhere('user')->eq($userID)
             ->exec();
 

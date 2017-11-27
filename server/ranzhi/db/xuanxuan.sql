@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `im_chatuser`(
   `mute` enum('0', '1') NOT NULL DEFAULT '0',
   `join` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `quit` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `group` varchar(40) NOT NULL DEFAULT '',
+  `category` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `cgid` (`cgid`),
   KEY `user` (`user`),
