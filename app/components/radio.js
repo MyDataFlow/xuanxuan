@@ -36,7 +36,7 @@ export default class Radio extends Component {
     static propTypes = {
         checked: PropTypes.bool,
         disabled: PropTypes.bool,
-        label: PropTypes.string,
+        label: PropTypes.any,
         className: PropTypes.string,
         inputProps: PropTypes.object,
         onChange: PropTypes.func,

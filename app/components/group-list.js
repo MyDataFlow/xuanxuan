@@ -29,7 +29,8 @@ export default class GroupList extends Component {
         toggleWithHeading: true,
         collapseIcon: 'chevron-right',
         expandIcon: 'chevron-down',
-        hideEmptyGroup: true
+        hideEmptyGroup: true,
+        checkIsGroup: null,
     }
 
     /**
@@ -41,6 +42,7 @@ export default class GroupList extends Component {
      */
     static propTypes = {
         headingCreator: PropTypes.func,
+        checkIsGroup: PropTypes.func,
         itemCreator: PropTypes.func,
         group: PropTypes.object,
         className: PropTypes.string,
@@ -54,7 +56,7 @@ export default class GroupList extends Component {
 
     static render(list, props) {
         return list.map((item, index) => {
-            if (item.type === 'group' || item.list) {
+            if ((props.checkIsGroup && props.checkIsGroup(item)) || (!props.checkIsGroup && (item.type === 'group' || item.list))) {
                 if (props.hideEmptyGroup && (!item.list || !item.list.length)) {
                     return null;
                 }
@@ -68,6 +70,7 @@ export default class GroupList extends Component {
                     expandIcon={props && props.expandIcon}
                     collapseIcon={props && props.collapseIcon}
                     hideEmptyGroup={props && props.hideEmptyGroup}
+                    checkIsGroup={props && props.checkIsGroup}
                 />);
             }
             if (props && props.itemCreator) {
@@ -117,6 +120,7 @@ export default class GroupList extends Component {
         const {
             headingCreator,
             hideEmptyGroup,
+            checkIsGroup,
             itemCreator,
             group,
             toggleWithHeading,
