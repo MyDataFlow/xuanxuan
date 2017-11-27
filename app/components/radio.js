@@ -24,6 +24,7 @@ export default class Radio extends Component {
         onChange: null,
         children: null,
         innerView: null,
+        disabled: false,
     }
 
     /**
@@ -34,6 +35,7 @@ export default class Radio extends Component {
      */
     static propTypes = {
         checked: PropTypes.bool,
+        disabled: PropTypes.bool,
         label: PropTypes.string,
         className: PropTypes.string,
         inputProps: PropTypes.object,
@@ -77,6 +79,7 @@ export default class Radio extends Component {
             name,
             value,
             checked,
+            disabled,
             label,
             innerView,
             children,
@@ -86,8 +89,8 @@ export default class Radio extends Component {
             ...other
         } = this.props;
 
-        return (<div className={HTML.classes('radio', className, {checked})} {...other}>
-            <input name={name} id={this._controlId} checked={checked} type="radio" onChange={this.handleRadioChange} value={value} {...inputProps} />
+        return (<div className={HTML.classes('radio', className, {checked, disabled})} {...other}>
+            <input disabled={disabled} name={name} id={this._controlId} checked={checked} type="radio" onChange={this.handleRadioChange} value={value} {...inputProps} />
             {label && <label htmlFor={this.controlId}>{label}</label>}
             {innerView}
             {children}
