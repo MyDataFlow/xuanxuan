@@ -59,7 +59,7 @@ export default class GroupList extends Component {
                     return null;
                 }
                 return (<GroupList
-                    key={item.id || index}
+                    key={item.key || item.id || index}
                     group={(props && props.listConverter) ? props.listConverter(item) : item}
                     itemCreator={props && props.itemCreator}
                     toggleWithHeading={props && props.toggleWithHeading}
@@ -73,7 +73,7 @@ export default class GroupList extends Component {
             if (props && props.itemCreator) {
                 return props && props.itemCreator(item, index);
             }
-            return <ListItem key={item.id || index} {...item} />;
+            return <ListItem key={item.key || item.id || index} {...item} />;
         });
     }
 

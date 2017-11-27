@@ -87,7 +87,7 @@ export default class Radio extends Component {
         } = this.props;
 
         return (<div className={HTML.classes('radio', className, {checked})} {...other}>
-            <input name={name} id={this._controlId} checked={checked} type="radio" onChange={this.handleRadioChange} {...inputProps} />
+            <input name={name} id={this._controlId} checked={checked} type="radio" onChange={this.handleRadioChange} value={value} {...inputProps} />
             {label && <label htmlFor={this.controlId}>{label}</label>}
             {innerView}
             {children}

@@ -57,6 +57,10 @@ class Selectbox extends Component {
         }
     }
 
+    focus() {
+        this.selectBox.focus();
+    }
+
     render() {
         let {
             value,
@@ -78,6 +82,7 @@ class Selectbox extends Component {
             {...other}
         >
             <select
+                ref={e => {this.selectBox = e;}}
                 className={selectClassName}
                 value={value}
                 onChange={this.handleSelectChange}

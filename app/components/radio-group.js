@@ -12,7 +12,6 @@ import Radio from './radio';
  */
 export default class RadioGroup extends Component {
     static Radio = Radio;
-    static RadioGroup = RadioGroup;
 
     /**
      * Default properties values
@@ -47,17 +46,11 @@ export default class RadioGroup extends Component {
         children: PropTypes.any,
     }
 
-    /**
-     * Handle radio change event
-     * @private
-     * @memberof Radio
-     */
-    handleRadioChange = (name, value, checked) => {
-        console.log('>', {name, value, checked});
-    };
-
     handeOnChange = e => {
-        console.log('>>', Object.assign({}, e));
+        const {onChange} = this.props;
+        if (onChange) {
+            onChange(e.target.value, e);
+        }
     };
 
     /**
