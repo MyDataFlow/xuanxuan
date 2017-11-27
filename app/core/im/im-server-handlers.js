@@ -107,6 +107,20 @@ const chatStar = (msg, socket) => {
     }
 };
 
+const chatCategory = (msg, socket) => {
+    if (msg.isSuccess) {
+        const {gids, category} = msg.data;
+        if (gids && gids.length) {
+            const chatsForUpdate = gids.map(gid => {
+                const chat = chats.get(gid);
+                chat.category = category;
+                return chat;
+            });
+            chats.update(chatsForUpdate);
+        }
+    }
+};
+
 const chatJoinchat = (msg, socket) => {
     if (!msg.isSuccess) {
         return;
@@ -175,6 +189,7 @@ export default {
     'chat/message': chatMessage,
     'chat/history': chatHistory,
     'chat/star': chatStar,
+    'chat/category': chatCategory,
     'chat/joinchat': chatJoinchat,
     'chat/hide': chatHide,
     'chat/changepublic': chatChangepublic,

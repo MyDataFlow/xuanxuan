@@ -7,6 +7,7 @@ import db from '../db';
 import StringHelper from '../../utils/string-helper';
 import DateHelper from '../../utils/date-helper';
 import TaskQueue from '../../utils/task-queue';
+import Lang from '../../lang';
 
 const CHATS_LIMIT_DEFAULT = 100;
 const MAX_RECENT_TIME = 1000 * 60 * 60 * 24 * 7;
@@ -333,7 +334,11 @@ const getContactChat = (member) => {
 };
 
 const getContactsChats = (sortList = true, groupedBy = false) => {
+    const {user} = profile;
     const contactChats = [];
+    if (!user) {
+        return contactChats;
+    }
     members.forEach(member => {
         if (member.id !== profile.user.id) {
             contactChats.push(getContactChat(member, true));
@@ -344,7 +349,7 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
         contactChats.forEach(chat => {
             const member = chat.getTheOtherOne(app);
             const isMemberOnline = member.isOnline;
-            const role = member.role;
+            const role = member.role || '';
             if (!groupedContactChats[role]) {
                 groupedContactChats[role] = {id: role, title: members.getRoleName(role), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
             } else {
@@ -436,6 +441,53 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
             }
             return x;
         }).filter(x => !x.hasParent).sort(deptsSorter);
+    } else if (groupedBy === 'category') {
+        const groupedChats = {};
+        contactChats.forEach(chat => {
+            const categoryId = chat.category || '';
+            const categoryName = categoryId || user.config.contactsDefaultCategoryName;
+            const member = chat.getTheOtherOne(app);
+            const isMemberOnline = member.isOnline;
+            if (!groupedChats[categoryName]) {
+                groupedChats[categoryName] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
+            } else {
+                groupedChats[categoryName].list.push(chat);
+                if (isMemberOnline) {
+                    groupedChats[categoryName].onlineCount += 1;
+                }
+            }
+        });
+        const categories = user.config.contactsCategories;
+        let timeNow = new Date().getTime();
+        let needSaveOrder = false;
+        const orderedGroups = Object.keys(groupedChats).map(categoryId => {
+            const group = groupedChats[categoryId];
+            let savedCategory = categories[categoryId];
+            if (!savedCategory) {
+                timeNow += 1;
+                savedCategory = {
+                    order: timeNow,
+                    key: timeNow
+                };
+                categories[categoryId] = savedCategory;
+                needSaveOrder = true;
+            }
+            Object.assign(group, savedCategory);
+            if (sortList) {
+                Chat.sort(group.list, sortList, app);
+            }
+            return group;
+        }).sort((g1, g2) => {
+            let result = g1.order - g2.order;
+            if (result === 0) {
+                result = g1.id > g2.id ? 1 : -1;
+            }
+            return -result;
+        });
+        if (needSaveOrder) {
+            user.config.contactsCategories = categories;
+        }
+        return orderedGroups;
     } else if (sortList) {
         Chat.sort(contactChats, sortList, app);
     }
@@ -444,6 +496,13 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
 
 const getGroups = (sortList = true) => {
     return query(chat => chat.isGroupOrSystem, sortList);
+};
+
+const getChatCategories = (type = 'contact') => {
+    if (type === 'contact') {
+        return getContactsChats(false, 'category');
+    }
+    return [];
 };
 
 const search = (search, chatType) => {
@@ -616,4 +675,5 @@ export default {
     countChatMessages,
     createCountMessagesTask,
     searchChatMessages,
+    getChatCategories,
 };

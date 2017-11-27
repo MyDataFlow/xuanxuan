@@ -11,16 +11,11 @@ import {MemberListItem} from '../common/member-list-item';
 import UserProfileDialog from '../common/user-profile-dialog';
 import replaceViews from '../replace-views';
 
-const handleItemContextMenu = (chat, e) => {
-    const menuItems = App.im.ui.createChatContextMenuItems(chat);
-    ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-    e.preventDefault();
-};
-
 const GROUP_TYPES = [
-    {label: Lang.string('chats.contacts.groupType.normal'), data: 'normal'},
-    {label: Lang.string('chats.contacts.groupType.role'), data: 'role'},
-    {label: Lang.string('chats.contacts.groupType.dept'), data: 'dept'},
+    {label: Lang.string('chats.menu.groupType.normal'), data: 'normal'},
+    {label: Lang.string('chats.menu.groupType.category'), data: 'category'},
+    {label: Lang.string('chats.menu.groupType.role'), data: 'role'},
+    {label: Lang.string('chats.menu.groupType.dept'), data: 'dept'},
 ];
 
 export default class ContactList extends Component {
@@ -45,7 +40,7 @@ export default class ContactList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            groupType: ''
+            groupType: 'category'
         };
     }
 
@@ -90,7 +85,7 @@ export default class ContactList extends Component {
                 icon: type.data === groupType ? 'check text-success' : false
             };
         });
-        menus.splice(0, 0, {label: Lang.string('chats.contacts.switchView'), disabled: true});
+        menus.splice(0, 0, {label: Lang.string('chats.menu.switchView'), disabled: true});
         App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menus, {onItemClick: item => {
             if (item && item.data) {
                 this.groupType = item.data;
@@ -99,9 +94,21 @@ export default class ContactList extends Component {
         e.stopPropagation();
     };
 
+    handleItemContextMenu(chat, e) {
+        const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contact', this.state.groupType);
+        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
+        e.preventDefault();
+    }
+
     itemCreator = chat => {
-        return <ChatListItem onContextMenu={handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
+        return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
     };
+
+    handleHeadingContextMenu(group, e) {
+        const menu = App.im.ui.createGroupHeadingContextMenu(group);
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
+        e.preventDefault();
+    }
 
     headingCreator = (group, groupList) => {
         const icon = groupList.state.expand ? groupList.props.expandIcon : groupList.props.collapseIcon;
@@ -115,9 +122,15 @@ export default class ContactList extends Component {
                 iconView = <Icon name={icon} />;
             }
         }
-        return (<header onClick={groupList.props.toggleWithHeading ? groupList.handleHeadingClick : null} className="heading">
+        let countView = null;
+        if (!group.list.length) {
+            countView = '(0)';
+        } else {
+            countView = `(${group.onlineCount || 0}/${group.list.length})`;
+        }
+        return (<header onContextMenu={this.handleHeadingContextMenu.bind(this, group)} onClick={groupList.props.toggleWithHeading ? groupList.handleHeadingClick : null} className="heading">
             {iconView}
-            <div className="title"><strong>{group.title || Lang.string('chats.contacts.group.other')}</strong> ({group.onlineCount}/{group.list.length})</div>
+            <div className="title"><strong>{group.title || Lang.string('chats.menu.group.other')}</strong> {countView}</div>
         </header>);
     };
 
@@ -139,7 +152,8 @@ export default class ContactList extends Component {
             ...other
         } = this.props;
 
-        const chats = App.im.chats.getContactsChats(true, this.groupType);
+        const groupType = this.groupType;
+        const chats = App.im.chats.getContactsChats(true, groupType);
         const user = App.user;
 
         return (<div className={HTML.classes('app-chats-menu-list app-contact-list list scroll-y', className)} {...other}>
@@ -158,7 +172,7 @@ export default class ContactList extends Component {
                     defaultExpand: this.defaultExpand,
                     itemCreator: this.itemCreator,
                     headingCreator: this.headingCreator,
-                    hideEmptyGroup: true,
+                    hideEmptyGroup: groupType !== 'category',
                 })
             }
             {children}

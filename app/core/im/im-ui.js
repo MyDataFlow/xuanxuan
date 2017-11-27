@@ -21,6 +21,7 @@ import Emojione from '../../components/emojione';
 import CoreServer from '../server';
 import ChatChangeFontPopover from '../../views/chats/chat-change-font-popover';
 import db from '../db';
+import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -271,8 +272,8 @@ const chatExitConfirm = chat => {
     });
 };
 
-const createChatContextMenuItems = (chat) => {
-    let menu = [];
+const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
+    const menu = [];
     if (chat.isOne2One) {
         menu.push({
             label: Lang.string('member.profile.view'),
@@ -305,6 +306,20 @@ const createChatContextMenuItems = (chat) => {
                 Server.toggleChatPublic(chat);
             }
         });
+    }
+
+    if (menuType === 'contact') {
+        if (viewType === 'category') {
+            if (menu.length) {
+                menu.push({type: 'separator'});
+            }
+            menu.push({
+                label: Lang.string('chats.menu.group.add'),
+                click: () => {
+                    ChatAddCategoryDialog.show(chat);
+                }
+            });
+        }
     }
 
     if (chat.canExit) {
@@ -436,10 +451,59 @@ const createGroupChat = (members) => {
     }).then(newName => {
         if (newName) {
             return Server.createChatWithMembers(members, {name: newName});
-        } else {
-            return Promise.reject(false);
         }
+        return Promise.reject(false);
     });
+};
+
+const renameChatCategory = (group, type = 'contact', newCategoryName = null) => {
+    if (newCategoryName === null) {
+        return Modal.prompt(Lang.string('chats.menu.group.renameTip'), group.title).then(name => {
+            return renameChatCategory(group, type, name);
+        });
+    }
+    if (newCategoryName !== group.title) {
+        if (group.id) {
+            const isContactType = type === 'contact';
+            const renameChats = chats.query(x => ((isContactType ? x.isOne2One : x.isGroupOrSystem) && x.category === group.id), false);
+            return Server.setChatCategory(renameChats, newCategoryName).then(() => {
+                const categoriesConfigName = isContactType ? 'contactsCategories' : 'groupsCategories';
+                const categories = profile.user.config[categoriesConfigName];
+                if (!categories[newCategoryName]) {
+                    categories[newCategoryName] = categories[group.id];
+                }
+                delete categories[group.id];
+                profile.user.config[categoriesConfigName] = categories;
+            });
+        } else {
+            profile.user.config[type === 'contact' ? 'contactsDefaultCategoryName' : 'groupsDefaultCategoryName'] = newCategoryName;
+        }
+    }
+};
+
+const createGroupHeadingContextMenu = (group, type = 'contact') => {
+    const menus = [{
+        label: Lang.string('chats.menu.group.rename'),
+        click: () => {
+            renameChatCategory(group, type);
+        }
+    }];
+    if (group.id) {
+        menus.push({
+            label: Lang.string('chats.menu.group.delete'),
+            click: () => {
+                const defaultCategoryName = profile.user.config.contactsDefaultCategoryName || Lang.string('chats.menu.group.default');
+                return Modal.confirm(Lang.format('chats.menu.group.delete.tip.format', defaultCategoryName), {
+                    title: Lang.format('chats.menu.group.delete.confirm.format', group.title)
+                }).then(result => {
+                    if (result) {
+                        renameChatCategory(group, type, '');
+                    }
+                });
+            }
+        });
+    }
+    return menus;
 };
 
 profile.onSwapUser(user => {
@@ -485,7 +549,7 @@ if (Platform.screenshot && Platform.shortcut) {
         }
     };
     profile.onUserConfigChange(change => {
-        if (change['shortcut.captureScreen']) {
+        if (change && change['shortcut.captureScreen']) {
             registerShortcut();
         }
     });
@@ -515,6 +579,7 @@ export default {
     onSendContentToChat,
     createChatMemberContextMenuItems,
     onRenderChatMessageContent,
+    createGroupHeadingContextMenu,
 
     get currentActiveChatId() {
         return activedChatId;

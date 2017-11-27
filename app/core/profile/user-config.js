@@ -254,12 +254,12 @@ class UserConfig {
         return this.set('ui.chat.contacts.order.role', orders);
     }
 
-    get contactsOrderNormal() {
-        return this.get('ui.chat.contacts.order.normal', {});
+    get contactsCategories() {
+        return this.get('ui.chat.contacts.categories', {});
     }
 
-    set contactsOrderNormal(orders) {
-        return this.set('ui.chat.contacts.order.normal', orders);
+    set contactsCategories(orders) {
+        return this.set('ui.chat.contacts.categories', orders);
     }
 
     get contactsOrderDept() {
@@ -268,6 +268,14 @@ class UserConfig {
 
     set contactsOrderDept(orders) {
         return this.set('ui.chat.contacts.order.dept', orders);
+    }
+
+    get contactsDefaultCategoryName() {
+        return this.get('ui.chat.contacts.category.default');
+    }
+
+    set contactsDefaultCategoryName(name) {
+        return this.set('ui.chat.contacts.category.default', name);
     }
 }
 

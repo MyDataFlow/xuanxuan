@@ -160,9 +160,8 @@ const createLocalChatWithMembers = (chatMembers, chatSetting) => {
     chatMembers = chatMembers.map(member => {
         if (typeof member === 'object') {
             return member.id;
-        } else {
-            return member;
         }
+        return member;
     });
     if (!chatMembers.find(memberId => memberId === userMeId)) {
         chatMembers.push(userMeId);
@@ -231,19 +230,34 @@ const toggleChatStar = (chat) => {
         return createChat(chat).then(() => {
             return sendRequest();
         });
-    } else {
-        return sendRequest();
     }
+    return sendRequest();
+};
+
+const setChatCategory = (chat, category) => {
+    const isArray = Array.isArray(chat);
+    const gids = isArray ? chat.map(x => x.gid) : [chat.gid];
+    const sendRequest = () => {
+        return Server.socket.send({
+            method: 'category',
+            params: [gids, category]
+        });
+    };
+    if (!isArray && !chat.id) {
+        return createChat(chat).then(() => {
+            return sendRequest();
+        });
+    }
+    return sendRequest();
 };
 
 const sendSocketMessageForChat = (socketMessage, chat) => {
     if (chat.id) {
         return Server.socket.send(socketMessage);
-    } else {
-        return createChat(chat).then(() => {
-            return Server.socket.send(socketMessage);
-        });
     }
+    return createChat(chat).then(() => {
+        return Server.socket.send(socketMessage);
+    });
 };
 
 const createBoardChatMessage = (message, chat) => {
@@ -524,6 +538,7 @@ export default {
     setCommitters,
     toggleChatPublic,
     toggleChatStar,
+    setChatCategory,
     renameChat,
     sendSocketMessageForChat,
     sendChatMessage,

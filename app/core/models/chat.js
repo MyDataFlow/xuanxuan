@@ -2,7 +2,7 @@ import Entity from './entity';
 import Status from '../../utils/status';
 import Lang from '../../lang';
 import Pinyin from '../../utils/pinyin';
-import { ChatMessage } from './index';
+import {ChatMessage} from './index';
 
 const STATUS = new Status({
     local: 0,
@@ -44,7 +44,7 @@ class Chat extends Entity {
         admins: {type: 'set'},
         members: {type: 'set'},
         committers: {type: 'string'},
-        group: {type: 'string'},
+        category: {type: 'string'},
     });
 
     constructor(data, entityType = Chat.NAME) {
@@ -130,12 +130,12 @@ class Chat extends Entity {
         return this.type === TYPES.group;
     }
 
-    get group() {
-        return this.$get('group');
+    get category() {
+        return this.$get('category');
     }
 
-    set group(name) {
-        return this.$set('group', name);
+    set category(name) {
+        return this.$set('category', name);
     }
 
     get name() {
