@@ -18,7 +18,7 @@ const GROUP_TYPES = [
     {label: Lang.string('chats.menu.groupType.dept'), data: 'dept'},
 ];
 
-export default class ContactList extends Component {
+export default class MenuContactList extends Component {
     static propTypes = {
         className: PropTypes.string,
         search: PropTypes.string,
@@ -33,8 +33,8 @@ export default class ContactList extends Component {
         children: null,
     };
 
-    static get ContactList() {
-        return replaceViews('chats/contact-list', ContactList);
+    static get MenuContactList() {
+        return replaceViews('chats/menu-contact-list', MenuContactList);
     }
 
     constructor(props) {
@@ -42,16 +42,6 @@ export default class ContactList extends Component {
         this.state = {
             groupType: 'category'
         };
-    }
-
-    componentDidMount() {
-        this.dataChangeHandler = App.events.onDataChange(data => {
-            this.forceUpdate();
-        });
-    }
-
-    componentWillUnmount() {
-        App.events.off(this.dataChangeHandler);
     }
 
     get groupType() {
@@ -95,7 +85,7 @@ export default class ContactList extends Component {
     };
 
     handleItemContextMenu(chat, e) {
-        const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contact', this.state.groupType);
+        const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contacts', this.state.groupType);
         ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
         e.preventDefault();
     }
@@ -156,7 +146,7 @@ export default class ContactList extends Component {
         const chats = App.im.chats.getContactsChats(true, groupType);
         const user = App.user;
 
-        return (<div className={HTML.classes('app-chats-menu-list app-contact-list list scroll-y', className)} {...other}>
+        return (<div className={HTML.classes('app-chats-menu-list app-contact-list app-chat-group-list list scroll-y', className)} {...other}>
             {user ? <MemberListItem
                 className="flex-middle app-member-me"
                 member={user}

@@ -3,7 +3,8 @@ import HTML from '../../utils/html-helper';
 import App from '../../core';
 import ContextMenu from '../../components/context-menu';
 import {ChatListItem} from './chat-list-item';
-import {ContactList} from './contact-list';
+import {MenuContactList} from './menu-contact-list';
+import {MenuGroupList} from './menu-group-list';
 import replaceViews from '../replace-views';
 
 const loadChats = (filter, search) => {
@@ -19,12 +20,6 @@ const loadChats = (filter, search) => {
         chats = !search ? App.im.chats.getRecents() : App.im.chats.search(search);
     }
     return chats || [];
-};
-
-const handleItemContextMenu = (chat, e) => {
-    const menuItems = App.im.ui.createChatContextMenuItems(chat);
-    ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-    e.preventDefault();
 };
 
 class MenuList extends Component {
@@ -56,6 +51,12 @@ class MenuList extends Component {
         App.events.off(this.dataChangeHandler);
     }
 
+    handleItemContextMenu = (chat, e) => {
+        const menuItems = App.im.ui.createChatContextMenuItems(chat, this.props.filter, this.props.filter === 'groups' ? 'category' : '');
+        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
+        e.preventDefault();
+    };
+
     render() {
         const {
             search,
@@ -65,15 +66,21 @@ class MenuList extends Component {
             ...other
         } = this.props;
 
-        if (filter === 'contacts' && !search) {
-            return <ContactList {...this.props} />;
+        if (!search) {
+            if (filter === 'contacts') {
+                return <MenuContactList {...this.props} />;
+            }
+
+            if (filter === 'groups') {
+                return <MenuGroupList {...this.props} />;
+            }
         }
 
         const chats = loadChats(filter, search);
         return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
             {
                 chats.map(chat => {
-                    return <ChatListItem onContextMenu={handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item" />;
+                    return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item" />;
                 })
             }
             {children}

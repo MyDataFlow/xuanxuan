@@ -24,6 +24,8 @@ export default {
     'ui.chat.contacts.categories': {},
     'ui.chat.contacts.order.dept': {},
     'ui.chat.contacts.category.default': '',
+    'ui.chat.groups.category.default': '',
+    'ui.chat.groups.categories': {},
     'ui.notify.enableSound': true,
     'ui.notify.playSoundCondition': 'onWindowHide', // or "onWindowBlur", "
     'ui.notify.muteOnUserIsBusy': true,

@@ -494,13 +494,67 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
     return contactChats;
 };
 
-const getGroups = (sortList = true) => {
-    return query(chat => chat.isGroupOrSystem, sortList);
+const getGroups = (sortList = true, groupedBy = false) => {
+    const {user} = profile;
+    if (!user) {
+        return [];
+    }
+    const groupChats = query(chat => chat.isGroupOrSystem, sortList);
+    if (groupedBy === 'category') {
+        const groupedChats = {};
+        groupChats.forEach(chat => {
+            const categoryId = chat.category || '';
+            const categoryName = categoryId || user.config.groupsDefaultCategoryName;
+            if (!groupedChats[categoryName]) {
+                groupedChats[categoryName] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat]};
+            } else {
+                groupedChats[categoryName].list.push(chat);
+            }
+        });
+        const groupKeys = Object.keys(groupedChats);
+        if (groupKeys.length === 1 && !groupKeys[0]) {
+            return groupChats;
+        }
+        const categories = user.config.groupsCategories;
+        let timeNow = new Date().getTime();
+        let needSaveOrder = false;
+        const orderedGroups = groupKeys.map(categoryId => {
+            const group = groupedChats[categoryId];
+            let savedCategory = categories[categoryId];
+            if (!savedCategory) {
+                timeNow += 1;
+                savedCategory = {
+                    order: timeNow,
+                    key: timeNow
+                };
+                categories[categoryId] = savedCategory;
+                needSaveOrder = true;
+            }
+            Object.assign(group, savedCategory);
+            if (sortList) {
+                Chat.sort(group.list, sortList, app);
+            }
+            return group;
+        }).sort((g1, g2) => {
+            let result = g1.order - g2.order;
+            if (result === 0) {
+                result = g1.id > g2.id ? 1 : -1;
+            }
+            return -result;
+        });
+        if (needSaveOrder) {
+            user.config.groupsCategories = categories;
+        }
+        return orderedGroups;
+    }
+    return groupChats;
 };
 
 const getChatCategories = (type = 'contact') => {
     if (type === 'contact') {
         return getContactsChats(false, 'category');
+    } else if (type === 'group') {
+        return getGroups(false, 'category');
     }
     return [];
 };

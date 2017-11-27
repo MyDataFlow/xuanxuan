@@ -308,7 +308,16 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         });
     }
 
-    if (menuType === 'contact') {
+    if (chat.canExit) {
+        menu.push({type: 'separator'}, {
+            label: Lang.string('chat.group.exit'),
+            click: () => {
+                chatExitConfirm(chat);
+            }
+        });
+    }
+
+    if (menuType === 'contacts' || menuType === 'groups') {
         if (viewType === 'category') {
             if (menu.length) {
                 menu.push({type: 'separator'});
@@ -322,14 +331,6 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         }
     }
 
-    if (chat.canExit) {
-        menu.push({type: 'separator'}, {
-            label: Lang.string('chat.group.exit'),
-            click: () => {
-                chatExitConfirm(chat);
-            }
-        });
-    }
     return menu;
 };
 
@@ -492,7 +493,7 @@ const createGroupHeadingContextMenu = (group, type = 'contact') => {
         menus.push({
             label: Lang.string('chats.menu.group.delete'),
             click: () => {
-                const defaultCategoryName = profile.user.config.contactsDefaultCategoryName || Lang.string('chats.menu.group.default');
+                const defaultCategoryName = profile.user.config[type === 'contact' ? 'contactsDefaultCategoryName' : 'groupsDefaultCategoryName'] || Lang.string('chats.menu.group.default');
                 return Modal.confirm(Lang.format('chats.menu.group.delete.tip.format', defaultCategoryName), {
                     title: Lang.format('chats.menu.group.delete.confirm.format', group.title)
                 }).then(result => {

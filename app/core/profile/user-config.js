@@ -277,6 +277,22 @@ class UserConfig {
     set contactsDefaultCategoryName(name) {
         return this.set('ui.chat.contacts.category.default', name);
     }
+
+    get groupsCategories() {
+        return this.get('ui.chat.groups.categories', {});
+    }
+
+    set groupsCategories(orders) {
+        return this.set('ui.chat.groups.categories', orders);
+    }
+
+    get groupsDefaultCategoryName() {
+        return this.get('ui.chat.groups.category.default');
+    }
+
+    set groupsDefaultCategoryName(name) {
+        return this.set('ui.chat.groups.category.default', name);
+    }
 }
 
 export default UserConfig;

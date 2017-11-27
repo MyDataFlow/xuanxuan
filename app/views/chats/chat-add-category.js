@@ -31,6 +31,7 @@ export default class ChatAddCategory extends Component {
         const {chat} = props;
         this.allCategories = App.im.chats.getChatCategories(chat.isOne2One ? 'contact' : 'group');
         this.originCategory = chat.category;
+        console.log('>', chat, this.allCategories, this.originCategory);
         this.state = {
             type: (this.allCategories && this.allCategories.length) ? 'modify' : 'create',
             selectName: this.originCategory,
@@ -50,7 +51,10 @@ export default class ChatAddCategory extends Component {
 
     handleRadioGroupChange = type => {
         this.setState({type}, () => {
-            (this.state.type === 'create' ? this.inputGroup : this.selectBox).focus();
+            const control = (this.state.type === 'create' ? this.inputGroup : this.selectBox);
+            if (control) {
+                control.focus();
+            }
             this.changeCategory();
         });
     };
@@ -94,9 +98,8 @@ export default class ChatAddCategory extends Component {
         }
 
         let modifyView = null;
-        if (!this.allCategories || !this.allCategories.length) {
-            modifyView = <div className="box warning-pale">{Lang.string('chats.menu.group.noCategoryToAdd')}</div>;
-        } else if (!isTypeCreate) {
+        const hasExistCategory = this.allCategories && this.allCategories.length;
+        if (!isTypeCreate && hasExistCategory) {
             const options = this.allCategories.map(x => {
                 let title = x.title;
                 if (!x.id) {
@@ -114,10 +117,11 @@ export default class ChatAddCategory extends Component {
             </div>);
         }
 
+        const langAddExist = Lang.string('chats.menu.group.addExist');
         return (<div className={HTML.classes('app-chats-add-category', className)} {...other}>
             {children}
             <RadioGroup onChange={this.handleRadioGroupChange}>
-                <Radio name="chat-category" label={Lang.string('chats.menu.group.addExist')} checked={!isTypeCreate} value="modify">{modifyView}</Radio>
+                <Radio name="chat-category" disabled={!hasExistCategory} label={hasExistCategory ? langAddExist : <span>{langAddExist} (<small>{Lang.string('chats.menu.group.noCategoryToAdd')}</small>)</span>} checked={!isTypeCreate} value="modify">{modifyView}</Radio>
                 <Radio name="chat-category" label={Lang.string('chats.menu.group.create')} checked={isTypeCreate} value="create">{createView}</Radio>
             </RadioGroup>
         </div>);
