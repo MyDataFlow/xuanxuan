@@ -212,6 +212,41 @@ class chatModel extends model
     }
 
     /**
+     * Foramt chat object
+     *
+     * @param  object   $chat
+     * @access public
+     * @return object
+     */
+    public function formatChats($chats) {
+        if (is_array($chats))
+        {
+            foreach($chats as $chat)
+            {
+                $this->formatChats($chat);
+            }
+            return $chats;
+        }
+
+        $chat = $chats;
+
+        $chat->id             = (int)$chat->id;
+        $chat->subject        = (int)$chat->subject;
+        $chat->public         = (int)$chat->public;
+        $chat->createdDate    = strtotime($chat->createdDate);
+        $chat->editedDate     = $chat->editedDate == '0000-00-00 00:00:00' ? 0 : strtotime($chat->editedDate);
+        $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? 0 : strtotime($chat->lastActiveTime);
+        $chat->dismissDate    = $chat->dismissDate == '0000-00-00 00:00:00' ? 0 : strtotime($chat->dismissDate);
+
+        if ($chat->type = 'one2one') $chat->name = '';
+
+        if (isset($chat->star)) $chat->star = (int)$chat->star;
+        if (isset($chat->hide)) $chat->hide = (int)$chat->hide;
+        if (isset($chat->mute)) $chat->mute = (int)$chat->mute;
+        return $chat;
+    }
+
+    /**
      * Get chat list.
      *
      * @param  bool   $public
@@ -222,15 +257,7 @@ class chatModel extends model
     {
         $chats = $this->dao->select('*')->from(TABLE_IM_CHAT)->where('public')->eq($public)->fetchAll();
 
-        foreach($chats as $chat)
-        {
-            $chat->id             = (int)$chat->id;
-            $chat->subject        = (int)$chat->subject;
-            $chat->public         = (int)$chat->public;
-            $chat->createdDate    = strtotime($chat->createdDate);
-            $chat->editedDate     = $chat->editedDate == '0000-00-00 00:00:00' ? '' : strtotime($chat->editedDate);
-            $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? '' : strtotime($chat->lastActiveTime);
-        }
+        $this->formatChats($chats);
 
         return $chats;
     }
@@ -260,18 +287,7 @@ class chatModel extends model
 
         $chats = array_merge($systemChat, $chats);
 
-        foreach($chats as $chat)
-        {
-            $chat->id             = (int)$chat->id;
-            $chat->subject        = (int)$chat->subject;
-            $chat->public         = (int)$chat->public;
-            $chat->createdDate    = strtotime($chat->createdDate);
-            $chat->editedDate     = $chat->editedDate == '0000-00-00 00:00:00' ? '' : strtotime($chat->editedDate);
-            $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? '' : strtotime($chat->lastActiveTime);
-            $chat->star           = (int)$chat->star;
-            $chat->hide           = (int)$chat->hide;
-            $chat->mute           = (int)$chat->mute;
-        }
+        $this->formatChats($chats);
 
         return $chats;
     }
@@ -287,14 +303,10 @@ class chatModel extends model
     public function getByGID($gid = '', $members = false)
     {
         $chat = $this->dao->select('*')->from(TABLE_IM_CHAT)->where('gid')->eq($gid)->fetch();
+
         if($chat)
         {
-            $chat->id             = (int)$chat->id;
-            $chat->subject        = (int)$chat->subject;
-            $chat->public         = (int)$chat->public;
-            $chat->createdDate    = strtotime($chat->createdDate);
-            $chat->editedDate     = $chat->editedDate == '0000-00-00 00:00:00' ? '' : strtotime($chat->editedDate);
-            $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? '' : strtotime($chat->lastActiveTime);
+            $this->formatChats($chat);
 
             if($members) $chat->members = $this->getMemberListByGID($gid);
         }

@@ -506,6 +506,52 @@ class chat extends control
     }
 
     /**
+     * Dismiss a chat
+     *
+     * @param  string $gid
+     * @param  int    $userID
+     * @access public
+     * @return void
+     */
+    public function dismiss($gid = '', $userID = 0)
+    {
+        $chat = $this->chat->getByGID($gid);
+        if(!$chat)
+        {
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notExist;
+
+            die($this->app->encrypt($this->output));
+        }
+        if($chat->type != 'group')
+        {
+            $this->output->result  = 'fail';
+            $this->output->message = $this->lang->chat->notGroupChat;
+
+            die($this->app->encrypt($this->output));
+        }
+
+        $chat->dismissDate = helper::now();
+        $chat  = $this->chat->update($chat, $userID);
+        $users = $this->chat->getUserList($status = 'online', array_values($chat->members));
+
+        if(dao::isError())
+        {
+            $this->output->result  = 'fail';
+            $this->output->message = 'Dismiss chat failed.';
+        }
+        else
+        {
+
+            $this->output->result = 'success';
+            $this->output->users  = array_keys($users);
+            $this->output->data   = $chat;
+        }
+
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
      * Change the committers of a chat
      *
      * @param  string $gid
