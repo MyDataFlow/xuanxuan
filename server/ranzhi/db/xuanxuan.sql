@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `im_chat` (
   `editedBy` varchar(30) NOT NULL DEFAULT '',
   `editedDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `lastActiveTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `dismissDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `gid` (`gid`),
   KEY `name` (`name`),
