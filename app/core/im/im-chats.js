@@ -93,9 +93,8 @@ const saveChatMessages = (messages, chat) => {
     // Save messages to database
     if (messages.length) {
         return db.database.chatMessages.bulkPut(messages.map(x => x.plain()));
-    } else {
-        return Promise.resolve(0);
     }
+    return Promise.resolve(0);
 };
 
 const updateChatMessages = (messages, muted = false) => {
@@ -235,7 +234,9 @@ const update = (chatArr) => {
         newchats = {};
         chatArr.forEach(chat => {
             chat = Chat.create(chat);
-            newchats[chat.gid] = chat;
+            if (chat.visible) {
+                newchats[chat.gid] = chat;
+            }
         });
     } else {
         newchats = chatArr;
@@ -253,7 +254,7 @@ const init = (chatArr) => {
     if (chatArr && chatArr.length) {
         update(chatArr);
         forEach(chat => {
-            if (!chat.hasSetMessages) {
+            if (!chat.hasSetMessages && chat.visible) {
                 loadChatMessages(chat);
             }
         });

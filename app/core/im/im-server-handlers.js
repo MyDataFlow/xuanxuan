@@ -156,6 +156,17 @@ const chatHide = (msg, socket) => {
     }
 };
 
+const chatDismiss = (msg, socket) => {
+    if (msg.isSuccess) {
+        const chat = chats.get(msg.data.gid);
+        if (chat) {
+            chat.dismissDate = msg.data.dismissDate;
+            chats.update(chat);
+            return chat;
+        }
+    }
+};
+
 const chatChangepublic = (msg, socket) => {
     if (msg.isSuccess) {
         const chat = chats.get(msg.data.gid);
@@ -192,6 +203,7 @@ export default {
     'chat/category': chatCategory,
     'chat/joinchat': chatJoinchat,
     'chat/hide': chatHide,
+    'chat/dismiss': chatDismiss,
     'chat/changepublic': chatChangepublic,
     'chat/getpubliclist': chatGetpubliclist,
 };

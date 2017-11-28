@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
+import DateHelper from '../../utils/date-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
@@ -44,6 +45,7 @@ class ChatTitle extends Component {
                 theOtherOne ? <a className="strong rounded title flex-none text-primary" onClick={onTitleClick}>{chatName}</a> : <strong className="title flex-none">{chatName}</strong>
             }
             {chat.public && <div className="hint--bottom" data-hint={Lang.string('chat.public.label')}><Icon className="text-green" name="access-point" /></div>}
+            {chat.isDismissed && <div className="small label rounded dark">{Lang.string('chat.group.dismissed')}</div>}
             <div className="flex-auto" />
             {children}
         </div>);

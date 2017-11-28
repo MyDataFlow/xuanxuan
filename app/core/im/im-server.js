@@ -270,7 +270,7 @@ const createBoardChatMessage = (message, chat) => {
 };
 
 const sendBoardChatMessage = (message, chat) => {
-    return sendChatMessage(createBoardChatMessage(message, chat), chat);
+    return sendChatMessage(createBoardChatMessage(message, chat), chat, true);
 };
 
 const createTextChatMessage = (message, chat) => {
@@ -505,12 +505,30 @@ const joinChat = (chat, join = true) => {
 };
 
 const exitChat = (chat) => {
-    return joinChat(chat, false).then(theChat => {
-        if (theChat && !theChat.isMember(profile.userId)) {
-            sendBoardChatMessage(Lang.format('chat.exit.message', `@${profile.userAccount}`), theChat);
-        }
-        return Promise.resolve(theChat);
-    });
+    if (chat.canExit(profile.user)) {
+        return joinChat(chat, false).then(theChat => {
+            if (theChat && !theChat.isMember(profile.userId)) {
+                sendBoardChatMessage(Lang.format('chat.exit.message', `@${profile.userAccount}`), theChat);
+            }
+            return Promise.resolve(theChat);
+        });
+    }
+    return Promise.reject();
+};
+
+const dimissChat = chat => {
+    if (chat.canDismiss(profile.user)) {
+        return Server.socket.sendAndListen({
+            method: 'dismiss',
+            params: [chat.gid]
+        }).then(theChat => {
+            if (theChat) {
+                sendBoardChatMessage(Lang.format('chat.group.dismiss.message', `@${profile.userAccount}`), theChat);
+            }
+            return Promise.resolve(theChat);
+        });
+    }
+    return Promise.reject();
 };
 
 const handleReceiveChatMessages = messages => {
@@ -544,6 +562,7 @@ export default {
     sendChatMessage,
     joinChat,
     exitChat,
+    dimissChat,
     inviteMembersToChat,
     fetchPublicChats,
     sendImageMessage,

@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import SplitPane from 'react-split-pane';
 import HTML from '../../utils/html-helper';
+import DateHelper from '../../utils/date-helper';
 import Avatar from '../../components/avatar';
 import Lang from '../../lang';
 import App from '../../core';
@@ -61,14 +62,15 @@ class ChatView extends Component {
         }
 
         const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
-        const isReadOnly = !chat.isCommitter(App.profile.user);
+        const isReadOnly = chat.isReadonly(App.profile.user);
 
         let chatView = null;
         if (isReadOnly) {
+            const blockTip = chat.isDismissed ? Lang.format('chat.group.dismissTip', DateHelper.formatDate(chat.visibleDate)) : Lang.string('chat.committers.blockedTip');
             chatView = (<div className="column single dock">
                 <ChatHeader chat={chat} className="flex-none" />
                 <ChatMessages chat={chat} className="flex-auto relative" />
-                <div className="flex-none gray text-gray heading"><Avatar icon="lock-outline" /><div className="title">{Lang.string('chat.committers.blockedTip')}</div></div>
+                <div className="flex-none gray text-gray heading"><Avatar icon="lock-outline" /><div className="title">{blockTip}</div></div>
             </div>);
         } else {
             chatView = (<SplitPane split="horizontal" primary="second" maxSize={500} minSize={80} defaultSize={100} paneStyle={{userSelect: 'none'}}>

@@ -122,14 +122,17 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
         });
     }
     if (chat.isGroupOrSystem) {
-        items.push({
-            id: 'more',
-            icon: 'dots-horizontal',
-            label: Lang.string('chat.toolbor.more'),
-            click: e => {
-                ContextMenu.show({x: e.pageX, y: e.pageY}, createChatToolbarMoreContextMenuItems(chat));
-            }
-        });
+        const moreItems = createChatToolbarMoreContextMenuItems(chat);
+        if (moreItems && moreItems.length) {
+            items.push({
+                id: 'more',
+                icon: 'dots-horizontal',
+                label: Lang.string('chat.toolbor.more'),
+                click: e => {
+                    ContextMenu.show({x: e.pageX, y: e.pageY}, moreItems);
+                }
+            });
+        }
     }
     items[items.length - 1].hintPosition = 'bottom-left';
     return items;
@@ -272,6 +275,14 @@ const chatExitConfirm = chat => {
     });
 };
 
+const chatDismissConfirm = chat => {
+    return Modal.confirm(Lang.format('chat.group.dismissConfirm', chat.getDisplayName({members, user: profile.user}))).then(result => {
+        if (result) {
+            Server.dimissChat(chat);
+        }
+    });
+};
+
 const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
     const menu = [];
     if (chat.isOne2One) {
@@ -308,7 +319,19 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         });
     }
 
-    if (chat.canExit) {
+    if (chat.canDismiss(profile.user)) {
+        if (menu.length) {
+            menu.push({type: 'separator'});
+        }
+        menu.push({
+            label: Lang.string('chat.group.dismiss'),
+            click: () => {
+                chatDismissConfirm(chat);
+            }
+        });
+    }
+
+    if (chat.canExit(profile.user)) {
         menu.push({type: 'separator'}, {
             label: Lang.string('chat.group.exit'),
             click: () => {
@@ -364,7 +387,19 @@ const createChatToolbarMoreContextMenuItems = chat => {
         });
     }
 
-    if (chat.canExit) {
+    if (chat.canDismiss(profile.user)) {
+        if (menu.length) {
+            menu.push({type: 'separator'});
+        }
+        menu.push({
+            label: Lang.string('chat.group.dismiss'),
+            click: () => {
+                chatDismissConfirm(chat);
+            }
+        });
+    }
+
+    if (chat.canExit(profile.user)) {
         if (menu.length) {
             menu.push({type: 'separator'});
         }
