@@ -57,6 +57,34 @@ class chatModel extends model
     }
 
     /**
+     * Foramt user object
+     *
+     * @param  object   $user
+     * @access public
+     * @return object
+     */
+    public function formatUsers($users) {
+        if (is_array($users))
+        {
+            foreach($users as $user)
+            {
+                $user = $this->formatUsers($user);
+            }
+            return $users;
+        }
+
+        $user = $users;
+
+        $user->id     = (int)$user->id;
+        $user->dept   = (int)$user->dept;
+        $user->avatar = !empty($user->avatar) ? commonModel::getSysURL() . $user->avatar : $user->avatar;
+
+        if(isset($user->deleted)) $user->deleted = (int)$user->deleted;
+
+        return $user;
+    }
+
+    /**
      * Get a user.
      *
      * @param  int    $userID
@@ -65,12 +93,10 @@ class chatModel extends model
      */
     public function getUserByUserID($userID = 0)
     {
-        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
+        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
         if($user)
         {
-            $user->id     = (int)$user->id;
-            $user->dept   = (int)$user->dept;
-            $user->avatar = !empty($user->avatar) ? commonModel::getSysURL() . $user->avatar : $user->avatar;
+            $user = $this->formatUsers($user);
         }
 
         return $user;
@@ -86,8 +112,9 @@ class chatModel extends model
      */
     public function getUserList($status = '', $idList = array(), $idAsKey= true)
     {
-        $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site')
-            ->from(TABLE_USER)->where('deleted')->eq('0')
+        $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, deleted')
+            ->from(TABLE_USER)->where('1')
+            ->beginIF(!$idList)->andWhere('deleted')->eq('0')->fi()
             ->beginIF($status && $status == 'online')->andWhere('status')->ne('offline')->fi()
             ->beginIF($status && $status != 'online')->andWhere('status')->eq($status)->fi()
             ->beginIF($idList)->andWhere('id')->in($idList)->fi();
@@ -100,12 +127,7 @@ class chatModel extends model
             $users = $dao->fetchAll();
         }
 
-        foreach($users as $user)
-        {
-            $user->id     = (int)$user->id;
-            $user->dept   = (int)$user->dept;
-            $user->avatar = !empty($user->avatar) ? commonModel::getSysURL() . $user->avatar : $user->avatar;
-        }
+        $users = $this->formatUsers($users);
 
         return $users;
     }
@@ -255,7 +277,10 @@ class chatModel extends model
      */
     public function getList($public = true)
     {
-        $chats = $this->dao->select('*')->from(TABLE_IM_CHAT)->where('public')->eq($public)->fetchAll();
+        $chats = $this->dao->select('*')->from(TABLE_IM_CHAT)
+            ->where('public')->eq($public)
+            ->beginIF($public)->andWhere('dismissDate')->eq('0000-00-00 00:00:00')->fi()
+            ->fetchAll();
 
         $this->formatChats($chats);
 

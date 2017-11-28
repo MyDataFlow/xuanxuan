@@ -167,7 +167,7 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
 	}
 
 	// 固定的json格式
-	request := []byte(`{"module":"chat","method":"userGetlist","userID":` + util.Int642String(userID) + `}`)
+  request := []byte(`{"module":"chat","method":"userGetlist","params":[""],"userID":` + util.Int642String(userID) + `}`)
 
 	message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
 	if err != nil {

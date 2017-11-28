@@ -105,9 +105,9 @@ class chat extends control
      * @access public
      * @return void
      */
-    public function userGetList($userID = 0)
+    public function userGetList($idList = '', $userID = 0)
     {
-        $users = $this->chat->getUserList($status = '', $idList = '', $idAsKey = false);
+        $users = $this->chat->getUserList($status = '', $idList, $idAsKey = false);
 
         if(dao::isError())
         {
