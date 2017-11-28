@@ -189,7 +189,7 @@ class User extends Member {
 
     get ranzhiUrl() {
         if (this._ranzhiUrl === undefined) {
-            this._ranzhiUrl = `http://${this.server.hostname}`;
+            this._ranzhiUrl = this.$get('ranzhiUrl') || `http://${this.server.hostname}`;
         }
         return this._ranzhiUrl;
     }

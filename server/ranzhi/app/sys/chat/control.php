@@ -54,6 +54,8 @@ class chat extends control
                 $users = $this->chat->getUserList($status = 'online');
                 $user->signed = $this->chat->getSignedTime($account);
 
+                $user->ranzhiUrl = commonModel::getSysURL();
+
                 $this->output->users = array_keys($users);
                 $this->output->data  = $user;
             }
