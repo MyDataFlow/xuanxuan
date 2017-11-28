@@ -504,10 +504,14 @@ const getGroups = (sortList = true, groupedBy = false) => {
     if (groupedBy === 'category') {
         const groupedChats = {};
         groupChats.forEach(chat => {
-            const categoryId = chat.category || '';
-            const categoryName = categoryId || user.config.groupsDefaultCategoryName;
+            const isDismissed = chat.isDismissed;
+            const categoryId = isDismissed ? '_dismissed' : (chat.category || '');
+            const categoryName = isDismissed ? Lang.string('chats.menu.group.dismissed') : (categoryId || user.config.groupsDefaultCategoryName);
             if (!groupedChats[categoryId]) {
                 groupedChats[categoryId] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat]};
+                if (isDismissed) {
+                    groupedChats[categoryId].system = true;
+                }
             } else {
                 groupedChats[categoryId].list.push(chat);
             }

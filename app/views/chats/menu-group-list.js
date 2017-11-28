@@ -54,8 +54,10 @@ export default class MenuGroupList extends Component {
 
     handleHeadingContextMenu(group, e) {
         const menu = App.im.ui.createGroupHeadingContextMenu(group, 'group');
-        App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
-        e.preventDefault();
+        if (menu && menu.length) {
+            App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
+            e.preventDefault();
+        }
     }
 
     handleDragOver(group, e) {

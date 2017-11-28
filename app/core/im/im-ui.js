@@ -518,13 +518,16 @@ const renameChatCategory = (group, type = 'contact', newCategoryName = null) => 
 };
 
 const createGroupHeadingContextMenu = (group, type = 'contact') => {
-    const menus = [{
-        label: Lang.string('chats.menu.group.rename'),
-        click: () => {
-            renameChatCategory(group, type);
-        }
-    }];
-    if (group.id) {
+    const menus = [];
+    if (!group.system) {
+        menus.push({
+            label: Lang.string('chats.menu.group.rename'),
+            click: () => {
+                renameChatCategory(group, type);
+            }
+        });
+    }
+    if (group.id && !group.system) {
         menus.push({
             label: Lang.string('chats.menu.group.delete'),
             click: () => {

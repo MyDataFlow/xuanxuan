@@ -163,6 +163,7 @@
     "chats.menu.group.delete": "删除分组",
     "chats.menu.group.delete.confirm.format": "确定删除分组【{0}】？",
     "chats.menu.group.delete.tip.format": "删除后会将原组内的会话移到默认分组【{0}】中。",
+    "chats.menu.group.dismissed": "已解散",
 
     "chats.history.title": "消息记录",
     "chats.history.group.contacts": "联系人",
