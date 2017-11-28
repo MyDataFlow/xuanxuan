@@ -238,7 +238,7 @@ class chatModel extends model
         $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? 0 : strtotime($chat->lastActiveTime);
         $chat->dismissDate    = $chat->dismissDate == '0000-00-00 00:00:00' ? 0 : strtotime($chat->dismissDate);
 
-        if ($chat->type = 'one2one') $chat->name = '';
+        if ($chat->type == 'one2one') $chat->name = '';
 
         if (isset($chat->star)) $chat->star = (int)$chat->star;
         if (isset($chat->hide)) $chat->hide = (int)$chat->hide;
