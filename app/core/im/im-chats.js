@@ -554,7 +554,11 @@ const getChatCategories = (type = 'contact') => {
     if (type === 'contact') {
         return getContactsChats(false, 'category');
     } else if (type === 'group') {
-        return getGroups(false, 'category');
+        const groups = getGroups(false, 'category');
+        if (groups.length && groups[0].entityType === 'Chat') {
+            return [];
+        }
+        return groups;
     }
     return [];
 };
