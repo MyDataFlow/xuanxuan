@@ -400,7 +400,7 @@ const createChatMemberContextMenuItems = (member, chat) => {
             MemberProfileDialog.show(member);
         }
     });
-    if (chat.canKickOff(profile.user, member.id)) {
+    if (chat.canKickOff(profile.user, member)) {
         menu.push({type: 'separator'}, {
             label: Lang.string('chat.kickOffFromGroup'),
             click: () => {
