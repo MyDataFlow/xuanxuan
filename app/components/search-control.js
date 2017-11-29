@@ -13,6 +13,7 @@ class SearchControl extends Component {
         onSearchChange: PropTypes.func,
         onBlur: PropTypes.func,
         onFocus: PropTypes.func,
+        onFocusChange: PropTypes.func,
         defaultValue: PropTypes.any,
         children: PropTypes.any,
         className: PropTypes.string,
@@ -22,6 +23,7 @@ class SearchControl extends Component {
         placeholder: Lang.string('common.search'),
         changeDelay: 100,
         onSearchChange: null,
+        onFocusChange: null,
         onBlur: null,
         onFocus: null,
         defaultValue: '',
@@ -63,12 +65,18 @@ class SearchControl extends Component {
         if (this.props.onFocus) {
             this.props.onFocus(e);
         }
+        if (this.props.onFocusChange) {
+            this.props.onFocusChange(true, e);
+        }
     };
 
     handleOnInputBlur = e => {
         this.setState({focus: false});
         if (this.props.onBlur) {
             this.props.onBlur(e);
+        }
+        if (this.props.onFocusChange) {
+            this.props.onFocusChange(false, e);
         }
     };
 
@@ -101,6 +109,7 @@ class SearchControl extends Component {
             onSearchChange,
             changeDelay,
             onFocus,
+            onFocusChange,
             onBlur,
             defaultValue,
             ...other

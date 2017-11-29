@@ -1,6 +1,22 @@
 import React, {Component, PropTypes} from 'react';
+import hotkeys from 'hotkeys-js';
 import HTML from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
+
+hotkeys.filter = event => {
+    const target = (event.target || event.srcElement);
+    const tagName = target.tagName;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(tagName)) {
+        const scopeAttr = target.attributes['data-hotkeyscope'];
+        const scope = scopeAttr && scopeAttr.value;
+        if (scope) {
+            hotkeys.setScope(scope);
+            return true;
+        }
+        return false;
+    }
+    return true;
+};
 
 class InputControl extends Component {
     static defaultProps = {
@@ -21,6 +37,8 @@ class InputControl extends Component {
         inputProps: null,
         children: null,
         defaultValue: undefined,
+        hotkeyScope: null,
+        hotKeys: null
     };
 
     static propTypes = {
@@ -41,20 +59,32 @@ class InputControl extends Component {
         inputClassName: PropTypes.string,
         children: PropTypes.any,
         name: PropTypes.string,
+        hotkeyScope: PropTypes.string,
+        hotKeys: PropTypes.object,
     }
 
     constructor(props) {
         super(props);
-        const {defaultValue} = props;
+        const {defaultValue, name, hotkeyScope, hotKeys} = props;
         this.controled = defaultValue === undefined;
+        this.controlName = name || `inputControl-${timeSequence()}`;
+        this.hotkeyScope = (hotkeyScope || hotKeys) ? (hotkeyScope || this.controlName) : '';
     }
 
     componentDidMount() {
-        if (this.props.autoFocus) {
+        const {autoFocus, hotKeys} = this.props;
+
+        if (autoFocus) {
             this.autoFocusTask = setTimeout(() => {
                 this.focus();
                 this.autoFocusTask = null;
             }, 100);
+        }
+
+        if (hotKeys) {
+            Object.keys(hotkeys).forEach(key => {
+                hotkeys(key, this.hotkeysScope, hotkeys[key]);
+            });
         }
     }
 
@@ -62,6 +92,10 @@ class InputControl extends Component {
         if (this.autoFocusTask) {
             clearTimeout(this.autoFocusTask);
             this.autoFocusTask = null;
+        }
+
+        if (this.hotkeyScope) {
+            hotkeys.deleteScope(this.hotkeysScope);
         }
     }
 
@@ -98,17 +132,20 @@ class InputControl extends Component {
             defaultValue,
             disabled,
             children,
+            hotkeyScope,
+            hotKeys,
             ...other
         } = this.props;
 
         return (<div className={HTML.classes('control', className, {disabled})} {...other}>
-            {label !== false && <label htmlFor={name} style={labelStyle}>{label}</label>}
+            {label !== false && <label htmlFor={this.controlName} style={labelStyle}>{label}</label>}
             <input
+                data-hotkeyScope={this.hotkeyScope}
                 disabled={!!disabled}
                 ref={e => {this.input = e;}}
                 value={this.controled ? value : undefined}
                 defaultValue={defaultValue}
-                id={name}
+                id={this.controlName}
                 type={inputType}
                 className={HTML.classes('input', inputClassName)}
                 placeholder={placeholder}
