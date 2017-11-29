@@ -254,11 +254,22 @@ const init = (chatArr) => {
     chats = {};
     if (chatArr && chatArr.length) {
         update(chatArr);
+        const tempMemberIdList = [];
         forEach(chat => {
+            if (chat.isOne2One) {
+                const member = chat.getTheOtherOne(app);
+                if (member.temp) {
+                    tempMemberIdList.push(member.id);
+                    chat.isDeleteOne2One = true;
+                }
+            }
             if (!chat.hasSetMessages && chat.visible) {
                 loadChatMessages(chat);
             }
         });
+        if (tempMemberIdList.length) {
+            Server.fetchUserList(tempMemberIdList);
+        }
         Events.emit(EVENT.init, chats);
     }
 };
@@ -349,21 +360,12 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
         }
     });
 
-    const tempMemberIdList = [];
     query(x => x.isOne2One).forEach(theChat => {
         if (!contactChatMap[theChat.id]) {
             const member = theChat.getTheOtherOne(app);
-            if (member.temp) {
-                tempMemberIdList.push(member.id);
-                theChat.isDeleteOne2One = true;
-            }
             contactChatMap[member.id] = theChat;
         }
     });
-
-    if (tempMemberIdList.length) {
-        Server.fetchUserList(tempMemberIdList);
-    }
 
     contactChats = Object.keys(contactChatMap).map(x => contactChatMap[x]);
 
