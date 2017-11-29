@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import hotkeys from 'hotkeys-js';
 import Platform from 'Platform';
+import hotkeys from 'hotkeys-js';
 import AreaSelector from './area-selector';
 import Icon from './icon';
 import Avatar from './avatar';
