@@ -622,18 +622,18 @@ const getChatCategories = (type = 'contact') => {
     return [];
 };
 
-const search = (search, chatType) => {
-    if (StringHelper.isEmpty(search)) {
+const search = (searchKeys, chatType) => {
+    if (StringHelper.isEmpty(searchKeys)) {
         return [];
     }
-    search = search.trim().toLowerCase().split(' ');
-    if (!search.length) {
+    searchKeys = searchKeys.trim().toLowerCase().split(' ');
+    if (!searchKeys.length) {
         return [];
     }
 
-    const hasChatType = !!chatType;
     const isContactsType = chatType === 'contacts';
     const isGroupsType = chatType === 'groups';
+    const hasChatType = isContactsType || isGroupsType;
 
     if (!hasChatType || isContactsType) {
         getContactsChats();
@@ -672,7 +672,7 @@ const search = (search, chatType) => {
                 console.warn('Cannot get the other one of chat', chat);
             }
         }
-        search.forEach(s => {
+        searchKeys.forEach(s => {
             if (StringHelper.isEmpty(s)) {
                 return;
             }

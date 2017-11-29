@@ -25,13 +25,28 @@ class Menu extends Component {
         super(props);
         this.defaultSearch = HTML.getSearchParam('search');
         this.state = {
-            search: this.defaultSearch
+            search: this.defaultSearch,
+            searchFocus: false
         };
     }
 
-    handleSearchChange = (search) => {
+    handleSearchChange = search => {
         this.setState({search});
-    }
+    };
+
+    handleSearchFocusChange = searchFocus => {
+        if (this.blurSearchTimer) {
+            clearTimeout(this.blurSearchTimer);
+        }
+        if (searchFocus) {
+            this.setState({searchFocus});
+        } else {
+            this.blurSearchTimer = setTimeout(() => {
+                this.setState({searchFocus: false});
+                this.blurSearchTimer = null;
+            }, 100);
+        }
+    };
 
     render() {
         const {
@@ -43,12 +58,14 @@ class Menu extends Component {
 
         return (<div className={HTML.classes('app-chats-menu primary-pale', className)} {...other}>
             <MenuHeader
+                ref={e => {this.menuHeader = e;}}
                 filter={filter}
                 defaultSearch={this.defaultSearch}
                 onSearchChange={this.handleSearchChange}
+                onSearchFocus={this.handleSearchFocusChange}
                 className="dock-top"
             />
-            <MenuList search={this.state.search} filter={filter} className="dock-bottom" />
+            <MenuList onRequestClearSearch={() => this.menuHeader.clearSearch()} search={this.state.searchFocus ? this.state.search : ''} filter={filter} className="dock-bottom" />
             {children}
         </div>);
     }

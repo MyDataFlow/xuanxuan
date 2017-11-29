@@ -10,6 +10,7 @@ class MenuHeader extends Component {
     static propTypes = {
         className: PropTypes.string,
         onSearchChange: PropTypes.func,
+        onSearchFocus: PropTypes.func,
         children: PropTypes.any,
         defaultSearch: PropTypes.string,
         filter: PropTypes.string,
@@ -18,6 +19,7 @@ class MenuHeader extends Component {
     static defaultProps = {
         className: null,
         onSearchChange: null,
+        onSearchFocus: null,
         children: null,
         defaultSearch: '',
         filter: null
@@ -31,11 +33,16 @@ class MenuHeader extends Component {
         ChatCreateDialog.show();
     }
 
+    clearSearch() {
+        this.searchControl.setValue('');
+    }
+
     render() {
         const {
             className,
             children,
             onSearchChange,
+            onSearchFocus,
             defaultSearch,
             filter,
             ...other
@@ -43,6 +50,9 @@ class MenuHeader extends Component {
 
         return (<div className={HTML.classes('app-chats-menu-header', className)} {...other}>
             <SearchControl
+                ref={e => {this.searchControl = e;}}
+                hotkeyScope="chatsMenuSearch"
+                onFocusChange={onSearchFocus}
                 defaultValue={defaultSearch}
                 className="app-chats-search"
                 onSearchChange={onSearchChange}
