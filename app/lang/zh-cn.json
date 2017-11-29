@@ -197,7 +197,7 @@
     "chat.systemGroup.name": "系统",
     "chat.all": "所有",
     "chat.deleted": "已删除",
-    "chat.deletedOne2OneTip": "对方已被从系统移除，你无法在此发送消息。",
+    "chat.deletedOne2OneTip": "对方账号已被从系统移除，你无法在此发送消息。",
     "chat.inviteMembersJoinChat.format": "我邀请了 {0} 加入了会话。",
     "chat.createNewChat.format": "我创建了讨论组 {0}。",
     "chat.inviteAndCreateNewChat.format": "我邀请你并创建了新的讨论组 {0}，点击讨论组名称，立即加入讨论吧。",
