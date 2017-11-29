@@ -128,6 +128,16 @@ class Chat extends Entity {
         return this.type === TYPES.one2one;
     }
 
+    get isDeleteOne2One() {
+        return this.isOne2One && this._isDeleteOne2One;
+    }
+
+    set isDeleteOne2One(flag) {
+        if (this.isOne2One) {
+            this._isDeleteOne2One = flag;
+        }
+    }
+
     get isGroup() {
         return this.type === TYPES.group;
     }
@@ -315,7 +325,7 @@ class Chat extends Entity {
     }
 
     isReadonly(member) {
-        return this.isDismissed || !this.isCommitter(member);
+        return this.isDeleteOne2One || this.isDismissed || !this.isCommitter(member);
     }
 
     get visible() {
@@ -477,7 +487,13 @@ class Chat extends Entity {
         const appMembers = app.members;
         const currentUser = app.user;
         if (this.isOne2One && !this._theOtherOne) {
-            this._theOtherOne = this.getMembersSet(appMembers).find(member => member.id !== currentUser.id);
+            let member = this.getMembersSet(appMembers).find(member => member.id !== currentUser.id);
+            if (member.temp) {
+                member = appMembers.get(member.id);
+                this._membersSet = null;
+                return member;
+            }
+            this._theOtherOne = member;
         }
         return this._theOtherOne;
     }

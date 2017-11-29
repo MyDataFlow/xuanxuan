@@ -8,6 +8,7 @@ import StringHelper from '../../utils/string-helper';
 import DateHelper from '../../utils/date-helper';
 import TaskQueue from '../../utils/task-queue';
 import Lang from '../../lang';
+import Server from '../server';
 
 const CHATS_LIMIT_DEFAULT = 100;
 const MAX_RECENT_TIME = 1000 * 60 * 60 * 24 * 7;
@@ -336,27 +337,57 @@ const getContactChat = (member) => {
 
 const getContactsChats = (sortList = true, groupedBy = false) => {
     const {user} = profile;
-    const contactChats = [];
+    let contactChats = [];
     if (!user) {
         return contactChats;
     }
+
+    const contactChatMap = {};
     members.forEach(member => {
         if (member.id !== profile.user.id) {
-            contactChats.push(getContactChat(member, true));
+            contactChatMap[member.id] = getContactChat(member, true);
         }
     });
+
+    const tempMemberIdList = [];
+    query(x => x.isOne2One).forEach(theChat => {
+        if (!contactChatMap[theChat.id]) {
+            const member = theChat.getTheOtherOne(app);
+            if (member.temp) {
+                tempMemberIdList.push(member.id);
+                theChat.isDeleteOne2One = true;
+            }
+            contactChatMap[member.id] = theChat;
+        }
+    });
+
+    if (tempMemberIdList.length) {
+        Server.fetchUserList(tempMemberIdList);
+    }
+
+    contactChats = Object.keys(contactChatMap).map(x => contactChatMap[x]);
+
     if (groupedBy === 'role') {
         const groupedContactChats = {};
         contactChats.forEach(chat => {
             const member = chat.getTheOtherOne(app);
+            const isDeleteOne2One = member.isDeleted;
+            if (isDeleteOne2One) {
+                chat.isDeleteOne2One = isDeleteOne2One;
+            }
             const isMemberOnline = member.isOnline;
             const role = member.role || '';
-            if (!groupedContactChats[role]) {
-                groupedContactChats[role] = {id: role, title: members.getRoleName(role), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
+            const groupName = isDeleteOne2One ? Lang.string('chats.menu.group.deleted') : members.getRoleName(role);
+            const groupId = isDeleteOne2One ? '_delete' : role;
+            if (!groupedContactChats[groupId]) {
+                groupedContactChats[groupId] = {id: groupId, title: groupName, list: [chat], onlineCount: isMemberOnline ? 1 : 0};
+                if (isDeleteOne2One) {
+                    groupedContactChats[groupId].system = true;
+                }
             } else {
-                groupedContactChats[role].list.push(chat);
+                groupedContactChats[groupId].list.push(chat);
                 if (isMemberOnline) {
-                    groupedContactChats[role].onlineCount += 1;
+                    groupedContactChats[groupId].onlineCount += 1;
                 }
             }
         });
@@ -368,7 +399,10 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
             }
             return group;
         }).sort((g1, g2) => {
-            let result = (g1.id ? (orders[g1.id] || 1) : 0) - (g2.id ? (orders[g2.id] || 1) : 0);
+            let result = (g2.system ? 1 : 0) - (g1.system ? 1 : 0);
+            if (result === 0) {
+                result = (g1.id ? (orders[g1.id] || 1) : 0) - (g2.id ? (orders[g2.id] || 1) : 0);
+            }
             if (result === 0) {
                 result = g1.id > g2.id ? 1 : 0;
             }
@@ -388,22 +422,30 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
         });
         contactChats.forEach(chat => {
             const member = chat.getTheOtherOne(app);
+            const isDeleteOne2One = member.isDeleted;
+            if (isDeleteOne2One) {
+                chat.isDeleteOne2One = isDeleteOne2One;
+            }
             const isMemberOnline = member.isOnline;
-            const deptId = member.dept;
-            if (groupsMap[deptId]) {
-                groupsMap[deptId].list.push(chat);
+            const groupId = isDeleteOne2One ? '_delete' : member.dept;
+            if (groupsMap[groupId]) {
+                groupsMap[groupId].list.push(chat);
                 if (isMemberOnline) {
-                    groupsMap[deptId].onlineCount += 1;
+                    groupsMap[groupId].onlineCount += 1;
                 }
             } else {
-                const dept = members.getDept(deptId);
-                groupsMap[deptId] = {
-                    id: deptId,
-                    title: dept && dept.name,
+                const dept = members.getDept(groupId);
+                const groupName = isDeleteOne2One ? Lang.string('chats.menu.group.deleted') : (dept && dept.name);
+                groupsMap[groupId] = {
+                    id: groupId,
+                    title: groupName,
                     dept,
                     list: [chat],
                     onlineCount: isMemberOnline ? 1 : 0
                 };
+                if (isDeleteOne2One) {
+                    groupsMap[groupId].system = true;
+                }
             }
         });
         const groupArr = Object.keys(groupsMap).map(deptId => {
@@ -425,7 +467,10 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
             return group;
         });
         const deptsSorter = (d1, d2) => {
-            let result = (d2.list && d2.list.length ? 1 : 0) - (d1.list && d1.list.length ? 1 : 0);
+            let result = (d1.system ? 1 : 0) - (d2.system ? 1 : 0);
+            if (result === 0) {
+                result = (d2.list && d2.list.length ? 1 : 0) - (d1.list && d1.list.length ? 1 : 0);
+            }
             if (result === 0) {
                 result = (d2.dept ? 1 : 0) - (d1.dept ? 1 : 0);
             }
@@ -445,12 +490,19 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
     } else if (groupedBy === 'category') {
         const groupedChats = {};
         contactChats.forEach(chat => {
-            const categoryId = chat.category || '';
-            const categoryName = categoryId || user.config.contactsDefaultCategoryName;
             const member = chat.getTheOtherOne(app);
+            const isDeleteOne2One = member.isDeleted;
+            if (isDeleteOne2One) {
+                chat.isDeleteOne2One = isDeleteOne2One;
+            }
+            const categoryId = isDeleteOne2One ? '_delete' : (chat.category || '');
+            const categoryName = isDeleteOne2One ? Lang.string('chats.menu.group.deleted') : (categoryId || user.config.contactsDefaultCategoryName);
             const isMemberOnline = member.isOnline;
             if (!groupedChats[categoryId]) {
                 groupedChats[categoryId] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat], onlineCount: isMemberOnline ? 1 : 0};
+                if (isDeleteOne2One) {
+                    groupedChats[categoryId].system = true;
+                }
             } else {
                 groupedChats[categoryId].list.push(chat);
                 if (isMemberOnline) {

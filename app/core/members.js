@@ -102,6 +102,7 @@ const get = (idOrAccount) => {
                 account: idOrAccount,
                 realname: `User-${idOrAccount}`
             });
+            member.temp = true;
         }
     }
     return member;

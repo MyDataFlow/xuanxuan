@@ -113,6 +113,13 @@ const onUserLoginout = listener => {
     return Events.on(EVENT.loginout, listener);
 };
 
+const fetchUserList = (idList) => {
+    return socket.sendAndListen({
+        method: 'usergetlist',
+        params: [idList || '']
+    });
+};
+
 const logout = () => {
     notice.update();
     socket.logout();
@@ -132,5 +139,6 @@ export default {
     onUserLogin,
     onUserLoginout,
     changeUserStatus,
-    changeRanzhiUserPassword
+    changeRanzhiUserPassword,
+    fetchUserList,
 };

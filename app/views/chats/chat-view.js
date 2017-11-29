@@ -66,7 +66,14 @@ class ChatView extends Component {
 
         let chatView = null;
         if (isReadOnly) {
-            const blockTip = chat.isDismissed ? Lang.format('chat.group.dismissTip', DateHelper.formatDate(chat.visibleDate)) : Lang.string('chat.committers.blockedTip');
+            let blockTip = null;
+            if (chat.isDeleteOne2One) {
+                blockTip = Lang.string('chat.deletedOne2OneTip');
+            } else if (chat.isDismissed) {
+                blockTip = Lang.format('chat.group.dismissTip', DateHelper.formatDate(chat.visibleDate));
+            } else {
+                blockTip = Lang.string('chat.committers.blockedTip');
+            }
             chatView = (<div className="column single dock">
                 <ChatHeader chat={chat} className="flex-none" />
                 <ChatMessages chat={chat} className="flex-auto relative" />

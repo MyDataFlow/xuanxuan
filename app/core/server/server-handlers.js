@@ -97,7 +97,11 @@ const chatKickoff = (msg, socket) => {
 
 const chatUsergetlist = (msg, socket) => {
     if (msg.isSuccess) {
-        members.init(msg.data, msg.roles, msg.depts);
+        if (msg.partial) {
+            members.update(msg.data);
+        } else {
+            members.init(msg.data, msg.roles, msg.depts);
+        }
     }
 };
 

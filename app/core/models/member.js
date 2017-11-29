@@ -36,6 +36,7 @@ class Member extends Entity {
         gender: {type: 'string'},
         dept: {type: 'int', indexed: true},
         admin: {type: 'string'},
+        deleted: {type: 'boolean'},
     });
 
     constructor(data, entityType = Member.NAME) {
@@ -45,6 +46,10 @@ class Member extends Entity {
 
     get schema() {
         return Member.SCHEMA;
+    }
+
+    get isDeleted() {
+        return this.$get('deleted');
     }
 
     // Member status
