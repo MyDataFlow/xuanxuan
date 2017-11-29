@@ -66,6 +66,18 @@ const installFromDir = (dir, deleteDir = false, devMode = false) => {
         });
         const savedPath = devMode ? dir : createSavePath(extension);
         extension.localPath = savedPath;
+        if (extension.hasModule) {
+            return Modal.confirm(Lang.format('exts.installWarning', extension.displayName), {
+                actions: [{label: Lang.string('exts.continuneInsatll'), type: 'submit'}, {type: 'cancel'}]
+            }).then(confirmed => {
+                if (confirmed) {
+                    return Promise.resolve(extension);
+                }
+                return Promise.reject();
+            });
+        }
+        return Promise.resolve(extension);
+    }).then(() => {
         const dbExt = db.getInstall(extension.name);
         if (dbExt) {
             if (dbExt.version && extension.version && compareVersions(dbExt.version, extension.version) < 0) {
