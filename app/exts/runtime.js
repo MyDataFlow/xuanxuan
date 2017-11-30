@@ -2,6 +2,7 @@ import Xext from './external-api';
 import Exts from './exts';
 import manager from './manager';
 import App from '../core';
+import {Index as View} from '../views/exts';
 
 global.Xext = Xext;
 
@@ -82,4 +83,5 @@ global.replaceViews = replaceViews;
 
 export default {
     loadModules,
+    View,
 };

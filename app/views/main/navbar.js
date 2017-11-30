@@ -11,13 +11,16 @@ import {UserAvatar} from '../common/user-avatar';
 import {StatusDot} from '../common/status-dot';
 import {UserMenu} from './user-menu';
 import replaceViews from '../replace-views';
+import ExtsRuntime from 'ExtsRuntime';
 
 const navbarItems = [
     {to: ROUTES.chats.recents.__, label: Lang.string('navbar.chats.label'), icon: 'comment-outline', activeIcon: 'comment-processing'},
     {to: ROUTES.chats.groups.__, label: Lang.string('navbar.groups.label'), icon: 'pound', activeIcon: 'pound-box'},
     {to: ROUTES.chats.contacts.__, label: Lang.string('navbar.contacts.label'), icon: 'account-multiple-outline', activeIcon: 'account-multiple'},
-    {to: ROUTES.exts._, label: Lang.string('navbar.exts.label'), icon: 'apps', activeIcon: 'apps'},
 ];
+if (ExtsRuntime) {
+    navbarItems.push({to: ROUTES.exts._, label: Lang.string('navbar.exts.label'), icon: 'apps', activeIcon: 'apps'});
+}
 
 /* eslint-disable */
 const NavLink = ({item}) => (

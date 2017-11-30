@@ -7,15 +7,11 @@ import Path from 'path';
 import remote from './remote';
 import shortcut from './shortcut';
 import Lang from '../../lang';
+import env from './env';
 
-let _appRoot = null;
-remote.call('entryPath').then(path => {
-    _appRoot = path;
-}).catch(error => {
-    if (DEBUG) {
-        console.error('Cannot get entryPath from remote.');
-    }
-});
+if (DEBUG) {
+    global.$.Remote = Remote;
+}
 
 const userDataPath = Remote.app.getPath('userData');
 const browserWindow = Remote.getCurrentWindow();
@@ -184,6 +180,6 @@ export default {
     },
 
     get appRoot() {
-        return _appRoot;
+        return env.appPath;
     },
 };

@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
 import ROUTES from '../common/routes';
 import {Index as ChatsView} from '../chats';
-import {Index as ExtsView} from '../exts';
+import ExtsRuntime from 'ExtsRuntime';
 import replaceViews from '../replace-views';
 
 const mainViews = [
     {path: ROUTES.chats._, view: ChatsView},
-    {path: ROUTES.exts._, view: ExtsView},
 ];
+
+if (ExtsRuntime) {
+    mainViews.push({path: ROUTES.exts._, view: ExtsRuntime.View});
+}
 
 class CacheContainer extends Component {
     static get CacheContainer() {
