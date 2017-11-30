@@ -1,8 +1,8 @@
 {
-    "name": "dakr-theme",
-    "displayName": "暗黑主题",
+    "name": "easysoft-themes",
+    "displayName": "官方主题",
     "version": "1.0.0",
-    "description": "提供 1 款暗黑主题外观。",
+    "description": "目前提供了 1 款暗黑主题外观。",
     "type": "theme",
     "icon": "mdi-lightbulb",
     "accentColor": "#333",
@@ -19,7 +19,7 @@
         "name": "Catouse"
     },
     "publisher": "易软天创",
-    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/app/extensions/dakr-theme",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/app/extensions/easysoft-themes",
     "repository": {
         "url": "https://github.com/easysoft/xuanxuan/",
         "type": "git"
