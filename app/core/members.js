@@ -202,5 +202,8 @@ export default {
     },
     get depts() {
         return depts;
+    },
+    get hasDepts() {
+        return depts && Object.keys(depts).length;
     }
 };

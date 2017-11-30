@@ -72,6 +72,7 @@ export default class MenuContactList extends Component {
         const groupType = this.groupType;
         const menus = GROUP_TYPES.map(type => {
             return {
+                hidden: type.data === 'dept' && !App.members.hasDepts,
                 label: type.label,
                 data: type.data,
                 icon: type.data === groupType ? 'check text-success' : false
