@@ -48,7 +48,7 @@ const checkUploadFileSize = (user, size) => {
 
 const uploadFile = (user, file, data = {}, onProgress = null) => Platform.net.uploadFile(user, file, data, onProgress);
 
-const createFileDownloadUrl = (user, file) => user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
+const createFileDownloadUrl = (user, file) => user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time || 0}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
 
 const downloadFile = (user, file, onProgress = null) => {
     if (!file.url) {
