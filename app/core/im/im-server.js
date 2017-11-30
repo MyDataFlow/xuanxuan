@@ -521,11 +521,6 @@ const dimissChat = chat => {
         return Server.socket.sendAndListen({
             method: 'dismiss',
             params: [chat.gid]
-        }).then(theChat => {
-            if (theChat) {
-                sendBoardChatMessage(Lang.format('chat.group.dismiss.message', `@${profile.userAccount}`), theChat);
-            }
-            return Promise.resolve(theChat);
         });
     }
     return Promise.reject();
