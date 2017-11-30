@@ -50,7 +50,7 @@ const checkServerVersion = serverVersion => {
 
 const checkVersionSupport = serverVersion => {
     if (compareVersions(serverVersion, '1.3.0') >= 0) {
-        return {messageOrder: true};
+        return {messageOrder: true, userGetListWithId: true};
     }
     return null;
 };

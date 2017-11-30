@@ -267,7 +267,7 @@ const init = (chatArr) => {
                 loadChatMessages(chat);
             }
         });
-        if (tempMemberIdList.length) {
+        if (tempMemberIdList.length && profile.user.isVersionSupport('userGetListWithId')) {
             Server.fetchUserList(tempMemberIdList);
         }
         Events.emit(EVENT.init, chats);
