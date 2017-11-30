@@ -7,6 +7,7 @@ import db from '../db';
 import StringHelper from '../../utils/string-helper';
 import DateHelper from '../../utils/date-helper';
 import TaskQueue from '../../utils/task-queue';
+import timeSequence from '../../utils/time-sequence';
 import Lang from '../../lang';
 import Server from '../server';
 
@@ -527,16 +528,15 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
             }
         });
         const categories = user.config.contactsCategories;
-        let timeNow = new Date().getTime();
         let needSaveOrder = false;
         const orderedGroups = Object.keys(groupedChats).map(categoryId => {
             const group = groupedChats[categoryId];
             let savedCategory = categories[categoryId];
             if (!savedCategory) {
-                timeNow += 1;
+                const order = timeSequence();
                 savedCategory = {
-                    order: timeNow,
-                    key: timeNow
+                    order,
+                    key: order
                 };
                 categories[categoryId] = savedCategory;
                 needSaveOrder = true;
@@ -589,16 +589,15 @@ const getGroups = (sortList = true, groupedBy = false) => {
             return groupChats;
         }
         const categories = user.config.groupsCategories;
-        let timeNow = new Date().getTime();
         let needSaveOrder = false;
         const orderedGroups = groupKeys.map(categoryId => {
             const group = groupedChats[categoryId];
             let savedCategory = categories[categoryId];
             if (!savedCategory) {
-                timeNow += 1;
+                const order = categoryId === '_dismissed' ? 999999999999 : timeSequence();
                 savedCategory = {
-                    order: timeNow,
-                    key: timeNow
+                    order,
+                    key: order
                 };
                 categories[categoryId] = savedCategory;
                 needSaveOrder = true;

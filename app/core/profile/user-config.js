@@ -1,5 +1,6 @@
 import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
+import timeSequence from '../../utils/time-sequence';
 
 class UserConfig {
     static DEFAULT = DEFAULT;
@@ -14,6 +15,19 @@ class UserConfig {
             this.onChange(this.lastChange, this);
             this.lastChange = null;
         });
+
+        const groupsCategories = this.groupsCategories;
+        Object.keys(groupsCategories).forEach(x => {
+            const category = groupsCategories[x];
+            if (category.order > 1000000000000) {
+                if (x.startsWith('_')) {
+                    category.order = 100000000000 + timeSequence();
+                } else {
+                    category.order = timeSequence();
+                }
+            }
+        });
+        this.groupsCategories = groupsCategories;
     }
 
     plain() {
