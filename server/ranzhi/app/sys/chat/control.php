@@ -866,6 +866,14 @@ class chat extends control
                 $errors[] = $error;
             }
         }
+        elseif (!empty($chat->dismissDate))
+        {
+            $error = new stdclass();
+            $error->gid      = $message->cgid;
+            $error->messages = $this->lang->chat->chatHasDismissed;
+
+            $errors[] = $error;
+        }
 
         if($errors)
         {
