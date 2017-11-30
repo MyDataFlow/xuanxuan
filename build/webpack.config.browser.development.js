@@ -59,6 +59,7 @@ export default validate(merge(baseConfig, {
         alias: {
             Platform: 'platform/browser',
             Config: 'config/index.js',
+            ExtsRuntime: 'platform/browser/exts.js',
         },
         root: path.join(__dirname, '../app')
     },
