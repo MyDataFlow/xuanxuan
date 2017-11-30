@@ -54,7 +54,7 @@ export default class AppHome extends Component {
         } = this.props;
 
         const {search} = this.state;
-        const apps = search ? Exts.all.searchApps(search) : Exts.all.apps;
+        const apps = (search ? Exts.all.searchApps(search) : Exts.all.apps).filter(x => (!x.isFixed && !x.hidden));
 
         return (<div className={HTML.classes('app-ext-home dock column single', className)}>
             <header className="app-ext-home-header app-ext-common-header has-padding heading divider flex-none">
@@ -66,17 +66,11 @@ export default class AppHome extends Component {
                     <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.manageInExtensionsApp')}>
                         <Button type="a" href={`#${ROUTES.exts.app.id('extensions/type=app')}`} className="iconbutton rounded" icon="settings-box text-gray icon-2x" />
                     </div>
-                    {/* <div className="nav-item hint--bottom-left has-padding-sm" data-hint={Lang.string('ext.home.addMoreApps')}>
-                        <Button className="iconbutton rounded" icon="plus-box text-gray icon-2x" />
-                    </div> */}
                 </nav>
             </header>
             <div className="app-exts-apps row has-padding flex-auto scroll-y content-start">
                 {
                     apps.map(app => {
-                        if (app.isFixed || app.hidden) {
-                            return null;
-                        }
                         return <AppAvatar onContextMenu={this.handleAppContextMenu.bind(this, app)} key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={{auto: app.appIcon, skin: {code: app.appAccentColor}, className: 'rounded shadow-1'}} label={app.displayName} />;
                     })
                 }
