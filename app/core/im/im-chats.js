@@ -319,7 +319,6 @@ const query = (condition, sortList) => {
     return result || [];
 };
 
-
 const getRecents = (includeStar = true, sortList = true) => {
     const all = getAll();
     let recents = null;
@@ -328,7 +327,7 @@ const getRecents = (includeStar = true, sortList = true) => {
     } else {
         const now = new Date().getTime();
         recents = all.filter(chat => {
-            return chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME);
+            return !chat.isDeleteOne2One && !chat.isDismissed && (chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME));
         });
         if (!recents.length) {
             recents = all.filter(chat => chat.isSystem);
@@ -338,6 +337,21 @@ const getRecents = (includeStar = true, sortList = true) => {
         Chat.sort(recents, sortList, app);
     }
     return recents;
+};
+
+const getLastRecentChat = () => {
+    let lastActiveTime = 0;
+    let lastRecentChat = null;
+    forEach(chat => {
+        if (!chat.isDeleteOne2One && !chat.isDismissed && lastActiveTime < chat.lastActiveTime) {
+            lastActiveTime = chat.lastActiveTime;
+            lastRecentChat = chat;
+        }
+    });
+    if (!lastRecentChat) {
+        lastRecentChat = getAll().find(x => x.isSystem);
+    }
+    return lastRecentChat;
 };
 
 const getContactChat = (member) => {
@@ -793,4 +807,5 @@ export default {
     createCountMessagesTask,
     searchChatMessages,
     getChatCategories,
+    getLastRecentChat,
 };

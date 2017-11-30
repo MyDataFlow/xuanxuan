@@ -40,11 +40,22 @@ const activeChat = chat => {
             activedChatId = chat.gid;
             Events.emit(EVENT.activeChat, chat);
         }
+        const urlHash = window.location.hash;
+        if (!urlHash.endsWith(`/${chat.gid}`)) {
+            window.location.hash = `#/chats/recents/${chat.gid}`;
+        }
         activeCaches[chat.gid] = true;
         if (chat.noticeCount) {
             chat.muteNotice();
             chats.saveChatMessages(chat.messages);
         }
+    }
+};
+
+const activeLastChat = () => {
+    const lastChat = chats.getLastRecentChat();
+    if (lastChat) {
+        activeChat(lastChat);
     }
 };
 
@@ -278,7 +289,12 @@ const chatExitConfirm = chat => {
 const chatDismissConfirm = chat => {
     return Modal.confirm(Lang.format('chat.group.dismissConfirm', chat.getDisplayName({members, user: profile.user}))).then(result => {
         if (result) {
-            Server.dimissChat(chat);
+            return Server.dimissChat(chat).then(theChat => {
+                if (theChat) {
+                    activeLastChat();
+                }
+                return Promise.resolve(theChat);
+            });
         }
     });
 };
@@ -601,6 +617,7 @@ if (Platform.screenshot && Platform.shortcut) {
 
 export default {
     activeChat,
+    activeLastChat,
     onActiveChat,
     mapCacheChats,
     isActiveChat,
