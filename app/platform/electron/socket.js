@@ -225,12 +225,16 @@ class Socket {
         this.status = STATUS.CLOSING;
     }
 
+    removeAllListeners() {
+        this.client.removeAllListeners();
+    }
+
     close(code, reason) {
         if (this.client) {
             if (reason === 'close') {
                 this.markClose();
             }
-            this.client.removeAllListeners();
+            this.removeAllListeners();
             if (reason === true) {
                 this.client.terminate();
             } else {

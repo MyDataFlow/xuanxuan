@@ -233,10 +233,25 @@ class Socket {
         });
     }
 
-    close() {
+    markClose() {
+        this.status = STATUS.CLOSING;
+    }
+
+    removeAllListeners() {
+        this.client.onclose = null;
+        this.client.onerror = null;
+        this.client.onmessage = null;
+        this.client.onopen = null;
+    }
+
+    close(code, reason) {
         if (this.client) {
-            this.status = STATUS.CLOSING;
+            if (reason === 'close') {
+                this.markClose();
+            }
+            this.removeAllListeners();
             this.client.close();
+            this.handleClose(code, reason);
         }
     }
 }
