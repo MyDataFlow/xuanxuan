@@ -29,7 +29,7 @@ class MessageContentImage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            download: false,
+            download: null,
             url: ''
         };
         if (isBrowser) {
@@ -51,20 +51,19 @@ class MessageContentImage extends Component {
     }
 
     componentWillUnmount() {
-        this.unmounted = true;
+        this.mounted = true;
     }
 
     downloadImage(image) {
-        if (this.state.download === false || this.state.download === true) {
+        if (this.state.download === null) {
             API.downloadFile(App.user, image, progress => {
-                if (this.unmounted) return;
+                if (this.mounted) return;
                 this.setState({download: progress});
             }).then(file => {
-                if (this.unmounted) return;
-                this.setState({url: image.src});
-                this.setState({download: true});
+                if (this.mounted) return;
+                this.setState({url: image.src, download: true});
             }).catch(error => {
-                if (this.unmounted) return;
+                if (this.mounted) return;
                 this.setState({download: false});
             });
         }
