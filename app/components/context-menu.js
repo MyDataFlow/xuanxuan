@@ -55,6 +55,7 @@ const show = (position, menus, props = {}, callback = null) => {
         const {
             id,
             className,
+            hidden,
             click,
             render,
             type,
@@ -62,6 +63,9 @@ const show = (position, menus, props = {}, callback = null) => {
             data,
             ...other
         } = item;
+        if (hidden) {
+            return null;
+        }
         if (render) {
             return render(item);
         } else if (type === 'divider' || type === 'separator') {
