@@ -51,7 +51,7 @@ export default validate(merge(baseConfig, {
     },
 
     plugins: [
-        new new UglifyJsPlugin(),
+        new UglifyJsPlugin(),
 
         // for bindings package, see https://github.com/rwaldron/johnny-five/issues/1101#issuecomment-213581938
         new webpack.ContextReplacementPlugin(/bindings$/, /^$/),
