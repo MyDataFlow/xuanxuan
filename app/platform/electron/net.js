@@ -92,7 +92,7 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
         xhr.setRequestHeader('Authorization', user.token);
     }, onProgress).then(remoteData => {
         remoteData.name = filename;
-        const resolve = () => {
+        const finishUpload = () => {
             if (DEBUG) {
                 console.collapse('HTTP UPLOAD Request', 'blueBg', serverUrl, 'bluePale', 'OK', 'greenPale');
                 console.log('files', file);
@@ -104,10 +104,25 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
         };
         if (data.copy) {
             file.src = copyPath;
-            return fse.copy(file.path, copyPath).then(resolve);
+            if (file.blob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        if (reader.readyState === 2) {
+                            const buffer = new Buffer(reader.result);
+                            fse.outputFile(copyPath, buffer)
+                                .then(finishUpload)
+                                .then(resolve)
+                                .catch(reject);
+                        }
+                    };
+                    reader.readAsArrayBuffer(file.blob);
+                });
+            }
+            return fse.copy(file.path, copyPath).then(finishUpload);
         }
         file.src = file.path;
-        return resolve();
+        return finishUpload();
     });
 };
 
