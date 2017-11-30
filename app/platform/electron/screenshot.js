@@ -11,8 +11,16 @@ global.html2canvas = (canvas, obj) => {
     obj.onrendered(canvas);
 };
 
+let lastSteam = null;
+const stopStream = () => {
+    if (lastSteam) {
+        lastSteam.stop();
+        lastSteam = null;
+    }
+};
 const getStream = sourceId => {
     return new Promise((resolve, reject) => {
+        stopStream();
         desktopCapturer.getSources({types: ['screen']}, (error, sources) => {
             if (error) {
                 reject(error);
@@ -22,7 +30,7 @@ const getStream = sourceId => {
             const display = getDisplay(sourceId);
             const displayIndex = Screen.getAllDisplays().findIndex(item => item.id === sourceId);
 
-            navigator.webkitGetUserMedia({
+            const mediaConfig = {
                 audio: false,
                 video: {
                     mandatory: {
@@ -34,16 +42,21 @@ const getStream = sourceId => {
                         minHeight: display.size.height
                     }
                 }
-            }, resolve, reject);
+            };
+
+            navigator.webkitGetUserMedia(mediaConfig, stream => {
+                lastSteam = stream;
+                resolve(stream);
+            }, reject);
         });
     });
 };
 
 const getVideo = stream => {
-    const video = document.createElement('video');
-    video.autoplay = true;
-    video.src = URL.createObjectURL(stream);
     return new Promise(resolve => {
+        const video = document.createElement('video');
+        video.autoplay = true;
+        video.src = URL.createObjectURL(stream);
         video.addEventListener('playing', () => {
             resolve(video);
         });
@@ -123,7 +136,11 @@ const takeScreenshot = ({x = 0, y = 0, width = 0, height = 0, sourceId = 0}) => 
             const canvas = getCanvas(width, height);
             const ctx = canvas.getContext('2d');
             drawFrame({ctx, video, x, y, width, height, availTop});
+            stopStream();
             return getFrameImage(canvas);
+        }).catch(error => {
+            stopStream();
+            return Promise.reject(error);
         });
 };
 
@@ -190,7 +207,7 @@ const saveScreenshotImage = (options, filePath, hideCurrentWindow) => {
     return takeScreenshot(options).then(processImage);
 };
 
-const openCaptureScreenWindow = (file, display) => {
+const openCaptureScreenWindow = (file, display, onClosed) => {
     return new Promise((resolve, reject) => {
         const captureWindow = new Remote.BrowserWindow({
             x: display ? display.bounds.x : 0,
@@ -214,6 +231,9 @@ const openCaptureScreenWindow = (file, display) => {
             captureWindow.focus();
             resolve(captureWindow);
         });
+        if (onClosed) {
+            captureWindow.on('closed', onClosed);
+        }
     });
 };
 
@@ -231,7 +251,7 @@ const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) 
     hideCurrentWindow = hideCurrentWindow && ui.browserWindow.isVisible();
     return new Promise((resolve, reject) => {
         const captureScreenWindows = [];
-        RemoteEvents.ipcOnce(RemoteEvents.EVENT.capture_screen, (e, image) => {
+        const eventId = RemoteEvents.ipcOnce(RemoteEvents.EVENT.capture_screen, (e, image) => {
             if (captureScreenWindows) {
                 captureScreenWindows.forEach(captureWindow => {
                     captureWindow.close();
@@ -253,11 +273,15 @@ const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) 
                 console.log('No capture image.');
             }
         });
+        const onWindowClosed = () => {
+            RemoteEvents.off(eventId);
+        };
         const takeScreenshots = () => {
             return Promise.all(screenSources.map(screenSource => {
                 return saveScreenshotImage(screenSource, '').then(file => {
-                    return openCaptureScreenWindow(file, screenSource).then(captureWindow => {
+                    return openCaptureScreenWindow(file, screenSource, onWindowClosed).then(captureWindow => {
                         captureScreenWindows.push(captureWindow);
+                        return Promise.resolve();
                     });
                 });
             }));
