@@ -243,7 +243,7 @@ const createSendboxToolbarItems = (chat, config) => {
             ChatChangeFontPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
         }
     });
-    let user = profile.user;
+    const {user} = profile;
     if (user && user.config.showMessageTip) {
         items.push({
             id: 'tips',

@@ -1,8 +1,8 @@
 import buildIns from './build-in';
-import Config from 'Config';
 import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';
+import PKG from '../package.json';
 
 const EVENT = {
     onChange: 'Extension.onChange'
@@ -18,7 +18,7 @@ buildIns.forEach((buildIn, idx) => {
         buildIn.author = '易软天创';
     }
     ['version', 'license', 'homepage', 'bugs', 'repository'].forEach(key => {
-        buildIn[key] = Config.pkg[key];
+        buildIn[key] = PKG[key];
     });
     exts.push(createExtension(buildIn, {installTime: idx}, true));
 });
