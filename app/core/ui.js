@@ -170,7 +170,7 @@ const completeDragNDrop = () => {
 
 window.ondragover = e => {
     clearTimeout(dragLeaveTask);
-    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+    if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
         document.body.classList.add('drag-n-drop-over');
         setTimeout(() => {
             document.body.classList.add('drag-n-drop-over-in');
