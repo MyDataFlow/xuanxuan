@@ -7,6 +7,26 @@ import {userDataPath} from './ui';
 const downloadFileOrigin = network.downloadFile;
 const uploadFileOrigin = network.uploadFile;
 
+const dataURItoBlob = (dataURI) => {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    const byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    const bb = new Blob([ab], {type: mimeString});
+    return bb;
+};
+
 const createImageFilePath = (user, file) => {
     return Path.join(userDataPath, 'users', user.identify, 'images', file.name);
 };
@@ -77,6 +97,10 @@ const downloadFile = (user, file, onProgress) => {
 };
 
 const uploadFile = (user, file, data = {}, onProgress = null) => {
+    if (file.base64 && !file.blob) {
+        file.blob = dataURItoBlob(file.base64);
+    }
+
     const serverUrl = user.uploadUrl;
     const form = new FormData();
     form.append('file', file.blob || file, file.name);
@@ -91,7 +115,6 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
         xhr.setRequestHeader('ServerName', user.serverName);
         xhr.setRequestHeader('Authorization', user.token);
     }, onProgress).then(remoteData => {
-        remoteData.name = filename;
         const finishUpload = () => {
             if (DEBUG) {
                 console.collapse('HTTP UPLOAD Request', 'blueBg', serverUrl, 'bluePale', 'OK', 'greenPale');
@@ -123,6 +146,11 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
         }
         file.src = file.path;
         return finishUpload();
+    }).catch(error => {
+        if (DEBUG) {
+            console.error('Upload file error', error, file);
+        }
+        return Promise.reject(error);
     });
 };
 
