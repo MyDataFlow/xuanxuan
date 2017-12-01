@@ -180,6 +180,6 @@ export default {
     },
 
     get appRoot() {
-        return env.appPath;
+        return env.appRoot;
     },
 };
