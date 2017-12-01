@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Link} from 'react-router-dom';
 import Config from 'Config';
+import ExtsRuntime from 'ExtsRuntime';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import Avatar from '../../components/avatar';
@@ -11,7 +12,6 @@ import {UserAvatar} from '../common/user-avatar';
 import {StatusDot} from '../common/status-dot';
 import {UserMenu} from './user-menu';
 import replaceViews from '../replace-views';
-import ExtsRuntime from 'ExtsRuntime';
 
 const navbarItems = [
     {to: ROUTES.chats.recents.__, label: Lang.string('navbar.chats.label'), icon: 'comment-outline', activeIcon: 'comment-processing'},

@@ -1,5 +1,5 @@
-import Events from './events';
 import ExtsRuntime from 'ExtsRuntime';
+import Events from './events';
 
 const EVENT = {
     ready: 'runtime.ready',

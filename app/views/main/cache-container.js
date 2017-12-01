@@ -1,21 +1,32 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
+import ExtsView from 'ExtsView';
 import ROUTES from '../common/routes';
 import {Index as ChatsView} from '../chats';
-import ExtsRuntime from 'ExtsRuntime';
 import replaceViews from '../replace-views';
 
 const mainViews = [
     {path: ROUTES.chats._, view: ChatsView},
 ];
-
-if (ExtsRuntime) {
-    mainViews.push({path: ROUTES.exts._, view: ExtsRuntime.View});
-}
+mainViews.push({path: ROUTES.exts._, view: ExtsView});
 
 class CacheContainer extends Component {
     static get CacheContainer() {
         return replaceViews('main/cache-container', CacheContainer);
     }
+
+    static propTypes = {
+        match: PropTypes.any,
+        history: PropTypes.any,
+        location: PropTypes.any,
+        staticContext: PropTypes.any,
+    };
+
+    static defaultProps = {
+        match: null,
+        history: null,
+        location: null,
+        staticContext: null,
+    };
 
     render() {
         let {
