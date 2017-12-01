@@ -14,7 +14,6 @@ http://xuan.im
 
 ![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/dark-theme-preview.png)
 
-
 ## 特色功能
 
 * **开聊**：和服务器上的任何用户开聊，收发表情、图片、截屏、文件样样在行；
@@ -90,6 +89,10 @@ http://xuan.im
 执行 `npm run package` 进行客户端打包。
 
 详情请参考：[客户端开发者指南](https://github.com/easysoft/xuanxuan/blob/master/doc/client-developer.md)
+
+### 扩展开发
+
+参见：https://github.com/easysoft/xuanxuan/blob/master/doc/extension.md
 
 ## 许可证
 
