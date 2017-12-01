@@ -168,7 +168,8 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
         email,    // 邮箱
         mobile,   // 手机
         site,     // 网站
-        phone     // 电话
+        phone,    // 电话
+        ranzhiUrl // 当前用户所在的然之站点地址（可选，1.3新增）
     }
 }
 ```
@@ -236,7 +237,11 @@ xxd把client发送的数据转发给rzs。
 {
     userID, //用户的id号
     module: 'chat',
-    method: 'userGetlist'
+    method: 'userGetlist',
+    params:
+    [
+        idList,   // 要获取的用户信息id编号数组，可选，如果留空则获取所有用户（1.3新增）
+    ]
 }
 ```
 
@@ -750,7 +755,7 @@ xxd把client发送的数据转发给rzs。
         pageID,      // 当前也数
         recTotal,    // 总记录数
         continued,   // 是否继续获取历史记录
-        startDate,   // 历史记录最早的日期时间戳(秒)
+        startDate,   // 历史记录最早的日期时间戳(秒)（1.3新增）
     ]
 }
 ```
@@ -1087,6 +1092,72 @@ xxd把client发送的数据转发给rzs。
     users[],
     result, 
     data // 用户配置信息
+}
+```
+##### 方向：xxd --> client
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+
+### 为会话设置分组（1.3新增）
+#### 请求
+##### 方向：client --> xxd
+```js
+{
+    userID,
+    module: 'chat',
+    method: 'category',
+    params: 
+    [
+        gids, // 要设置新的分组的会话 gid 数组
+        category, // 新的分组名称
+    ]
+}
+```
+##### 方向： xxd --> rzs
+xxd把client发送的数据转发给rzs。
+
+#### 响应
+##### 方向：rzs --> xxd
+```js
+{
+    module: 'chat',
+    method: 'category',
+    users[],
+    result, 
+    data: {
+        gids, // 同参数
+        category // 同参数
+    }
+}
+```
+##### 方向：xxd --> client
+把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+
+### 管理员请求解散一个讨论组（1.3新增）
+#### 请求
+##### 方向：client --> xxd
+```js
+{
+    userID,
+    module: 'chat',
+    method: 'dismiss',
+    params: 
+    [
+        gid, //要解散的讨论组gid
+    ]
+}
+```
+##### 方向： xxd --> rzs
+xxd把client发送的数据转发给rzs。
+
+#### 响应
+##### 方向：rzs --> xxd
+```js
+{
+    module: 'chat',
+    method: 'dismiss',
+    users[],
+    result, 
+    data // 解散后的讨论组对象
 }
 ```
 ##### 方向：xxd --> client
