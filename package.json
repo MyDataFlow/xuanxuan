@@ -162,6 +162,7 @@
     "react-router-dom": "^4.2.2",
     "react-split-pane": "^0.1.66",
     "recordrtc": "^5.4.0",
+    "request": "2.79.0",
     "source-map-support": "^0.4.8",
     "uuid": "^3.1.0",
     "wolfy87-eventemitter": "^5.2.2",
