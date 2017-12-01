@@ -17,7 +17,7 @@
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.development",
     "postinstall": "concurrently \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
     "dev": "npm run hot-server -- --start-hot",
-    "copy-browser-files": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r babel-register package-browser.js",
+    "copy-browser-files": "cross-env NODE_ENV=development node --max_old_space_size=2096 -r babel-register ./build/package-browser.js",
     "package": "npm run build && build --publish never",
     "pkg-mac": "build --mac",
     "package-mac": "npm run build && npm run pkg-mac",
