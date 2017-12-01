@@ -102,15 +102,16 @@ class MessageContentImage extends Component {
             />);
         }
         if (image.id && image.send === true) {
-            if (this.state.url) {
+            const imageUrl = this.state.url;
+            if (imageUrl) {
                 return (<img
-                    onContextMenu={isBrowser ? null : this.handleImageContextMenu.bind(this, this.state.url, '')}
+                    onContextMenu={isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '')}
                     title={image.name}
                     alt={image.name}
                     data-fail={Lang.string('file.downloadFailed')}
                     onError={e => e.target.classList.add('broken')}
-                    onDoubleClick={ImageViewer.show.bind(this, this.state.url, null, null)}
-                    src={this.state.url}
+                    onDoubleClick={ImageViewer.show.bind(this, imageUrl, null, null)}
+                    src={imageUrl}
                 />);
             } else if (typeof this.state.download === 'number') {
                 const percent = Math.floor(this.state.download);
@@ -130,9 +131,10 @@ class MessageContentImage extends Component {
                 <div className="label info circle"><Icon name="upload" /> {percent}%</div>
             </Avatar>);
         }
+
         return (<Avatar className="avatar-xl warning-pale text-warning app-message-image-placeholder" icon="image-broken">
             <div className="space-xs" />
-            <div className="label clean circle">{Lang.string('file.uploadFailed')}</div>
+            {image.send === false ? <div className="label clean circle">{Lang.string('file.uploadFailed')}</div> : null}
         </Avatar>);
     }
 }
