@@ -1,13 +1,13 @@
 import Socket from './socket';
 import clipboard from './clipboard';
-import sound from '../common/sound'
+import sound from '../common/sound';
 import crypto from './crypto';
 import EventEmitter from './event-emitter';
 import env from './env';
 import ui from './ui';
 import dialog from './dialog';
 import notify from './notify';
-import config from '../common/config'
+import config from '../common/config';
 import net from './net';
 import setting from './setting';
 
