@@ -57,7 +57,7 @@ const applyTheme = theme => {
             if (!appendLinkElement) {
                 appendLinkElement = document.createElement('link');
                 appendLinkElement.rel = 'stylesheet';
-                appendLinkElement.href = styleFile;
+                appendLinkElement.href = `file://${styleFile}`;
                 appendLinkElement.id = 'appendTheme';
                 document.getElementsByTagName('head')[0].appendChild(appendLinkElement);
             } else {
