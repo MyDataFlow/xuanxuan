@@ -144,4 +144,6 @@ export default {
     search,
     searchApps,
     onExtensionChange,
+
+    db: DEBUG ? db : null
 };

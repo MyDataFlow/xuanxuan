@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import {env} from 'Platform';
+import Config from 'Config';
 import path from 'path';
 import Lang from '../lang';
 
@@ -43,6 +44,12 @@ const exts = [{
     appAccentColor: '#ff9100',
     appType: 'insideView',
 }];
+
+// Load internals extensions
+const internals = Config.exts && Config.exts.internals;
+if (Array.isArray(internals) && internals.length) {
+    exts.push(...internals);
+}
 
 // Load local build-in extensions
 const buildInsPath = path.join(process.env.HOT ? env.appRoot : env.appPath, 'build-in');
