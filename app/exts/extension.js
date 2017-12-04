@@ -3,7 +3,7 @@ import AppExtension from './app-extension';
 import PluginExtension from './plugin-extension';
 import ThemeExtension from './theme-extension';
 
-const createExtension = (pkg, data = {}, buildIn = false) => {
+const createExtension = (pkg, data = null, buildIn = false) => {
     if (pkg.pkg && !data) {
         data = pkg.data;
         pkg = pkg.pkg;
