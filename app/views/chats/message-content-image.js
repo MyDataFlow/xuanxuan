@@ -111,7 +111,7 @@ class MessageContentImage extends Component {
                     data-fail={Lang.string('file.downloadFailed')}
                     onError={e => e.target.classList.add('broken')}
                     onDoubleClick={ImageViewer.show.bind(this, imageUrl, null, null)}
-                    src={imageUrl}
+                    src={`file://${image.src}`}
                 />);
             } else if (typeof this.state.download === 'number') {
                 const percent = Math.floor(this.state.download);
