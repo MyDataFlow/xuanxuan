@@ -9,7 +9,7 @@ export default class PluginExtension extends Extension {
             throw new Error(`Cannot create a plugin extension from the type '${this.type}'.`);
         }
 
-        if (!this.mainFile) {
+        if (!pkg.main) {
             this.addError('main', 'The main attribute must be set when the extension type is plugin, set to "index.js" temporarily.');
         }
     }
