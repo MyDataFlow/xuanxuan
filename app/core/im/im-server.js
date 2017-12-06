@@ -341,12 +341,9 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
 
         const command = message.getCommand();
         if (command) {
-            if (command.action === 'rename') {
-                setTimeout(() => {
-                    renameChat(chat.gid, command.name);
-                }, 500);
-            } else if (command.action === 'version') {
-                message.content = '```\n$$version = "' + `v${PKG.version}${Config.system.specialVersion ? (' for ' + Config.system.specialVersion) : ''}${DEBUG ? ' [debug]' : ''}` + '";\n```';
+            if (command.action === 'version') {
+                const specialVersion = Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : '';
+                message.content = `\`\`\`\n$$version       = '${PKG.version}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';\n$$ranzhiUrl     = '${profile.user.ranzhiUrl}';\n\`\`\``;
             }
         }
     });
