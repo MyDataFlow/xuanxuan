@@ -104,16 +104,14 @@ const updateChatMessages = (messages, muted = false) => {
         messages = [messages];
     }
     const chatsMessages = {};
-    const messagesForUpdate = [];
-    messages.forEach(message => {
+    const messagesForUpdate = messages.map(message => {
         message = ChatMessage.create(message);
-        messagesForUpdate.push(message);
-
         if (!chatsMessages[message.cgid]) {
             chatsMessages[message.cgid] = [message];
         } else {
             chatsMessages[message.cgid].push(message);
         }
+        return message;
     });
 
     const updatedChats = {};
