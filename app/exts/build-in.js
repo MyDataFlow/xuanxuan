@@ -1,5 +1,4 @@
-import fse from 'fs-extra';
-import {env} from 'Platform';
+import {env, fs as fse} from 'Platform';
 import Config from 'Config';
 import path from 'path';
 import Lang from '../lang';

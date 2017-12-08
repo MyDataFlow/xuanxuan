@@ -590,7 +590,6 @@ class Chat extends Entity {
         }
 
         let noticeCount = this.noticeCount;
-        let newMessageCount = 0;
         let lastActiveTime = this.lastActiveTime;
         messages.forEach(message => {
             if (message.date) {
@@ -599,7 +598,6 @@ class Chat extends Entity {
                     checkMessage.reset(message);
                 } else {
                     this._messages.push(message);
-                    newMessageCount += 1;
                     if (!localMessage && userId !== message.senderId) {
                         message.unread = true;
                         noticeCount += 1;
@@ -620,9 +618,7 @@ class Chat extends Entity {
         this.lastActiveTime = lastActiveTime;
         this.noticeCount = noticeCount;
 
-        if (newMessageCount) {
-            this._messages = ChatMessage.sort(this._messages);
-        }
+        this._messages = ChatMessage.sort(this._messages);
 
         if (limitSize && this._messages.length > MAX_MESSAGE_COUNT) {
             this._messages.splice(0, this._messages.length - MAX_MESSAGE_COUNT);

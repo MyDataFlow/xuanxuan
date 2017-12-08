@@ -21,6 +21,12 @@ const string = (name, defaultValue) => {
     return value === undefined ? defaultValue : value;
 };
 
+/**
+ * Format language string
+ *
+ * @param {String} name
+ * @param {Array} args
+ */
 const format = (name, ...args) => {
     const str = string(name);
     if (args && args.length) {

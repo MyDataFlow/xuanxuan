@@ -1,6 +1,5 @@
-import {env, dialog} from 'Platform';
+import {env, dialog, fs as fse} from 'Platform';
 import Path from 'path';
-import fse from 'fs-extra';
 import compareVersions from 'compare-versions';
 import uuid from 'uuid/v4';
 import extractZip from 'extract-zip';

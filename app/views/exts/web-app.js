@@ -5,6 +5,8 @@ import OpenedApp from '../../exts/opened-app';
 import timeSequence from '../../utils/time-sequence';
 import replaceViews from '../replace-views';
 
+const isNWJS = Platform.type === 'nwjs';
+
 export default class WebApp extends Component {
     static get WebApp() {
         return replaceViews('exts/web-app', WebApp);
@@ -105,10 +107,10 @@ export default class WebApp extends Component {
             onPageTitleChange,
         } = this.props;
 
-        const webviewHtml = `<webview id="${this.webviewId}" src="${app.app.webViewUrl}" class="dock" ${app.app.isLocalWebView ? 'nodeintegration' : ''} />`;
+        const webviewHtml = isNWJS ? `<iframe id="${this.webviewId}" src="${app.app.webViewUrl}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />` : `<webview id="${this.webviewId}" src="${app.app.webViewUrl}" class="dock fluid-v fluid" ${app.app.isLocalWebView ? 'nodeintegration' : ''} />`;
 
         return (<div className={HTML.classes('app-web-app', className)}>
-            <div className="dock" dangerouslySetInnerHTML={{__html: webviewHtml}} />
+            <div className="dock scroll-none" dangerouslySetInnerHTML={{__html: webviewHtml}} />
             {this.state.errorCode && <div className="dock box">
                 <h1>{this.state.errorCode}</h1>
                 <div>{this.state.errorDescription}</div>

@@ -211,26 +211,20 @@ class Socket {
         let data = null;
         if (this.options.encryptEnable) {
             data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
-            if (DEBUG) {
-                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
-                console.log('data', data);
-                console.log('rawdata', rawdata);
-                console.groupEnd();
-            }
+            // if (DEBUG) {
+            //     console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
+            //     console.log('data', data);
+            //     console.log('rawdata', rawdata);
+            //     console.groupEnd();
+            // }
         }
 
         this.client.send(data, {
             binary: this.options.encryptEnable
-        }, () => {
-            if (DEBUG) {
-                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'greenPale');
-                console.log('rawdata', rawdata);
-                console.groupEnd();
-                if (callback) {
-                    callback();
-                }
-            }
         });
+        if (callback) {
+            callback();
+        }
     }
 
     markClose() {
