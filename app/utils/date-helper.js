@@ -13,7 +13,7 @@ const createDate = date => {
 };
 
 const createPhpTimestramp = date => {
-    return Math.floor(createDate(date)/1000);
+    return Math.floor(createDate(date) / 1000);
 };
 
 const isSameDay = (date1, date2) => {
