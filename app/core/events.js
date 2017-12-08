@@ -1,5 +1,8 @@
 import {EventEmitter} from 'Platform';
 
+/**
+ * 使用EventEmitter来做消息总线
+ */
 const EVENT = {
     data_change: 'data.change',
 };
@@ -21,6 +24,11 @@ class Events extends EventEmitter {
      */
     constructor() {
         super();
+        /**
+         * 先建立事件列表
+         * 判定自己是否是主进程，非浏览器，非render
+         * 设置事件监听上限
+         */
         this.eventsMap = {};
         this.isMainProcess = !process.browser && process.type !== 'renderer';
         if (this.setMaxListeners) {
@@ -37,6 +45,9 @@ class Events extends EventEmitter {
     on(event, listener) {
         super.on(event, listener);
         const name = Symbol(event);
+        /**
+         * 保存监听者，事件名字，事件
+         */
         this.eventsMap[name] = {listener, name: event};
         if (DEBUG) {
             if (this.isMainProcess) {

@@ -15,7 +15,9 @@ import {MessageBroadcast} from './message-broadcast';
 import replaceViews from '../replace-views';
 
 const showTimeLabelInterval = 1000 * 60 * 5;
-
+/**
+ * 单个消息
+ */
 class MessageListItem extends Component {
     static propTypes = {
         message: PropTypes.object.isRequired,

@@ -1,3 +1,6 @@
+/**
+ * 路由
+ */
 export default {
     chats: {
         _: '/chats',

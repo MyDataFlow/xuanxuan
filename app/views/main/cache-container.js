@@ -36,7 +36,9 @@ class CacheContainer extends Component {
             staticContext,
             ...other
         } = this.props;
-
+        /**
+         * 主界面容器，逐个渲染mainViews的项目
+         */
         return (<div className="app-main-container dock" {...other}>
             {
                 mainViews.map(item => {

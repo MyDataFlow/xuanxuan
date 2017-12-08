@@ -32,6 +32,10 @@ class ChatsCache extends Component {
             ...other
         } = this.props;
 
+        /**
+         * 默认会缓存渲染过的会话
+         * 将当前激活的chatID所对应的view设置成可见的
+         */
         return (<div
             {...other}
             className={HTML.classes('app-chats-cache', className)}

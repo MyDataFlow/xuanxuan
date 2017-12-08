@@ -30,7 +30,10 @@ class ChatMessages extends Component {
         } = this.props;
 
         const font = App.profile.userConfig.chatFontSize;
-
+        /**
+         * 会话窗口
+         * 将chat中的messages渲染到界面上
+         */
         return (<div
             {...other}
             className={HTML.classes('app-chat-messages white', className)}

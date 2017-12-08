@@ -2,7 +2,9 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
-
+/**
+ * 聊天消息列表
+ */
 class MessageList extends Component {
     static propTypes = {
         messages: PropTypes.array.isRequired,
@@ -32,6 +34,7 @@ class MessageList extends Component {
     }
 
     componentDidMount() {
+        // 自动滚动到最底端
         if (this.props.stayBottom) {
             this.scrollToBottom(800);
         }

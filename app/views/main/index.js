@@ -7,7 +7,9 @@ import {Navbar} from './navbar';
 import {GlobalMessage} from './global-message';
 import {CacheContainer} from './cache-container';
 import replaceViews from '../replace-views';
-
+/**
+ *  聊天界面的主体
+ */
 class Index extends Component {
     static get Index() {
         return replaceViews('main/index', Index);
@@ -22,7 +24,10 @@ class Index extends Component {
         className: null,
         userStatus: null,
     };
-
+    /**
+     * 添加事件监听
+     * 当用户的profile发生变化，立即渲染
+     */
     componentDidMount() {
         this.onUserConfigChange = App.profile.onUserConfigChange(() => {
             this.forceUpdate();
@@ -39,7 +44,11 @@ class Index extends Component {
             userStatus,
             ...other
         } = this.props;
-
+        /**
+         * Navbar 是侧边栏
+         * 聊天核心部分是Route部分
+         * 是一个嵌套路由机制
+         */
         return (<div className={HTML.classes('app-main', className)} {...other}>
             <GlobalMessage className="dock-top" />
             <Navbar userStatus={userStatus} className="dock-left primary shadow-2" />

@@ -63,7 +63,11 @@ class ChatView extends Component {
 
         const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
         const isReadOnly = chat.isReadonly(App.profile.user);
-
+        /**
+         * 聊天部分被分为只读会话和交互会话
+         * 只读会话不使用SplitPane来进行分割
+         * 交互式会话会使用SplitPane来分割发消息的窗口和接收消息的窗口
+         */
         let chatView = null;
         if (isReadOnly) {
             let blockTip = null;
@@ -88,7 +92,10 @@ class ChatView extends Component {
                 <ChatSendbox className="dock" chat={chat} />
             </SplitPane>);
         }
-
+        /**
+         * 内部依然是SplitPane，用来分割聊天区域和联系人列表
+         * ChatSidebar 应该是联系人列表
+         */
         return (<div
             {...other}
             className={HTML.classes('app-chat dock', className, {hidden})}

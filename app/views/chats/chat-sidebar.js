@@ -8,7 +8,9 @@ import {ChatSidebarPeoples} from './chat-sidebar-peoples';
 import {ChatSidebarFiles} from './chat-sidebar-files';
 import {ChatSidebarProfile} from './chat-sidebar-profile';
 import replaceViews from '../replace-views';
-
+/**
+ * 联系人列表
+ */
 class ChatSidebar extends Component {
     static propTypes = {
         className: PropTypes.string,

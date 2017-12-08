@@ -8,6 +8,10 @@ import {ChatsCache} from './chats-cache';
 import {ChatsDndContainer} from './chats-dnd-container';
 import replaceViews from '../replace-views';
 
+/**
+ * 聊天界面核心部分
+ */
+
 class Index extends Component {
     static propTypes = {
         match: PropTypes.object.isRequired,
@@ -30,9 +34,14 @@ class Index extends Component {
             className,
             match
         } = this.props;
-
+        /**
+         * 当前活动的聊天UI
+         */
         App.im.ui.activeChat(match.params.id);
 
+        /**
+         * SplitPane 左侧群组等联系人和聊天内容的主容器
+         */
         return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
             <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200}>
                 <Menu className="dock" filter={match.params.filterType} />
