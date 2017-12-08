@@ -36,6 +36,11 @@ const activeChat = chat => {
         chat = chats.get(chat);
     }
     if (chat) {
+        /**
+         * 如果当前的activedChatId为空
+         * 或者要激活的chat的gid和当前的activedChatId不同
+         * 则通过Events触发事件变化
+         */
         if (!activedChatId || chat.gid !== activedChatId) {
             activedChatId = chat.gid;
             Events.emit(EVENT.activeChat, chat);
@@ -58,7 +63,9 @@ const activeLastChat = () => {
         activeChat(lastChat);
     }
 };
-
+/**
+ * 判断当前的聊天是否是一个激活的聊天
+ */
 const isActiveChat = chatGid => {
     return activedChatId === chatGid;
 };
@@ -85,7 +92,9 @@ const onSendContentToChat = (cgid, listener) => {
 const mapCacheChats = callback => {
     return Object.keys(activeCaches).map(callback);
 };
-
+/**
+ * 将某个特定聊天设置为活跃的，并便利所有当前聊天
+ */
 const activeAndMapCacheChats = (chat, callback) => {
     activeChat(chat);
     return mapCacheChats(callback);

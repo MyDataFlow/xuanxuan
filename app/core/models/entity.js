@@ -91,10 +91,16 @@ class Entity {
         if (schema) {
             const meta = schema.of(key);
             if (meta && meta.aliasFor) {
+                /**
+                 * 如果存在aliasFor，那么将key设置为aliasFor
+                 */
                 key = meta.aliasFor;
             }
             value = schema.convertGetterValue(key, value, this);
         }
+        /**
+         * 取到值为空或不存在，直接返回默认值
+         */
         if (value === undefined) {
             value = defaultValue;
         }

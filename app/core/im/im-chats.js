@@ -10,7 +10,9 @@ import TaskQueue from '../../utils/task-queue';
 import timeSequence from '../../utils/time-sequence';
 import Lang from '../../lang';
 import Server from '../server';
-
+/**
+ * 使用模块来当做类使用
+ */
 const CHATS_LIMIT_DEFAULT = 100;
 const MAX_RECENT_TIME = 1000 * 60 * 60 * 24 * 7;
 const SEARCH_SCORE_MAP = {
@@ -40,7 +42,10 @@ const forEach = (callback) => {
         });
     }
 };
-
+/**
+ * 从chats列表中拿到相应ID的chat
+ * 如果发现chat是空的并且gid有&符号分割，说明是一个新建立的会话
+ */
 const get = (gid) => {
     if (!chats) {
         return null;

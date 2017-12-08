@@ -3,7 +3,9 @@ import Status from '../../utils/status';
 import Lang from '../../lang';
 import Pinyin from '../../utils/pinyin';
 import {ChatMessage} from './index';
-
+/**
+ * 定义一个聊天室的模型
+ */
 const STATUS = new Status({
     local: 0,
     sending: 1,
@@ -25,6 +27,11 @@ const COMMITTERS_TYPES = {
 
 const MAX_MESSAGE_COUNT = 100;
 const DISMISS_VISIBLE_TIME = 1000*60*60*24*90;
+
+/**
+ * 扩展自实体对象
+ * SCHEMA定义了对象的元信息
+ */
 
 class Chat extends Entity {
     static NAME = 'Chat';
