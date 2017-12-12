@@ -138,13 +138,12 @@ export default class Extension {
     }
 
     get mainFile() {
-        const mainFile = this.pkg.main;
-        if (mainFile && !this._mainFile) {
+        if (!this._mainFile) {
             const buildIn = this.buildIn;
-            if (buildIn && this.buildIn.module) {
+            if (buildIn && buildIn.module) {
                 this._mainFile = 'BUILD-IN';
-            } else {
-                this._mainFile = Path.join(this.localPath, mainFile);
+            } else if (this.pkg.main) {
+                this._mainFile = Path.join(this.localPath, this.pkg.main);
             }
         }
         return this._mainFile;
