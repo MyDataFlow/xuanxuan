@@ -93,7 +93,7 @@ class chatModel extends model
      */
     public function getUserByUserID($userID = 0)
     {
-        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
+        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
         if($user)
         {
             $user = $this->formatUsers($user);
@@ -112,7 +112,7 @@ class chatModel extends model
      */
     public function getUserList($status = '', $idList = array(), $idAsKey= true)
     {
-        $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, deleted')
+        $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')
             ->from(TABLE_USER)->where('1')
             ->beginIF(!$idList)->andWhere('deleted')->eq('0')->fi()
             ->beginIF($status && $status == 'online')->andWhere('status')->ne('offline')->fi()
