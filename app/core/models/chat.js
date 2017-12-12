@@ -24,7 +24,7 @@ const COMMITTERS_TYPES = {
 };
 
 const MAX_MESSAGE_COUNT = 100;
-const DISMISS_VISIBLE_TIME = 1000*60*60*24*90;
+const DISMISS_VISIBLE_TIME = 1000 * 60 * 60 * 24 * 90;
 
 class Chat extends Entity {
     static NAME = 'Chat';
