@@ -138,9 +138,13 @@ export default class Extension {
     }
 
     get mainFile() {
-        const mainFile = this.pkg.main;
-        if (mainFile && !this._mainFile) {
-            this._mainFile = Path.join(this.localPath, mainFile);
+        if (!this._mainFile) {
+            const buildIn = this.buildIn;
+            if (buildIn && buildIn.module) {
+                this._mainFile = 'BUILD-IN';
+            } else if (this.pkg.main) {
+                this._mainFile = Path.join(this.localPath, this.pkg.main);
+            }
         }
         return this._mainFile;
     }
@@ -214,9 +218,15 @@ export default class Extension {
      * 重新载入扩展
      */
     loadModule(api) {
-        if (this.mainFile) {
+        const mainFile = this.mainFile;
+        if (mainFile) {
             const start = new Date().getTime();
-            this._module = __non_webpack_require__(this.mainFile);
+
+            if (mainFile === 'BUILD-IN') {
+                this._module = this.buildIn.module;
+            } else {
+                this._module = __non_webpack_require__(this.mainFile);
+            }
 
             this.callModuleMethod('onAttach', this, api);
 
@@ -271,7 +281,7 @@ export default class Extension {
     }
 
     callModuleMethod(methodName, ...params) {
-        const extModule = this.module;
+        const extModule = this._module;
         if (extModule && extModule[methodName]) {
             return extModule[methodName](...params);
         }

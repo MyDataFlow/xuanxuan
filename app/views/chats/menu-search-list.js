@@ -65,6 +65,12 @@ export default class MenuSearchList extends Component {
             }
             e.preventDefault();
         });
+        hotkeys('esc', 'chatsMenuSearch', e => {
+            if (this.props.onRequestClearSearch) {
+                this.props.onRequestClearSearch();
+            }
+            e.preventDefault();
+        });
     }
 
     componentWillReceiveProps(nextProps) {

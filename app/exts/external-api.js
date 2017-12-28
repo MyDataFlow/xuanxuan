@@ -4,7 +4,6 @@ import ReactSplitPane from 'react-split-pane';
 import EmojionePicker from 'emojione-picker';
 import marked from 'marked';
 import md5 from 'md5';
-import fse from 'fs-extra';
 import extractZip from 'extract-zip';
 import emojione from 'emojione';
 import DraftJs from 'draft-js';
@@ -26,7 +25,7 @@ const nodeModules = {
     EmojionePicker,
     marked,
     md5,
-    fse,
+    fs: platform.fs,
     extractZip,
     emojione,
     DraftJs,

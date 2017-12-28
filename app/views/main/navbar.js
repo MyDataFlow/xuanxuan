@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Link} from 'react-router-dom';
 import Config from 'Config';
+import ExtsRuntime from 'ExtsRuntime';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import Avatar from '../../components/avatar';
@@ -16,8 +17,10 @@ const navbarItems = [
     {to: ROUTES.chats.recents.__, label: Lang.string('navbar.chats.label'), icon: 'comment-outline', activeIcon: 'comment-processing'},
     {to: ROUTES.chats.groups.__, label: Lang.string('navbar.groups.label'), icon: 'pound', activeIcon: 'pound-box'},
     {to: ROUTES.chats.contacts.__, label: Lang.string('navbar.contacts.label'), icon: 'account-multiple-outline', activeIcon: 'account-multiple'},
-    {to: ROUTES.exts._, label: Lang.string('navbar.exts.label'), icon: 'apps', activeIcon: 'apps'},
 ];
+if (ExtsRuntime) {
+    navbarItems.push({to: ROUTES.exts._, label: Lang.string('navbar.exts.label'), icon: 'apps', activeIcon: 'apps'});
+}
 
 /* eslint-disable */
 const NavLink = ({item}) => (

@@ -22,7 +22,7 @@ export default validate(merge(baseConfig, {
     },
 
     output: {
-        path: path.join(__dirname, 'app/web-dist'),
+        path: path.join(__dirname, '../app/web-dist'),
         publicPath: '../dist/',
         filename: '[name].js',
         libraryTarget: 'var'
@@ -57,8 +57,10 @@ export default validate(merge(baseConfig, {
         alias: {
             Platform: 'platform/browser',
             Config: 'config/index.js',
+            ExtsRuntime: 'platform/browser/exts.js',
+            ExtsView: 'platform/browser/exts.js'
         },
-        root: path.join(__dirname, 'app')
+        root: path.join(__dirname, '../app')
     },
 
     plugins: [

@@ -3,6 +3,12 @@
     "appId": "com.cnezsoft.xuanxuan",
     "compression": "maximum",
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "extraResources": [
+        {
+            "from": "app/build-in/",
+            "to": "build-in"
+        }
+    ],
     "dmg": {
       "contents": [
         {

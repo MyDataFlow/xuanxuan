@@ -211,32 +211,41 @@ class Socket {
         let data = null;
         if (this.options.encryptEnable) {
             data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
-            if (DEBUG) {
-                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
-                console.log('data', data);
-                console.log('rawdata', rawdata);
-                console.groupEnd();
-            }
+            // if (DEBUG) {
+            //     console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
+            //     console.log('data', data);
+            //     console.log('rawdata', rawdata);
+            //     console.groupEnd();
+            // }
         }
 
         this.client.send(data, {
             binary: this.options.encryptEnable
-        }, () => {
-            if (DEBUG) {
-                console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'greenPale');
-                console.log('rawdata', rawdata);
-                console.groupEnd();
-                if (callback) {
-                    callback();
-                }
-            }
         });
+        if (callback) {
+            callback();
+        }
     }
 
-    close() {
+    markClose() {
+        this.status = STATUS.CLOSING;
+    }
+
+    removeAllListeners() {
+        this.client.onclose = null;
+        this.client.onerror = null;
+        this.client.onmessage = null;
+        this.client.onopen = null;
+    }
+
+    close(code, reason) {
         if (this.client) {
-            this.status = STATUS.CLOSING;
+            if (reason === 'close') {
+                this.markClose();
+            }
+            this.removeAllListeners();
             this.client.close();
+            this.handleClose(code, reason);
         }
     }
 }

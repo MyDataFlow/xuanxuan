@@ -102,6 +102,7 @@ class AppRemote {
         }
 
         this.entryPath = entryPath;
+        global.entryPath = entryPath;
     }
 
     ready() {

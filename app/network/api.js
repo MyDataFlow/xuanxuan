@@ -48,7 +48,7 @@ const checkUploadFileSize = (user, size) => {
 
 const uploadFile = (user, file, data = {}, onProgress = null) => Platform.net.uploadFile(user, file, data, onProgress);
 
-const createFileDownloadUrl = (user, file) => user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
+const createFileDownloadUrl = (user, file) => user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time || 0}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
 
 const downloadFile = (user, file, onProgress = null) => {
     if (!file.url) {
@@ -76,10 +76,11 @@ const getRanzhiServerInfo = (user) => {
 const ranzhiServerLogin = (user, password) => getRanzhiServerInfo(user).then(ranzhi => {
     const loginUrl = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}login.json&lang=zh-cn&${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=login&lang=zh-cn&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
     const passwordMd5 = md5(md5(md5(password) + user.account) + ranzhi.random);
-    const form = new FormData();
-    form.append('account', user.account);
-    form.append('password', passwordMd5);
-    return Platform.net.postJSONData(loginUrl, form).then(data => {
+    const form = {
+        account: user.account,
+        password: passwordMd5
+    };
+    return Platform.net.postJSONData(loginUrl, {form}).then(data => {
         ranzhi.loginResult = data;
         return Promise.resolve(ranzhi);
     });
@@ -90,10 +91,11 @@ const changeRanzhiUserPassword = (user, oldPassword, newPassword) => {
     if (ranzhiUrl) {
         return ranzhiServerLogin(user, oldPassword).then(ranzhi => {
             const url = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}changePassword.json&${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=changePassword&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
-            const form = new FormData();
-            form.append('password1', newPassword);
-            form.append('password2', newPassword);
-            return Platform.net.postJSONData(url, form).then(data => Promise.resolve(ranzhi));
+            const form = {
+                password1: newPassword,
+                password2: newPassword,
+            };
+            return Platform.net.postJSONData(url, {form}).then(data => Promise.resolve(ranzhi));
         });
     }
     return Promise.reject('RANZHI_SERVER_NOTSET');

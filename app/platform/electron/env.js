@@ -16,4 +16,8 @@ export default {
     dataPath,
     desktopPath,
     tmpPath,
+    get appPath() {
+        return path.resolve(Remote.app.getAppPath(), '..');
+    },
+    appRoot: Remote.getGlobal('entryPath')
 };

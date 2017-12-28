@@ -6,6 +6,14 @@ http://xuan.im
 
 ![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/preview.png)
 
+## 最近更新
+
+🎉 1.3 版本带来了大家期待的扩展机制，提供了更灵活的方式将你到业务与喧喧进行集成；另外还带来了多个实用功能，包括聊天记录搜索、讨论组解散、按部门或角色分组查看联系人、修改密码等。
+
+🎉 扩展机制内置的暗黑主题，让你的体验焕然一新，快来试试吧！
+
+![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/dark-theme-preview.png)
+
 ## 特色功能
 
 * **开聊**：和服务器上的任何用户开聊，收发表情、图片、截屏、文件样样在行；
@@ -81,6 +89,10 @@ http://xuan.im
 执行 `npm run package` 进行客户端打包。
 
 详情请参考：[客户端开发者指南](https://github.com/easysoft/xuanxuan/blob/master/doc/client-developer.md)
+
+### 扩展开发
+
+参见：https://github.com/easysoft/xuanxuan/blob/master/doc/extension.md
 
 ## 许可证
 

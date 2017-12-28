@@ -1,6 +1,8 @@
 @import './highlightjs.css';
 
 .page,
+select,
+option,
 body {
   color: #f1f1f1;
   background-color: #333;

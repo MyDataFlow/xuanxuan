@@ -1,3 +1,6 @@
+import {env, fs as fse} from 'Platform';
+import Config from 'Config';
+import path from 'path';
 import Lang from '../lang';
 
 const exts = [{
@@ -40,5 +43,38 @@ const exts = [{
     appAccentColor: '#ff9100',
     appType: 'insideView',
 }];
+
+// Load internals extensions
+const internals = Config.exts && Config.exts.internals;
+if (Array.isArray(internals) && internals.length) {
+    exts.push(...internals);
+}
+
+// Load local build-in extensions
+const buildInsPath = path.join(process.env.HOT ? env.appRoot : env.appPath, 'build-in');
+const buildInsFile = path.join(buildInsPath, 'extensions.json');
+const buildIns = fse.readJsonSync(buildInsFile, {throws: false});
+if (buildIns && Array.isArray(buildIns)) {
+    buildIns.forEach(extConfig => {
+        if (typeof extConfig === 'string') {
+            const extPkgPath = path.join(buildInsPath, extConfig, 'package.json');
+            const extPkg = fse.readJsonSync(extPkgPath, {throws: false});
+            if (extPkg && extPkg.name === extConfig) {
+                extConfig = extPkg;
+            }
+        }
+        if (extConfig && (typeof extConfig === 'object')) {
+            extConfig.buildIn = {
+                localPath: path.join(buildInsPath, extConfig.name)
+            };
+            exts.push(extConfig);
+            if (DEBUG) {
+                console.collapse('Extension local', 'greenBg', extConfig.name, 'greenPale');
+                console.log('ext', extConfig);
+                console.groupEnd();
+            }
+        }
+    });
+}
 
 export default exts;

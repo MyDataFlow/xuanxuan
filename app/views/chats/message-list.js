@@ -33,7 +33,7 @@ class MessageList extends Component {
 
     componentDidMount() {
         if (this.props.stayBottom) {
-            this.scrollToBottom(1500);
+            this.scrollToBottom(800);
         }
     }
 
@@ -41,7 +41,7 @@ class MessageList extends Component {
         if (this.props.stayBottom) {
             const {messages} = this.props;
             if (this.checkHasNewMessages(messages)) {
-                this.scrollToBottom(1000);
+                this.scrollToBottom(500);
             }
         }
     }

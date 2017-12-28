@@ -51,7 +51,7 @@ class ChatSidebar extends Component {
             <Tabs className="dock column single" defaultActivePaneKey={chat.isOne2One ? 'profile' : 'peoples'} navClassName="shadow-divider flex-none" contentClassName="flex-auto scroll-y">
                 {chat.isOne2One ? <TabPane key="profile" label={Lang.string('chat.sidebar.tab.profile.label')}>
                     <ChatSidebarProfile chat={chat} />
-                </TabPane> : <TabPane key="peoples" label={`${Lang.string('chat.sidebar.tab.peoples.label')}(${chat.membersCount})`}>
+                </TabPane> : <TabPane key="peoples" label={`${Lang.string('chat.sidebar.tab.peoples.label')}`}>
                     <ChatSidebarPeoples chat={chat} />
                 </TabPane>}
                 <TabPane key="files" label={`${Lang.string('chat.sidebar.tab.files.label')}`}>

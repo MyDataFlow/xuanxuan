@@ -70,14 +70,12 @@ export default class MenuContactList extends Component {
 
     handleSettingBtnClick = e => {
         const groupType = this.groupType;
-        const menus = GROUP_TYPES.map(type => {
-            return {
-                hidden: type.data === 'dept' && !App.members.hasDepts,
-                label: type.label,
-                data: type.data,
-                icon: type.data === groupType ? 'check text-success' : false
-            };
-        });
+        const menus = GROUP_TYPES.map(type => ({
+            hidden: type.data === 'dept' && !App.members.hasDepts,
+            label: type.label,
+            data: type.data,
+            icon: type.data === groupType ? 'check text-success' : false
+        }));
         menus.splice(0, 0, {label: Lang.string('chats.menu.switchView'), disabled: true});
         App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menus, {onItemClick: item => {
             if (item && item.data) {

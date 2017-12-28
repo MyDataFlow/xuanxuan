@@ -3,7 +3,7 @@ import AppExtension from './app-extension';
 import PluginExtension from './plugin-extension';
 import ThemeExtension from './theme-extension';
 
-const createExtension = (pkg, data, buildIn = false) => {
+const createExtension = (pkg, data = null, buildIn = false) => {
     if (pkg.pkg && !data) {
         data = pkg.data;
         pkg = pkg.pkg;
@@ -16,6 +16,8 @@ const createExtension = (pkg, data, buildIn = false) => {
         if (data && data.buildIn) {
             delete data.buildIn;
         }
+    } else if (pkg.buildIn && pkg.buildIn.localPath) {
+        data.localPath = pkg.buildIn.localPath;
     }
 
     if (typeof data !== 'object') {

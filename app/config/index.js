@@ -8,4 +8,5 @@ export default {
     media,
     ui,
     pkg,
+    exts: {}
 };

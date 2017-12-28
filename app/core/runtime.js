@@ -1,5 +1,5 @@
+import ExtsRuntime from 'ExtsRuntime';
 import Events from './events';
-import ExtsRuntime from '../exts/runtime';
 
 const EVENT = {
     ready: 'runtime.ready',
@@ -15,11 +15,19 @@ const ready = (listener) => {
     }
 };
 
-setTimeout(() => {
-    ExtsRuntime.loadModules();
+const sayReady = () => {
     isReadyed = true;
     Events.emit(EVENT.ready);
-}, 0);
+};
+
+if (ExtsRuntime) {
+    setTimeout(() => {
+        ExtsRuntime.loadModules();
+        sayReady();
+    }, 0);
+} else {
+    sayReady();
+}
 
 export default {
     ready,

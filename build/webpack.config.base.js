@@ -36,6 +36,8 @@ export default validate({
         alias: {
             Platform: 'platform/electron',
             Config: 'config/index.js',
+            ExtsRuntime: 'exts/runtime.js',
+            ExtsView: 'views/exts/index.js',
         },
         root: path.join(__dirname, '../app')
     },

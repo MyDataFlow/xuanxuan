@@ -1,5 +1,6 @@
 import Platform from 'Platform';
 import Events from '../events';
+import UserConfig from './user-config';
 import User from './user';
 import Lang from '../../lang';
 import notice from '../notice';
@@ -55,6 +56,7 @@ const onUserConfigChange = listener => (Events.on(User.EVENT.config_change, list
 const getLastSavedUser = () => (Platform.config.getUser());
 
 export default {
+    UserConfig,
     EVENT,
     createUser,
     setUser,

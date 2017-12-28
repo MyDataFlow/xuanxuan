@@ -219,7 +219,7 @@ class FormView extends Component {
             <button
                 type="button"
                 disabled={!this.state.submitable || this.state.logining}
-                className={HTML.classes('btn block rounded space-sm', this.state.submitable ? 'primary outline hover-solid' : 'gray')}
+                className={HTML.classes('btn block rounded space-sm', this.state.submitable ? 'primary' : 'gray')}
                 onClick={this.handleLoginBtnClick}
             >
                 {Lang.string(this.state.logining ? 'login.btn.logining' : 'login.btn.label')}
