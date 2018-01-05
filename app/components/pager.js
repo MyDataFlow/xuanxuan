@@ -11,7 +11,7 @@ class Pager extends Component {
         pageRecCount: PropTypes.number,
         className: PropTypes.string,
         onPageChange: PropTypes.func,
-    }
+    };
 
     static defaultProps = {
         page: 1,
@@ -22,13 +22,13 @@ class Pager extends Component {
         pageRecCount: 0,
     };
 
-    handlePrevBtnClick = e => {
+    handlePrevBtnClick = () => {
         if (this.props.page > 1) {
             this.props.onPageChange(this.props.page - 1);
         }
     }
 
-    handleNextBtnClick = e => {
+    handleNextBtnClick = () => {
         if (this.props.page < this.totalPage) {
             this.props.onPageChange(this.props.page + 1);
         }
