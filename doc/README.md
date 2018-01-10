@@ -11,6 +11,9 @@
 
 * [服务器端下载及使用](https://github.com/easysoft/xuanxuan/blob/master/doc/server.md)
 
+### 扩展
+
+* [扩展](https://github.com/easysoft/xuanxuan/blob/master/doc/extension.md)
 
 ## 开发
 
