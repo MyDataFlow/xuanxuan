@@ -5,7 +5,7 @@ http://xuan.im
 由[然之协同](http://ranzhico.com)提供的面向企业即时通信解决方案。
 
 官方 QQ 群：**367833155**
-了解项目和计划：http://zui.5upm.com/product-browse-1.html
+了解项目和计划：http://xuan.5upm.com/product-browse-1.html
 
 ![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/preview.png)
 
