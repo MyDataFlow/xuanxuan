@@ -10,125 +10,125 @@
 package api
 
 import (
-	"encoding/json"
-	"xxd/util"
+    "encoding/json"
+    "xxd/util"
 )
 
 type ParseData map[string]interface{}
 
 // 对通讯的api进行解析
 func ApiParse(message, token []byte) (ParseData, error) {
-	jsonData, err := aesDecrypt(message, token)
-	if err != nil {
-		util.LogError().Println("aes decrypt error:", err)
-		return nil, err
-	}
+    jsonData, err := aesDecrypt(message, token)
+    if err != nil {
+        util.LogError().Println("aes decrypt error:", err)
+        return nil, err
+    }
 
-	parseData := make(ParseData)
-	if err := json.Unmarshal([]byte(jsonData), &parseData); err != nil {
-		util.LogError().Println("json unmarshal error:", err)
-		return nil, err
-	}
+    parseData := make(ParseData)
+    if err := json.Unmarshal([]byte(jsonData), &parseData); err != nil {
+        util.LogError().Println("json unmarshal error:", err)
+        return nil, err
+    }
 
-	return parseData, nil
+    return parseData, nil
 }
 
 // 对通讯的api进行加密
 func ApiUnparse(parseData ParseData, token []byte) []byte {
-	jsonData, err := json.Marshal(parseData)
-	if err != nil {
-		util.LogError().Println("json unmarshal error:", err)
-		return nil
-	}
+    jsonData, err := json.Marshal(parseData)
+    if err != nil {
+        util.LogError().Println("json unmarshal error:", err)
+        return nil
+    }
 
-	message, err := aesEncrypt(jsonData, token)
-	if err != nil {
-		util.LogError().Println("aes encrypt error:", err)
-		return nil
-	}
+    message, err := aesEncrypt(jsonData, token)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil
+    }
 
-	return message
+    return message
 }
 
 //交换token加密
 func SwapToken(message, fromToken, toToken []byte) ([]byte, error) {
-	jsonData, err := aesDecrypt(message, fromToken)
-	if err != nil {
-		util.LogError().Println("aes decrypt error:", err)
-		return nil, err
-	}
+    jsonData, err := aesDecrypt(message, fromToken)
+    if err != nil {
+        util.LogError().Println("aes decrypt error:", err)
+        return nil, err
+    }
 
-	message, err = aesEncrypt(jsonData, toToken)
-	if err != nil {
-		util.LogError().Println("aes encrypt error:", err)
-		return nil, err
-	}
+    message, err = aesEncrypt(jsonData, toToken)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil, err
+    }
 
-	return message, nil
+    return message, nil
 }
 
 func (pd ParseData) Module() string {
-	ret, ok := pd["module"]
-	if !ok {
-		return ""
-	}
+    ret, ok := pd["module"]
+    if !ok {
+        return ""
+    }
 
-	return ret.(string)
+    return ret.(string)
 }
 
 func (pd ParseData) Method() string {
-	ret, ok := pd["method"]
-	if !ok {
-		return ""
-	}
+    ret, ok := pd["method"]
+    if !ok {
+        return ""
+    }
 
-	return ret.(string)
+    return ret.(string)
 }
 
 func (pd ParseData) UserID() int64 {
-	ret, ok := pd["userID"]
-	if !ok {
-		return -1
-	}
+    ret, ok := pd["userID"]
+    if !ok {
+        return -1
+    }
 
-	return int64(ret.(float64))
+    return int64(ret.(float64))
 }
 
 func (pd ParseData) Result() string {
-	ret, ok := pd["result"]
-	if !ok {
-		return ""
-	}
+    ret, ok := pd["result"]
+    if !ok {
+        return ""
+    }
 
-	return ret.(string)
+    return ret.(string)
 }
 
 func (pd ParseData) SendUsers() []int64 {
-	// 判断users是否存在
-	ret, ok := pd["users"]
-	if !ok {
-		return nil
-	}
+    // 判断users是否存在
+    ret, ok := pd["users"]
+    if !ok {
+        return nil
+    }
 
-	// 对interface类型进行转换
-	array := make([]int64, len(ret.([]interface{})))
-	for i, v := range ret.([]interface{}) {
-		array[i] = int64(v.(float64))
-	}
+    // 对interface类型进行转换
+    array := make([]int64, len(ret.([]interface{})))
+    for i, v := range ret.([]interface{}) {
+        array[i] = int64(v.(float64))
+    }
 
-	delete(pd, "users")
-	return array
+    delete(pd, "users")
+    return array
 }
 
 func (pd ParseData) Test() bool {
-	ret, ok := pd["test"]
-	if !ok {
-		return false
-	}
+    ret, ok := pd["test"]
+    if !ok {
+        return false
+    }
 
-	return ret.(bool)
+    return ret.(bool)
 }
 
 func Testfunc(jsonData string) []byte {
-	return nil
+    return nil
 }

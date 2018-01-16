@@ -10,57 +10,57 @@
 package util
 
 import (
-	"os"
-	"log"
+    "os"
+    "log"
   "io/ioutil"
 )
 
 func CreatUid(serverName string, userID int64, key string) error {
 
-	url := Config.LogPath+"/"+serverName+"/"
+    url := Config.LogPath+"/"+serverName+"/"
 
-	if err := Mkdir(url); err != nil {
-		LogError().Println("mkdir error %s\n", err)
-		return err
-	}
+    if err := Mkdir(url); err != nil {
+        LogError().Println("mkdir error %s\n", err)
+        return err
+    }
 
-	fileName := url + Int642String(userID)
+    fileName := url + Int642String(userID)
 
-	fout,err := os.Create(fileName)
-	defer fout.Close()
-	if err != nil {
-		LogError().Println("Create file error",fileName,err)
-		return err
-	}
+    fout,err := os.Create(fileName)
+    defer fout.Close()
+    if err != nil {
+        LogError().Println("Create file error",fileName,err)
+        return err
+    }
 
-  LogInfo().Println("Session file:", fileName)
-  fout.WriteString(key)
-  LogInfo().Println("Session created:", key)
+    LogInfo().Println("Session file:", fileName)
+    fout.WriteString(key)
+    LogInfo().Println("Session created:", key)
 
-	return nil
+    return nil
 }
 
 func GetUid(serverName string, userID string) (string,error) {
-	url := Config.LogPath+"/"+serverName+"/"+ userID
+    url := Config.LogPath+"/"+serverName+"/"+ userID
 
-	file, err := os.Open(url)
-	if err != nil {
-    LogError().Println("Cannot open file",url,err)
-    log.Fatal(err)
-	}
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-    LogError().Println("Cannot read file",url,err)
-    log.Fatal(err)
-	}
-	return string(data),nil
+    file, err := os.Open(url)
+    if err != nil {
+        LogError().Println("Cannot open file",url,err)
+        log.Fatal(err)
+    }
+    data, err := ioutil.ReadAll(file)
+    if err != nil {
+        LogError().Println("Cannot read file",url,err)
+        log.Fatal(err)
+    }
+    return string(data),nil
 }
 
 func DelUid(serverName string, userID string) error {
-	url := Config.LogPath+"/"+serverName+"/"+ userID
-	err := Rm(url)
-	if err != nil {
-		return err
-	}
-	return nil
+    url := Config.LogPath+"/"+serverName+"/"+ userID
+    err := Rm(url)
+    if err != nil {
+        return err
+    }
+    return nil
 }
