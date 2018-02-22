@@ -356,7 +356,7 @@ $ brew install rpm
     </tr>
     <tr>
       <td><code>/app/config/</code></td>
-      <td>客户端配置文件</td>
+      <td>客户端配置文件</td>
     </tr>
     <tr>
       <td><code>/app/platform</code></td>
@@ -368,7 +368,7 @@ $ brew install rpm
     </tr>
     <tr>
       <td><code>/app/components/</code></td>
-      <td>客户端界面用到的通用 React 组件</td>
+      <td>客户端界面用到的通用 React 组件</td>
     </tr>
     <tr>
       <td><code>/app/views/</code></td>

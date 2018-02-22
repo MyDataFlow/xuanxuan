@@ -86,6 +86,7 @@ const chatUserchange = (msg, socket) => {
                     member.status = msg.data.status;
                 }
                 members.update(member);
+                return member;
             }
         }
     }

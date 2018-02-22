@@ -10,11 +10,11 @@
 package hyperttp
 
 import (
-	"bytes"
-	"crypto/tls"
-	"io/ioutil"
-	"net/http"
-	"xxd/util"
+    "bytes"
+    "crypto/tls"
+    "io/ioutil"
+    "net/http"
+    "xxd/util"
 )
 
 const https = "https:"
@@ -22,71 +22,71 @@ const requestCount = 3
 
 // http 请求
 func RequestInfo(addr string, postData []byte) ([]byte, error) {
-	if postData == nil || addr == "" {
-		return nil, util.Errorf("%s", "post data or addr is null")
-	}
+    if postData == nil || addr == "" {
+        return nil, util.Errorf("%s", "post data or addr is null")
+    }
 
-	// 根据配置文件的不同创建 http 或者 https 的客户端
-	var client *http.Client
-	if addr[:6] != https {
-		client = httpRequest()
-	} else {
-		client = httpsRequest()
-	}
+    // 根据配置文件的不同创建 http 或者 https 的客户端
+    var client *http.Client
+    if addr[:6] != https {
+        client = httpRequest()
+    } else {
+        client = httpsRequest()
+    }
 
-	var i int = 0
-	var resp *http.Response
+    var i int = 0
+    var resp *http.Response
 
-	// 请求然之失败时，再进行三次尝试。
-	for i = 0; i < requestCount; i++ {
-		req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
-		if err != nil {
-			util.LogError().Printf("http new request error, addr [%s] error:%v", addr, err)
-		}
+    // 请求然之失败时，再进行三次尝试。
+    for i = 0; i < requestCount; i++ {
+        req, err := http.NewRequest("POST", addr, bytes.NewReader(postData))
+        if err != nil {
+            util.LogError().Printf("http new request error, addr [%s] error:%v", addr, err)
+        }
 
-		req.Header.Set("Content-type", "application/x-www-form-urlencoded")
-		req.Header.Set("User-Agent", "easysoft-xxdClient/"+util.Version)
-		resp, err = client.Do(req)
-		if err != nil {
-			util.LogError().Printf("request addr [%s] error:%v", addr, err)
+        req.Header.Set("Content-type", "application/x-www-form-urlencoded")
+        req.Header.Set("User-Agent", "easysoft-xxdClient/"+util.Version)
+        resp, err = client.Do(req)
+        if err != nil {
+            util.LogError().Printf("request addr [%s] error:%v", addr, err)
 
-			util.SleepMillisecond(200)
-			continue
-		}
+            util.SleepMillisecond(200)
+            continue
+        }
 
-		// StatusOK == 200
-		if resp.StatusCode == http.StatusOK {
-			break
-		}
+        // StatusOK == 200
+        if resp.StatusCode == http.StatusOK {
+            break
+        }
 
-		util.LogError().Printf(" request status code:%v", resp.StatusCode)
-		util.SleepMillisecond(200)
-	}
+        util.LogError().Printf(" request status code:%v", resp.StatusCode)
+        util.SleepMillisecond(200)
+    }
 
-	if i >= requestCount {
-		return nil, util.Errorf("%s", "http request error, request count > 3")
-	}
+    if i >= requestCount {
+        return nil, util.Errorf("%s", "http request error, request count > 3")
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		util.LogError().Println("request body read error:", err)
-		return nil, err
-	}
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        util.LogError().Println("request body read error:", err)
+        return nil, err
+    }
 
-	// 返回然之服务器的数据
-	return body, nil
+    // 返回然之服务器的数据
+    return body, nil
 }
 
 func httpRequest() *http.Client {
-	return &http.Client{}
+    return &http.Client{}
 }
 
 func httpsRequest() *http.Client {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
+    tr := &http.Transport{
+        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    }
 
-	return &http.Client{Transport: tr}
+    return &http.Client{Transport: tr}
 }

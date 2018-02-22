@@ -1,5 +1,5 @@
 <?php
-$lang->system->menu->xuanxuan = 'Xuanxuan|chat|setKey|';
+$lang->system->menu->xuanxuan = 'Xuanxuan|setting|xuanxuan|';
 
 $lang->system->menuOrder[2] = 'xuanxuan';
 

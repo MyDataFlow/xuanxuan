@@ -40,9 +40,9 @@ class UserChangePassword extends Component {
     }
 
     handleConfirmBtnClick = () => {
-        if (StringHelper.isEmpty(this.state.oldPassword)) {
-            return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.oldPassword'))});
-        }
+        // if (StringHelper.isEmpty(this.state.oldPassword)) {
+        //     return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.oldPassword'))});
+        // }
         if (StringHelper.isEmpty(this.state.password1)) {
             return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.password1'))});
         }
@@ -52,11 +52,11 @@ class UserChangePassword extends Component {
         if (this.state.password1 !== this.state.password2) {
             return this.setState({message: Lang.string('user.changePassword.passwordNotSame')});
         }
-        if (this.state.password1 === this.state.oldPassword) {
-            return this.setState({message: Lang.string('user.changePassword.notChanged')});
-        }
+        // if (this.state.password1 === this.state.oldPassword) {
+        //     return this.setState({message: Lang.string('user.changePassword.notChanged')});
+        // }
         this.setState({doing: true});
-        App.server.changeRanzhiUserPassword(this.state.oldPassword, this.state.password1).then(result => {
+        App.server.socket.changeUserPassword(this.state.password1).then(() => {
             this.setState({doing: false});
             if (this.props.onFinish) {
                 this.props.onFinish(true);
@@ -67,6 +67,17 @@ class UserChangePassword extends Component {
                 doing: false
             });
         });
+        // App.server.changeRanzhiUserPassword(this.state.oldPassword, this.state.password1).then(result => {
+        //     this.setState({doing: false});
+        //     if (this.props.onFinish) {
+        //         this.props.onFinish(true);
+        //     }
+        // }).catch(error => {
+        //     this.setState({
+        //         message: Lang.error(error) || Lang.string('user.changePassword.failed'),
+        //         doing: false
+        //     });
+        // });
     }
 
     render() {
@@ -77,7 +88,7 @@ class UserChangePassword extends Component {
         } = this.props;
         return (<div className={HTML.classes('app-user-change-pwd', className)} {...other}>
             {this.state.message && <div className="box danger rounded space-sm">{this.state.message}</div>}
-            <InputControl inputType="password" className={this.state.message && StringHelper.isEmpty(this.state.oldPassword) ? 'has-error' : ''} disabled={this.state.doing} onChange={this.handleInputChange.bind(this, 'oldPassword')} value={this.state.oldPassword} label={Lang.string('user.changePassword.oldPassword')} />
+            {/* <InputControl inputType="password" className={this.state.message && StringHelper.isEmpty(this.state.oldPassword) ? 'has-error' : ''} disabled={this.state.doing} onChange={this.handleInputChange.bind(this, 'oldPassword')} value={this.state.oldPassword} label={Lang.string('user.changePassword.oldPassword')} /> */}
             <InputControl inputType="password" className={this.state.message && (StringHelper.isEmpty(this.state.password1) || this.state.password1 !== this.state.password2) ? 'has-error' : ''} disabled={this.state.doing} onChange={this.handleInputChange.bind(this, 'password1')} value={this.state.password1} label={Lang.string('user.changePassword.newPassword')} />
             <InputControl inputType="password" className={this.state.message && (StringHelper.isEmpty(this.state.password2) || this.state.password1 !== this.state.password2) ? 'has-error' : ''} disabled={this.state.doing} onChange={this.handleInputChange.bind(this, 'password2')} value={this.state.password2} label={Lang.string('user.changePassword.newPasswordRepeat')} />
             <div className="has-padding-v">

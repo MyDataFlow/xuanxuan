@@ -63,8 +63,9 @@ class chatModel extends model
      * @access public
      * @return object
      */
-    public function formatUsers($users) {
-        if (is_array($users))
+    public function formatUsers($users)
+    {
+        if(is_array($users))
         {
             foreach($users as $user)
             {
@@ -93,7 +94,7 @@ class chatModel extends model
      */
     public function getUserByUserID($userID = 0)
     {
-        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
+        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
         if($user)
         {
             $user = $this->formatUsers($user);
@@ -112,7 +113,7 @@ class chatModel extends model
      */
     public function getUserList($status = '', $idList = array(), $idAsKey= true)
     {
-        $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, deleted')
+        $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')
             ->from(TABLE_USER)->where('1')
             ->beginIF(!$idList)->andWhere('deleted')->eq('0')->fi()
             ->beginIF($status && $status == 'online')->andWhere('status')->ne('offline')->fi()
@@ -197,10 +198,10 @@ class chatModel extends model
 
         foreach($messages as $message)
         {
-            $message->id   = (int)$message->id;
-            $message->order= (int)$message->order;
-            $message->user = (int)$message->user;
-            $message->date = strtotime($message->date);
+            $message->id    = (int)$message->id;
+            $message->order = (int)$message->order;
+            $message->user  = (int)$message->user;
+            $message->date  = strtotime($message->date);
         }
 
         return $messages;
@@ -224,10 +225,10 @@ class chatModel extends model
 
         foreach($messages as $message)
         {
-            $message->id   = (int)$message->id;
-            $message->order= (int)$message->order;
-            $message->user = (int)$message->user;
-            $message->date = strtotime($message->date);
+            $message->id    = (int)$message->id;
+            $message->order = (int)$message->order;
+            $message->user  = (int)$message->user;
+            $message->date  = strtotime($message->date);
         }
 
         return $messages;
@@ -240,8 +241,9 @@ class chatModel extends model
      * @access public
      * @return object
      */
-    public function formatChats($chats) {
-        if (is_array($chats))
+    public function formatChats($chats)
+    {
+        if(is_array($chats))
         {
             foreach($chats as $chat)
             {
@@ -260,11 +262,12 @@ class chatModel extends model
         $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? 0 : strtotime($chat->lastActiveTime);
         $chat->dismissDate    = $chat->dismissDate == '0000-00-00 00:00:00' ? 0 : strtotime($chat->dismissDate);
 
-        if ($chat->type == 'one2one') $chat->name = '';
+        if($chat->type == 'one2one') $chat->name = '';
 
-        if (isset($chat->star)) $chat->star = (int)$chat->star;
-        if (isset($chat->hide)) $chat->hide = (int)$chat->hide;
-        if (isset($chat->mute)) $chat->mute = (int)$chat->mute;
+        if(isset($chat->star)) $chat->star = (int)$chat->star;
+        if(isset($chat->hide)) $chat->hide = (int)$chat->hide;
+        if(isset($chat->mute)) $chat->mute = (int)$chat->mute;
+        
         return $chat;
     }
 

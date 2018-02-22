@@ -1,3 +1,4 @@
+import md5 from 'md5';
 import {Socket} from 'Platform';
 import SocketMessage from './socket-message';
 import Events from '../core/events';
@@ -230,9 +231,19 @@ class AppSocket extends Socket {
     }
 
     changeUserStatus(status) {
-        return this.send({
-            method: 'userChange',
-            params: [{status}]
+        return this.changeUser({status});
+    }
+
+    changeUser(userChangeData) {
+        return this.sendAndListen({
+            method: 'userchange',
+            params: [userChangeData]
+        });
+    }
+
+    changeUserPassword(password) {
+        return this.changeUser({
+            password: md5(`${md5(password)}${this.user.account}`)
         });
     }
 
