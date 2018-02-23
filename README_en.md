@@ -1,8 +1,8 @@
-# 喧喧
+# Xuanxuan
 
 http://xuan.im
 
-由[然之协同](http://ranzhico.com)提供的面向企业即时通信解决方案。
+proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for enterprises.
 
 官方 QQ 群：**367833155**
 了解项目和计划：http://xuan.5upm.com/product-browse-1.html
