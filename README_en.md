@@ -5,11 +5,11 @@ http://xuan.im
 proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for enterprises.
 
 官方 QQ 群：**367833155**
-了解项目和计划：http://xuan.5upm.com/product-browse-1.html
+Know more about its plans：http://xuan.5upm.com/product-browse-1.html
 
-![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/preview.png)
+![Xuanxuan](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/preview.png)
 
-## 最近更新
+## Latest Update
 
 🎉 1.3 版本带来了大家期待的扩展机制，提供了更灵活的方式将你到业务与喧喧进行集成；另外还带来了多个实用功能，包括聊天记录搜索、讨论组解散、按部门或角色分组查看联系人、修改密码等。
 
@@ -28,9 +28,9 @@ proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for 
 * **跨平台客户端**：目前已支持 Windows、Linux、Mac，并且还提供了浏览器客户端；
 * **轻量级服务器端**：轻松搭配[然之协同](http://ranzhico.com)使用。
 
-## 使用
+## Use
 
-### 桌面客户端
+### Desktop Client
 
 受益于 Electron 的跨平台特性，喧喧客户端提供了 Windows、MacOS 和 Linux 版本。
 
@@ -38,7 +38,7 @@ proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for 
 
 更多帮助参见 [官方客户端使用指南](http://xuan.im/page/1.html)。
 
-### 浏览器客户端
+### Browse Client
 
 浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.2.0/
 
@@ -46,7 +46,7 @@ proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for 
 
 更多帮助参见 [浏览器端部署和使用指南](https://github.com/easysoft/xuanxuan/blob/master/doc/browser-usage.md)
 
-### 服务器端
+### Server Client
 
 客户端主要通过 `WebSocket` 协议与服务器端进行实时通信，另外还用到了 `https` 协议来从服务器获取配置及上传下载文件。
 
@@ -79,7 +79,7 @@ proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for 
 
 注意：测试服务器不能使用传送文件功能。
 
-### 客户端开发
+### Client Customization
 
 客户端主要使用的技术为 `Webpack + Electron + React`。使用下面的步骤快速进入开发状态：
 
@@ -96,7 +96,7 @@ proudly presented by [Zdoo](http://http://www.zdoo.org/) and an IM solution for 
 
 参见：https://github.com/easysoft/xuanxuan/blob/master/doc/extension.md
 
-## 许可证
+## License
 
 喧喧使用 [ZPL](https://github.com/easysoft/xuanxuan/blob/master/LICENSE) 开源许可证，另外还使用了如下开源项目：
 
