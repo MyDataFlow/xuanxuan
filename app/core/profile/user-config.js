@@ -1,3 +1,4 @@
+import md5 from 'md5';
 import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
 import timeSequence from '../../utils/time-sequence';
@@ -27,7 +28,7 @@ class UserConfig {
                 }
             }
         });
-        this.groupsCategories = groupsCategories;
+        return this.set('ui.chat.groups.categories', groupsCategories, true);
     }
 
     plain() {
@@ -41,16 +42,24 @@ class UserConfig {
                 config[key] = this.$[key];
             }
         });
+        config.hash = md5(JSON.stringify(config));
+        this.hash = config.hash;
         return config;
     }
 
-    makeChange(change) {
+    makeChange(change, reset = false) {
         this.lastChange = Object.assign({}, this.lastChange, change);
-
+        this.$.lastChangeTime = new Date().getTime();
+        if (!reset) {
+            this.needSave = this.$.lastChangeTime;
+        }
         if (typeof this.onChange === 'function') {
             this.changeAction.do();
         }
-        this.$.lastChangeTime = new Date().getTime();
+    }
+
+    makeSave() {
+        this.needSave = false;
     }
 
     get(key, defaultValue) {
@@ -66,19 +75,19 @@ class UserConfig {
         return defaultValue;
     }
 
-    set(keyOrObj, value) {
+    set(keyOrObj, value, reset = false) {
         if (typeof keyOrObj === 'object') {
             Object.assign(this.$, keyOrObj);
-            this.makeChange(keyOrObj);
+            this.makeChange(keyOrObj, reset);
         } else {
             this.$[keyOrObj] = value;
-            this.makeChange({[keyOrObj]: value});
+            this.makeChange({[keyOrObj]: value}, reset);
         }
     }
 
     reset(newConfig) {
         this.$ = Object.assign({}, DEFAULT, newConfig);
-        this.makeChange(this.$);
+        this.makeChange(this.$, true);
     }
 
     get autoReconnect() {
@@ -306,6 +315,30 @@ class UserConfig {
 
     set groupsDefaultCategoryName(name) {
         return this.set('ui.chat.groups.category.default', name);
+    }
+
+    get chatGroupStates() {
+        return this.get('ui.chat.list.group.states', {});
+    }
+
+    set chatGroupStates(states) {
+        return this.set('ui.chat.list.group.states', states);
+    }
+
+    setChatMenuGroupState(listType, groupType, id, expanded) {
+        const chatGroupStates = this.chatGroupStates;
+        const key = `${listType}.${groupType}.${id}`;
+        if (expanded) {
+            chatGroupStates[key] = expanded;
+        } else if (chatGroupStates[key]) {
+            delete chatGroupStates[key];
+        }
+        this.chatGroupStates = chatGroupStates;
+    }
+
+    getChatMenuGroupState(listType, groupType, id) {
+        const chatGroupStates = this.chatGroupStates;
+        return !!(chatGroupStates && chatGroupStates[`${listType}.${groupType}.${id}`]);
     }
 }
 

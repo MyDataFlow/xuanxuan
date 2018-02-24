@@ -603,9 +603,12 @@ if (Platform.screenshot && Platform.shortcut) {
             }
         }
     };
-    profile.onUserConfigChange(change => {
+    profile.onUserConfigChange((change, config) => {
         if (change && change['shortcut.captureScreen']) {
             registerShortcut();
+        }
+        if (config.needSave) {
+            CoreServer.socket.uploadUserSettings();
         }
     });
     CoreServer.onUserLogin(registerShortcut);

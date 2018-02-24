@@ -211,12 +211,17 @@ class AppSocket extends Socket {
     }
 
     uploadUserSettings() {
+        const needSaveId = this.user.config.needSave;
         return this.sendAndListen({
             method: 'settings',
             params: [
                 this.user.account,
                 this.user.config.exportCloud()
             ]
+        }).then(() => {
+            if (this.user.config.needSave === needSaveId) {
+                this.user.config.makeSave();
+            }
         });
     }
 
