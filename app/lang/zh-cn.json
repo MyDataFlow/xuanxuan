@@ -388,6 +388,7 @@
     "user.changePassword.inputRequired": "需要填写“{0}”",
     "user.changePassword.passwordNotSame": "两次填写的密码不一样",
     "user.changePassword.notChanged": "新密码与旧密码相同",
+    "user.changePassword.denySimplePassword": "密码太简单，应该至少包含6个以上（包括）字符",
     "user.changePassword.failed": "密码更改失败。",
     "user.changePassword.success": "密码修改成功。",
 
