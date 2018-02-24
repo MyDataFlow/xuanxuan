@@ -56,7 +56,7 @@ class MenuHeader extends Component {
                 defaultValue={defaultSearch}
                 className="app-chats-search"
                 onSearchChange={onSearchChange}
-                placeholder={Lang.string(`chats.search.${filter}`)}
+                placeholder={Lang.string('chats.search.recents')}
             />
             <div className="app-chats-create-btn hint--bottom" data-hint={Lang.string('chats.create.label')}>
                 <button type="button" className="btn rounded iconbutton" onClick={this.handleCreateBtnClick}><Icon name="comment-plus-outline" className="icon-2x" /></button>

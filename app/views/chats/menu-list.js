@@ -71,7 +71,7 @@ class MenuList extends Component {
         } = this.props;
 
         if (search) {
-            return <MenuSearchList className={className} filter={filter} search={search} onRequestClearSearch={onRequestClearSearch} {...other} />;
+            return <MenuSearchList className={className} search={search} onRequestClearSearch={onRequestClearSearch} {...other} />;
         } else if (filter === 'contacts') {
             return <MenuContactList className={className} filter={filter} {...other} />;
         } else if (filter === 'groups') {
