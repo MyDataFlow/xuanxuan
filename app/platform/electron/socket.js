@@ -92,7 +92,9 @@ class Socket {
         this.close();
 
         this.status = STATUS.CONNECTING;
-        this.client = new WS(this.url);
+        this.client = new WS(this.url, {
+            rejectUnauthorized: false
+        });
 
         if (DEBUG) {
             console.collapse('SOCKET Connect', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
