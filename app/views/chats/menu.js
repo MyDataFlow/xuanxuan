@@ -44,7 +44,7 @@ class Menu extends Component {
             this.blurSearchTimer = setTimeout(() => {
                 this.setState({searchFocus: false});
                 this.blurSearchTimer = null;
-            }, 100);
+            }, 200);
         }
     };
 
