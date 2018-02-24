@@ -113,7 +113,7 @@ class UserConfig {
     }
 
     set showMessageTip(flag) {
-        return this.set('showMessageTip', flag);
+        return this.set('ui.chat.showMessageTip', flag);
     }
 
     get sendHDEmoticon() {
@@ -121,7 +121,7 @@ class UserConfig {
     }
 
     set sendHDEmoticon(flag) {
-        return this.set('sendHDEmoticon', flag);
+        return this.set('ui.chat.sendHDEmoticon', flag);
     }
 
     isChatSidebarHidden(cgid, defaultValue) {
