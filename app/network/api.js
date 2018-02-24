@@ -90,7 +90,7 @@ const changeRanzhiUserPassword = (user, oldPassword, newPassword) => {
     const ranzhiUrl = user.ranzhiUrl;
     if (ranzhiUrl) {
         return ranzhiServerLogin(user, oldPassword).then(ranzhi => {
-            const url = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}changePassword.json&${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=changePassword&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
+            const url = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}changePassword.json?${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=changePassword&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
             const form = {
                 password1: newPassword,
                 password2: newPassword,

@@ -34,7 +34,7 @@ class Socket {
             connent: true,
             userToken: '',
             cipherIV: '',
-            encryptEnable: true
+            encryptEnable: true,
         }, options);
 
         this.options = options;
