@@ -61,35 +61,35 @@ API Reference of client and server：[API Doc](http://xuan.im/page/3.html). API 
 
 Xuanxuan default server use `go` to develop（AKA `xxd` ）, and you can find the source code in [`/server/xxd/`](https://github.com/easysoft/xuanxuan/tree/master/server/xxd) . xxd provides interfacee of `WebSocket` and `https` for clients.
 
-`xxd` does not save or manage user information anad data, but uses http, a broader protocol, and another server（AKA `http`）to communicate. 这样你只需要在你自己的网站上开发一系列 `http` 接口即可为你的网站用户启用喧喧。
+`xxd` does not save or manage any user information or data, but uses http, a broader protocol, and another server（AKA `http`）to communicate. Therefore, all you hav to do is to develop interfaces of `http` on your site and your site users can use Xuanxuan.
 
-官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](https://github.com/easysoft/xuanxuan/tree/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
+ `http` provided by Xuanxuan is based on an open source collaborative tool [Zdoo](https://github.com/easysoft/rangerteam) and you can find its source code in [`/server/ranzhi/`](https://github.com/easysoft/xuanxuan/tree/master/server/ranzhi). For Zdoo server deployment, please refer to：[Zdoo Server Deployment Guide](http://xuan.im/page/2.html)。
 
-这里有一个公开的测试服务器供使用：
+Here is a demo on a public test server:
 
 ```
-地址：https://demo.ranzhi.org
-用户：demo
-密码：demo
+Adrdress：https://demo.ranzhi.org
+User：demo
+Password：demo
 
-或用户：demo1, demo2, ... demo10
-密码：123456
+or User：demo1, demo2, ... demo10
+Password：123456
 ```
 
-注意：测试服务器不能使用传送文件功能。
+Note：On a test server, it is not supported to transfer files.
 
 ### Client Customization
 
-客户端主要使用的技术为 `Webpack + Electron + React`。使用下面的步骤快速进入开发状态：
+Main technologies used in Xuanxuan are `Webpack + Electron + React`. Follow the steps below and expidite your customization:
 
-1. 下载源码：`git clone https://github.com/easysoft/xuanxuan.git`；
-2. 在源码目录执行：`npm install`；
-3. 启动 react hot server，执行：`npm run hot-server`；
-4. 启动客户端，执行：`npm run start-hot`。
+1. Download the source code：`git clone https://github.com/easysoft/xuanxuan.git`；
+2. Run：`npm install`；
+3. Start react hot server, and run：`npm run hot-server`；
+4. Start Xuanuan client and run：`npm run start-hot`。
 
-执行 `npm run package` 进行客户端打包。
+Run `npm run package` to package the client.
 
-详情请参考：[客户端开发者指南](https://github.com/easysoft/xuanxuan/blob/master/doc/client-developer.md)
+For more details, refer to：[Client Customization Guide For Developers](https://github.com/easysoft/xuanxuan/blob/master/doc/client-developer.md)
 
 ### Customization
 
@@ -99,9 +99,9 @@ Refer to：https://github.com/easysoft/xuanxuan/blob/master/doc/extension.md
 
 Xuanxuan is under [ZPL](https://github.com/easysoft/xuanxuan/blob/master/LICENSE) and uses open source projects as follows,
 
-* [Electron](http://electron.atom.io/)、[React](https://facebook.github.io/react/)、[Webpack](https://webpack.github.io)：跨平台客户端开发支持；
-* [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)：提供项目模板；
-* [EmojiOne](http://emojione.com/)：提供 Emoji 表情及图片资源支持；
-* 其他重要开源项目包括：[draft.js](https://facebook.github.io/draft-js/)、[Babel](https://babeljs.io/)、ß[marked](https://github.com/chjj/marked)、[ion.sound](https://github.com/IonDen/ion.sound) 等。
+* [Electron](http://electron.atom.io/)、[React](https://facebook.github.io/react/), [Webpack](https://webpack.github.io)：provides cross-platform client development support；
+* [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)：provides project modules；
+* [EmojiOne](http://emojione.com/)：provides Emoji and images；
+* Others：[draft.js](https://facebook.github.io/draft-js/), [Babel](https://babeljs.io/), ß[marked](https://github.com/chjj/marked), [ion.sound](https://github.com/IonDen/ion.sound), etc.
 
 
