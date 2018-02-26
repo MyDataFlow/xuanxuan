@@ -73,34 +73,6 @@ const getRanzhiServerInfo = (user) => {
     return Promise.reject('RANZHI_SERVER_NOTSET');
 };
 
-const ranzhiServerLogin = (user, password) => getRanzhiServerInfo(user).then(ranzhi => {
-    const loginUrl = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}login.json&lang=zh-cn&${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=login&lang=zh-cn&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
-    const passwordMd5 = md5(md5(md5(password) + user.account) + ranzhi.random);
-    const form = {
-        account: user.account,
-        password: passwordMd5
-    };
-    return Platform.net.postJSONData(loginUrl, {form}).then(data => {
-        ranzhi.loginResult = data;
-        return Promise.resolve(ranzhi);
-    });
-});
-
-const changeRanzhiUserPassword = (user, oldPassword, newPassword) => {
-    const ranzhiUrl = user.ranzhiUrl;
-    if (ranzhiUrl) {
-        return ranzhiServerLogin(user, oldPassword).then(ranzhi => {
-            const url = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}changePassword.json?${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=changePassword&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
-            const form = {
-                password1: newPassword,
-                password2: newPassword,
-            };
-            return Platform.net.postJSONData(url, {form}).then(data => Promise.resolve(ranzhi));
-        });
-    }
-    return Promise.reject('RANZHI_SERVER_NOTSET');
-};
-
 const API = {
     downloadFile,
     uploadFile,
@@ -108,8 +80,6 @@ const API = {
     checkUploadFileSize,
     createFileDownloadUrl,
     getRanzhiServerInfo,
-    ranzhiServerLogin,
-    changeRanzhiUserPassword,
     isFileExists: Platform.net.isFileExists || (() => false)
 };
 
