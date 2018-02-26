@@ -11,11 +11,10 @@ package util
 
 import (
     "os"
-    "log"
-  "io/ioutil"
+    "io/ioutil"
 )
 
-func CreatUid(serverName string, userID int64, key string) error {
+func CreateUid(serverName string, userID int64, key string) error {
 
     url := Config.LogPath+"/"+serverName+"/"
 
@@ -46,12 +45,12 @@ func GetUid(serverName string, userID string) (string,error) {
     file, err := os.Open(url)
     if err != nil {
         LogError().Println("Cannot open file",url,err)
-        log.Fatal(err)
+        return "",err
     }
     data, err := ioutil.ReadAll(file)
     if err != nil {
         LogError().Println("Cannot read file",url,err)
-        log.Fatal(err)
+        return "",err
     }
     return string(data),nil
 }
@@ -60,6 +59,7 @@ func DelUid(serverName string, userID string) error {
     url := Config.LogPath+"/"+serverName+"/"+ userID
     err := Rm(url)
     if err != nil {
+        LogError().Println("Cannot delete file",url,err)
         return err
     }
     return nil

@@ -197,7 +197,7 @@ func UserFileSessionID(serverName string, userID int64) ([]byte , error) {
     sessionData := []byte(`{"module":"chat","method":"SessionID","sessionID":"` + sessionID + `"}`)
 
     //将sessionID 存入公共空间
-    util.CreatUid(serverName, userID,sessionID)
+    util.CreateUid(serverName, userID,sessionID)
 
     sessionData, err := aesEncrypt(sessionData, util.Token)
     if err != nil {
