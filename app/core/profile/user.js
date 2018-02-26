@@ -248,6 +248,7 @@ class User extends Member {
     }
 
     set serverVersion(version) {
+        version = version.toLowerCase();
         if (version[0] === 'v') {
             version = version.substr(1);
         }
