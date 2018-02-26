@@ -309,7 +309,6 @@ func (c *Client) writePump() {
                     return
                 }
             }
-
         case <-ticker.C:
             c.conn.SetWriteDeadline(time.Now().Add(writeWait))
             if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
@@ -322,8 +321,8 @@ func (c *Client) writePump() {
 
 // serveWs handles websocket requests from the peer.
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
-  // Delete origin header @see https://www.iphpt.com/detail/86/
-  r.Header.Del("Origin")
+    // Delete origin header @see https://www.iphpt.com/detail/86/
+    r.Header.Del("Origin")
 
     conn, err := upgrader.Upgrade(w, r, nil)
     if err != nil {

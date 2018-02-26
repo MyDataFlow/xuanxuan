@@ -76,18 +76,22 @@ func InitHttp() {
 
     util.Println("file server start,listen addr:", addr, download)
     util.Println("file server start,listen addr:", addr, upload)
-    util.Println("http server start,listen addr: https://", addr)
 
     util.LogInfo().Println("file server start,listen addr:", addr, download)
     util.LogInfo().Println("file server start,listen addr:", addr, upload)
-    util.LogInfo().Println("http server start,listen addr: https://", addr, sInfo)
 
     if util.Config.IsHttps != "1" {
+        util.Println("http server start,listen addr:http://", addr)
+        util.LogInfo().Println("http server start,listen addr:http://", addr, sInfo)
+
         if err := http.ListenAndServe(addr, mux); err != nil {
             util.LogError().Println("http server listen err:", err)
             util.Exit("http server listen err")
         }
     }else{
+        util.Println("https server start,listen addr:https://", addr)
+        util.LogInfo().Println("https server start,listen addr:https://", addr, sInfo)
+
         if err := http.ListenAndServeTLS(addr, crt, key, mux); err != nil {
             util.LogError().Println("https server listen err:", err)
             util.Exit("https server listen err")
