@@ -134,8 +134,16 @@ export default class MenuGroupList extends Component {
 
     defaultExpand = (group) => {
         return group.list && !!group.list.find(item => {
-            return App.im.ui.isActiveChat(item.gid);
+            let isExpand = App.im.ui.isActiveChat(item.gid);
+            if (!isExpand) {
+                isExpand = App.profile.userConfig.getChatMenuGroupState('groups', this.groupType, group.id);
+            }
+            return isExpand;
         });
+    };
+
+    onExpandChange = (expanded, group) => {
+        App.profile.userConfig.setChatMenuGroupState('groups', this.groupType, group.id, expanded);
     };
 
     render() {
@@ -158,6 +166,7 @@ export default class MenuGroupList extends Component {
                     headingCreator: this.headingCreator,
                     hideEmptyGroup: true,
                     checkIsGroup: this.checkIsGroup,
+                    onExpandChange: this.onExpandChange,
                     forceCollapse: !!this.state.dragging
                 })
             }

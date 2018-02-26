@@ -40,7 +40,7 @@ export default class MenuContactList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            groupType: 'category',
+            groupType: null,
             dragging: false,
             dropTarget: null
         };
@@ -187,8 +187,16 @@ export default class MenuContactList extends Component {
             if (item.type === 'group') {
                 return this.defaultExpand(item);
             }
-            return App.im.ui.isActiveChat(item.gid);
+            let isExpand = App.im.ui.isActiveChat(item.gid);
+            if (!isExpand) {
+                isExpand = App.profile.userConfig.getChatMenuGroupState('contacts', this.groupType, group.id);
+            }
+            return isExpand;
         });
+    };
+
+    onExpandChange = (expanded, group) => {
+        App.profile.userConfig.setChatMenuGroupState('contacts', this.groupType, group.id, expanded);
     };
 
     render() {
@@ -221,6 +229,7 @@ export default class MenuContactList extends Component {
                     defaultExpand: this.defaultExpand,
                     itemCreator: this.itemCreator,
                     headingCreator: this.headingCreator,
+                    onExpandChange: this.onExpandChange,
                     hideEmptyGroup: groupType !== 'category',
                     forceCollapse: !!this.state.dragging
                 })
