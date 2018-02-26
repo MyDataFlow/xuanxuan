@@ -81,7 +81,7 @@ class FormView extends Component {
     }
 
     componentDidMount() {
-        if (DEBUG && this.state.autoLogin && this.state.submitable) {
+        if (this.state.autoLogin && this.state.submitable) {
             this.login();
         }
     }
