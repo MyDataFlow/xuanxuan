@@ -230,8 +230,8 @@ class User extends Member {
         }
         let serverUrl = this.serverUrl;
         if (serverUrl) {
-            let url = new URL(serverUrl);
-            url.protocol = 'ws:';
+            const url = new URL(serverUrl);
+            url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
             url.pathname = '/ws';
             url.port = this.socketPort;
             return url.toString();
