@@ -669,6 +669,11 @@ const search = (searchKeys, chatType) => {
             }
         }
 
+        // Do not show delete one2one chat in search result
+        if (chat.isDeleteOne2One) {
+            return;
+        }
+
         let score = 0;
         const chatName = chat.getDisplayName(app, false).toLowerCase();
         const pinYin = chat.getPinYin(app);
