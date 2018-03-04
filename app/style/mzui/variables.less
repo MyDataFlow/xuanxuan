@@ -111,6 +111,8 @@
 // Skins
 
 @muted-opacity:             .5;
+@muted-dark-opacity:        .25;
+@muted-light-opacity:       .75;
 
 @blur-value:                (10*@rem);
 @blur-value-sm:             (@blur-value / 2);
@@ -130,12 +132,14 @@
 @shadow-4-top:              rgba(0, 0, 0, .188235) 0 -(10*@rem) (30*@rem), rgba(0, 0, 0, .227451) 0 -(6*@rem) (10*@rem);
 
 @state-disabled-opacity:     .5;
-@state-cover-hover-color:    #000;
-@state-cover-active-color:   #000;
-@state-cover-hover-opacity:  .08;
-@state-cover-active-opacity: .11;
-@state-cover-focus-opacity:  .1;
+@state-cover-hover-color:    rgba(0,0,0,.07);
+@state-cover-active-color:   rgba(0,0,0,.09);
+@state-cover-focus-color:    rgba(0,0,0,.07);
+@state-cover-hover-opacity:  1;
+@state-cover-active-opacity: 1;
+@state-cover-focus-opacity:  1;
 @state-scale-from:           .6; // default 0.6
+@state-active-scale:         .95; // default 0.6
 
 @arrow-size:                (8*@rem);
 
@@ -149,6 +153,7 @@
 @icon-dark-color:           @color-dark;
 @icon-font-name:            "Material Design Icons";
 @icon-font-version:         "2.0.46";
+@icon-font-version:         "1.3.0";
 
 
 // Buttons
