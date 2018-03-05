@@ -1,8 +1,16 @@
-const getImageSize = (imagePath) => {
+const getImageInfo = (imagePath, options = null) => {
     return new Promise((resolve, reject) => {
+        options = Object.assign({
+            thumbnail: {width: 50, height: 50}
+        }, options);
+
         const img = new Image();
         img.onload = () => {
-            resolve({width: img.width, height: img.height});
+            const info = {width: img.width, height: img.height};
+            if (options.thumbnail) {
+                // todo: return thumbnail
+            }
+            resolve(info);
         };
         img.onerror = () => {
             reject();
@@ -38,6 +46,6 @@ const cutImage = (imagePath, select) => {
 };
 
 export default {
-    getImageSize,
+    getImageInfo,
     cutImage,
 };
