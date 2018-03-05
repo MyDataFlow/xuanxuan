@@ -74,7 +74,7 @@ const draftDecorator = new CompositeDecorator([{
                 return <span title={langAtAll} className="at-all text-primary" data-offset-key={props.offsetKey}>{props.children}</span>;
             } else {
                 const member = App.members.guess(guess);
-                if (member) {
+                if (member && member.id) {
                     return <a className="app-link text-primary" href={'@Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
                 }
             }
