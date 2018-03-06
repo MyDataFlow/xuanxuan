@@ -73,23 +73,25 @@ class ChatSendbox extends Component {
         this.editbox.focus();
     }
 
-    handleSendButtonClick = () => {
+    handleSendButtonClick = async () => {
         if (this.state.sendButtonDisabled) {
             return;
         }
-        this.editbox.getContentList().forEach(content => {
+        const contentList = this.editbox.getContentList();
+        for (let i = 0; i < contentList.length; ++i) {
+            const content = contentList[i];
             if (content.type === 'text') {
                 content.content = Emojione.toShort(content.content);
                 const trimContent = App.profile.userConfig.sendHDEmoticon ? content.content.trim() : false;
                 if (trimContent && Emojione.emojioneList[trimContent]) {
-                    App.im.server.sendEmojiMessage(trimContent, this.props.chat);
+                    await App.im.server.sendEmojiMessage(trimContent, this.props.chat); // eslint-disable-line
                 } else {
-                    App.im.server.sendTextMessage(content.content, this.props.chat);
+                    await App.im.server.sendTextMessage(content.content, this.props.chat); // eslint-disable-line
                 }
             } else if (content.type === 'image') {
-                App.im.server.sendImageMessage(content.image, this.props.chat);
+                await App.im.server.sendImageMessage(content.image, this.props.chat); // eslint-disable-line
             }
-        });
+        }
 
         this.clearContent();
         this.focusEditor();

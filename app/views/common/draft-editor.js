@@ -189,12 +189,12 @@ class DraftEditor extends Component {
         let thisTextContent = '';
         raw.blocks.forEach(block => {
             if (block.type === 'atomic') {
-                if (block.entityRanges && block.entityRanges.length) {
-                    contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
-                }
                 if (thisTextContent.length && thisTextContent.trim().length) {
                     contents.push({type: 'text', content: thisTextContent});
                     thisTextContent = '';
+                }
+                if (block.entityRanges && block.entityRanges.length) {
+                    contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
                 }
             } else {
                 if (thisTextContent.length) {

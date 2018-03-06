@@ -81,6 +81,7 @@
     "file.title.format": "文件：{0}",
     "file.image.title": "图片",
     "file.downloading": "正在下载...",
+    "file.uploading": "正在上传...",
 
     "notification.receviedMessages.format": "收到 {0} 条新消息。",
     "notification.memberSays.format": "{0} 说：",
@@ -101,6 +102,7 @@
     "error.USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。",
     "error.IMAGE_NOT_FIND": "无法打开图片，找不到图片或图片已损坏。位置 {0}。",
     "error.UPLOAD_FILE_IS_TOO_LARGE": "文件上传失败，只支持发送小于 {0} 的文件",
+    "error.CANNOT_HANDLE_IMAGE": "无法处理此图片。",
     "error.SERVER_DISABLED_UPLOAD": "文件上传失败，因为服务器禁止了文件上传功能",
     "error.TIMEOUT": "网络连接超时。",
     "error.SERVER_IS_BUSY": "服务器正忙，请稍后重试。",
@@ -161,7 +163,6 @@
     "chats.menu.group.createTip": "输入新建分组名称",
     "chats.menu.group.existsTip": "此分组已存在，请使用一个不同的分组名称。",
     "chats.menu.group.requiredNewName": "请输入新建分组名称。",
-    "chats.menu.group.delete": "删除分组",
     "chats.menu.group.delete.confirm.format": "确定删除分组【{0}】？",
     "chats.menu.group.delete.tip.format": "删除后会将原组内的会话移到默认分组【{0}】中。",
     "chats.menu.group.dismissed": "已解散",
