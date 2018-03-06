@@ -240,7 +240,7 @@ class Socket {
 
     close(code, reason) {
         if (this.client) {
-            if (reason === 'close') {
+            if (reason === 'close' || reason === 'KICKOFF') {
                 this.markClose();
             }
             this.removeAllListeners();

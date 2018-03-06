@@ -95,25 +95,21 @@ Server.onUserLogin((user, loginError) => {
 
 Server.onUserLoginout((user, code, reason, unexpected) => {
     if (user) {
-        if (unexpected) {
-            let errorCode = null;
-            if (reason === 'KICKOFF') {
-                errorCode = 'KICKOFF';
-            } else if (code === 1006) {
-                errorCode = 'SOCKET_AbnormalClosure';
-            }
-            if (errorCode) {
-                Messager.show(Lang.error(errorCode), {
-                    type: 'danger',
-                    icon: 'alert',
-                    actions: [{
-                        label: Lang.string('login.retry'),
-                        click: () => {
-                            Server.login(user);
-                        }
-                    }]
-                });
-            }
+        let errorCode = null;
+        if (reason === 'KICKOFF') {
+            errorCode = 'KICKOFF';
+        }
+        if (errorCode) {
+            Messager.show(Lang.error(errorCode), {
+                type: 'danger',
+                icon: 'alert',
+                actions: [{
+                    label: Lang.string('login.retry'),
+                    click: () => {
+                        Server.login(user);
+                    }
+                }]
+            });
             if (Notice.requestAttention) {
                 Notice.requestAttention();
             }

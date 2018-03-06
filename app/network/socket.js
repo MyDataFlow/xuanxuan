@@ -137,7 +137,7 @@ class AppSocket extends Socket {
     onClose(code, reason, unexpected) {
         this.stopPing();
         if (this.user && this.user.isOnline) {
-            this.user.markUnverified();
+            this.user[unexpected ? 'markDisconnect' : 'markUnverified']();
         }
     }
 
