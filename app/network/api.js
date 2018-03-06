@@ -1,5 +1,6 @@
 import Platform from 'Platform';
 import md5 from 'md5';
+import Config from '../config';
 
 /**
  * Request server infomation with https request
@@ -14,7 +15,8 @@ const requestServerInfo = user => {
             user.account,
             user.passwordMD5,
             ''
-        ]
+        ],
+        cVer: Config.pkg.version
     });
     return Platform.net.postJSON(user.webServerInfoUrl, {
         headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},

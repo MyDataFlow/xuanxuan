@@ -2,6 +2,7 @@ import md5 from 'md5';
 import {Socket} from 'Platform';
 import SocketMessage from './socket-message';
 import Events from '../core/events';
+import Config from '../config';
 
 const PING_INTERVAL = DEBUG ? (1000 * 60) : (1000 * 60 * 3);
 const LISTEN_TIMEOUT = 1000 * 15;
@@ -182,7 +183,8 @@ class AppSocket extends Socket {
                         user.account,
                         user.passwordMD5,
                         'online'
-                    ]
+                    ],
+                    cVer: Config.pkg.version
                 });
             };
             this.init(user.socketUrl, Object.assign({

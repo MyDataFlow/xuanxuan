@@ -1,6 +1,7 @@
 import WS from 'ws';
 import crypto from './crypto';
 import Status from '../../utils/status';
+import Config from '../../config';
 
 const STATUS = new Status({
     CONNECTING: 0, // 连接还没开启。
@@ -93,7 +94,8 @@ class Socket {
 
         this.status = STATUS.CONNECTING;
         this.client = new WS(this.url, {
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
+            headers: {version: Config.pkg.version}
         });
 
         if (DEBUG) {
