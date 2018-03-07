@@ -157,7 +157,7 @@ const captureAndCutScreenImage = (hiddenWindows = false) => {
             }
         }).catch(error => {
             if (DEBUG) {
-                console.warn('Capture screen image error', error);
+                console.warn('Capture screen image error: ', error);
             }
         });
     } else {
