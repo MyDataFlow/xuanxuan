@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react'; // eslint-disable-line
 import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
