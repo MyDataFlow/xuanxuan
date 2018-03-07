@@ -334,7 +334,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false, cVer: r.Header.Get("v")}
+    client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false, cVer: r.Header.Get("version")}
 
     util.LogInfo().Println("client ip:", conn.RemoteAddr())
     go client.writePump()
