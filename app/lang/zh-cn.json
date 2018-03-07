@@ -209,6 +209,7 @@
     "chat.group.name": "讨论组",
     "chat.rename.title": "重命名讨论组",
     "chat.rename.newTitle": "新的讨论组名称",
+    "chat.rename.newTitleRequired": "需要填写新的讨论组名称。",
     "chat.rename.someRenameGroup.format": "{0} 将讨论组名称更改为 {1}。",
     "chat.public.label": "公开",
     "chat.public.setPublic": "设为公开",

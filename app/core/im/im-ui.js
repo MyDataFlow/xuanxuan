@@ -499,7 +499,13 @@ const onRenderChatMessageContent = listener => {
 
 const createGroupChat = (members) => {
     return Modal.prompt(Lang.string('chat.create.newChatNameTip'), '', {
-        placeholder: Lang.string('chat.rename.newTitle'),
+        inputProps: {placeholder: Lang.string('chat.rename.newTitle')},
+        onSubmit: newName => {
+            if (!newName) {
+                Modal.alert(Lang.string('chat.rename.newTitleRequired'));
+                return false;
+            }
+        }
     }).then(newName => {
         if (newName) {
             return Server.createChatWithMembers(members, {name: newName});
