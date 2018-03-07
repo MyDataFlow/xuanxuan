@@ -18,9 +18,11 @@ export default class ImageHolder extends Component {
         width: 0,
         height: 0,
         alt: '',
-        status: 'ok', // 'loading', 'upload', 'ok', 'broken',
+        status: 'ok', // 'loading', 'ok', 'broken',
         progress: 0,
         className: '',
+        loadingText: '',
+        previewUrl: null,
     };
 
     static propTypes = {
@@ -32,7 +34,9 @@ export default class ImageHolder extends Component {
         progress: PropTypes.number,
         status: PropTypes.string,
         alt: PropTypes.string,
-        className: PropTypes.string
+        className: PropTypes.string,
+        loadingText: PropTypes.string,
+        previewUrl: PropTypes.string
     };
 
     render() {
@@ -46,6 +50,8 @@ export default class ImageHolder extends Component {
             progress,
             alt,
             className,
+            loadingText,
+            previewUrl,
             ...other
         } = this.props;
 
@@ -55,7 +61,7 @@ export default class ImageHolder extends Component {
 
         const innerStyle = {
             paddingBottom: width ? `${(100 * height) / width}%` : 0,
-            background: width && status !== 'ok' ? '#f1f1f1' : 'transparent',
+            backgroundColor: width && status !== 'ok' ? '#f1f1f1' : 'transparent',
         };
 
         const imgStyle = {
@@ -77,9 +83,13 @@ export default class ImageHolder extends Component {
         } else if (status === 'broken') {
             imgView = <div className="dock center-content"><Icon name="image-broken" className="muted icon-5x" /></div>;
         } else if (status === 'loading') {
-            imgView = <div className={`img-hold-progress${!progress ? ' img-hold-waiting' : ''}`}><div className="dock center-content"><Icon name="image-filter-hdr" className="muted icon-5x" /></div><div className="text">{Lang.string('file.downloading')}{progress ? `${Math.floor(progress)}%` : ''}</div><div className="progress"><div className="bar" style={{width: progress ? `${progress}%` : '100%'}} /></div></div>;
-        } else if (status === 'upload') {
-            imgView = <div className={`img-hold-progress${!progress ? ' img-hold-waiting' : ''}`}><div className="dock center-content"><Icon name="image-filter-hdr" className="muted icon-5x" /></div><div className="text">{Lang.string('file.uploading')}{progress ? `${Math.floor(progress)}%` : ''}</div><div className="progress"><div className="bar" style={{width: progress ? `${progress}%` : '100%'}} /></div></div>;
+            if (previewUrl) {
+                innerStyle.backgroundImage = `url('${previewUrl}')`;
+                innerStyle.backgroundRepeat = 'no-repeat';
+                innerStyle.backgroundSize = 'contain';
+                innerStyle.backgroundPosition = 'center';
+            }
+            imgView = <div className={`img-hold-progress${!progress ? ' img-hold-waiting' : ''}`}><div className="dock center-content">{previewUrl ? null : <Icon name="image-filter-hdr" className="muted icon-5x" />}</div><div className="text flex flex-middle"><Icon name="loading" className="inline-block spin inline-block text-shadow-white" /> &nbsp; {loadingText}{progress ? `${Math.floor(progress)}%` : ''}</div><div className="progress"><div className="bar" style={{width: progress ? `${progress}%` : '100%'}} /></div></div>;
         }
 
         return (<div
