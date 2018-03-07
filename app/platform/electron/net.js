@@ -1,61 +1,10 @@
 import fse from 'fs-extra';
 import Path from 'path';
-import uuid from 'uuid/v4';
 import network from '../common/network';
 import {userDataPath} from './ui';
 
 const downloadFileOrigin = network.downloadFile;
 const uploadFileOrigin = network.uploadFile;
-
-const dataURItoBlob = (dataURI) => {
-    // convert base64 to raw binary data held in a string
-    // doesn't handle URLEncoded DataURIs
-    const byteString = atob(dataURI.split(',')[1]);
-
-    // separate out the mime component
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to an ArrayBuffer
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    // write the ArrayBuffer to a blob, and you're done
-    const bb = new Blob([ab], {type: mimeString});
-    return bb;
-};
-
-const createImageFilePath = (user, file) => {
-    return Path.join(userDataPath, 'users', user.identify, 'images', file.name);
-};
-
-const localFilePaths = {};
-const saveLocalFile = (file, user, path) => {
-    if (file.id) {
-        const localId = `${user.identify}:${file.id}`;
-        localFilePaths[localId] = path || file.src || file.path;
-    }
-};
-const isFileExists = (file, user) => {
-    if (file.id) {
-        const localId = `${user.identify}:${file.id}`;
-        if (localFilePaths[localId]) {
-            return Promise.resolve(localFilePaths[localId]);
-        }
-    }
-    const fileSavePath = file.path || createImageFilePath(user, file);
-    return fse.pathExists(fileSavePath).then(exists => {
-        if (exists) {
-            if (file.id) {
-                saveLocalFile(file, user, fileSavePath);
-            }
-            return Promise.resolve(fileSavePath);
-        }
-        return Promise.resolve(false);
-    });
-};
 
 const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
     return downloadFileOrigin(url, null, onProgress).then(fileBuffer => {
@@ -64,53 +13,79 @@ const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
     });
 };
 
+const filesCache = {};
+const createCachePath = (file, user, dirName = 'images') => {
+    return Path.join(userDataPath, 'users', user.identify, dirName, file.storageName);
+};
+const checkFileCache = (file, user) => {
+    if (file.localPath) {
+        filesCache[file.gid] = file.localPath;
+        return Promise.resolve(file.localPath);
+    }
+    let cachePath = filesCache[file.gid];
+    if (cachePath) {
+        file.localPath = cachePath;
+        return Promise.resolve(cachePath);
+    }
+    cachePath = createCachePath(file, user);
+    return fse.pathExists(cachePath).then(exists => {
+        if (exists) {
+            filesCache[file.gid] = cachePath;
+            file.localPath = cachePath;
+            return Promise.resolve(cachePath);
+        }
+        return Promise.resolve(false);
+    });
+};
+
+const getFileCache = file => {
+    return filesCache[file.gid];
+};
+
 const downloadFile = (user, file, onProgress) => {
-    return isFileExists(file, user).then(fileSavePath => {
-        if (fileSavePath) {
-            file.src = fileSavePath;
+    return checkFileCache(file, user).then(cachePath => {
+        const url = file.url || file.makeUrl(user);
+        const fileSavePath = file.path || createCachePath(file, user);
+        if (cachePath) {
             if (DEBUG) {
-                console.collapse('HTTP DOWNLOAD', 'blueBg', file.url, 'bluePale', 'Cached', 'bluePale');
+                console.collapse('HTTP DOWNLOAD', 'blueBg', url, 'bluePale', 'Cached', 'greenPale');
                 console.log('file', file);
                 console.groupEnd();
             }
-            if (file.path && file.path !== fileSavePath) {
-                return fse.copy(fileSavePath, file.path).then(() => {
+            if (fileSavePath !== cachePath) {
+                return fse.copy(cachePath, fileSavePath).then(() => {
                     return Promise.resolve(file);
                 });
-            } else if (!file.path) {
-                return Promise.resolve(file);
             }
+            return Promise.resolve(file);
         }
-        fileSavePath = file.path || createImageFilePath(user, file);
+
         fse.ensureDirSync(Path.dirname(fileSavePath));
-        return downloadFileWithRequest(user, file.url, fileSavePath, onProgress).then(() => {
+        return downloadFileWithRequest(user, url, fileSavePath, onProgress).then(() => {
             if (DEBUG) {
-                console.collapse('HTTP DOWNLOAD', 'blueBg', file.url, 'bluePale', 'OK', 'greenPale');
+                console.collapse('HTTP DOWNLOAD', 'blueBg', url, 'bluePale', 'OK', 'greenPale');
                 console.log('file', file);
                 console.groupEnd();
             }
-            file.src = fileSavePath;
-            saveLocalFile(file, user, fileSavePath);
+            file.localPath = fileSavePath;
+            filesCache[file.gid] = file.localPath;
             return Promise.resolve(file);
         });
     });
 };
 
-const uploadFile = (user, file, data = {}, onProgress = null) => {
-    if (file.base64 && !file.blob) {
-        file.blob = dataURItoBlob(file.base64);
+const uploadFile = (user, file, onProgress, copyCache = false) => {
+    const originFile = file.originFile;
+    if (!originFile) {
+        return console.warn('Upload file fail, cannot get origin file object.', file);
     }
-
     const serverUrl = user.uploadUrl;
     const form = new FormData();
-    form.append('file', file.blob || file, file.name);
+    form.append('file', file.originData, file.name);
     form.append('userID', user.id);
-    if (data.gid) {
-        form.append('gid', data.gid);
-    }
+    form.append('gid', file.cgid);
     file.form = form;
-    const filename = data.copy ? `${uuid()}${Path.extname(file.name)}` : file.name;
-    const copyPath = data.copy ? createImageFilePath(user, {name: filename}) : null;
+
     return uploadFileOrigin(file, serverUrl, xhr => {
         xhr.setRequestHeader('ServerName', user.serverName);
         xhr.setRequestHeader('Authorization', user.token);
@@ -122,12 +97,13 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
                 console.log('remoteData', remoteData);
                 console.groupEnd();
             }
-            saveLocalFile(file, user, file.src);
             return Promise.resolve(remoteData);
         };
-        if (data.copy) {
-            file.src = copyPath;
-            if (file.blob) {
+        if (copyCache) {
+            const copyPath = createCachePath(file, user, copyCache === true ? 'images' : copyCache);
+            file.localPath = copyPath;
+
+            if (originFile.blob) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = () => {
@@ -142,9 +118,10 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
                     reader.readAsArrayBuffer(file.blob);
                 });
             }
-            return fse.copy(file.path, copyPath).then(finishUpload);
+            if (originFile.path) {
+                return fse.copy(originFile.path, copyPath).then(finishUpload);
+            }
         }
-        file.src = file.path;
         return finishUpload();
     }).catch(error => {
         if (DEBUG) {
@@ -156,6 +133,6 @@ const uploadFile = (user, file, data = {}, onProgress = null) => {
 
 network.uploadFile = uploadFile;
 network.downloadFile = downloadFile;
-network.isFileExists = isFileExists;
+network.checkFileCache = checkFileCache;
 
 export default network;

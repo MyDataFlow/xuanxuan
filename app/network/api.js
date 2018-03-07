@@ -48,18 +48,6 @@ const checkUploadFileSize = (user, size) => {
     return uploadFileSize && size <= uploadFileSize;
 };
 
-const uploadFile = (user, file, data = {}, onProgress = null) => Platform.net.uploadFile(user, file, data, onProgress);
-
-const createFileDownloadUrl = (user, file) => user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time || 0}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
-
-const downloadFile = (user, file, onProgress = null) => {
-    if (!file.url) {
-        const url = createFileDownloadUrl(user, file);
-        file.url = url;
-    }
-    return Platform.net.downloadFile(user, file, onProgress);
-};
-
 const getRanzhiServerInfo = (user) => {
     const ranzhiUrl = user.ranzhiUrl;
     if (ranzhiUrl) {
@@ -76,13 +64,12 @@ const getRanzhiServerInfo = (user) => {
 };
 
 const API = {
-    downloadFile,
-    uploadFile,
+    downloadFile: Platform.net.downloadFile,
+    uploadFile: Platform.net.uploadFile,
     requestServerInfo,
     checkUploadFileSize,
-    createFileDownloadUrl,
     getRanzhiServerInfo,
-    isFileExists: Platform.net.isFileExists || (() => false)
+    checkFileCache: Platform.net.checkFileCache || (() => false)
 };
 
 if (DEBUG) {
