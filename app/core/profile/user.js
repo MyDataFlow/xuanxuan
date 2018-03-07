@@ -231,7 +231,7 @@ class User extends Member {
         let serverUrl = this.serverUrl;
         if (serverUrl) {
             const url = new URL(serverUrl);
-            url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+            url.protocol = (this.isVersionSupport('wss') && url.protocol === 'https:') ? 'wss:' : 'ws:';
             url.pathname = '/ws';
             url.port = this.socketPort;
             return url.toString();

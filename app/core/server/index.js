@@ -49,8 +49,13 @@ const checkServerVersion = serverVersion => {
 };
 
 const checkVersionSupport = serverVersion => {
-    if (compareVersions(serverVersion, '1.3.0') >= 0) {
-        return {messageOrder: true, userGetListWithId: true};
+    const compareVersionValue = compareVersions(serverVersion, '1.3.0');
+    if (compareVersionValue >= 0) {
+        return {
+            messageOrder: true,
+            userGetListWithId: true,
+            wss: compareVersionValue > 0
+        };
     }
     return null;
 };
