@@ -356,7 +356,7 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         });
     }
 
-    if (menuType === 'contacts' || menuType === 'groups') {
+    if ((menuType === 'contacts' || menuType === 'groups') && !chat.isDismissed) {
         if (viewType === 'category') {
             if (menu.length) {
                 menu.push({type: 'separator'});
