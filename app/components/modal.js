@@ -42,6 +42,10 @@ const show = (props = {}, callback = null) => {
     }
     if (actions === true) {
         actions = [{type: 'submit'}, {type: 'cancel'}];
+    } else if (actions === 'submit') {
+        actions = [{type: 'submit'}];
+    } else if (actions === 'cancel') {
+        actions = [{type: 'cancel'}];
     }
     let footer = null;
     if (actions && actions.length) {
@@ -124,7 +128,8 @@ const show = (props = {}, callback = null) => {
 const alert = (content, props, callback) => {
     return show(Object.assign({
         modal: true,
-        content
+        content,
+        actions: 'submit'
     }, props), callback);
 };
 
@@ -153,8 +158,12 @@ const confirm = (content, props, callback) => {
 
 const prompt = (title, defaultValue, props, callback) => {
     const inputProps = props && props.inputProps;
+    const onSubmit = props && props.onSubmit;
     if (inputProps) {
         delete props.inputProps;
+    }
+    if (onSubmit) {
+        delete props.onSubmit;
     }
     return new Promise(resolve => {
         let resolved = false;
@@ -174,6 +183,9 @@ const prompt = (title, defaultValue, props, callback) => {
             actions: true,
             onAction: action => {
                 if (action.type === 'submit') {
+                    if (onSubmit && onSubmit(value) === false) {
+                        return false;
+                    }
                     resolved = true;
                     resolve(value);
                 }
