@@ -103,6 +103,15 @@ func (pd ParseData) Result() string {
     return ret.(string)
 }
 
+func (pd ParseData) Version() string {
+    ret, ok := pd["v"]
+    if !ok {
+        return ""
+    }
+
+    return ret.(string)
+}
+
 func (pd ParseData) SendUsers() []int64 {
     // 判断users是否存在
     ret, ok := pd["users"]

@@ -25,7 +25,7 @@ type ConfigIni struct {
     Ip         string
     ChatPort   string
     CommonPort string
-    IsHttps   string
+    IsHttps    string
 
     UploadPath     string
     UploadFileSize int64

@@ -53,7 +53,7 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
     // 1、返回给客户端加密后的数据
     // 2、返回用户的ID
     // 3、返回登录的结果
-    return retMessage, retData.loginUserID(), retData.Result() == "success"
+    return retMessage, retData.loginUserID(), result
 }
 
 func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {

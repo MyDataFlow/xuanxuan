@@ -50,6 +50,7 @@ type Client struct {
     serverName  string          // User server
     userID      int64           // Send to user id
     repeatLogin bool
+    cVer        string          //client version
 }
 
 type ClientRegister struct {
@@ -197,7 +198,7 @@ func chatLogout(userID int64, client *Client) error {
     if err != nil {
         return err
     }
-  util.DelUid(client.serverName,util.Int642String(client.userID))
+    util.DelUid(client.serverName,util.Int642String(client.userID))
     return X2cSend(client.serverName, sendUsers, x2cMessage, client)
 }
 
@@ -324,13 +325,16 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
     // Delete origin header @see https://www.iphpt.com/detail/86/
     r.Header.Del("Origin")
 
-    conn, err := upgrader.Upgrade(w, r, nil)
+     //将xxd版本信息通过header返回给客户端
+    header := http.Header {"User-Agent" : {"easysoft/xuan.im"}, "xxd-version" : {util.Version}}
+
+    conn, err := upgrader.Upgrade(w, r, header)
     if err != nil {
         util.LogError().Println("serve ws upgrader error:", err)
         return
     }
 
-    client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false}
+    client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false, cVer: r.Header.Get("v")}
 
     util.LogInfo().Println("client ip:", conn.RemoteAddr())
     go client.writePump()

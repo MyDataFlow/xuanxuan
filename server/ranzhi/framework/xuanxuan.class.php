@@ -119,6 +119,7 @@ class xuanxuan extends router
     {
         $input   = file_get_contents("php://input");
         $input   = $this->decrypt($input);
+        $version = !empty($input->v)      ? $input->v : '';
         $userID  = !empty($input->userID) ? $input->userID : '';
         $module  = !empty($input->module) ? $input->module : '';
         $method  = !empty($input->method) ? $input->method : '';
