@@ -15,7 +15,7 @@ import (
     "runtime"
 )
 
-const Version = "V1.3.0"
+const Version = "V1.4.0"
 
 var Run bool = true
 var IsTest bool = false
