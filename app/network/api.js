@@ -16,7 +16,7 @@ const requestServerInfo = user => {
             user.passwordMD5,
             ''
         ],
-        cVer: Config.pkg.version
+        v: Config.pkg.version
     });
     return Platform.net.postJSON(user.webServerInfoUrl, {
         headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},

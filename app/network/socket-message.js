@@ -1,10 +1,13 @@
+import Config from '../config';
+
 /**
  * SocketMessage
  */
 class SocketMessage {
     constructor(data) {
         Object.assign(this, {
-            module: 'chat'
+            module: 'chat',
+            v: Config.pkg.version
         }, data);
     }
 
