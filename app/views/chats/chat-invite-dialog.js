@@ -11,6 +11,7 @@ const show = (chat, callback) => {
         Modal.hide(modalId);
     };
     return Modal.show({
+        id: modalId,
         className: 'app-chat-invite-dialog',
         title: Lang.string('chat.invite.title'),
         content: <ChatInvite chat={chat} onRequestClose={onRequestClose} />,
