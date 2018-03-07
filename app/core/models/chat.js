@@ -45,6 +45,10 @@ class Chat extends Entity {
         public: {type: 'boolean', indexed: true},
         admins: {type: 'set'},
         members: {type: 'set'},
+        members: {type: 'set', setter: (val, obj) => {
+            obj._membersSet = null;
+            return val;
+        }},
         committers: {type: 'string'},
         category: {type: 'string'},
     });
