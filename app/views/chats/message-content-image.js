@@ -3,13 +3,13 @@ import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import API from '../../network/api';
 import Emojione from '../../components/emojione';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import ImageViewer from '../../components/image-viewer';
 import replaceViews from '../replace-views';
 import ImageHolder from '../../components/image-holder';
+import FileData from '../../core/models/file-data';
 
 const isBrowser = Platform.type === 'browser';
 
@@ -29,14 +29,16 @@ class MessageContentImage extends Component {
 
     constructor(props) {
         super(props);
+        const {message} = this.props;
         this.state = {
             download: null,
-            url: ''
+            url: message.attachFile ? message.attachFile.viewUrl : ''
         };
         if (isBrowser) {
-            const {message} = this.props;
             const image = message.imageContent;
-            this.state.url = API.createFileDownloadUrl(App.user, image);
+            if (image.type !== 'emoji' && image.type !== 'base64') {
+                this.state.url = FileData.create(image).makeUrl(App.user);
+            }
         }
     }
 
@@ -57,12 +59,12 @@ class MessageContentImage extends Component {
 
     downloadImage(image) {
         if (this.state.download === null) {
-            API.downloadFile(App.user, image, progress => {
+            App.im.files.downloadFile(image, progress => {
                 if (this.unMounted) return;
                 this.setState({download: progress});
             }).then(file => {
                 if (this.unMounted) return;
-                this.setState({url: image.src, download: true});
+                this.setState({url: file.localPath, download: true});
             }).catch(error => {
                 if (this.unMounted) return;
                 this.setState({download: false});
@@ -83,7 +85,7 @@ class MessageContentImage extends Component {
             ...other
         } = this.props;
 
-        const image = message.imageContent;
+        let image = message.imageContent;
 
         if (image.type === 'emoji') {
             return (<div
@@ -107,20 +109,33 @@ class MessageContentImage extends Component {
             height: image.height,
             alt: image.name
         };
-        if (image.id && image.send === true) {
+        image = FileData.create(image);
+
+        if (image.isOK) {
             const imageUrl = this.state.url;
             if (imageUrl) {
                 holderProps.status = 'ok';
                 holderProps.onContextMenu = isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '');
-                holderProps.source = `file://${image.src}`;
+                holderProps.source = `file://${imageUrl}`;
                 holderProps.onDoubleClick = ImageViewer.show.bind(this, imageUrl, null, null);
             } else if (typeof this.state.download === 'number') {
                 holderProps.status = 'loading';
                 holderProps.progress = this.state.download;
+                holderProps.loadingText = Lang.string('file.loading');
+                if (!message.isSender(App.user.id)) {
+                    holderProps.progress = 50 + (holderProps.progress / 2);
+                }
             }
         } else if (typeof image.send === 'number') {
-            holderProps.status = 'upload';
+            holderProps.status = 'loading';
             holderProps.progress = image.send;
+            holderProps.previewUrl = this.state.url;
+            if (!message.isSender(App.user.id)) {
+                holderProps.loadingText = Lang.string('file.loading');
+                holderProps.progress /= 2;
+            } else {
+                holderProps.loadingText = Lang.string('file.sending');
+            }
         } else {
             holderProps.status = 'broken';
         }

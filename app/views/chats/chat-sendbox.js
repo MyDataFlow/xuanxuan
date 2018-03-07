@@ -77,7 +77,10 @@ class ChatSendbox extends Component {
         if (this.state.sendButtonDisabled) {
             return;
         }
+
         const contentList = this.editbox.getContentList();
+        this.clearContent();
+        this.focusEditor();
         for (let i = 0; i < contentList.length; ++i) {
             const content = contentList[i];
             if (content.type === 'text') {
@@ -92,9 +95,6 @@ class ChatSendbox extends Component {
                 await App.im.server.sendImageMessage(content.image, this.props.chat); // eslint-disable-line
             }
         }
-
-        this.clearContent();
-        this.focusEditor();
     }
 
     handleOnChange = (contentState) => {

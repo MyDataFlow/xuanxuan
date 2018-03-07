@@ -7,13 +7,14 @@ import members from '../members';
 import chats from './im-chats';
 import PKG from '../../package.json';
 import Chat from '../models/chat';
-import API from '../../network/api';
 import Messager from '../../components/messager';
 import StringHelper from '../../utils/string-helper';
 import DateHelper from '../../utils/date-helper';
 import ChatMessage from '../../core/models/chat-message';
 import Lang from '../../lang';
 import ImageHelper from '../../utils/image';
+import FileData from '../models/file-data';
+import IMFiles from './im-files';
 
 const MAX_BASE64_IMAGE_SIZE = 1024 * 10;
 
@@ -404,32 +405,27 @@ const sendImageMessage = async (imageFile, chat, onProgress) => {
     if (imageFile.size < MAX_BASE64_IMAGE_SIZE) {
         return sendImageAsBase64(imageFile, chat);
     }
-    if (API.checkUploadFileSize(profile.user, imageFile.size)) {
+    if (IMFiles.checkUploadFileSize(imageFile.size)) {
         const message = new ChatMessage({
             user: profile.userId,
             cgid: chat.gid,
             date: new Date(),
             contentType: ChatMessage.CONTENT_TYPES.image
         });
-        message.attatchFile = imageFile;
-        const imageContent = {
-            time: new Date().getTime(),
-            name: imageFile.name,
-            size: imageFile.size,
-            send: 0,
-            type: imageFile.type
-        };
-        const info = await ImageHelper.getImageInfo(imageFile.path || imageFile.base64 || URL.createObjectURL(imageFile.blob)).catch(() => {
+        imageFile = FileData.create(imageFile);
+        message.attachFile = imageFile;
+        console.log('sendImageMessage', imageFile);
+        const info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
             Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
             if (DEBUG) {
                 console.warn('Cannot get image information', imageFile);
             }
         });
-        imageContent.width = info.width;
-        imageContent.height = info.height;
-        message.imageContent = imageContent;
+        imageFile.width = info.width;
+        imageFile.height = info.height;
+        message.imageContent = imageFile.plain();
         await sendChatMessage(message, chat);
-        return API.uploadFile(profile.user, imageFile, {gid: chat.gid, copy: true}, progress => {
+        return IMFiles.uploadFile(imageFile, progress => {
             message.updateImageContent({send: progress});
             sendChatMessage(message, chat);
             if (onProgress) {
@@ -448,23 +444,18 @@ const sendImageMessage = async (imageFile, chat, onProgress) => {
 };
 
 const sendFileMessage = (file, chat) => {
-    if (API.checkUploadFileSize(profile.user, file.size)) {
+    if (IMFiles.checkUploadFileSize(file.size)) {
         const message = new ChatMessage({
             user: profile.userId,
             cgid: chat.gid,
             date: new Date(),
             contentType: ChatMessage.CONTENT_TYPES.file
         });
-        message.attatchFile = file;
-        message.fileContent = {
-            time: new Date().getTime(),
-            name: file.name,
-            size: file.size,
-            send: 0,
-            type: file.type
-        };
+        file = FileData.create(file);
+        file.cgid = chat.gid;
+        message.fileContent = file.plain();
         sendChatMessage(message, chat);
-        API.uploadFile(profile.user, file, {gid: chat.gid}, progress => {
+        IMFiles.uploadFile(file, progress => {
             message.updateFileContent({send: progress});
             return sendChatMessage(message, chat);
         }).then(data => {

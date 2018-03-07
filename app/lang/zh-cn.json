@@ -82,6 +82,8 @@
     "file.image.title": "图片",
     "file.downloading": "正在下载...",
     "file.uploading": "正在上传...",
+    "file.loading": "正在加载...",
+    "file.sending": "正在发送...",
 
     "notification.receviedMessages.format": "收到 {0} 条新消息。",
     "notification.memberSays.format": "{0} 说：",
