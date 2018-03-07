@@ -2,7 +2,10 @@
 
 服务器部署分为然之协同和xxd两部分。
 
-## 部署然之协同服务器端
+## 部署服务器端
+只需要部署"然之服务器端"或者"XXB独立服务器端"任意一个即可
+
+### 然之协同服务器端
 
 1.下载安装然之协同最新版：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
 
@@ -11,6 +14,16 @@
 3.服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
 
 4.调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
+
+### XXB独立服务器端
+1.下载安装XXB最新版：[http://www.xuan.im](http://www.xuan.im) ；
+
+2.以管理员身份登录XXB，进入设置 ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
+
+3.服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
+
+4.调试时设置 xxb/config/my.php 中 debug=true，在 xxb/tmp/log/xuanxuan.log.php 中查看日志。
+
 
 ## 部署xxd
 
