@@ -39,7 +39,7 @@ Check [Xuanxuan Official User Guide](http://xuan.im/page/1.html) for more help.
 
 ### Browser Client
 
-Visit：https://easysoft.github.io/xuanxuan/1.2.0/ for Xuanxuan browser cient.
+Visit：https://easysoft.github.io/xuanxuan/1.4.0/ for Xuanxuan browser cient.
 
 Note：You have to deploy a Xuanxuan official authenticated certificate to use brower clients.
 

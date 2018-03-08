@@ -40,7 +40,7 @@ http://xuan.im
 
 ### 浏览器客户端
 
-浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.2.0/
+浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.4.0/
 
 注意：你需要为你的服务器端部署通过官方验证的证书才可以使用浏览器端客户端。
 
@@ -64,7 +64,7 @@ http://xuan.im
 
 `xxd` 服务本身并不存储和管理用户资料和消息数据，而是使用应用更为广泛的 http 协议与另一个服务器（简称 `http` 服务）通信。这样你只需要在你自己的网站上开发一系列 `http` 接口即可为你的网站用户启用喧喧。
 
-官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](https://github.com/easysoft/xuanxuan/tree/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
+官方默认提供的后段服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](https://github.com/easysoft/xuanxuan/tree/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
 
 这里有一个公开的测试服务器供使用：
 

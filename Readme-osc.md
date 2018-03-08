@@ -37,7 +37,7 @@ http://xuan.im
 
 ### 浏览器客户端
 
-浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.2.0/
+浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.4.0/
 
 注意：你需要为你的服务器端部署通过官方验证的证书才可以使用浏览器端客户端。
 
