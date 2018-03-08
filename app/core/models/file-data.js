@@ -117,7 +117,9 @@ export default class FileData extends Entity {
         const originType = this.originType;
         const originFile = this.originFile;
         if (originType && originFile) {
-            if (originType === 'file' || originType === 'blob') {
+            if (originType === 'blob') {
+                return originFile.blob;
+            } else if (originType === 'file') {
                 return originFile;
             }
             if (originType === 'base64') {
