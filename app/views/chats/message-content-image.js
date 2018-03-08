@@ -118,9 +118,9 @@ class MessageContentImage extends Component {
                 holderProps.onContextMenu = isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '');
                 holderProps.source = imageUrl;
                 holderProps.onDoubleClick = ImageViewer.show.bind(this, imageUrl, null, null);
-            } else if (typeof this.state.download === 'number') {
+            } else {
                 holderProps.status = 'loading';
-                holderProps.progress = this.state.download;
+                holderProps.progress = typeof this.state.download === 'number' ? this.state.download : 0;
                 holderProps.loadingText = Lang.string('file.loading');
                 if (!message.isSender(App.user.id)) {
                     holderProps.progress = 50 + (holderProps.progress / 2);
@@ -139,6 +139,7 @@ class MessageContentImage extends Component {
         } else {
             holderProps.status = 'broken';
         }
+
         return <ImageHolder {...holderProps} />;
     }
 }
