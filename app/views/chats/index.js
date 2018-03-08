@@ -34,7 +34,7 @@ class Index extends Component {
         App.im.ui.activeChat(match.params.id);
 
         return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
-            <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200}>
+            <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 <Menu className="dock" filter={match.params.filterType} />
                 <ChatsCache className="dock" filterType={match.params.filterType} chatId={match.params.id}>
                     <ChatsDndContainer className="dock" />
