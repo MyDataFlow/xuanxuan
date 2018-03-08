@@ -156,7 +156,7 @@ export default class MenuContactList extends Component {
         let countView = null;
         if (!group.list.length) {
             countView = '(0)';
-        } else {
+        } else if (!group.onlySubGroup) {
             countView = `(${group.onlineCount || 0}/${group.list.length})`;
         }
 

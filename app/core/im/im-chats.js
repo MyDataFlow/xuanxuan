@@ -500,6 +500,9 @@ const getContactsChats = (sortList = true, groupedBy = false) => {
                 }
                 x.list = list;
             }
+            if (x.type === 'group' && x.dept && x.dept.children && x.dept.children.length === x.list.length) {
+                x.onlySubGroup = true;
+            }
             return x;
         }).filter(x => !x.hasParent).sort(deptsSorter);
     } else if (groupedBy === 'category') {

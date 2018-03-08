@@ -5,10 +5,7 @@ import Lang from '../../lang';
 import ContextMenu from '../../components/context-menu';
 import Icon from '../../components/icon';
 import GroupList from '../../components/group-list';
-import Button from '../../components/button';
 import {ChatListItem} from './chat-list-item';
-import {MemberListItem} from '../common/member-list-item';
-import UserProfileDialog from '../common/user-profile-dialog';
 import replaceViews from '../replace-views';
 
 export default class MenuGroupList extends Component {
