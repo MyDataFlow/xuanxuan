@@ -1,7 +1,7 @@
 {
     "name": "xuanxuan",
     "productName": "Xuanxuan",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "企业即时通讯平台",
     "main": "main.js",
     "scripts": {
