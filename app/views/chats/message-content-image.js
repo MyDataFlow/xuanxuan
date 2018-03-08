@@ -64,7 +64,7 @@ class MessageContentImage extends Component {
                 this.setState({download: progress});
             }).then(file => {
                 if (this.unMounted) return;
-                this.setState({url: file.localPath, download: true});
+                this.setState({url: isBrowser ? file.src : `file://${file.localPath}`, download: true});
             }).catch(error => {
                 if (this.unMounted) return;
                 this.setState({download: false});
@@ -116,7 +116,7 @@ class MessageContentImage extends Component {
             if (imageUrl) {
                 holderProps.status = 'ok';
                 holderProps.onContextMenu = isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '');
-                holderProps.source = `file://${imageUrl}`;
+                holderProps.source = imageUrl;
                 holderProps.onDoubleClick = ImageViewer.show.bind(this, imageUrl, null, null);
             } else if (typeof this.state.download === 'number') {
                 holderProps.status = 'loading';
