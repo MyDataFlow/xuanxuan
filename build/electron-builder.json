@@ -2,7 +2,7 @@
     "productName": "xuanxuan",
     "appId": "com.cnezsoft.xuanxuan",
     "compression": "maximum",
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "artifactName": "${productName}.${version}.${os}.${arch}.${ext}",
     "extraResources": [
         {
             "from": "app/build-in/",
@@ -52,7 +52,7 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "${productName}-${version}-${os}${env.PKG_ARCH}-setup.${ext}",
+      "artifactName": "${productName}.${version}.${os}${env.PKG_ARCH}.setup.${ext}",
       "deleteAppDataOnUninstall": false
     },
     "directories": {
