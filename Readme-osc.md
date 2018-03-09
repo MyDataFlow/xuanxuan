@@ -63,7 +63,7 @@ http://xuan.im
 
 官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
 
-在 1.4 版本之后，还提供了独立的服务器端 XXB，这样可以不依赖然之协同办公系统，XXB 服务器使用参考 http://xuan.im/page/2.html 。
+在 1.4 版本之后，还提供了独立的服务器端 XXB，这样可以不依赖然之协同办公系统，XXB 服务器使用参考 http://xuan.im/page/2.html 。
 
 这里有一个公开的测试服务器供使用：
 
