@@ -10,7 +10,13 @@ const shortcuts = {};
 const unregisterGlobalShortcut = (name) => {
     const accelerator = shortcuts[name];
     if (accelerator) {
-        remote.globalShortcut.unregister(accelerator);
+        try {
+            remote.globalShortcut.unregister(accelerator);
+        } catch (err) {
+            if (DEBUG) {
+                console.warn('Unregister shortcut error:', name, err);
+            }
+        }
         delete shortcuts[name];
         if (DEBUG) {
             console.color(`GLOBAL HOTKEY REMOVE ${name}: ${accelerator}`, 'purpleOutline');
@@ -28,12 +34,18 @@ const registerGlobalShortcut = (name, accelerator, callback) => {
     unregisterGlobalShortcut(name);
     if (accelerator) {
         shortcuts[name] = accelerator;
-        remote.globalShortcut.register(accelerator, () => {
+        try {
+            remote.globalShortcut.register(accelerator, () => {
+                if (DEBUG) {
+                    console.color(`GLOBAL KEY ACTIVE ${name}: ${accelerator}`, 'redOutline');
+                }
+                callback();
+            });
+        } catch (err) {
             if (DEBUG) {
-                console.color(`GLOBAL KEY ACTIVE ${name}: ${accelerator}`, 'redOutline');
+                console.warn('Register shortcut error:', name, accelerator, err);
             }
-            callback();
-        });
+        }
         if (DEBUG) {
             console.color(`GLOBAL HOTKEY BIND ${name}: ${accelerator}`, 'purpleOutline');
         }

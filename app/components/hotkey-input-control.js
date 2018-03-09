@@ -50,7 +50,7 @@ class HotkeyInputControl extends Component {
             shortcut.push('Shift');
         }
         if (e.key && e.key !== 'Meta' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Shift') {
-            shortcut.push(e.key);
+            shortcut.push(String.fromCharCode(e.keyCode));
         }
         shortcut = shortcut.join('+');
         this.changeValue(shortcut);
