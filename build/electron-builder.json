@@ -41,7 +41,6 @@
       "target": [
         "deb",
         "rpm",
-        "AppImage",
         "tar.gz"
       ],
       "icon": "./resources/icons/"
