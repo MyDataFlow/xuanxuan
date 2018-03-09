@@ -414,7 +414,6 @@ const sendImageMessage = async (imageFile, chat, onProgress) => {
         });
         imageFile = FileData.create(imageFile);
         message.attachFile = imageFile;
-        console.log('sendImageMessage', imageFile);
         const info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
             Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
             if (DEBUG) {

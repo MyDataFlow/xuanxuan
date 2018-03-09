@@ -124,7 +124,7 @@ export default class FileData extends Entity {
             }
             if (originType === 'base64') {
                 originFile.blob = dataURItoBlob(originFile.base64);
-                return originFile;
+                return originFile.blob;
             }
         }
         return null;
