@@ -31,7 +31,7 @@ class InputControl extends Component {
         onChange: null,
         disabled: false,
         inputClassName: 'rounded',
-        name: `control-${timeSequence()}`,
+        name: '',
         labelStyle: null,
         inputStyle: null,
         inputProps: null,
