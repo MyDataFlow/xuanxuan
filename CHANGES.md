@@ -2,7 +2,7 @@
 
 ## v 1.4.0
 
-[2018-03-08]
+[2018-03-09]
 
 本次更新增加了对 `wss` 协议的支持，浏览器端也可以使用安全模式了，另外对多处交互细节进行了优化，修复了目前社区反馈的大部分问题。欢迎更新！
 
@@ -19,6 +19,7 @@
 + 优化 了创建讨论组和重命名讨论组交互，现在没有填写讨论组名称时会进行提示；
 + 优化 了聊天右键菜单，已解散的讨论组不在支持编辑分组；
 + 优化 联系人列表上分组在线信息显示，不包括联系人的分组不显示在线信息；
++ 优化 文件列表界面，已下载的文件仍然会显示下载图标；
 + 修复 在浏览器上有时操作没有响应的问题；
 + 修复 了界面上点击某些按钮出现黑色块的问题；
 + 修复 连接到部分服务器上无法修改密码的问题；
@@ -38,18 +39,27 @@
     * 优化 扩展配置约定，如果插件类扩展没有指定 `main` 属性，则默认为 `'index.js'`；
     * 修复 加载插件类扩展失效的问题；
     * 优化 信息包格式，现在会发送 `v` 字段包含客户端版本，服务器可以使用该字段了解客户端版本并做差异化处理；
-    * 优化 `$$version` 命令发送的内容，增加了服务器版本信息。
+    * 优化 `$$version` 命令发送的内容，增加了服务器版本信息；
+    * 升级 了 `electron-builder` 到 `v20.4.0` 解决了 Windows 安装程序在部分电脑上崩溃的问题。
   - XXD：
     * 修复 有时 xxd 服务器意外停止崩溃的问题；
     * 优化 与后端服务器通信格式，现在会在 http 请求的 headers 中包含 xxd 版本信息；
-    * 优化 了一些提示信息；
+    * 优化 了一些提示信息。
   - 后端服务器：
     * 增加 xxb 服务器端，可以取代然之独立运行；
     * 优化 与 xxd 服务器通信格式，现在会在 http 请求的 headers 中包含后端服务器版本信息；
-    * 优化 `chat/getUserList` 接口，现在在返回的用户信息中会包含 `qq` 字段；
+    * 优化 `chat/getUserList` 接口，现在在返回的用户信息中会包含 `qq` 字段。
 
-### 下载地址
+### 下载地址：
 
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.debug.win64.setup.exe)；
+* MacOS：[xuanxuan.1.4.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.mac.dmg)；
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.linux.x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.linux.ia32.rpm)；
+* 浏览器端：[xuanxuan.1.4.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.browser.zip)；
+* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.linux.ia32.tar.gz)；
+* 服务器端：
+  * XXB 1.0：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb-1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb-1.0.deb)；
+  * 然之：[4.6.1 稳定版](http://www.ranzhi.org/dynamic/4.6.1.stable-105.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.ranzhi.1.4.0.zip)。
 
 
 ## v 1.3.0
