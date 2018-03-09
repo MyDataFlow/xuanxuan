@@ -3,14 +3,6 @@ include 'router.class.php';
 class xuanxuan extends router
 {
     /**
-     * The xuanxuan version.
-     *
-     * @var string
-     * @access public
-     */
-    public $version = '1.1.1';
-
-    /**
      *  The request params.
      *
      * @var array

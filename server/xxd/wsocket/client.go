@@ -133,7 +133,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
     // 生成并存储文件会员
     userFileSessionID , err := api.UserFileSessionID(client.serverName, client.userID)
     if err != nil {
-        util.LogError().Println("chat user get user list error:", err)
+        util.LogError().Println("chat user create file session error:", err)
         //返回给客户端登录失败的错误信息
         return err
     }
