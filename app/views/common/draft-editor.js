@@ -165,8 +165,12 @@ class DraftEditor extends Component {
         const {editorState} = this.state;
         const contentState = editorState.getCurrentContent();
         let imageSrc = image.path || image.url;
-        if (!imageSrc && image.blob) {
-            imageSrc = URL.createObjectURL(image.blob);
+        if (!imageSrc) {
+            if (image.blob) {
+                imageSrc = URL.createObjectURL(image.blob);
+            } else if (image instanceof Blob || image instanceof File) {
+                imageSrc = URL.createObjectURL(image);
+            }
         }
         const contentStateWithEntity = contentState.createEntity(
             'image',

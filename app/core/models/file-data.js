@@ -131,18 +131,24 @@ export default class FileData extends Entity {
     }
 
     getViewUrl(user) {
-        if (!this._viewUrl) {
-            this._viewUrl = this.originFile.path || this.localPath;
-        }
-        if (!this._viewUrl && this.originFile) {
-            if (this.originFile.blob) {
-                this._viewUrl = URL.createObjectURL(this.originFile.blob);
-            } else {
-                this._viewUrl = this.originFile.base64;
+        const originFile = this.originFile;
+        if (originFile) {
+            if (!this._viewUrl) {
+                this._viewUrl = originFile.path || this.localPath;
             }
-        }
-        if (!this._viewUrl) {
-            this._viewUrl = this.makeUrl(user);
+            if (!this._viewUrl) {
+                if (originFile.blob) {
+                    this._viewUrl = URL.createObjectURL(originFile.blob);
+                } else {
+                    this._viewUrl = originFile.base64;
+                }
+            }
+            if (!this._viewUrl && (originFile instanceof File || originFile instanceof Blob)) {
+                this._viewUrl = URL.createObjectURL(originFile);
+            }
+            if (!this._viewUrl) {
+                this._viewUrl = this.makeUrl(user);
+            }
         }
         return this._viewUrl;
     }
