@@ -345,7 +345,7 @@ const sendChatMessage = async (messages, chat, isSystemMessage = false) => {
         if (command) {
             if (command.action === 'version') {
                 const specialVersion = Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : '';
-                message.content = `\`\`\`\n$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';`;
+                message.content = `\`\`\`\n$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';\n\`\`\``;
             }
         }
     });
