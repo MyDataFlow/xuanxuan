@@ -370,6 +370,18 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         }
     }
 
+    if (DEBUG && Platform.clipboard && Platform.clipboard.writeText) {
+        if (menu.length) {
+            menu.push({type: 'separator'});
+        }
+        menu.push({
+            label: 'Copy share link',
+            click: () => {
+                Platform.clipboard.writeText(`[${chat.getDisplayName({members, user: profile.user})}](#/chats/recents/${chat.gid})`);
+            }
+        });
+    }
+
     return menu;
 };
 
