@@ -1,18 +1,20 @@
 # 服务器端下载及使用
 
-服务器部署分为然之协同和xxd两部分。
+服务器部署分为web端和xxd两部分。
 
 
-## 部署服务器端
+## 部署web端
 
 只需要部署"然之服务器端"或者"XXB独立服务器端"任意一个即可
 
 ### 然之协同服务器端
 
 1. 下载安装然之协同最新版：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
-2. 以管理员身份登录然之，进入后台 -> 系统 -> 喧喧 ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
-3. 服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
-4. 调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
+2. 下载升级包：[http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan-ranzhi.1.4.0.zip](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan-ranzhi.1.4.0.zip) ；
+3. 数据库执行 db/upgradexuanxuan1.3.0.sql；
+4. 以管理员身份登录然之，进入后台 -> 系统 -> 喧喧 ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
+5. 服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
+6. 调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
 
 ### XXB独立服务器端
 
