@@ -385,7 +385,6 @@
     "usermenu.exit": "退出",
 
     "user.changePassword.heading": "修改密码",
-    "user.changePassword.oldPassword": "旧密码",
     "user.changePassword.newPassword": "新密码",
     "user.changePassword.newPasswordRepeat": "重复新密码",
     "user.changePassword.btn.confirm": "更改密码",
