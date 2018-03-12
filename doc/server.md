@@ -21,9 +21,9 @@
 XXB主要用途是将然之会员管理模块独立成一个新的管理后台。
 
 1. 下载安装XXB最新版：
-  * 源码：[源码包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zip)；
-  * Windows：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.win_32.exe)
-  * Linux：[Linux 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb-1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb-1.0.deb)；
+  * 源码：[源码包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.zip)；
+  * Windows：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.win_32.exe)
+  * Linux：[Linux 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb-1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb-1.0.deb)；
 2. 以管理员身份登录XXB，进入设置 ，设置一个长度为32的密钥，并将这个密钥并告诉 xxd 服务器管理员；
 3. 服务器的登录地址为 xxd 的访问地址，登录帐号和密码为系统内用户的帐号和密码；
 4. 调试时设置 xxb/config/my.php 中 debug=true，在 xxb/tmp/log/xuanxuan.log.php 中查看日志。
@@ -35,9 +35,9 @@ XXB主要用途是将然之会员管理模块独立成一个新的管理后台�
 
 | 操作系统       | 64位                                      | 32位                                      |
 | :--------- | :--------------------------------------- | ---------------------------------------- |
-| Windows 7+ | [xxd.1.4.0.win64.zip](http://dl.cnezsoft.com/xuanxuan/1.2/xxd.1.4.0.win64.zip) | [xxd.1.4.0.win32.zip](http://dl.cnezsoft.com/xuanxuan/1.2/xxd.1.4.0.win32.zip) |
-| Mac OS10+  | [xxd.1.4.0.mac.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.2/xxd.1.4.0.mac.tar.gz) |                                          |
-| Linux      | [xxd.1.4.0.linux.x64.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.2/xxd.1.4.0.linux.x64.tar.gz) | [xxd.1.4.0.linux.ia32.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.2/xxd.1.4.0.linux.ia32.tar.gz) |
+| Windows 7+ | [xxd.1.4.0.win64.zip](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.win64.zip) | [xxd.1.4.0.win32.zip](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.win32.zip) |
+| Mac OS10+  | [xxd.1.4.0.mac.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.mac.tar.gz) |                                          |
+| Linux      | [xxd.1.4.0.linux.x64.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.linux.x64.tar.gz) | [xxd.1.4.0.linux.ia32.tar.gz](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.linux.ia32.tar.gz) |
 
 ### 2.修改目录中的config文件
 
