@@ -171,6 +171,8 @@ class DraftEditor extends Component {
             } else if (image instanceof Blob || image instanceof File) {
                 imageSrc = URL.createObjectURL(image);
             }
+        } else if (!imageSrc.startsWith('http://') && !imageSrc.startsWith('https://')) {
+            imageSrc = `file://${imageSrc}`;
         }
         const contentStateWithEntity = contentState.createEntity(
             'image',
