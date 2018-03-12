@@ -58,7 +58,7 @@
 * 浏览器端：[xuanxuan.1.4.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan.1.4.0.browser.zip)；
 * XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/1.4/xxd.1.4.0.linux.ia32.tar.gz)；
 * 服务器端：
-  * XXB 1.0：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.3/xxb.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb-1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/1.3/xxb-1.0.deb)；
+  * XXB 1.0：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.4/xxb.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb-1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/1.4/xxb-1.0.deb)；
   * 然之：[4.6.1 稳定版](http://www.ranzhi.org/dynamic/4.6.1.stable-105.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan-ranzhi.1.4.0.zip)。
 
 
