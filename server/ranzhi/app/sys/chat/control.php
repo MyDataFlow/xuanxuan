@@ -10,7 +10,6 @@ class chat extends control
             $this->output = new stdclass();
             $this->output->module = $this->moduleName;
             $this->output->method = $this->methodName;
-            $this->output->v      = $this->config->xuanxuan->version;
         }
     }
 

@@ -117,7 +117,10 @@ class xuanxuan extends router
         $method  = !empty($input->method) ? $input->method : '';
         $params  = !empty($input->params) ? $input->params : array();
 
-        if(!$module or !$method or $module != 'chat')
+        $module = strtolower($module);
+        $method = strtolower($method);
+
+        if(!isset($this->config->xuanxuan->enabledMethods[$module][$method]))
         {
             $data = new stdclass();
             $data->module = 'chat';
@@ -311,6 +314,8 @@ class xuanxuan extends router
      */
     public function encrypt($output = null)
     {
+        if(is_object($output)) $output->v = $this->config->xuanxuan->version;
+
         $output = helper::jsonEncode($output);
         if($this->config->debug)
         {
