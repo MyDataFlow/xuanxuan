@@ -205,33 +205,36 @@ const createSendboxToolbarItems = (chat, config) => {
                 sendContentToChat(Emojione.convert(emoji.unicode) + ' ');
             });
         }
-    }, {
-        id: 'image',
-        icon: 'image',
-        label: Lang.string('chat.sendbox.toolbar.image'),
-        click: () => {
-            Platform.dialog.showOpenDialog({
-                filters: [
-                    {name: 'Images', extensions: ['jpg', 'png', 'gif']},
-                ]
-            }, files => {
-                if (files && files.length) {
-                    sendContentToChat(files[0], 'image', chat.gid);
-                }
-            });
-        }
-    }, {
-        id: 'file',
-        icon: 'file-outline',
-        label: Lang.string('chat.sendbox.toolbar.file'),
-        click: () => {
-            Platform.dialog.showOpenDialog(null, files => {
-                if (files && files.length) {
-                    Server.sendFileMessage(files[0], chat);
-                }
-            });
-        }
     }];
+    if (profile.user.isVersionSupport('fileServer')) {
+        items.push({
+            id: 'image',
+            icon: 'image',
+            label: Lang.string('chat.sendbox.toolbar.image'),
+            click: () => {
+                Platform.dialog.showOpenDialog({
+                    filters: [
+                        {name: 'Images', extensions: ['jpg', 'png', 'gif']},
+                    ]
+                }, files => {
+                    if (files && files.length) {
+                        sendContentToChat(files[0], 'image', chat.gid);
+                    }
+                });
+            }
+        }, {
+            id: 'file',
+            icon: 'file-outline',
+            label: Lang.string('chat.sendbox.toolbar.file'),
+            click: () => {
+                Platform.dialog.showOpenDialog(null, files => {
+                    if (files && files.length) {
+                        Server.sendFileMessage(files[0], chat);
+                    }
+                });
+            }
+        });
+    }
     if (Platform.screenshot) {
         items.push({
             id: 'captureScreen',

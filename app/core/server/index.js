@@ -48,16 +48,15 @@ const checkServerVersion = serverVersion => {
     return false;
 };
 
-const checkVersionSupport = serverVersion => {
+const checkVersionSupport = user => {
+    const {serverVersion, uploadFileSize} = user;
     const compareVersionValue = compareVersions(serverVersion, '1.3.0');
-    if (compareVersionValue >= 0) {
-        return {
-            messageOrder: true,
-            userGetListWithId: true,
-            wss: compareVersionValue > 0
-        };
-    }
-    return null;
+    return {
+        messageOrder: compareVersionValue >= 0,
+        userGetListWithId: compareVersionValue >= 0,
+        wss: compareVersionValue > 0,
+        fileServer: uploadFileSize !== 0
+    };
 };
 
 const login = (user) => {
@@ -90,7 +89,7 @@ const login = (user) => {
         if (versionError) {
             return Promise.reject(versionError);
         }
-        user.setVersionSupport(checkVersionSupport(user.serverVersion));
+        user.setVersionSupport(checkVersionSupport(user));
         return socket.login(user, {onClose: (socket, code, reason, unexpected) => {
             Events.emit(EVENT.loginout, user, code, reason, unexpected);
         }});
