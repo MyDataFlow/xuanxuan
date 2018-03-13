@@ -16,6 +16,7 @@ import (
     "xxd/util"
 )
 
+//ase加密
 func aesEncrypt(origData, key []byte) ([]byte, error) {
     block, err := aes.NewCipher(key)
     if err != nil {
@@ -31,8 +32,8 @@ func aesEncrypt(origData, key []byte) ([]byte, error) {
     return crypted, nil
 }
 
+//ase解密
 func aesDecrypt(crypted, key []byte) ([]byte, error) {
-
     block, err := aes.NewCipher(key)
     if err != nil {
         return nil, err

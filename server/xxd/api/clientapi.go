@@ -56,6 +56,7 @@ func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
     return retMessage, retData.loginUserID(), result
 }
 
+//客户端退出
 func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
     ranzhiServer, ok := RanzhiServer(serverName)
     if !ok {
@@ -95,6 +96,7 @@ func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
 
 }
 
+//重新登录
 func RepeatLogin() []byte {
     repeatLogin := []byte(`{"module":"chat","method":"kickoff","message":"当前账号已在其他地方登录，如果不是本人操作，请及时修改密码"}`)
     //repeatLogin := []byte(`{"module":"chat","method:"kickoff","message":"This account logined in another place."}`)
@@ -108,6 +110,7 @@ func RepeatLogin() []byte {
     return message
 }
 
+//测试登录
 func TestLogin() []byte {
     loginData := []byte(`{"result":"success","data":{"id":12,"account":"demo8","realname":"\u6210\u7a0b\u7a0b","avatar":"","role":"hr","dept":0,"status":"online","admin":"no","gender":"f","email":"ccc@demo.com","mobile":"","site":"","phone":""},"sid":"18025976a786ec78194e491e7b790731","module":"chat","method":"login"}`)
 
@@ -129,6 +132,7 @@ func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) 
         return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
     }
 
+    //交换token
     message, err := SwapToken(clientData, util.Token, ranzhiServer.RanzhiToken)
     if err != nil {
         util.LogError().Println("transit data swap token error:", err)
@@ -159,6 +163,7 @@ func TransitData(clientData []byte, serverName string) ([]byte, []int64, error) 
     return x2cMessage, sendUsers, nil
 }
 
+//获取用户列表
 func UserGetlist(serverName string, userID int64) ([]byte, error) {
     ranzhiServer, ok := RanzhiServer(serverName)
     if !ok {
@@ -192,6 +197,7 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
     return retData, nil
 }
 
+//用户文件SessionID 作用于文件下载 为适配web版客户端
 func UserFileSessionID(serverName string, userID int64) ([]byte , error) {
     sessionID := util.GetMD5( serverName + util.Int642String(userID) + util.Int642String(util.GetUnixTime()) )
     sessionData := []byte(`{"module":"chat","method":"SessionID","sessionID":"` + sessionID + `"}`)
@@ -208,6 +214,7 @@ func UserFileSessionID(serverName string, userID int64) ([]byte , error) {
     return sessionData , nil
 }
 
+//获取用户的会话列表
 func Getlist(serverName string, userID int64) ([]byte, error) {
     ranzhiServer, ok := RanzhiServer(serverName)
     if !ok {
@@ -241,6 +248,7 @@ func Getlist(serverName string, userID int64) ([]byte, error) {
 
 }
 
+//获取离线消息
 func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
     ranzhiServer, ok := RanzhiServer(serverName)
     if !ok {
@@ -296,6 +304,7 @@ func RanzhiServer(serverName string) (util.RanzhiServer, bool) {
     return info, ok
 }
 
+//服务器名称
 func (pd ParseData) ServerName() string {
     params, ok := pd["params"]
     if !ok {
@@ -307,6 +316,7 @@ func (pd ParseData) ServerName() string {
     return ret[0].(string)
 }
 
+//账号
 func (pd ParseData) Account() string {
     params, ok := pd["params"]
     if !ok {
@@ -318,6 +328,7 @@ func (pd ParseData) Account() string {
     return ret[1].(string)
 }
 
+//密码
 func (pd ParseData) Password() string {
     params, ok := pd["params"]
     if !ok {
@@ -329,6 +340,7 @@ func (pd ParseData) Password() string {
     return ret[2].(string)
 }
 
+//状态
 func (pd ParseData) Status() string {
     params, ok := pd["params"]
     if !ok {
@@ -338,4 +350,4 @@ func (pd ParseData) Status() string {
     // api中status在数组固定位置为3
     ret := params.([]interface{})
     return ret[3].(string)
-}
+  }

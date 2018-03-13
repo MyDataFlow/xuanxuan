@@ -65,6 +65,7 @@ type SendMsg struct {
     message    []byte
 }
 
+//解析数据.
 func dataProcessing(message []byte, client *Client) error {
     parseData, err := api.ApiParse(message, util.Token)
     if err != nil {
@@ -79,6 +80,7 @@ func dataProcessing(message []byte, client *Client) error {
     return switchMethod(message, parseData, client)
 }
 
+//根据不同的消息体选择对应的处理方法
 func switchMethod(message []byte, parseData api.ParseData, client *Client) error {
 
     switch parseData.Module() + "." + parseData.Method() {
@@ -109,6 +111,7 @@ func switchMethod(message []byte, parseData api.ParseData, client *Client) error
     return nil
 }
 
+//用户登录
 func chatLogin(parseData api.ParseData, client *Client) error {
     loginData, userID, ok := api.ChatLogin(parseData)
     if userID == -1 {
@@ -189,6 +192,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
     return nil
 }
 
+//会话退出
 func chatLogout(userID int64, client *Client) error {
     if client.userID != userID {
         return util.Errorf("%s", "user id error.")
@@ -202,6 +206,7 @@ func chatLogout(userID int64, client *Client) error {
     return X2cSend(client.serverName, sendUsers, x2cMessage, client)
 }
 
+//交换数据
 func transitData(message []byte, userID int64, client *Client) error {
     if client.userID != userID {
         return util.Errorf("%s", "user id err")
@@ -222,6 +227,7 @@ func transitData(message []byte, userID int64, client *Client) error {
     return X2cSend(client.serverName, sendUsers, x2cMessage, client)
 }
 
+//消息发送 由XXD发送给XXC.或未指定用户,刚为广播
 func X2cSend(serverName string, sendUsers []int64, message []byte, client *Client) error {
     if len(sendUsers) == 0 {
         //send all

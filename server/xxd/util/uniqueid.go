@@ -14,6 +14,7 @@ import (
     "io/ioutil"
 )
 
+//生成唯一ID 作用于文件在websocket和http不同协议中识别用户
 func CreateUid(serverName string, userID int64, key string) error {
 
     url := Config.LogPath+"/"+serverName+"/"
@@ -39,6 +40,7 @@ func CreateUid(serverName string, userID int64, key string) error {
     return nil
 }
 
+//获取用户唯一ID
 func GetUid(serverName string, userID string) (string,error) {
     url := Config.LogPath+"/"+serverName+"/"+ userID
 
@@ -55,6 +57,7 @@ func GetUid(serverName string, userID string) (string,error) {
     return string(data),nil
 }
 
+//删除用户唯一ID
 func DelUid(serverName string, userID string) error {
     url := Config.LogPath+"/"+serverName+"/"+ userID
     err := Rm(url)
