@@ -77,6 +77,10 @@ class FormView extends Component {
 
         state.submitable = StringHelper.isNotEmpty(state.serverUrl) && StringHelper.isNotEmpty(state.account) && StringHelper.isNotEmpty(state.password);
 
+        if (state.autoLogin && state.submitable) {
+            state.logining = true;
+        }
+
         this.state = state;
     }
 
