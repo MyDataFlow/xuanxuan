@@ -13,7 +13,7 @@ import (
 // Content-Type:[application/x-www-form-urlencoded]
 // Accept-Encoding:[gzip]
 func TestClient(t *testing.T) {
-    addr := "http://192.168.1.221:80/ranzhi/xuanxuan.php"
+    addr := "http://127.0.0.1/xxb/xuanxuan.php"
     //postData := []byte("123456789")
 
     postData := api.RepeatLogin()
