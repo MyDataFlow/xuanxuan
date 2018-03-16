@@ -478,6 +478,9 @@ class Chat extends Entity {
 
     updateMembersSet(appMembers) {
         this._membersSet = Array.from(this.members).map(memberId => (appMembers.get(memberId)));
+        if (this.isGroupOrSystem) {
+            this._membersSet = this._membersSet.filter(m => !m.temp);
+        }
     }
 
     getMembersSet(appMembers) {

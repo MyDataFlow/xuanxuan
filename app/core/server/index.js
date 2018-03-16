@@ -124,6 +124,26 @@ const fetchUserList = (idList) => {
     });
 };
 
+let tempUserIdList = null;
+let lastGetTempUserCall = null;
+const tryGetTempUserInfo = id => {
+    if (!lastGetTempUserCall) {
+        clearTimeout(lastGetTempUserCall);
+    }
+    if (tempUserIdList) {
+        tempUserIdList.push(id);
+    } else {
+        tempUserIdList = [id];
+    }
+    lastGetTempUserCall = setTimeout(() => {
+        if (tempUserIdList.length) {
+            fetchUserList(tempUserIdList);
+            tempUserIdList = [];
+        }
+        lastGetTempUserCall = null;
+    }, 1000);
+};
+
 const logout = () => {
     notice.update();
     socket.logout();
@@ -145,4 +165,5 @@ export default {
     changeUserStatus,
     changeRanzhiUserPassword,
     fetchUserList,
+    tryGetTempUserInfo
 };

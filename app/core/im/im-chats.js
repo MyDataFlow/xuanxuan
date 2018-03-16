@@ -253,22 +253,18 @@ const init = (chatArr) => {
     chats = {};
     if (chatArr && chatArr.length) {
         update(chatArr);
-        const tempMemberIdList = [];
         forEach(chat => {
             if (chat.isOne2One) {
                 const member = chat.getTheOtherOne(app);
                 if (member.temp) {
-                    tempMemberIdList.push(member.id);
                     chat.isDeleteOne2One = true;
+                    Server.tryGetTempUserInfo(member.id);
                 }
             }
             if (!chat.hasSetMessages && chat.visible) {
                 loadChatMessages(chat);
             }
         });
-        if (tempMemberIdList.length && profile.user.isVersionSupport('userGetListWithId')) {
-            Server.fetchUserList(tempMemberIdList);
-        }
         Events.emit(EVENT.init, chats);
     }
 };
