@@ -39,20 +39,16 @@ export default class MenuContactList extends Component {
 
     constructor(props) {
         super(props);
+        const user = App.user;
         this.state = {
-            groupType: null,
+            groupType: user ? user.config.contactsGroupByType : 'normal',
             dragging: false,
             dropTarget: null
         };
     }
 
     get groupType() {
-        let {groupType} = this.state;
-        if (!groupType) {
-            const user = App.user;
-            groupType = user ? user.config.contactsGroupByType : 'normal';
-        }
-        return groupType;
+        return this.state.groupType;
     }
 
     set groupType(groupType) {
@@ -169,7 +165,7 @@ export default class MenuContactList extends Component {
         };
         return (<header
             onContextMenu={this.handleHeadingContextMenu.bind(this, group)}
-            draggable={this.state.groupType === 'category'}
+            draggable={this.groupType === 'category'}
             onDragOver={this.handleDragOver.bind(this, group)}
             onDrop={this.handleDrop.bind(this, group)}
             onDragStart={this.handleDragStart.bind(this, group)}
