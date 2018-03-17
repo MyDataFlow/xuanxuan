@@ -25,7 +25,7 @@ type ConfigIni struct {
     Ip         string
     ChatPort   string
     CommonPort string
-    IsHttps   string
+    IsHttps    string
 
     UploadPath     string
     UploadFileSize int64
@@ -78,6 +78,7 @@ func init() {
     getUploadFileSize(data)
 }
 
+//获取配置文件IP
 func getIP(config *goconfig.ConfigFile) (err error) {
     Config.Ip, err = config.GetValue("server", "ip")
     if err != nil {
@@ -87,6 +88,7 @@ func getIP(config *goconfig.ConfigFile) (err error) {
     return
 }
 
+//会话端口
 func getChatPort(config *goconfig.ConfigFile) (err error) {
     Config.ChatPort, err = config.GetValue("server", "chatPort")
     if err != nil {
@@ -96,6 +98,7 @@ func getChatPort(config *goconfig.ConfigFile) (err error) {
     return
 }
 
+//服务端口
 func getCommonPort(config *goconfig.ConfigFile) (err error) {
     Config.CommonPort, err = config.GetValue("server", "commonPort")
     if err != nil {
@@ -105,7 +108,7 @@ func getCommonPort(config *goconfig.ConfigFile) (err error) {
     return
 }
 
-
+//判断是否启用https
 func getIsHttps(config *goconfig.ConfigFile) (err error) {
     Config.IsHttps, err = config.GetValue("server", "isHttps")
     if err != nil {
@@ -114,6 +117,7 @@ func getIsHttps(config *goconfig.ConfigFile) (err error) {
     return
 }
 
+//获取上传目录
 func getUploadPath(config *goconfig.ConfigFile) (err error) {
     Config.UploadPath, err = config.GetValue("server", "uploadPath")
     if err != nil {
@@ -123,6 +127,7 @@ func getUploadPath(config *goconfig.ConfigFile) (err error) {
     return
 }
 
+//获取上传大小
 func getUploadFileSize(config *goconfig.ConfigFile) error {
 
     Config.UploadFileSize = 32 * MB
@@ -165,6 +170,7 @@ func getUploadFileSize(config *goconfig.ConfigFile) error {
     return err
 }
 
+//获取服务器列表,conf中[ranzhi]段不能改名.
 func getRanzhi(config *goconfig.ConfigFile) {
     keyList := config.GetKeyList("ranzhi")
 
@@ -193,6 +199,7 @@ func getRanzhi(config *goconfig.ConfigFile) {
     }
 }
 
+//获取日志路径
 func getLogPath(config *goconfig.ConfigFile) (err error) {
     Config.LogPath, err = config.GetValue("log", "logPath")
     if err != nil {
@@ -202,6 +209,7 @@ func getLogPath(config *goconfig.ConfigFile) (err error) {
     return
 }
 
+//获取证书路径
 func getCrtPath(config *goconfig.ConfigFile) (err error) {
     Config.CrtPath, err = config.GetValue("certificate", "crtPath")
     if err != nil {

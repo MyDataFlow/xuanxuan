@@ -81,20 +81,6 @@ $ npm install
 
 此步骤通常需要几分钟，视网络环境执行的时间不定。如果你使用的是国内网络，可能导致某些依赖模块安装失败。下面介绍使用国内 **[淘宝 NPM 镜像](https://npm.taobao.org/)** 来加速安装过程，确保安装成功。以下经验适合任何基于 nodejs 的项目。
 
-##### 使用 cnpm
-
-在你的终端执行：
-
-```
-$ npm install -g cnpm --registry=https://registry.npm.taobao.org
-```
-
-这样你就可以使用 `cnpm` 命令来代替 `npm` 了，这样可以执行如下命令来安装喧喧的项目依赖：
-
-```
-$ cnpm install
-```
-
 ##### 将镜像地址写入 `~/.npmrc`
 
 在你的系统找到 `~/.npmrc` 文件，并用文本编辑器打开，写入如下内容到文件：

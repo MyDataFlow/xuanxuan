@@ -23,6 +23,7 @@ export default {
     'ui.chat.contacts.order.role': {},
     'ui.chat.contacts.categories': {},
     'ui.chat.contacts.order.dept': {},
+    'ui.chat.menu.group.states': {},
     'ui.chat.contacts.category.default': '',
     'ui.chat.groups.category.default': '',
     'ui.chat.groups.categories': {},

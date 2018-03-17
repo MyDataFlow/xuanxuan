@@ -74,7 +74,7 @@ const draftDecorator = new CompositeDecorator([{
                 return <span title={langAtAll} className="at-all text-primary" data-offset-key={props.offsetKey}>{props.children}</span>;
             } else {
                 const member = App.members.guess(guess);
-                if (member) {
+                if (member && member.id) {
                     return <a className="app-link text-primary" href={'@Member/' + member.id} title={'@' + member.displayName} data-offset-key={props.offsetKey}>{props.children}</a>;
                 }
             }
@@ -165,8 +165,14 @@ class DraftEditor extends Component {
         const {editorState} = this.state;
         const contentState = editorState.getCurrentContent();
         let imageSrc = image.path || image.url;
-        if (!imageSrc && image.blob) {
-            imageSrc = URL.createObjectURL(image.blob);
+        if (!imageSrc) {
+            if (image.blob) {
+                imageSrc = URL.createObjectURL(image.blob);
+            } else if (image instanceof Blob || image instanceof File) {
+                imageSrc = URL.createObjectURL(image);
+            }
+        } else if (!imageSrc.startsWith('http://') && !imageSrc.startsWith('https://')) {
+            imageSrc = `file://${imageSrc}`;
         }
         const contentStateWithEntity = contentState.createEntity(
             'image',
@@ -189,12 +195,12 @@ class DraftEditor extends Component {
         let thisTextContent = '';
         raw.blocks.forEach(block => {
             if (block.type === 'atomic') {
-                if (block.entityRanges && block.entityRanges.length) {
-                    contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
-                }
                 if (thisTextContent.length && thisTextContent.trim().length) {
                     contents.push({type: 'text', content: thisTextContent});
                     thisTextContent = '';
+                }
+                if (block.entityRanges && block.entityRanges.length) {
+                    contents.push({type: 'image', image: raw.entityMap[block.entityRanges[0].key].data.image});
                 }
             } else {
                 if (thisTextContent.length) {

@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
-import Platform from 'Platform';
 import hotkeys from 'hotkeys-js';
 import AreaSelector from './area-selector';
 import Icon from './icon';
 import Avatar from './avatar';
 import timeSequence from '../utils/time-sequence';
+import ImageHelper from '../utils/image';
 
 /**
  * Image cutter component
@@ -52,7 +52,7 @@ class ImageCutter extends Component {
 
     handleOkButtonClick = () => {
         if (this.select) {
-            Platform.image.cutImage(this.props.sourceImage, this.select).then(image => {
+            ImageHelper.cutImage(this.props.sourceImage, this.select).then(image => {
                 if (this.props.onFinish) {
                     this.props.onFinish(image);
                 }

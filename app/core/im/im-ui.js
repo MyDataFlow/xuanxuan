@@ -166,7 +166,7 @@ const captureAndCutScreenImage = (hiddenWindows = false) => {
             }
         }).catch(error => {
             if (DEBUG) {
-                console.warn('Capture screen image error', error);
+                console.warn('Capture screen image error: ', error);
             }
         });
     } else {
@@ -214,33 +214,36 @@ const createSendboxToolbarItems = (chat, config) => {
                 sendContentToChat(Emojione.convert(emoji.unicode) + ' ');
             });
         }
-    }, {
-        id: 'image',
-        icon: 'image',
-        label: Lang.string('chat.sendbox.toolbar.image'),
-        click: () => {
-            Platform.dialog.showOpenDialog({
-                filters: [
-                    {name: 'Images', extensions: ['jpg', 'png', 'gif']},
-                ]
-            }, files => {
-                if (files && files.length) {
-                    sendContentToChat(files[0], 'image', chat.gid);
-                }
-            });
-        }
-    }, {
-        id: 'file',
-        icon: 'file-outline',
-        label: Lang.string('chat.sendbox.toolbar.file'),
-        click: () => {
-            Platform.dialog.showOpenDialog(null, files => {
-                if (files && files.length) {
-                    Server.sendFileMessage(files[0], chat);
-                }
-            });
-        }
     }];
+    if (profile.user.isVersionSupport('fileServer')) {
+        items.push({
+            id: 'image',
+            icon: 'image',
+            label: Lang.string('chat.sendbox.toolbar.image'),
+            click: () => {
+                Platform.dialog.showOpenDialog({
+                    filters: [
+                        {name: 'Images', extensions: ['jpg', 'png', 'gif']},
+                    ]
+                }, files => {
+                    if (files && files.length) {
+                        sendContentToChat(files[0], 'image', chat.gid);
+                    }
+                });
+            }
+        }, {
+            id: 'file',
+            icon: 'file-outline',
+            label: Lang.string('chat.sendbox.toolbar.file'),
+            click: () => {
+                Platform.dialog.showOpenDialog(null, files => {
+                    if (files && files.length) {
+                        Server.sendFileMessage(files[0], chat);
+                    }
+                });
+            }
+        });
+    }
     if (Platform.screenshot) {
         items.push({
             id: 'captureScreen',
@@ -365,7 +368,7 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         });
     }
 
-    if (menuType === 'contacts' || menuType === 'groups') {
+    if ((menuType === 'contacts' || menuType === 'groups') && !chat.isDismissed) {
         if (viewType === 'category') {
             if (menu.length) {
                 menu.push({type: 'separator'});
@@ -377,6 +380,18 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
                 }
             });
         }
+    }
+
+    if (DEBUG && Platform.clipboard && Platform.clipboard.writeText) {
+        if (menu.length) {
+            menu.push({type: 'separator'});
+        }
+        menu.push({
+            label: 'Copy share link',
+            click: () => {
+                Platform.clipboard.writeText(`[${chat.getDisplayName({members, user: profile.user})}](#/chats/recents/${chat.gid})`);
+            }
+        });
     }
 
     return menu;
@@ -508,7 +523,13 @@ const onRenderChatMessageContent = listener => {
 
 const createGroupChat = (members) => {
     return Modal.prompt(Lang.string('chat.create.newChatNameTip'), '', {
-        placeholder: Lang.string('chat.rename.newTitle'),
+        inputProps: {placeholder: Lang.string('chat.rename.newTitle')},
+        onSubmit: newName => {
+            if (!newName) {
+                Modal.alert(Lang.string('chat.rename.newTitleRequired'));
+                return false;
+            }
+        }
     }).then(newName => {
         if (newName) {
             return Server.createChatWithMembers(members, {name: newName});
@@ -612,9 +633,12 @@ if (Platform.screenshot && Platform.shortcut) {
             }
         }
     };
-    profile.onUserConfigChange(change => {
+    profile.onUserConfigChange((change, config) => {
         if (change && change['shortcut.captureScreen']) {
             registerShortcut();
+        }
+        if (config.needSave) {
+            CoreServer.socket.uploadUserSettings();
         }
     });
     CoreServer.onUserLogin(registerShortcut);

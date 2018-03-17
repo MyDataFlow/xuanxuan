@@ -1,14 +1,15 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react'; // eslint-disable-line
 import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import API from '../../network/api';
 import Emojione from '../../components/emojione';
 import Icon from '../../components/icon';
 import Avatar from '../../components/avatar';
 import ImageViewer from '../../components/image-viewer';
 import replaceViews from '../replace-views';
+import ImageHolder from '../../components/image-holder';
+import FileData from '../../core/models/file-data';
 
 const isBrowser = Platform.type === 'browser';
 
@@ -28,14 +29,16 @@ class MessageContentImage extends Component {
 
     constructor(props) {
         super(props);
+        const {message} = this.props;
         this.state = {
             download: null,
-            url: ''
+            url: message.attachFile ? message.attachFile.viewUrl : ''
         };
         if (isBrowser) {
-            const {message} = this.props;
             const image = message.imageContent;
-            this.state.url = API.createFileDownloadUrl(App.user, image);
+            if (image.type !== 'emoji' && image.type !== 'base64') {
+                this.state.url = FileData.create(image).makeUrl(App.user);
+            }
         }
     }
 
@@ -51,19 +54,19 @@ class MessageContentImage extends Component {
     }
 
     componentWillUnmount() {
-        this.mounted = true;
+        this.unMounted = true;
     }
 
     downloadImage(image) {
         if (this.state.download === null) {
-            API.downloadFile(App.user, image, progress => {
-                if (this.mounted) return;
+            App.im.files.downloadFile(image, progress => {
+                if (this.unMounted) return;
                 this.setState({download: progress});
             }).then(file => {
-                if (this.mounted) return;
-                this.setState({url: image.src, download: true});
+                if (this.unMounted) return;
+                this.setState({url: isBrowser ? file.src : `file://${file.localPath}`, download: true});
             }).catch(error => {
-                if (this.mounted) return;
+                if (this.unMounted) return;
                 this.setState({download: false});
             });
         }
@@ -82,7 +85,7 @@ class MessageContentImage extends Component {
             ...other
         } = this.props;
 
-        const image = message.imageContent;
+        let image = message.imageContent;
 
         if (image.type === 'emoji') {
             return (<div
@@ -101,41 +104,43 @@ class MessageContentImage extends Component {
                 alt={image.type}
             />);
         }
-        if (image.id && image.send === true) {
+        const holderProps = {
+            width: image.width,
+            height: image.height,
+            alt: image.name
+        };
+        image = FileData.create(image);
+
+        if (image.isOK) {
             const imageUrl = this.state.url;
             if (imageUrl) {
-                return (<img
-                    onContextMenu={isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '')}
-                    title={image.name}
-                    alt={image.name}
-                    data-fail={Lang.string('file.downloadFailed')}
-                    onError={e => e.target.classList.add('broken')}
-                    onDoubleClick={ImageViewer.show.bind(this, imageUrl, null, null)}
-                    src={`file://${image.src}`}
-                />);
-            } else if (typeof this.state.download === 'number') {
-                const percent = Math.floor(this.state.download);
-                return (<Avatar
-                    className="avatar-xl info-pale text-info app-message-image-placeholder"
-                    icon="image-area"
-                >
-                    <div className="space-sm" />
-                    <div className="label info circle"><Icon name="download" /> {percent}%</div>
-                </Avatar>);
+                holderProps.status = 'ok';
+                holderProps.onContextMenu = isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '');
+                holderProps.source = imageUrl;
+                holderProps.onDoubleClick = ImageViewer.show.bind(this, imageUrl, null, null);
+            } else {
+                holderProps.status = 'loading';
+                holderProps.progress = typeof this.state.download === 'number' ? this.state.download : 0;
+                holderProps.loadingText = Lang.string('file.loading');
+                if (!message.isSender(App.user.id)) {
+                    holderProps.progress = 50 + (holderProps.progress / 2);
+                }
             }
-        }
-        if (typeof image.send === 'number') {
-            const percent = Math.floor(image.send);
-            return (<Avatar className="avatar-xl info-pale text-info app-message-image-placeholder" icon="image-area">
-                <div className="space-sm" />
-                <div className="label info circle"><Icon name="upload" /> {percent}%</div>
-            </Avatar>);
+        } else if (typeof image.send === 'number') {
+            holderProps.status = 'loading';
+            holderProps.progress = image.send;
+            holderProps.previewUrl = this.state.url;
+            if (!message.isSender(App.user.id)) {
+                holderProps.loadingText = Lang.string('file.loading');
+                holderProps.progress /= 2;
+            } else {
+                holderProps.loadingText = Lang.string('file.sending');
+            }
+        } else {
+            holderProps.status = 'broken';
         }
 
-        return (<Avatar className="avatar-xl warning-pale text-warning app-message-image-placeholder" icon="image-broken">
-            <div className="space-xs" />
-            {image.send === false ? <div className="label clean circle">{Lang.string('file.uploadFailed')}</div> : null}
-        </Avatar>);
+        return <ImageHolder {...holderProps} />;
     }
 }
 

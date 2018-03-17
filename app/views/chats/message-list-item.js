@@ -56,6 +56,10 @@ class MessageListItem extends Component {
         if (!this.props.ignoreStatus) {
             this.checkResendMessage();
         }
+        if (this.needGetSendInfo && this.needGetSendInfo !== true) {
+            App.server.tryGetTempUserInfo(this.needGetSendInfo);
+            this.needGetSendInfo = true;
+        }
     }
 
     componentDidUpdate() {
@@ -150,6 +154,9 @@ class MessageListItem extends Component {
 
         if (!hideHeader) {
             const sender = message.getSender(App.members);
+            if (sender.temp) {
+                this.needGetSendInfo = sender.id;
+            }
             headerView = (<div className="app-message-item-header">
                 <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)} />
                 <header style={titleFontStyle}>

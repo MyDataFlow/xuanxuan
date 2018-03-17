@@ -5,10 +5,7 @@ import Lang from '../../lang';
 import ContextMenu from '../../components/context-menu';
 import Icon from '../../components/icon';
 import GroupList from '../../components/group-list';
-import Button from '../../components/button';
 import {ChatListItem} from './chat-list-item';
-import {MemberListItem} from '../common/member-list-item';
-import UserProfileDialog from '../common/user-profile-dialog';
 import replaceViews from '../replace-views';
 
 export default class MenuGroupList extends Component {
@@ -134,8 +131,16 @@ export default class MenuGroupList extends Component {
 
     defaultExpand = (group) => {
         return group.list && !!group.list.find(item => {
-            return App.im.ui.isActiveChat(item.gid);
+            let isExpand = App.im.ui.isActiveChat(item.gid);
+            if (!isExpand) {
+                isExpand = App.profile.userConfig.getChatMenuGroupState('groups', this.groupType, group.id);
+            }
+            return isExpand;
         });
+    };
+
+    onExpandChange = (expanded, group) => {
+        App.profile.userConfig.setChatMenuGroupState('groups', this.groupType, group.id, expanded);
     };
 
     render() {
@@ -158,6 +163,7 @@ export default class MenuGroupList extends Component {
                     headingCreator: this.headingCreator,
                     hideEmptyGroup: true,
                     checkIsGroup: this.checkIsGroup,
+                    onExpandChange: this.onExpandChange,
                     forceCollapse: !!this.state.dragging
                 })
             }

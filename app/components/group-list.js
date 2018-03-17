@@ -31,6 +31,7 @@ export default class GroupList extends Component {
         expandIcon: 'chevron-down',
         hideEmptyGroup: true,
         checkIsGroup: null,
+        onExpandChange: null,
         forceCollapse: false,
     }
 
@@ -45,6 +46,7 @@ export default class GroupList extends Component {
         headingCreator: PropTypes.func,
         checkIsGroup: PropTypes.func,
         itemCreator: PropTypes.func,
+        onExpandChange: PropTypes.func,
         group: PropTypes.object,
         className: PropTypes.string,
         children: PropTypes.any,
@@ -74,6 +76,7 @@ export default class GroupList extends Component {
                     hideEmptyGroup={props && props.hideEmptyGroup}
                     checkIsGroup={props && props.checkIsGroup}
                     forceCollapse={props && props.forceCollapse}
+                    onExpandChange={props && props.onExpandChange}
                 />);
             }
             if (props && props.itemCreator) {
@@ -98,7 +101,14 @@ export default class GroupList extends Component {
         if (expand === undefined) {
             expand = !this.state.expand;
         }
-        this.setState({expand}, callback);
+        this.setState({expand}, () => {
+            if (this.props.onExpandChange) {
+                this.props.onExpandChange(expand, this.props.group);
+            }
+            if (callback) {
+                callback(expand, this.props.group);
+            }
+        });
     }
 
     expand(callback) {
@@ -135,6 +145,7 @@ export default class GroupList extends Component {
             defaultExpand,
             expandIcon,
             collapseIcon,
+            onExpandChange,
             className,
             children,
             ...other

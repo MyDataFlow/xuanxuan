@@ -63,12 +63,10 @@ class ChatInvite extends Component {
         if (chat.isOne2One) {
             members.push(...chat.getMembersSet(App.members));
             App.im.ui.createGroupChat(members).then(newChat => {
-                if (newChat) {
-                    const groupUrl = `#${ROUTES.chats.groups.id(newChat.gid)}`;
-                    this.requestClose();
-                    App.im.server.sendBoardChatMessage(Lang.format('chat.inviteAndCreateNewChat.format', `[**[${newChat.getDisplayName(App)}](${groupUrl})**]`), chat);
-                    window.location.hash = groupUrl;
-                }
+                const groupUrl = `#${ROUTES.chats.groups.id(newChat.gid)}`;
+                this.requestClose();
+                App.im.server.sendBoardChatMessage(Lang.format('chat.inviteAndCreateNewChat.format', `[**[${newChat.getDisplayName(App)}](${groupUrl})**]`), chat);
+                window.location.hash = groupUrl;
             }).catch(error => {
                 if (error) {
                     Messager.show(Lang.error(error), {type: 'danger'});

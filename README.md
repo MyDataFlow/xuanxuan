@@ -11,11 +11,7 @@ http://xuan.im
 
 ## 最近更新
 
-🎉 1.3 版本带来了大家期待的扩展机制，提供了更灵活的方式将你到业务与喧喧进行集成；另外还带来了多个实用功能，包括聊天记录搜索、讨论组解散、按部门或角色分组查看联系人、修改密码等。
-
-🎉 扩展机制内置的暗黑主题，让你的体验焕然一新，快来试试吧！
-
-![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/dark-theme-preview.png)
+🎉 1.4 版本增加了对 `wss` 协议的支持，浏览器端也可以使用安全模式了，另外对多处交互细节进行了优化，修复了目前社区反馈的大部分问题。欢迎更新！
 
 ## 特色功能
 
@@ -40,7 +36,7 @@ http://xuan.im
 
 ### 浏览器客户端
 
-浏览器客户端试用请访问：https://easysoft.github.io/xuanxuan/1.2.0/
+浏览器客户端试用请访问：[https://demo.ranzhi.net](https://demo.ranzhi.net/?server=https://demo.ranzhi.net&account=demo1&password=123456&loginTip=%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8D%E6%94%AF%E6%8C%81%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%EF%BC%8C%E5%9B%BE%E7%89%87%E5%92%8C%E6%96%87%E4%BB%B6%E7%9B%B8%E5%85%B3%E5%8A%9F%E8%83%BD%E4%BC%9A%E5%8F%97%E9%99%90%E5%88%B6%EF%BC%8C%E4%BD%86%E4%BB%8D%E7%84%B6%E6%94%AF%E6%8C%81%E5%8F%91%E9%80%81%E5%B0%8F%E4%BA%8E%2010kb%20%E7%9A%84%E5%9B%BE%E7%89%87%E3%80%82%E4%BD%A0%E8%BF%98%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E9%99%A4%20demo%20%E4%B9%8B%E5%A4%96%E7%9A%84%E5%85%B6%E4%BB%96%E8%B4%A6%E5%8F%B7%E7%99%BB%E5%BD%95%EF%BC%8C%E5%8C%85%E6%8B%AC%20demo1%E3%80%81demo2...demo10%E3%80%82#/chats/groups)
 
 注意：你需要为你的服务器端部署通过官方验证的证书才可以使用浏览器端客户端。
 
@@ -64,12 +60,14 @@ http://xuan.im
 
 `xxd` 服务本身并不存储和管理用户资料和消息数据，而是使用应用更为广泛的 http 协议与另一个服务器（简称 `http` 服务）通信。这样你只需要在你自己的网站上开发一系列 `http` 接口即可为你的网站用户启用喧喧。
 
-官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](https://github.com/easysoft/xuanxuan/tree/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
+官方默认提供的后段服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](https://github.com/easysoft/xuanxuan/tree/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
+
+在 1.4 版本之后，还提供了独立的服务器端 XXB，这样可以不依赖然之协同办公系统，XXB 服务器使用参考 http://xuan.im/page/2.html 。
 
 这里有一个公开的测试服务器供使用：
 
 ```
-地址：https://demo.ranzhi.org
+地址：http://demo.ranzhi.net
 用户：demo
 密码：demo
 

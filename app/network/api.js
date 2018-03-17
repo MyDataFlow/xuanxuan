@@ -1,5 +1,6 @@
-import Platform from 'Platform';
+import Platform from 'Platform'; // eslint-disable-line
 import md5 from 'md5';
+import Config from 'Config';
 
 /**
  * Request server infomation with https request
@@ -14,7 +15,8 @@ const requestServerInfo = user => {
             user.account,
             user.passwordMD5,
             ''
-        ]
+        ],
+        v: Config.pkg.version
     });
     return Platform.net.postJSON(user.webServerInfoUrl, {
         headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
@@ -46,18 +48,6 @@ const checkUploadFileSize = (user, size) => {
     return uploadFileSize && size <= uploadFileSize;
 };
 
-const uploadFile = (user, file, data = {}, onProgress = null) => Platform.net.uploadFile(user, file, data, onProgress);
-
-const createFileDownloadUrl = (user, file) => user.makeServerUrl(`download?fileName=${encodeURIComponent(file.name)}&time=${file.time || 0}&id=${file.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + file.name)}`);
-
-const downloadFile = (user, file, onProgress = null) => {
-    if (!file.url) {
-        const url = createFileDownloadUrl(user, file);
-        file.url = url;
-    }
-    return Platform.net.downloadFile(user, file, onProgress);
-};
-
 const getRanzhiServerInfo = (user) => {
     const ranzhiUrl = user.ranzhiUrl;
     if (ranzhiUrl) {
@@ -73,44 +63,13 @@ const getRanzhiServerInfo = (user) => {
     return Promise.reject('RANZHI_SERVER_NOTSET');
 };
 
-const ranzhiServerLogin = (user, password) => getRanzhiServerInfo(user).then(ranzhi => {
-    const loginUrl = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}login.json&lang=zh-cn&${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=login&lang=zh-cn&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
-    const passwordMd5 = md5(md5(md5(password) + user.account) + ranzhi.random);
-    const form = {
-        account: user.account,
-        password: passwordMd5
-    };
-    return Platform.net.postJSONData(loginUrl, {form}).then(data => {
-        ranzhi.loginResult = data;
-        return Promise.resolve(ranzhi);
-    });
-});
-
-const changeRanzhiUserPassword = (user, oldPassword, newPassword) => {
-    const ranzhiUrl = user.ranzhiUrl;
-    if (ranzhiUrl) {
-        return ranzhiServerLogin(user, oldPassword).then(ranzhi => {
-            const url = ranzhi.isPathInfo ? `${ranzhi.url}/sys/user${ranzhi.requestFix}changePassword.json&${ranzhi.sessionVar}=${ranzhi.sessionID}` : `${ranzhi.url}/sys/?${ranzhi.moduleVar}=user&${ranzhi.methodVar}=changePassword&${ranzhi.viewVar}=json&${ranzhi.sessionVar}=${ranzhi.sessionID}`;
-            const form = {
-                password1: newPassword,
-                password2: newPassword,
-            };
-            return Platform.net.postJSONData(url, {form}).then(data => Promise.resolve(ranzhi));
-        });
-    }
-    return Promise.reject('RANZHI_SERVER_NOTSET');
-};
-
 const API = {
-    downloadFile,
-    uploadFile,
+    downloadFile: Platform.net.downloadFile,
+    uploadFile: Platform.net.uploadFile,
     requestServerInfo,
     checkUploadFileSize,
-    createFileDownloadUrl,
     getRanzhiServerInfo,
-    ranzhiServerLogin,
-    changeRanzhiUserPassword,
-    isFileExists: Platform.net.isFileExists || (() => false)
+    checkFileCache: Platform.net.checkFileCache || (() => false)
 };
 
 if (DEBUG) {

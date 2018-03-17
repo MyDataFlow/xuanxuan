@@ -1,0 +1,43 @@
+.img-holder {
+  position: relative;
+
+}
+
+.img-hold-box {
+  transition: background .2s;
+  background: #f1f1f1;
+}
+
+.img-hold-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  width: 100%;
+  padding: (5*@rem);
+  font-size: (12*@rem);
+  color: rgba(0,0,0,.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  background-color: rgba(255,255,255,.75);
+
+  > .progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0,0,0,.05);
+    height: (4*@rem);
+
+    > .bar {
+      height: (4*@rem);
+      background-color: rgba(0,0,0,.15);
+      transition: width .2s;
+    }
+  }
+}
+
+.img-hold-waiting > .progress {
+  .animate-flash;
+}

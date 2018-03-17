@@ -1,7 +1,7 @@
 import network from '../common/network';
 
 network.downloadFile = (user, file, onProgress) => {
-    if(file.url) {
+    if (file.url) {
         file.src = file.url;
     }
     return Promise.resolve(file);
@@ -10,13 +10,15 @@ network.downloadFile = (user, file, onProgress) => {
 const uploadFileOrigin = network.uploadFile;
 
 network.uploadFile = (user, file, data = {}, onProgress = null) => {
+    const originFile = file.originFile;
+    if (!originFile) {
+        return console.warn('Upload file fail, cannot get origin file object.', file);
+    }
     const serverUrl = user.uploadUrl;
     const form = new FormData();
-    form.append('file', file.blob || file, file.name);
+    form.append('file', file.originData, file.name);
     form.append('userID', user.id);
-    if(data.gid) {
-        form.append('gid', data.gid);
-    }
+    form.append('gid', file.cgid);
     file.form = form;
     return uploadFileOrigin(file, serverUrl, xhr => {
         xhr.setRequestHeader('ServerName', user.serverName);

@@ -3,14 +3,6 @@ include 'router.class.php';
 class xuanxuan extends router
 {
     /**
-     * The xuanxuan version.
-     *
-     * @var string
-     * @access public
-     */
-    public $version = '1.1.1';
-
-    /**
      *  The request params.
      *
      * @var array
@@ -119,12 +111,16 @@ class xuanxuan extends router
     {
         $input   = file_get_contents("php://input");
         $input   = $this->decrypt($input);
+        $version = !empty($input->v)      ? $input->v : '';
         $userID  = !empty($input->userID) ? $input->userID : '';
         $module  = !empty($input->module) ? $input->module : '';
         $method  = !empty($input->method) ? $input->method : '';
         $params  = !empty($input->params) ? $input->params : array();
 
-        if(!$module or !$method or $module != 'chat')
+        $module = strtolower($module);
+        $method = strtolower($method);
+
+        if(!isset($this->config->xuanxuan->enabledMethods[$module][$method]))
         {
             $data = new stdclass();
             $data->module = 'chat';
@@ -318,6 +314,8 @@ class xuanxuan extends router
      */
     public function encrypt($output = null)
     {
+        if(is_object($output)) $output->v = $this->config->xuanxuan->version;
+
         $output = helper::jsonEncode($output);
         if($this->config->debug)
         {

@@ -12,6 +12,7 @@ package wsocket
 import (
     "net/http"
     "xxd/util"
+    "xxd/hyperttp/server"
 )
 
 const (
@@ -36,9 +37,23 @@ func InitWs() {
     util.LogInfo().Println("websocket start,listen addr:", addr, webSocket)
 
     // 创建服务器
-    err := http.ListenAndServe(addr, nil)
-    if err != nil {
-        util.LogError().Println("websocket server listen err:", err)
-        util.Exit("websocket server listen err")
+    if util.Config.IsHttps != "1" {
+        err := http.ListenAndServe(addr, nil)
+        if err != nil {
+            util.LogError().Println("websocket server listen err:", err)
+            util.Exit("websocket server listen err")
+        }
+    }else{
+        crt, key, error := server.CreateSignedCertKey()
+        if error != nil {
+            util.LogError().Println("ssl config err:", error)
+            util.Exit("wss ssl create file err")
+        }
+
+        err := http.ListenAndServeTLS(addr, crt, key, nil)
+        if err != nil {
+            util.LogError().Println("wss websocket server listen err:", err)
+            util.Exit("wss websocket server listen err")
+        }
     }
 }

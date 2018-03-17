@@ -16,6 +16,7 @@ import TimeSequence from './time-sequence';
 import Skin from './skin';
 import LimitTimePromise from './limit-time-promise';
 import SortHelper from './sort-helper';
+import Image from './image';
 
 export default {
     Color,
@@ -36,4 +37,5 @@ export default {
     Skin,
     LimitTimePromise,
     SortHelper,
+    Image,
 };

@@ -136,7 +136,7 @@ class AppSocket extends Socket {
     onClose(code, reason, unexpected) {
         this.stopPing();
         if (this.user && this.user.isOnline) {
-            this.user.markUnverified();
+            this.user[unexpected ? 'markDisconnect' : 'markUnverified']();
         }
     }
 
@@ -211,12 +211,17 @@ class AppSocket extends Socket {
     }
 
     uploadUserSettings() {
+        const needSaveId = this.user.config.needSave;
         return this.sendAndListen({
             method: 'settings',
             params: [
                 this.user.account,
                 this.user.config.exportCloud()
             ]
+        }).then(() => {
+            if (this.user.config.needSave === needSaveId) {
+                this.user.config.makeSave();
+            }
         });
     }
 

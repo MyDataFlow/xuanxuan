@@ -230,8 +230,8 @@ class User extends Member {
         }
         let serverUrl = this.serverUrl;
         if (serverUrl) {
-            let url = new URL(serverUrl);
-            url.protocol = 'ws:';
+            const url = new URL(serverUrl);
+            url.protocol = (this.isVersionSupport('wss') && url.protocol === 'https:') ? 'wss:' : 'ws:';
             url.pathname = '/ws';
             url.port = this.socketPort;
             return url.toString();
@@ -248,6 +248,7 @@ class User extends Member {
     }
 
     set serverVersion(version) {
+        version = version.toLowerCase();
         if (version[0] === 'v') {
             version = version.substr(1);
         }

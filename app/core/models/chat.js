@@ -52,6 +52,10 @@ class Chat extends Entity {
         public: {type: 'boolean', indexed: true},
         admins: {type: 'set'},
         members: {type: 'set'},
+        members: {type: 'set', setter: (val, obj) => {
+            obj._membersSet = null;
+            return val;
+        }},
         committers: {type: 'string'},
         category: {type: 'string'},
     });
@@ -481,6 +485,9 @@ class Chat extends Entity {
 
     updateMembersSet(appMembers) {
         this._membersSet = Array.from(this.members).map(memberId => (appMembers.get(memberId)));
+        if (this.isGroupOrSystem) {
+            this._membersSet = this._membersSet.filter(m => !m.temp);
+        }
     }
 
     getMembersSet(appMembers) {

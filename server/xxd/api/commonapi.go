@@ -67,6 +67,7 @@ func SwapToken(message, fromToken, toToken []byte) ([]byte, error) {
     return message, nil
 }
 
+//获取module
 func (pd ParseData) Module() string {
     ret, ok := pd["module"]
     if !ok {
@@ -76,6 +77,7 @@ func (pd ParseData) Module() string {
     return ret.(string)
 }
 
+//获取method
 func (pd ParseData) Method() string {
     ret, ok := pd["method"]
     if !ok {
@@ -85,6 +87,7 @@ func (pd ParseData) Method() string {
     return ret.(string)
 }
 
+//获取userID
 func (pd ParseData) UserID() int64 {
     ret, ok := pd["userID"]
     if !ok {
@@ -94,6 +97,7 @@ func (pd ParseData) UserID() int64 {
     return int64(ret.(float64))
 }
 
+//获取result
 func (pd ParseData) Result() string {
     ret, ok := pd["result"]
     if !ok {
@@ -103,6 +107,17 @@ func (pd ParseData) Result() string {
     return ret.(string)
 }
 
+//获取版本号
+func (pd ParseData) Version() string {
+    ret, ok := pd["v"]
+    if !ok {
+        return ""
+    }
+
+    return ret.(string)
+}
+
+//用户列表
 func (pd ParseData) SendUsers() []int64 {
     // 判断users是否存在
     ret, ok := pd["users"]
@@ -120,6 +135,7 @@ func (pd ParseData) SendUsers() []int64 {
     return array
 }
 
+//测试
 func (pd ParseData) Test() bool {
     ret, ok := pd["test"]
     if !ok {
@@ -129,6 +145,7 @@ func (pd ParseData) Test() bool {
     return ret.(bool)
 }
 
+//测试
 func Testfunc(jsonData string) []byte {
     return nil
 }

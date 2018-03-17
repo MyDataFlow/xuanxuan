@@ -50,6 +50,7 @@ type Client struct {
     serverName  string          // User server
     userID      int64           // Send to user id
     repeatLogin bool
+    cVer        string          //client version
 }
 
 type ClientRegister struct {
@@ -64,6 +65,7 @@ type SendMsg struct {
     message    []byte
 }
 
+//解析数据.
 func dataProcessing(message []byte, client *Client) error {
     parseData, err := api.ApiParse(message, util.Token)
     if err != nil {
@@ -78,6 +80,7 @@ func dataProcessing(message []byte, client *Client) error {
     return switchMethod(message, parseData, client)
 }
 
+//根据不同的消息体选择对应的处理方法
 func switchMethod(message []byte, parseData api.ParseData, client *Client) error {
 
     switch parseData.Module() + "." + parseData.Method() {
@@ -108,6 +111,7 @@ func switchMethod(message []byte, parseData api.ParseData, client *Client) error
     return nil
 }
 
+//用户登录
 func chatLogin(parseData api.ParseData, client *Client) error {
     loginData, userID, ok := api.ChatLogin(parseData)
     if userID == -1 {
@@ -132,7 +136,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
     // 生成并存储文件会员
     userFileSessionID , err := api.UserFileSessionID(client.serverName, client.userID)
     if err != nil {
-        util.LogError().Println("chat user get user list error:", err)
+        util.LogError().Println("chat user create file session error:", err)
         //返回给客户端登录失败的错误信息
         return err
     }
@@ -188,6 +192,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
     return nil
 }
 
+//会话退出
 func chatLogout(userID int64, client *Client) error {
     if client.userID != userID {
         return util.Errorf("%s", "user id error.")
@@ -197,10 +202,11 @@ func chatLogout(userID int64, client *Client) error {
     if err != nil {
         return err
     }
-  util.DelUid(client.serverName,util.Int642String(client.userID))
+    util.DelUid(client.serverName,util.Int642String(client.userID))
     return X2cSend(client.serverName, sendUsers, x2cMessage, client)
 }
 
+//交换数据
 func transitData(message []byte, userID int64, client *Client) error {
     if client.userID != userID {
         return util.Errorf("%s", "user id err")
@@ -221,6 +227,7 @@ func transitData(message []byte, userID int64, client *Client) error {
     return X2cSend(client.serverName, sendUsers, x2cMessage, client)
 }
 
+//消息发送 由XXD发送给XXC.或未指定用户,刚为广播
 func X2cSend(serverName string, sendUsers []int64, message []byte, client *Client) error {
     if len(sendUsers) == 0 {
         //send all
@@ -309,7 +316,6 @@ func (c *Client) writePump() {
                     return
                 }
             }
-
         case <-ticker.C:
             c.conn.SetWriteDeadline(time.Now().Add(writeWait))
             if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
@@ -322,16 +328,19 @@ func (c *Client) writePump() {
 
 // serveWs handles websocket requests from the peer.
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
-  // Delete origin header @see https://www.iphpt.com/detail/86/
-  r.Header.Del("Origin")
+    // Delete origin header @see https://www.iphpt.com/detail/86/
+    r.Header.Del("Origin")
 
-    conn, err := upgrader.Upgrade(w, r, nil)
+     //将xxd版本信息通过header返回给客户端
+    header := http.Header {"User-Agent" : {"easysoft/xuan.im"}, "xxd-version" : {util.Version}}
+
+    conn, err := upgrader.Upgrade(w, r, header)
     if err != nil {
         util.LogError().Println("serve ws upgrader error:", err)
         return
     }
 
-    client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false}
+    client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), repeatLogin: false, cVer: r.Header.Get("version")}
 
     util.LogInfo().Println("client ip:", conn.RemoteAddr())
     go client.writePump()

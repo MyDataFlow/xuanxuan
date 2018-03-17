@@ -39,20 +39,16 @@ export default class MenuContactList extends Component {
 
     constructor(props) {
         super(props);
+        const user = App.user;
         this.state = {
-            groupType: 'category',
+            groupType: user ? user.config.contactsGroupByType : 'normal',
             dragging: false,
             dropTarget: null
         };
     }
 
     get groupType() {
-        let {groupType} = this.state;
-        if (!groupType) {
-            const user = App.user;
-            groupType = user ? user.config.contactsGroupByType : 'normal';
-        }
-        return groupType;
+        return this.state.groupType;
     }
 
     set groupType(groupType) {
@@ -156,8 +152,8 @@ export default class MenuContactList extends Component {
         let countView = null;
         if (!group.list.length) {
             countView = '(0)';
-        } else {
-            countView = `(${group.onlineCount || 0}/${group.list.length})`;
+        } else if (!group.onlySubGroup) {
+            countView = `(${group.onlineCount || 0}/${group.list.length - (group.dept && group.dept.children ? group.dept.children.length : 0)})`;
         }
 
         const {dragging, dropTarget} = this.state;
@@ -169,7 +165,7 @@ export default class MenuContactList extends Component {
         };
         return (<header
             onContextMenu={this.handleHeadingContextMenu.bind(this, group)}
-            draggable={this.state.groupType === 'category'}
+            draggable={this.groupType === 'category'}
             onDragOver={this.handleDragOver.bind(this, group)}
             onDrop={this.handleDrop.bind(this, group)}
             onDragStart={this.handleDragStart.bind(this, group)}
@@ -187,8 +183,16 @@ export default class MenuContactList extends Component {
             if (item.type === 'group') {
                 return this.defaultExpand(item);
             }
-            return App.im.ui.isActiveChat(item.gid);
+            let isExpand = App.im.ui.isActiveChat(item.gid);
+            if (!isExpand) {
+                isExpand = App.profile.userConfig.getChatMenuGroupState('contacts', this.groupType, group.id);
+            }
+            return isExpand;
         });
+    };
+
+    onExpandChange = (expanded, group) => {
+        App.profile.userConfig.setChatMenuGroupState('contacts', this.groupType, group.id, expanded);
     };
 
     render() {
@@ -221,6 +225,7 @@ export default class MenuContactList extends Component {
                     defaultExpand: this.defaultExpand,
                     itemCreator: this.itemCreator,
                     headingCreator: this.headingCreator,
+                    onExpandChange: this.onExpandChange,
                     hideEmptyGroup: groupType !== 'category',
                     forceCollapse: !!this.state.dragging
                 })

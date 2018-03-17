@@ -5,7 +5,7 @@
 
 .primary   {.color-variant(@color-primary);}
 .secondary {.color-variant(@color-secondary);}
-.accent {.color-variant(@color-accent);}
+.accent    {.color-variant(@color-accent);}
 .green,
 .success   {.color-variant(@color-success);}
 .blue,
@@ -40,7 +40,7 @@
 .gray           {.color-pale-variant(@color-gray-pale, @color-fore);}
 .white          {.color-pale-variant(@color-white, @color-fore);}
 
-.highlight {background-color: @color-highlight;}
+.highlight {background-color: @color-highlight!important;}
 
 .text-primary   {color: @color-primary;}
 .text-secondary {color: @color-secondary;}
@@ -67,6 +67,8 @@
 .muted       {opacity:@muted-opacity!important}
 .muted-light {opacity:@muted-light-opacity!important}
 .muted-dark  {opacity:@muted-dark-opacity!important}
+
+.long-shadow {overflow: hidden}
 
 .outline-cover {border: @border-width solid rgba(0,0,0,.1)!important;}
 

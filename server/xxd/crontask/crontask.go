@@ -22,6 +22,7 @@ const (
     userChange = 10 * time.Second
 )
 
+//定时任务
 func CronTask() {
     go func() {
         logTicker := time.NewTicker(checkLog)

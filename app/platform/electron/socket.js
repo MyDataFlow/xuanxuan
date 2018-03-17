@@ -1,4 +1,5 @@
 import WS from 'ws';
+import Config from 'Config';
 import crypto from './crypto';
 import Status from '../../utils/status';
 
@@ -34,7 +35,7 @@ class Socket {
             connent: true,
             userToken: '',
             cipherIV: '',
-            encryptEnable: true
+            encryptEnable: true,
         }, options);
 
         this.options = options;
@@ -92,7 +93,10 @@ class Socket {
         this.close();
 
         this.status = STATUS.CONNECTING;
-        this.client = new WS(this.url);
+        this.client = new WS(this.url, {
+            rejectUnauthorized: false,
+            headers: {version: Config.pkg.version}
+        });
 
         if (DEBUG) {
             console.collapse('SOCKET Connect', 'indigoBg', this.url, 'indigoPale', this.statusName, this.isConnected ? 'greenPale' : 'orangePale');
@@ -231,7 +235,7 @@ class Socket {
 
     close(code, reason) {
         if (this.client) {
-            if (reason === 'close') {
+            if (reason === 'close' || reason === 'KICKOFF') {
                 this.markClose();
             }
             this.removeAllListeners();

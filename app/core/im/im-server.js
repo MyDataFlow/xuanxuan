@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from 'Config'; // eslint-disable-line
 import Server from '../server';
 import imServerHandlers from './im-server-handlers';
 import Events from '../events';
@@ -7,12 +7,14 @@ import members from '../members';
 import chats from './im-chats';
 import PKG from '../../package.json';
 import Chat from '../models/chat';
-import API from '../../network/api';
 import Messager from '../../components/messager';
 import StringHelper from '../../utils/string-helper';
 import DateHelper from '../../utils/date-helper';
 import ChatMessage from '../../core/models/chat-message';
 import Lang from '../../lang';
+import ImageHelper from '../../utils/image';
+import FileData from '../models/file-data';
+import IMFiles from './im-files';
 
 const MAX_BASE64_IMAGE_SIZE = 1024 * 10;
 
@@ -320,7 +322,7 @@ const renameChat = (chat, newName) => {
     return Promise.reject('You have no permission to rename the chat.');
 };
 
-const sendChatMessage = (messages, chat, isSystemMessage = false) => {
+const sendChatMessage = async (messages, chat, isSystemMessage = false) => {
     if (!Array.isArray(messages)) {
         messages = [messages];
     }
@@ -343,7 +345,7 @@ const sendChatMessage = (messages, chat, isSystemMessage = false) => {
         if (command) {
             if (command.action === 'version') {
                 const specialVersion = Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : '';
-                message.content = `\`\`\`\n$$version       = '${PKG.version}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';\n$$ranzhiUrl     = '${profile.user.ranzhiUrl}';\n\`\`\``;
+                message.content = `\`\`\`\n$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';\n\`\`\``;
             }
         }
     });
@@ -399,59 +401,60 @@ const sendImageAsBase64 = (imageFile, chat) => {
     });
 };
 
-const sendImageMessage = (imageFile, chat) => {
+const sendImageMessage = async (imageFile, chat, onProgress) => {
     if (imageFile.size < MAX_BASE64_IMAGE_SIZE) {
         return sendImageAsBase64(imageFile, chat);
     }
-    if (API.checkUploadFileSize(profile.user, imageFile.size)) {
+    if (IMFiles.checkUploadFileSize(imageFile.size)) {
         const message = new ChatMessage({
             user: profile.userId,
             cgid: chat.gid,
             date: new Date(),
             contentType: ChatMessage.CONTENT_TYPES.image
         });
-        message.attatchFile = imageFile;
-        message.imageContent = {
-            time: new Date().getTime(),
-            name: imageFile.name,
-            size: imageFile.size,
-            send: 0,
-            type: imageFile.type
-        };
-        sendChatMessage(message, chat);
-        API.uploadFile(profile.user, imageFile, {gid: chat.gid, copy: true}, progress => {
+        imageFile = FileData.create(imageFile);
+        message.attachFile = imageFile;
+        const info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
+            Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
+            if (DEBUG) {
+                console.warn('Cannot get image information', imageFile);
+            }
+        });
+        imageFile.width = info.width;
+        imageFile.height = info.height;
+        message.imageContent = imageFile.plain();
+        await sendChatMessage(message, chat);
+        return IMFiles.uploadFile(imageFile, progress => {
             message.updateImageContent({send: progress});
             sendChatMessage(message, chat);
+            if (onProgress) {
+                onProgress(progress);
+            }
         }).then(data => {
             message.updateImageContent(Object.assign({}, data, {send: true}));
-            sendChatMessage(message, chat);
+            return sendChatMessage(message, chat);
         }).catch(error => {
             message.updateImageContent({send: false, error: error && Lang.error(error)});
             sendChatMessage(message, chat);
         });
-    } else {
-        Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)), {type: 'warning'});
     }
+    Messager.show(Lang.format('error.UPLOAD_FILE_IS_TOO_LARGE', StringHelper.formatBytes(imageFile.size)), {type: 'warning'});
+    return Promise.reject();
 };
 
 const sendFileMessage = (file, chat) => {
-    if (API.checkUploadFileSize(profile.user, file.size)) {
+    if (IMFiles.checkUploadFileSize(file.size)) {
         const message = new ChatMessage({
             user: profile.userId,
             cgid: chat.gid,
             date: new Date(),
             contentType: ChatMessage.CONTENT_TYPES.file
         });
-        message.attatchFile = file;
-        message.fileContent = {
-            time: new Date().getTime(),
-            name: file.name,
-            size: file.size,
-            send: 0,
-            type: file.type
-        };
+        file = FileData.create(file);
+        file.cgid = chat.gid;
+        message.fileContent = file.plain();
         sendChatMessage(message, chat);
-        API.uploadFile(profile.user, file, {gid: chat.gid}, progress => {
+        IMFiles.uploadFile(file, progress => {
             message.updateFileContent({send: progress});
             return sendChatMessage(message, chat);
         }).then(data => {

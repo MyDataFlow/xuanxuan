@@ -1,11 +1,11 @@
 #!/bin/sh
 
-version=xxd-$1
+version=xxd.$1
 
 echo "build version:"$version
 
 echo "build darwin ..."
-folder=$version-mac
+folder=$version.mac
 if [ ! -d $folder ]; then
     mkdir $folder
 fi
@@ -15,7 +15,7 @@ tar zcf $folder.tar.gz $folder
 rm -rf $folder
 
 
-folder=$version-linux-x64
+folder=$version.linux-x64
 if [ ! -d $folder ]; then
     mkdir $folder
 fi
@@ -26,7 +26,7 @@ tar zcf $folder.tar.gz $folder
 rm -rf $folder
 
 
-folder=$version-linux-ia32
+folder=$version.linux-ia32
 if [ ! -d $folder ]; then
     mkdir $folder
 fi
@@ -37,7 +37,7 @@ tar zcf $folder.tar.gz $folder
 rm -rf $folder
 
 
-folder=$version-win64
+folder=$version.win64
 if [ ! -d $folder ]; then
     mkdir $folder
 fi
@@ -48,7 +48,7 @@ zip -rq $folder.zip $folder
 rm -rf $folder
 
 
-folder=$version-win32
+folder=$version.win32
 if [ ! -d $folder ]; then
     mkdir $folder
 fi

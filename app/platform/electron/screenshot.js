@@ -237,7 +237,13 @@ const openCaptureScreenWindow = (file, display, onClosed) => {
     });
 };
 
+let isCapturing = false;
+
 const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) => {
+    if (isCapturing) {
+        return Promise.reject('The capture window is already opened.');
+    }
+    isCapturing = true;
     if (!screenSources || screenSources === 'all') {
         const displays = Screen.getAllDisplays();
         screenSources = displays.map(display => {
@@ -267,11 +273,13 @@ const captureAndCutScreenImage = (screenSources = 0, hideCurrentWindow = false) 
                     if (savedImage && savedImage.path) {
                         clipboard.writeImage(Image.createFromPath(savedImage.path));
                     }
+
                     resolve(savedImage);
                 }).catch(reject);
             } else if (DEBUG) {
                 console.log('No capture image.');
             }
+            isCapturing = false;
         });
         const onWindowClosed = () => {
             RemoteEvents.off(eventId);

@@ -43,6 +43,7 @@
 
   > select {
     outline: none;
+    border-radius: 0;
 
     &:not([multiple]) {padding-right: (25*@rem);}
 
@@ -124,7 +125,10 @@
     color: @color-gray;
   }
 
-  > input:focus + label:before {border-color: @color-primary;}
+  > input:focus + label:before {
+    border-color: @color-primary;
+    box-shadow: inset 0 0 0 (1*@rem) fade(@color-focus, 30%), 0 0 0 (2*@rem) fade(@color-focus, 30%);
+  }
 
   &.checked > input + label:after,
   > input:checked + label:after {
@@ -154,7 +158,9 @@
     border: none;
   }
 
-  &:focus + label:after {color: @color-primary;}
+  &:focus + label:after {
+    color: @color-primary;
+  }
 
   &:checked + label:before,
   &:checked + label:after {

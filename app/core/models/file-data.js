@@ -1,6 +1,28 @@
+import UUID from 'uuid';
+import md5 from 'md5';
 import Entity from './entity';
 import Member from './member';
 import SearchScore from '../../utils/search-score';
+
+const dataURItoBlob = (dataURI) => {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs
+    const byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    const bb = new Blob([ab], {type: mimeString});
+    return bb;
+};
 
 const MATCH_SCORE_MAP = [
     {name: 'name', equal: 100, include: 50},
@@ -23,6 +45,8 @@ export default class FileData extends Entity {
         cgid: {type: 'string', indexed: true},
         senderId: {type: 'int', indexed: true},
         size: {type: 'int', indexed: true},
+        width: {type: 'int', indexed: false},
+        height: {type: 'int', indexed: false},
         date: {type: 'timestamp', indexed: true},
         type: {type: 'string', indexed: true},
         name: {type: 'string', indexed: true},
@@ -55,6 +79,85 @@ export default class FileData extends Entity {
         if (data.time) {
             this.date = data.time;
         }
+        if (data.originFile) {
+            this.originFile = data.originFile;
+        }
+        if (data.path) {
+            this.path = data.path;
+        }
+    }
+
+    ensureGid() {
+        if (!this.$.gid) {
+            if (this.isOK) {
+                this.$.gid = md5(`${this.name}:${this.date}:${this.id}`);
+            } else {
+                this.$.gid = UUID();
+            }
+        }
+    }
+
+    get originType() {
+        const originFile = this.originFile;
+        if (originFile) {
+            if (originFile instanceof File) {
+                return 'file';
+            }
+            if (originFile.base64) {
+                return 'base64';
+            }
+            if (originFile.blob) {
+                return 'blob';
+            }
+        }
+        return null;
+    }
+
+    get originData() {
+        const originType = this.originType;
+        const originFile = this.originFile;
+        if (originType && originFile) {
+            if (originType === 'blob') {
+                return originFile.blob;
+            } else if (originType === 'file') {
+                return originFile;
+            }
+            if (originType === 'base64') {
+                originFile.blob = dataURItoBlob(originFile.base64);
+                return originFile.blob;
+            }
+        }
+        return null;
+    }
+
+    getViewUrl(user) {
+        const originFile = this.originFile;
+        if (originFile) {
+            if (!this._viewUrl) {
+                this._viewUrl = originFile.path || this.localPath;
+                if (this._viewUrl && !this._viewUrl.startsWith('http://') && !this._viewUrl.startsWith('https://') && !this._viewUrl.startsWith('file://')) {
+                    this._viewUrl = `file://${this._viewUrl}`;
+                }
+            }
+            if (!this._viewUrl) {
+                if (originFile.blob) {
+                    this._viewUrl = URL.createObjectURL(originFile.blob);
+                } else {
+                    this._viewUrl = originFile.base64;
+                }
+            }
+            if (!this._viewUrl && (originFile instanceof File || originFile instanceof Blob)) {
+                this._viewUrl = URL.createObjectURL(originFile);
+            }
+            if (!this._viewUrl) {
+                this._viewUrl = this.makeUrl(user);
+            }
+        }
+        return this._viewUrl;
+    }
+
+    get viewUrl() {
+        return this.getViewUrl();
     }
 
     get schema() {
@@ -64,6 +167,7 @@ export default class FileData extends Entity {
     plain() {
         const plainData = super.plain();
         delete plainData.path;
+        delete plainData.originFile;
         return plainData;
     }
 
@@ -83,6 +187,13 @@ export default class FileData extends Entity {
      */
     set cgid(gid) {
         this.$set('cgid', gid);
+    }
+
+    /**
+     * Get file storageName
+     */
+    get storageName() {
+        return `${this.gid}.${this.extName}`;
     }
 
     /**
@@ -159,6 +270,22 @@ export default class FileData extends Entity {
         this.$set('size', size);
     }
 
+    get width() {
+        return this.$get('width');
+    }
+
+    set width(width) {
+        this.$set('width', width);
+    }
+
+    get height() {
+        return this.$get('height');
+    }
+
+    set height(height) {
+        this.$set('height', height);
+    }
+
     get name() {
         return this.$get('name');
     }
@@ -188,14 +315,6 @@ export default class FileData extends Entity {
         return this._extName;
     }
 
-    get attachFile() {
-        return this._attachFile;
-    }
-
-    set attachFile(attachFile) {
-        this._attachFile = attachFile;
-    }
-
     get category() {
         if (!this._category) {
             this._category = 'other';
@@ -216,9 +335,31 @@ export default class FileData extends Entity {
         return SearchScore.matchScore(MATCH_SCORE_MAP, this, keys);
     }
 
+    makeUrl(user) {
+        if (!this._url && user) {
+            this._url = user.makeServerUrl(`download?fileName=${encodeURIComponent(this.name)}&time=${this.time || 0}&id=${this.id}&ServerName=${user.serverName}&gid=${user.id}&sid=${md5(user.sessionID + this.name)}`);
+        }
+        return this._url;
+    }
+
+    get url() {
+        return this._url;
+    }
+
     static create(fileData) {
         if (fileData instanceof FileData) {
             return fileData;
+        }
+        if (fileData instanceof File || fileData.base64 || fileData.blob) {
+            const originFile = fileData;
+            fileData = {
+                date: originFile.lastModifiedDate || new Date().getTime(),
+                name: originFile.name,
+                size: originFile.size,
+                send: 0,
+                type: originFile.type,
+                originFile
+            };
         }
         return new FileData(fileData);
     }

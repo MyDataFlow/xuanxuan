@@ -43,7 +43,7 @@ class Index extends Component {
          * SplitPane 左侧群组等联系人和聊天内容的主容器
          */
         return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
-            <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200}>
+            <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 <Menu className="dock" filter={match.params.filterType} />
                 <ChatsCache className="dock" filterType={match.params.filterType} chatId={match.params.id}>
                     <ChatsDndContainer className="dock" />

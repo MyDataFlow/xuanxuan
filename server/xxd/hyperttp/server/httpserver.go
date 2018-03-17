@@ -54,6 +54,7 @@ type Stat interface {
     Stat() (os.FileInfo, error)
 }
 
+// 启动 http server
 func InitHttp() {
     crt, key, err := CreateSignedCertKey()
     if err != nil {
@@ -76,18 +77,22 @@ func InitHttp() {
 
     util.Println("file server start,listen addr:", addr, download)
     util.Println("file server start,listen addr:", addr, upload)
-    util.Println("http server start,listen addr: https://", addr)
 
     util.LogInfo().Println("file server start,listen addr:", addr, download)
     util.LogInfo().Println("file server start,listen addr:", addr, upload)
-    util.LogInfo().Println("http server start,listen addr: https://", addr, sInfo)
 
     if util.Config.IsHttps != "1" {
+        util.Println("http server start,listen addr:http://", addr)
+        util.LogInfo().Println("http server start,listen addr:http://", addr, sInfo)
+
         if err := http.ListenAndServe(addr, mux); err != nil {
             util.LogError().Println("http server listen err:", err)
             util.Exit("http server listen err")
         }
     }else{
+        util.Println("https server start,listen addr:https://", addr)
+        util.LogInfo().Println("https server start,listen addr:https://", addr, sInfo)
+
         if err := http.ListenAndServeTLS(addr, crt, key, mux); err != nil {
             util.LogError().Println("https server listen err:", err)
             util.Exit("https server listen err")
@@ -95,6 +100,7 @@ func InitHttp() {
     }
 }
 
+//文件下载
 func fileDownload(w http.ResponseWriter, r *http.Request) {
     if r.Method != "GET" {
         fmt.Fprintln(w, "not supported request")
@@ -143,6 +149,7 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, fileName)
 }
 
+//文件上传
 func fileUpload(w http.ResponseWriter, r *http.Request) {
     w.Header().Add("Access-Control-Allow-Origin", "*")
     w.Header().Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE")
@@ -248,6 +255,7 @@ func fileUpload(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintln(w, x2cJson)
 }
 
+//服务配置信息
 func serverInfo(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Add("Access-Control-Allow-Origin", "*")

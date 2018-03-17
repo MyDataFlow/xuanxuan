@@ -80,7 +80,7 @@ export default class Theme {
         const style = this._data.style;
         if (style && !this._styleFile) {
             if (!style.startsWith('https://') && !style.startsWith('http://')) {
-                this._styleFile = Path.join(this.extension.localPath, style);
+                this._styleFile = `file://${Path.join(this.extension.localPath, style)}`;
             } else {
                 this._styleFile = style;
             }

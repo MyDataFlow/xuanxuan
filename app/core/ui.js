@@ -36,6 +36,9 @@ const createImageContextMenuItems = (url, dataType) => {
         items.push({
             label: Lang.string('menu.image.saveAs'),
             click: () => {
+                if (url.startsWith('file://')) {
+                    url = url.substr(6);
+                }
                 return Platform.dialog.saveAsImageFromUrl(url, dataType).then(filename => {
                     if (filename) {
                         Messager.show(Lang.format('file.fileSavedAt.format', filename), {
@@ -60,6 +63,9 @@ const createImageContextMenuItems = (url, dataType) => {
         items.push({
             label: Lang.string('menu.image.open'),
             click: () => {
+                if (url.startsWith('file://')) {
+                    url = url.substr(6);
+                }
                 Platform.ui.openFileItem(url);
             }
         });
@@ -95,25 +101,21 @@ Server.onUserLogin((user, loginError) => {
 
 Server.onUserLoginout((user, code, reason, unexpected) => {
     if (user) {
-        if (unexpected) {
-            let errorCode = null;
-            if (reason === 'KICKOFF') {
-                errorCode = 'KICKOFF';
-            } else if (code === 1006) {
-                errorCode = 'SOCKET_AbnormalClosure';
-            }
-            if (errorCode) {
-                Messager.show(Lang.error(errorCode), {
-                    type: 'danger',
-                    icon: 'alert',
-                    actions: [{
-                        label: Lang.string('login.retry'),
-                        click: () => {
-                            Server.login(user);
-                        }
-                    }]
-                });
-            }
+        let errorCode = null;
+        if (reason === 'KICKOFF') {
+            errorCode = 'KICKOFF';
+        }
+        if (errorCode) {
+            Messager.show(Lang.error(errorCode), {
+                type: 'danger',
+                icon: 'alert',
+                actions: [{
+                    label: Lang.string('login.retry'),
+                    click: () => {
+                        Server.login(user);
+                    }
+                }]
+            });
             if (Notice.requestAttention) {
                 Notice.requestAttention();
             }

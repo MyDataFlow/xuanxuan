@@ -45,7 +45,8 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
         }
 
         req.Header.Set("Content-type", "application/x-www-form-urlencoded")
-        req.Header.Set("User-Agent", "easysoft-xxdClient/"+util.Version)
+        req.Header.Set("User-Agent", "easysoft/xuan.im")
+        req.Header.Set("xxd-version", util.Version)
         resp, err = client.Do(req)
         if err != nil {
             util.LogError().Printf("request addr [%s] error:%v", addr, err)
@@ -79,10 +80,12 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
     return body, nil
 }
 
+//http
 func httpRequest() *http.Client {
     return &http.Client{}
 }
 
+//https
 func httpsRequest() *http.Client {
     tr := &http.Transport{
         TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
