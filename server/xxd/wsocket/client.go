@@ -23,7 +23,7 @@ const (
     writeWait = 10 * time.Second
 
     // Time allowed to read the next pong message from the peer.
-    pongWait = 60 * time.Second
+    pongWait = 20 * time.Second
 
     // Send pings to peer with this period. Must be less than pongWait.
     pingPeriod = (pongWait * 9) / 10
@@ -253,11 +253,11 @@ func (c *Client) readPump() {
     }()
 
     c.conn.SetReadLimit(maxMessageSize)
-    //c.conn.SetReadDeadline(time.Now().Add(pongWait))
-    //c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+    c.conn.SetReadDeadline(time.Now().Add(pongWait))
+    c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
     for util.Run {
-        msgType, message, err := c.conn.ReadMessage()
+        _, message, err := c.conn.ReadMessage()
         if err != nil {
             if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
                 util.LogError().Printf("error: %v", err)
@@ -265,10 +265,6 @@ func (c *Client) readPump() {
 
             util.LogError().Printf("error: %v", err)
             break
-        }
-
-        if msgType != websocket.BinaryMessage {
-            continue
         }
 
         //返回user id 、登录响应的数据、ok
@@ -347,41 +343,3 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
     client.readPump()
 }
 
-// ownWs handles websocket requests from the peer.
-func ownWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
-    conn, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-        util.LogError().Println("serve ws upgrader error:", err)
-        return
-    }
-
-    defer conn.Close()
-
-    localAddr := util.Config.Ip
-    remoteAddr := conn.RemoteAddr().String()
-    if remoteAddr[:len(localAddr)] != localAddr {
-        util.LogError().Printf("conn ip addr %s != local addr", remoteAddr)
-        return
-    }
-
-    conn.SetReadLimit(32)
-    msgType, message, err := conn.ReadMessage()
-    if err != nil {
-        if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-            util.LogError().Printf("error: %v", err)
-            return
-        }
-
-        util.LogError().Printf("error: %v", err)
-        return
-    }
-
-    if msgType != websocket.TextMessage {
-        return
-    }
-
-    if string(message) != util.TempToken {
-        util.LogError().Println("own ws token error")
-        return
-    }
-}
