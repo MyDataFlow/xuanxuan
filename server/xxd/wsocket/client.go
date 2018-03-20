@@ -197,7 +197,9 @@ func chatLogout(userID int64, client *Client) error {
     if client.userID != userID {
         return util.Errorf("%s", "user id error.")
     }
-
+    if client.repeatLogin {
+      return nil
+    }
     x2cMessage, sendUsers, err := api.ChatLogout(client.serverName, client.userID)
     if err != nil {
         return err
