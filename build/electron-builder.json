@@ -3,6 +3,9 @@
     "appId": "com.cnezsoft.xuanxuan",
     "compression": "maximum",
     "artifactName": "${productName}.${version}.${os}.${arch}.${ext}",
+    "electronDownload": {
+        "mirror": "https://npm.taobao.org/mirrors/electron/"
+    },
     "extraResources": [
         {
             "from": "app/build-in/",
