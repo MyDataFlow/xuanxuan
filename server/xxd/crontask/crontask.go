@@ -17,20 +17,15 @@ import (
 const (
     // check and create log 30 second
     checkLog = 30 * time.Second
-
-    // check user change 10 second
-    userChange = 10 * time.Second
 )
 
 //定时任务
 func CronTask() {
     go func() {
         logTicker := time.NewTicker(checkLog)
-        userChangeTicker := time.NewTicker(userChange)
 
         defer func() {
             logTicker.Stop()
-            userChangeTicker.Stop()
         }()
 
         for util.Run {
@@ -38,9 +33,6 @@ func CronTask() {
             case <-logTicker.C:
                 // 定时处理log日志
                 util.CheckLog()
-
-            case <-userChangeTicker.C:
-
             }
         }
     }()
