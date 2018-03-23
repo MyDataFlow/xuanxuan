@@ -225,7 +225,7 @@ export default class Extension {
             if (mainFile === 'BUILD-IN') {
                 this._module = this.buildIn.module;
             } else {
-                this._module = __non_webpack_require__(this.mainFile);
+                this._module = __non_webpack_require__(this.mainFile); // eslint-disable-line
             }
 
             this.callModuleMethod('onAttach', this, api);
