@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import InputControl from '../../components/input-control';
 import Checkbox from '../../components/checkbox';
 import Modal from '../../components/modal';
@@ -30,7 +30,7 @@ const simpleServerUrl = serverUrl => {
     return serverUrl;
 };
 
-class FormView extends Component {
+class FormView extends PureComponent {
     static get Form() {
         return replaceViews('login/form', FormView);
     }
@@ -169,7 +169,7 @@ class FormView extends Component {
                 this.login();
             }
         });
-    }
+    };
 
     handleSwapUserBtnClick = () => {
         const {serverUrl, account} = this.state;
@@ -184,13 +184,29 @@ class FormView extends Component {
             newState.submitable = StringHelper.isNotEmpty(newState.serverUrl) && StringHelper.isNotEmpty(newState.account) && StringHelper.isNotEmpty(newState.password);
             this.setState(newState);
         });
-    }
+    };
+
+    handleServerUrlChange = val => {
+        this.handleInputFieldChange('serverUrl', val);
+    };
+
+    handleAccountChange = val => {
+        this.handleInputFieldChange('account', val);
+    };
+
+    handlePasswordChange = val => {
+        this.handleInputFieldChange('password', val);
+    };
 
     render() {
         const {
             className,
             ...other
         } = this.props;
+
+        if (!this.serverSwitchBtn) {
+            this.serverSwitchBtn = <div data-hint={Lang.string('login.swapUser')} className="hint--top app-login-swap-user-btn dock-right dock-top"><button onClick={this.handleSwapUserBtnClick} type="button" className="btn iconbutton rounded"><Icon name="account-switch" /></button></div>;
+        }
 
         return (<div className={HTML.classes('app-login-form', className)} {...other}>
             {this.state.message && <div className="app-login-message danger box">{this.state.message}</div>}
@@ -200,17 +216,17 @@ class FormView extends Component {
                 disabled={this.state.logining}
                 label={Lang.string('login.serverUrl.label')}
                 placeholder={Lang.string('login.serverUrl.hint')}
-                onChange={this.handleInputFieldChange.bind(this, 'serverUrl')}
+                onChange={this.handleServerUrlChange}
                 className="relative app-login-server-control"
             >
-                <div data-hint={Lang.string('login.swapUser')} className="hint--top app-login-swap-user-btn dock-right dock-top"><button onClick={this.handleSwapUserBtnClick} type="button" className="btn iconbutton rounded"><Icon name="account-switch" /></button></div>
+                {this.serverSwitchBtn}
             </InputControl>
             <InputControl
                 value={this.state.account}
                 disabled={this.state.logining}
                 label={Lang.string('login.account.label')}
                 placeholder={Lang.string('login.account.hint')}
-                onChange={this.handleInputFieldChange.bind(this, 'account')}
+                onChange={this.handleAccountChange}
             />
             <InputControl
                 value={this.state.password}
@@ -218,7 +234,7 @@ class FormView extends Component {
                 className="space"
                 label={Lang.string('login.password.label')}
                 inputType="password"
-                onChange={this.handleInputFieldChange.bind(this, 'password')}
+                onChange={this.handlePasswordChange}
             />
             <button
                 type="button"

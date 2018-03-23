@@ -83,7 +83,8 @@ export default class MenuSearchList extends Component {
         hotkeys.deleteScope('chatsMenuSearch');
     }
 
-    handleItemContextMenu = (chat, e) => {
+    handleItemContextMenu = e => {
+        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
         const menuItems = App.im.ui.createChatContextMenuItems(chat, this.props.filter, '');
         if (menuItems && menuItems.length) {
             ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
@@ -120,6 +121,7 @@ export default class MenuSearchList extends Component {
                         onMouseEnter={() => this.setState({select: chat})}
                         onContextMenu={this.handleItemContextMenu.bind(this, chat)}
                         key={chat.gid}
+                        data-gid={chat.gid}
                         filterType={filter}
                         chat={chat}
                         className={HTML.classes('item', {hover: isSelected})}

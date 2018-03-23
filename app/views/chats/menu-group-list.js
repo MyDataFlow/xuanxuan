@@ -35,7 +35,8 @@ export default class MenuGroupList extends Component {
         };
     }
 
-    handleItemContextMenu(chat, e) {
+    handleItemContextMenu(e) {
+        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
         const menuItems = App.im.ui.createChatContextMenuItems(chat, 'groups', 'category');
         ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
         e.preventDefault();
@@ -46,7 +47,7 @@ export default class MenuGroupList extends Component {
     };
 
     itemCreator = chat => {
-        return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
+        return <ChatListItem onContextMenu={this.handleItemContextMenu} data-gid={chat.gid} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
     };
 
     handleHeadingContextMenu(group, e) {

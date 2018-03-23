@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import SearchControl from '../../components/search-control';
@@ -10,7 +10,7 @@ import App from '../../core';
 import replaceViews from '../replace-views';
 import Skin from '../../utils/skin';
 
-export default class AppThemes extends Component {
+export default class AppThemes extends PureComponent {
     static get AppThemes() {
         return replaceViews('exts/app-themes', AppThemes);
     }
@@ -35,8 +35,10 @@ export default class AppThemes extends Component {
     }
 
     componentDidMount() {
-        this.onExtChangeHandler = Exts.all.onExtensionChange(() => {
-            this.forceUpdate();
+        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
+            if (ext.isTheme) {
+                this.forceUpdate();
+            }
         });
     }
 

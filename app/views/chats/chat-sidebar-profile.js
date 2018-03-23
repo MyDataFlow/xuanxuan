@@ -35,6 +35,10 @@ class ChatSidebarProfile extends Component {
         });
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.className !== this.props.className || nextProps.chat !== this.props.chat || nextProps.children !== this.props.children || nextProps.chat.getTheOtherOne(App).updateId !== this.lastMemberUpdateId;
+    }
+
     componentWillUnmount() {
         App.events.off(this.dataChangeEventHandler);
     }
@@ -48,6 +52,7 @@ class ChatSidebarProfile extends Component {
         } = this.props;
 
         const member = chat.getTheOtherOne(App);
+        this.lastMemberUpdateId = member.updateId;
 
         return (<div
             {...other}

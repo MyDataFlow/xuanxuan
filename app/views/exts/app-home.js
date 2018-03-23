@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import AppAvatar from '../../components/app-avatar';
@@ -9,7 +9,7 @@ import ROUTES from '../common/routes';
 import App from '../../core';
 import replaceViews from '../replace-views';
 
-export default class AppHome extends Component {
+export default class AppHome extends PureComponent {
     static get AppHome() {
         return replaceViews('exts/app-home', AppHome);
     }
@@ -30,8 +30,10 @@ export default class AppHome extends Component {
     }
 
     componentDidMount() {
-        this.onExtChangeHandler = Exts.all.onExtensionChange(() => {
-            this.forceUpdate();
+        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
+            if (ext.isApp) {
+                this.forceUpdate();
+            }
         });
     }
 
@@ -43,7 +45,8 @@ export default class AppHome extends Component {
         this.setState({search});
     };
 
-    handleAppContextMenu(app, e) {
+    handleAppContextMenu = e => {
+        const app = Exts.all.getExt(e.currentTarget.attributes['data-name'].value);
         App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, Exts.ui.createAppContextMenu(app));
         e.preventDefault();
     }
@@ -71,7 +74,10 @@ export default class AppHome extends Component {
             <div className="app-exts-apps row has-padding flex-auto scroll-y content-start">
                 {
                     apps.map(app => {
-                        return <AppAvatar onContextMenu={this.handleAppContextMenu.bind(this, app)} key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={{auto: app.appIcon, skin: {code: app.appAccentColor}, className: 'rounded shadow-1'}} label={app.displayName} />;
+                        if (!app.avatarUIConfig) {
+                            app.avatarUIConfig = {auto: app.appIcon, skin: app.appAccentColor, className: 'rounded shadow-1'};
+                        }
+                        return <AppAvatar onContextMenu={this.handleAppContextMenu} data-name={app.name} key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={app.avatarUIConfig} label={app.displayName} />;
                     })
                 }
             </div>

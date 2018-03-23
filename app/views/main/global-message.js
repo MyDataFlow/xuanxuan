@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
@@ -8,7 +8,7 @@ import replaceViews from '../replace-views';
 
 const CONNECT_TIME_TICK = 5;
 
-class GlobalMessage extends Component {
+class GlobalMessage extends PureComponent {
     static get GlobalMessage() {
         return replaceViews('main/global-message', GlobalMessage);
     }

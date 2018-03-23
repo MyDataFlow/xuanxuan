@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import SearchControl from '../../components/search-control';
@@ -18,7 +18,7 @@ const fileTypes = [
 
 const MAX_SHOW_FILES_COUNT = 200;
 
-export default class AppFiles extends Component {
+export default class AppFiles extends PureComponent {
     static get AppFiles() {
         return replaceViews('exts/app-files', AppFiles);
     }

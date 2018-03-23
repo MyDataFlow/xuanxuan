@@ -17,6 +17,10 @@ class MessageContentFile extends Component {
         return replaceViews('chats/chat-content-file', MessageContentFile);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
+    }
+
     render() {
         const {
             message,

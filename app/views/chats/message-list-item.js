@@ -60,6 +60,21 @@ class MessageListItem extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps) {
+        return (this.props.message !== nextProps.message || nextProps.message.updateId !== this.lastMessageUpdateId ||
+            this.props.lastMessage !== nextProps.lastMessage ||
+            this.props.showDateDivider !== nextProps.showDateDivider ||
+            this.props.hideHeader !== nextProps.hideHeader ||
+            this.props.ignoreStatus !== nextProps.ignoreStatus ||
+            this.props.font !== nextProps.font || this.props.font.size || nextProps.font.size ||
+            this.props.className !== nextProps.className ||
+            this.props.dateFormater !== nextProps.dateFormater ||
+            this.props.textContentConverter !== nextProps.textContentConverter ||
+            this.props.avatarSize !== nextProps.avatarSize ||
+            this.props.children !== nextProps.children ||
+            this.props.staticUI !== nextProps.staticUI);
+    }
+
     componentDidUpdate() {
         if (!this.props.ignoreStatus) {
             this.checkResendMessage();
@@ -125,6 +140,8 @@ class MessageListItem extends Component {
             staticUI,
             ...other
         } = this.props;
+
+        this.lastMessageUpdateId = message.updateId;
 
         const needCheckResend = !ignoreStatus && message.needCheckResend;
         const needResend = !ignoreStatus && needCheckResend && message.needResend;

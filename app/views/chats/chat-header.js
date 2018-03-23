@@ -33,6 +33,8 @@ class ChatHeader extends Component {
             ...other
         } = this.props;
 
+        this.lastChatUpdateId = chat.updateId;
+
         return (<div
             {...other}
             className={HTML.classes('app-chat-header flex flex-wrap space-between shadow-divider', className)}

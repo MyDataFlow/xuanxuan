@@ -2,26 +2,11 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import ContextMenu from '../../components/context-menu';
-import {ChatListItem} from './chat-list-item';
 import {MenuContactList} from './menu-contact-list';
 import {MenuGroupList} from './menu-group-list';
 import {MenuSearchList} from './menu-search-list';
+import {MenuRecentList} from './menu-recent-list';
 import replaceViews from '../replace-views';
-
-const loadChats = (filter, search) => {
-    let chats = null;
-    switch (filter) {
-    case 'contacts':
-        chats = !search ? App.im.chats.getContactsChats() : App.im.chats.search(search, filter);
-        break;
-    case 'groups':
-        chats = !search ? App.im.chats.getGroups() : App.im.chats.search(search, filter);
-        break;
-    default:
-        chats = !search ? App.im.chats.getRecents() : App.im.chats.search(search);
-    }
-    return chats || [];
-};
 
 class MenuList extends Component {
     static propTypes = {
@@ -46,7 +31,19 @@ class MenuList extends Component {
 
     componentDidMount() {
         this.dataChangeHandler = App.events.onDataChange(data => {
-            this.forceUpdate();
+            let needForceUpdate = false;
+            if (this.props.search) {
+                needForceUpdate = true;
+            } else if (this.props.filter === 'groups' && data.chats && Object.keys(data.chats).some(x => data.chats[x].isGroupOrSystem)) {
+                needForceUpdate = true;
+            } else if (this.props.filter === 'contacts' && ((data.chats && Object.keys(data.chats).some(x => data.chats[x].isOne2One)) || data.members)) {
+                needForceUpdate = true;
+            } else if (this.props.filter === 'recents') {
+                needForceUpdate = true;
+            }
+            if (needForceUpdate) {
+                this.forceUpdate();
+            }
         });
     }
 
@@ -77,24 +74,7 @@ class MenuList extends Component {
         } else if (filter === 'groups') {
             return <MenuGroupList className={className} filter={filter} {...other} />;
         }
-
-        const chats = loadChats(filter, search);
-        let hasActiveChatItem = false;
-        const activeChat = App.im.ui.currentActiveChat;
-        const chatItemsView = chats.map(chat => {
-            if (activeChat && activeChat.gid === chat.gid) {
-                hasActiveChatItem = true;
-            }
-            return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={filter} chat={chat} className="item" />;
-        });
-        if (!hasActiveChatItem && activeChat) {
-            chatItemsView.splice(0, 0, <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, activeChat)} key={activeChat.gid} filterType={filter} chat={activeChat} className="item" />);
-        }
-
-        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
-            {chatItemsView}
-            {children}
-        </div>);
+        return <MenuRecentList className={className} filter={filter} {...other} />;
     }
 }
 

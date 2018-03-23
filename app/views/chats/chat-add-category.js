@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import Icon from '../../components/icon';
 import InputControl from '../../components/input-control';
 import RadioGroup, {Radio} from '../../components/radio-group';
 import SelectBox from '../../components/select-box';
@@ -31,7 +30,6 @@ export default class ChatAddCategory extends Component {
         const {chat} = props;
         this.allCategories = App.im.chats.getChatCategories(chat.isOne2One ? 'contact' : 'group');
         this.originCategory = chat.category;
-        console.log('>', chat, this.allCategories, this.originCategory);
         this.state = {
             type: (this.allCategories && this.allCategories.length) ? 'modify' : 'create',
             selectName: this.originCategory,

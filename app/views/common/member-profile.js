@@ -30,6 +30,10 @@ class MemberProfile extends Component {
         hideChatBtn: false,
     };
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.compact !== this.props.compact || nextProps.className !== this.props.className || nextProps.hideChatBtn !== this.props.hideChatBtn || nextProps.onRequestClose !== this.props.onRequestClose || nextProps.member !== this.props.member || nextProps.member.status !== this.props.member.status || nextProps.member.realname !== this.props.member.realname || nextProps.member.gender !== this.props.member.gender || nextProps.member.dept !== this.props.member.dept || nextProps.member.role !== this.props.member.role || nextProps.member.account !== this.props.member.account || nextProps.member.avatar !== this.props.member.avatar || nextProps.member.email !== this.props.member.email || nextProps.member.phone !== this.props.member.phone || nextProps.member.mobile !== this.props.member.mobile;
+    }
+
     render() {
         const {
             member,

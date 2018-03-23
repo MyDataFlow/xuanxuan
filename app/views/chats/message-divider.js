@@ -1,10 +1,10 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import Lang from '../../lang';
 import replaceViews from '../replace-views';
 
-class MessageDivider extends Component {
+class MessageDivider extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
         children: PropTypes.any,

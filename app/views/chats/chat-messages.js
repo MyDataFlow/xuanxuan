@@ -21,6 +21,10 @@ class ChatMessages extends Component {
         return replaceViews('chats/chat-messages', ChatMessages);
     }
 
+    // shouldComponentUpdate(nextProps) {
+    //     return this.props.className !== nextProps.className || this.props.children !== nextProps.children || this.props.chat !== nextProps.chat || this.lastChatId !== nextProps.updateId;
+    // }
+
     render() {
         const {
             chat,
@@ -30,6 +34,7 @@ class ChatMessages extends Component {
         } = this.props;
 
         const font = App.profile.userConfig.chatFontSize;
+        this.lastChatUpdateId = chat.updateId;
 
         return (<div
             {...other}

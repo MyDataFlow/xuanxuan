@@ -29,6 +29,10 @@ class MemberListItem extends Component {
         children: null,
     };
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.children !== this.props.children || nextProps.className !== this.props.className || nextProps.avatarSize !== this.props.avatarSize || nextProps.showStatusDot !== this.props.showStatusDot || nextProps.avatarClassName !== this.props.avatarClassName || nextProps.title !== this.props.title || nextProps.member !== this.props.member || nextProps.member.status !== this.props.member.status || nextProps.member.displayName !== this.props.member.displayName || nextProps.member.avatar !== this.props.member.avatar;
+    }
+
     render() {
         const {
             member,
