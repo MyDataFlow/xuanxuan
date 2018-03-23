@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Skin from '../utils/skin';
 import Icon from './icon';
@@ -22,7 +22,7 @@ import Icon from './icon';
  * @class Avatar
  * @extends {Component}
  */
-export default class Avatar extends Component {
+export default class Avatar extends PureComponent {
     /**
      * Default properties values
      *
@@ -37,6 +37,7 @@ export default class Avatar extends Component {
         label: null,
         size: null,
         iconSize: null,
+        foreColor: null,
         className: null,
         imageClassName: null,
         iconClassName: null,
@@ -61,6 +62,7 @@ export default class Avatar extends Component {
         size: PropTypes.number,
         iconSize: PropTypes.number,
         className: PropTypes.string,
+        foreColor: PropTypes.string,
         imageClassName: PropTypes.string,
         iconClassName: PropTypes.string,
         style: PropTypes.object,
@@ -98,6 +100,7 @@ export default class Avatar extends Component {
             label,
             size,
             className,
+            foreColor,
             imageClassName,
             iconClassName,
             children,
@@ -114,6 +117,10 @@ export default class Avatar extends Component {
             if (!iconSize) {
                 iconSize = Math.floor(size * 0.5);
             }
+        }
+
+        if (foreColor) {
+            style.color = foreColor;
         }
 
         if (auto) {

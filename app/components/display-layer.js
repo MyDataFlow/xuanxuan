@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import Spinner from './spinner';
 import HTML from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
@@ -20,7 +20,7 @@ const newZIndex = () => {
     return zIndexSeed;
 };
 
-export default class DisplayLayer extends Component {
+export default class DisplayLayer extends PureComponent {
     /**
      * State types
      *

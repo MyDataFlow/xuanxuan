@@ -1,9 +1,9 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 import Lang from '../lang';
 
-class Pager extends Component {
+class Pager extends PureComponent {
     static propTypes = {
         page: PropTypes.number,
         recTotal: PropTypes.number,

@@ -54,7 +54,7 @@ export default class DisplayContainer extends Component {
             if (!props.cache) {
                 const userOnHidden = props.onHidden;
                 props.onHidden = (ref) => {
-                    if(userOnHidden) {
+                    if (userOnHidden) {
                         userOnHidden(ref);
                     }
                     delete all[id];
@@ -63,10 +63,10 @@ export default class DisplayContainer extends Component {
             }
             const userOnShow = props.onShown;
             props.onShown = (ref) => {
-                if(userOnShow) {
+                if (userOnShow) {
                     userOnShow(ref);
                 }
-                if(callback) {
+                if (callback) {
                     callback(ref);
                 }
             };
@@ -94,7 +94,7 @@ export default class DisplayContainer extends Component {
             if (DEBUG) {
                 console.warn(`Cannot find display layer with id ${id}.`);
             }
-            if(callback) {
+            if (callback) {
                 callback(false);
             }
             return;

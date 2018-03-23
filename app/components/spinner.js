@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 
-class Spinner extends Component {
+class Spinner extends PureComponent {
     static propTypes = {
         iconSize: PropTypes.number,
         iconClassName: PropTypes.string,

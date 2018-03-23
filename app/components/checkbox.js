@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
 
@@ -9,7 +9,7 @@ import timeSequence from '../utils/time-sequence';
  * @class Checkbox
  * @extends {Component}
  */
-export default class Checkbox extends Component {
+export default class Checkbox extends PureComponent {
     /**
      * Default properties values
      *
