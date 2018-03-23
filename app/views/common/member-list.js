@@ -3,6 +3,8 @@ import HTML from '../../utils/html-helper';
 import Member from '../../core/models/member';
 import {MemberListItem} from './member-list-item';
 import replaceViews from '../replace-views';
+import ListItem from '../../components/list-item';
+import Lang from '../../lang';
 
 class MemberList extends Component {
     static get MemberList() {
@@ -15,9 +17,14 @@ class MemberList extends Component {
         onItemClick: PropTypes.func,
         onItemContextMenu: PropTypes.func,
         itemRender: PropTypes.func,
+        contentRender: PropTypes.func,
         className: PropTypes.string,
         avatarClassName: PropTypes.string,
         heading: PropTypes.any,
+        startPageSize: PropTypes.number,
+        morePageSize: PropTypes.number,
+        defaultPage: PropTypes.number,
+        eventBindObject: PropTypes.object,
     }
 
     static defaultProps = {
@@ -27,7 +34,21 @@ class MemberList extends Component {
         className: null,
         avatarClassName: null,
         itemRender: null,
-        heading: null
+        contentRender: null,
+        heading: null,
+        startPageSize: 20,
+        morePageSize: 10,
+        defaultPage: 1,
+        eventBindObject: null
+    };
+
+    constructor(props) {
+        super(props);
+        this.state = {page: props.defaultPage};
+    }
+
+    handleRequestMorePage = () => {
+        this.setState({page: this.state.page + 1});
     };
 
     render() {
@@ -40,19 +61,42 @@ class MemberList extends Component {
             onItemContextMenu,
             avatarClassName,
             heading,
+            startPageSize,
+            morePageSize,
+            defaultPage,
+            contentRender,
+            eventBindObject,
             ...other
         } = this.props;
+
+        const listViews = [];
+        const {page} = this.state;
+        const maxIndex = page ? Math.min(members.length, startPageSize + (page > 1 ? (page - 1) * morePageSize : 0)) : members.length;
+        for (let i = 0; i < maxIndex; i += 1) {
+            const member = members[i];
+            if (itemRender) {
+                listViews.push(itemRender(member));
+            } else {
+                let itemProps = null;
+                if (typeof listItemProps === 'function') {
+                    itemProps = listItemProps(member);
+                } else {
+                    itemProps = listItemProps;
+                }
+                listViews.push(<MemberListItem avatarClassName={avatarClassName} onContextMenu={onItemContextMenu && onItemContextMenu.bind(eventBindObject, member)} onClick={onItemClick && onItemClick.bind(eventBindObject, member)} {...itemProps} key={member.account} member={member}>{contentRender && contentRender(member)}</MemberListItem>);
+            }
+        }
+        const notShowCount = members.length - maxIndex;
+        if (notShowCount) {
+            listViews.push(<ListItem key="showMore" icon="chevron-double-down" className="flex-middle item muted" title={<span className="title small">{Lang.format('common.clickShowMoreFormat', notShowCount)}</span>} onClick={this.handleRequestMorePage} />);
+        }
 
         return (<div
             {...other}
             className={HTML.classes('app-member-list list', className)}
         >
             {heading}
-            {
-                members.map(member => {
-                    return <MemberListItem avatarClassName={avatarClassName} onContextMenu={onItemContextMenu && onItemContextMenu.bind(null, member)} onClick={onItemClick && onItemClick.bind(null, member)} {...listItemProps} key={member.account} member={member}>{itemRender && itemRender(member)}</MemberListItem>;
-                })
-            }
+            {listViews}
         </div>);
     }
 }

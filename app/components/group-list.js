@@ -3,6 +3,7 @@ import HTML from '../utils/html-helper';
 import Icon from './icon';
 import Heading from './heading';
 import ListItem from './list-item';
+import Lang from '../lang';
 
 /**
  * GroupList component
@@ -33,6 +34,9 @@ export default class GroupList extends PureComponent {
         checkIsGroup: null,
         onExpandChange: null,
         forceCollapse: false,
+        startPageSize: 20,
+        morePageSize: 10,
+        defaultPage: 1
     }
 
     /**
@@ -56,16 +60,23 @@ export default class GroupList extends PureComponent {
         hideEmptyGroup: PropTypes.bool,
         collapseIcon: PropTypes.string,
         expandIcon: PropTypes.string,
+        startPageSize: PropTypes.number,
+        morePageSize: PropTypes.number,
+        defaultPage: PropTypes.number,
     }
 
-    static render(list, props) {
-        return list.map((item, index) => {
+    static render(list, props, page = 0, onRequestMore = null) {
+        const listViews = [];
+        props = Object.assign({}, GroupList.defaultProps, props);
+        const maxIndex = page ? Math.min(list.length, props.startPageSize + (page > 1 ? (page - 1) * props.morePageSize : 0)) : list.length;
+        for (let i = 0; i < maxIndex; ++i) {
+            const item = list[i];
             if ((props.checkIsGroup && props.checkIsGroup(item)) || (!props.checkIsGroup && (item.type === 'group' || item.list))) {
                 if (props.hideEmptyGroup && (!item.list || !item.list.length)) {
-                    return null;
+                    continue;
                 }
-                return (<GroupList
-                    key={item.key || item.id || index}
+                listViews.push(<GroupList
+                    key={item.key || item.id || i}
                     group={(props && props.listConverter) ? props.listConverter(item) : item}
                     itemCreator={props && props.itemCreator}
                     toggleWithHeading={props && props.toggleWithHeading}
@@ -77,13 +88,21 @@ export default class GroupList extends PureComponent {
                     checkIsGroup={props && props.checkIsGroup}
                     forceCollapse={props && props.forceCollapse}
                     onExpandChange={props && props.onExpandChange}
+                    startPageSize={props && props.startPageSize}
+                    morePageSize={props && props.morePageSize}
+                    defaultPage={props && props.defaultPage}
                 />);
+            } else if (props && props.itemCreator) {
+                listViews.push(props.itemCreator(item, i));
+            } else {
+                listViews.push(<ListItem key={item.key || item.id || i} {...item} />);
             }
-            if (props && props.itemCreator) {
-                return props && props.itemCreator(item, index);
-            }
-            return <ListItem key={item.key || item.id || index} {...item} />;
-        });
+        }
+        const notShowCount = list.length - maxIndex;
+        if (notShowCount) {
+            listViews.push(<ListItem key="showMore" icon="chevron-double-down" className="flex-middle item muted" title={<span className="title small">{Lang.format('common.clickShowMoreFormat', notShowCount)}</span>} onClick={onRequestMore} />);
+        }
+        return listViews;
     }
 
     constructor(props) {
@@ -93,7 +112,8 @@ export default class GroupList extends PureComponent {
             defaultExpand = defaultExpand(props.group, this);
         }
         this.state = {
-            expand: defaultExpand
+            expand: defaultExpand,
+            page: props.defaultPage
         };
     }
 
@@ -127,6 +147,10 @@ export default class GroupList extends PureComponent {
         return !this.props.forceCollapse && this.state.expand;
     }
 
+    handleRequestMorePage = () => {
+        this.setState({page: this.state.page + 1});
+    }
+
     /**
      * React render method
      *
@@ -148,13 +172,23 @@ export default class GroupList extends PureComponent {
             onExpandChange,
             className,
             children,
+            startPageSize,
+            morePageSize,
+            defaultPage,
             ...other
         } = this.props;
 
         const {
             title,
             list,
+            root,
         } = group;
+
+        if (root) {
+            return (<div className={HTML.classes('app-group-list list', className)} {...other}>
+                {GroupList.render(list, this.props, this.state.page, this.handleRequestMorePage)}
+            </div>);
+        }
 
         const expand = this.isExpand;
 
@@ -190,7 +224,7 @@ export default class GroupList extends PureComponent {
             {...other}
         >
             {headingView}
-            {expand && list && GroupList.render(list, this.props)}
+            {expand && list && GroupList.render(list, this.props, this.state.page, this.handleRequestMorePage)}
             {children}
         </div>);
     }

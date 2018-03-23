@@ -29,7 +29,7 @@ class ChatSidebar extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return this.props.className !== nextProps.className || this.props.children !== nextProps.children || this.props.closeButton !== nextProps.closeButton || this.props.chat !== nextProps.chat || this.lastChatId !== nextProps.updateId;
+        return this.props.className !== nextProps.className || this.props.children !== nextProps.children || this.props.closeButton !== nextProps.closeButton || this.props.chat !== nextProps.chat || this.lastChatId !== nextProps.updateId || (nextProps.chat.isOne2One && nextProps.chat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId);
     }
 
     handleCloseBtnClick = () => {
@@ -46,6 +46,9 @@ class ChatSidebar extends Component {
         } = this.props;
 
         this.lastChatId = chat.updateId;
+        if (chat.isOne2One) {
+            this.lastOtherOneUpdateId = chat.getTheOtherOne(App).updateId;
+        }
 
         return (<div
             {...other}

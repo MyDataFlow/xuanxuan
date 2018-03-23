@@ -221,7 +221,16 @@ export default class MenuContactList extends Component {
             >
                 <div className="btn-wrapper hint--left" data-hint={Lang.string('common.setting')}><Button onClick={this.handleSettingBtnClick} className="iconbutton rounded" icon="format-list-bulleted" /></div>
             </MemberListItem> : null}
-            {
+            <GroupList
+                group={{list: chats, root: true}}
+                defaultExpand={this.defaultExpand}
+                itemCreator={this.itemCreator}
+                headingCreator={this.headingCreator}
+                onExpandChange={this.onExpandChange}
+                hideEmptyGroup={groupType !== 'category'}
+                forceCollapse={!!this.state.dragging}
+            />
+            {/* {
                 GroupList.render(chats, {
                     defaultExpand: this.defaultExpand,
                     itemCreator: this.itemCreator,
@@ -230,7 +239,7 @@ export default class MenuContactList extends Component {
                     hideEmptyGroup: groupType !== 'category',
                     forceCollapse: !!this.state.dragging
                 })
-            }
+            } */}
             {children}
         </div>);
     }

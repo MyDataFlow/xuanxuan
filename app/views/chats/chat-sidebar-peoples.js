@@ -102,7 +102,7 @@ class ChatSidebarPeoples extends Component {
             <MemberList
                 onItemClick={handleMemberItemClick}
                 onItemContextMenu={this.handleItemContextMenu}
-                itemRender={this.handleItemRender}
+                contentRender={this.handleItemRender}
                 className="white rounded compact"
                 members={members}
                 listItemProps={{avatarSize: 20}}

@@ -66,7 +66,7 @@ class MessageListItem extends Component {
             this.props.showDateDivider !== nextProps.showDateDivider ||
             this.props.hideHeader !== nextProps.hideHeader ||
             this.props.ignoreStatus !== nextProps.ignoreStatus ||
-            this.props.font !== nextProps.font || this.props.font.size || nextProps.font.size ||
+            this.props.font !== nextProps.font || (this.props.font && nextProps.font && this.props.font.size !== nextProps.font.size) ||
             this.props.className !== nextProps.className ||
             this.props.dateFormater !== nextProps.dateFormater ||
             this.props.textContentConverter !== nextProps.textContentConverter ||
