@@ -624,6 +624,8 @@ class Chat extends Entity {
             this._messages.splice(0, this._messages.length - MAX_MESSAGE_COUNT);
         }
 
+        this.renewUpdateId();
+
         return this;
     }
 

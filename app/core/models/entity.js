@@ -1,5 +1,6 @@
 import UUID from 'uuid/v4';
 import Schema from './entity-schema';
+import timeSequence from '../../utils/time-sequence';
 
 /**
  * Entity
@@ -19,6 +20,7 @@ class Entity {
 
         this.ensureGid();
         this._entityType = entityType;
+        this._updateId = timeSequence();
     }
 
     assign(...data) {
@@ -34,6 +36,14 @@ class Entity {
     plain() {
         this.ensureGid();
         return this.$;
+    }
+
+    get updateId() {
+        return this._updateId;
+    }
+
+    renewUpdateId() {
+        this._updateId = timeSequence();
     }
 
     get entityType() {
@@ -61,10 +71,10 @@ class Entity {
      * @param {String|Object} key
      * @param {Any} val
      */
-    $set(key, val) {
+    $set(key, val, ignoreUpdateId = false) {
         if (typeof key === 'object') {
             Object.keys(key).forEach(k => {
-                this.$set(k, key[k]);
+                this.$set(k, key[k], true);
             });
         } else {
             const schema = this.schema;
@@ -76,6 +86,9 @@ class Entity {
                 val = schema.convertSetterValue(key, val, this);
             }
             this.$[key] = val;
+        }
+        if (!ignoreUpdateId) {
+            this.renewUpdateId();
         }
     }
 
