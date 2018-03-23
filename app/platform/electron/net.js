@@ -18,6 +18,9 @@ const createCachePath = (file, user, dirName = 'images') => {
     return Path.join(userDataPath, 'users', user.identify, dirName, file.storageName);
 };
 const checkFileCache = (file, user) => {
+    if (file.path) {
+        return Promise.resolve(false);
+    }
     if (file.localPath) {
         filesCache[file.gid] = file.localPath;
         return Promise.resolve(file.localPath);
