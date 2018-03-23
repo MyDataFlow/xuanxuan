@@ -1,3 +1,4 @@
+import Config from 'Config';
 import Entity from './entity';
 import Status from '../../utils/status';
 import Lang from '../../lang';
@@ -23,7 +24,7 @@ const COMMITTERS_TYPES = {
     all: 'all'
 };
 
-const MAX_MESSAGE_COUNT = 100;
+const MAX_MESSAGE_COUNT = Config.ui['chat.flow.size'];
 const DISMISS_VISIBLE_TIME = 1000 * 60 * 60 * 24 * 90;
 
 class Chat extends Entity {
