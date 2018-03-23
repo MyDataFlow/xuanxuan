@@ -28,10 +28,6 @@ class CacheContainer extends Component {
         staticContext: PropTypes.any
     };
 
-    shouldComponentUpdate(nextProps) {
-        return (nextProps.location.pathname + nextProps.location.search + nextProps.location.hash) !== (this.props.location.pathname + this.props.location.search + this.props.location.hash);
-    }
-
     render() {
         const {
             match,
