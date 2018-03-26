@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import hotkeys from 'hotkeys-js';
 import HTML from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
@@ -18,7 +18,7 @@ hotkeys.filter = event => {
     return true;
 };
 
-class InputControl extends Component {
+class InputControl extends PureComponent {
     static defaultProps = {
         label: ' ',
         className: '',

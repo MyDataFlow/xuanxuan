@@ -28,9 +28,13 @@ class ChatSidebar extends Component {
         return replaceViews('chats/chat-sidebar', ChatSidebar);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.className !== nextProps.className || this.props.children !== nextProps.children || this.props.closeButton !== nextProps.closeButton || this.props.chat !== nextProps.chat || this.lastChatId !== nextProps.updateId || (nextProps.chat.isOne2One && nextProps.chat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId);
+    }
+
     handleCloseBtnClick = () => {
         App.profile.userConfig.setChatSidebarHidden(this.props.chat.gid, true);
-    }
+    };
 
     render() {
         const {
@@ -40,6 +44,11 @@ class ChatSidebar extends Component {
             children,
             ...other
         } = this.props;
+
+        this.lastChatId = chat.updateId;
+        if (chat.isOne2One) {
+            this.lastOtherOneUpdateId = chat.getTheOtherOne(App).updateId;
+        }
 
         return (<div
             {...other}

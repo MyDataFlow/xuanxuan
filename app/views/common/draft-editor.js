@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import {
     Editor,
     EditorState,
@@ -95,7 +95,7 @@ const draftDecorator = new CompositeDecorator([{
 }*/]);
 /* eslint-enable */
 
-class DraftEditor extends Component {
+class DraftEditor extends PureComponent {
     static get DraftEditor() {
         return replaceViews('common/draft-editor', DraftEditor);
     }
@@ -171,6 +171,8 @@ class DraftEditor extends Component {
             } else if (image instanceof Blob || image instanceof File) {
                 imageSrc = URL.createObjectURL(image);
             }
+        } else if (!imageSrc.startsWith('http://') && !imageSrc.startsWith('https://')) {
+            imageSrc = `file://${imageSrc}`;
         }
         const contentStateWithEntity = contentState.createEntity(
             'image',

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 import Avatar from './avatar';
@@ -10,7 +10,7 @@ import Avatar from './avatar';
  * @class Heading
  * @extends {Component}
  */
-export default class Heading extends Component {
+export default class Heading extends PureComponent {
     /**
      * Default properties values
      *

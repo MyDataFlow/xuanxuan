@@ -54,6 +54,25 @@ class MessageListItem extends Component {
         if (!this.props.ignoreStatus) {
             this.checkResendMessage();
         }
+        if (this.needGetSendInfo && this.needGetSendInfo !== true) {
+            App.server.tryGetTempUserInfo(this.needGetSendInfo);
+            this.needGetSendInfo = true;
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return (this.props.message !== nextProps.message || nextProps.message.updateId !== this.lastMessageUpdateId ||
+            this.props.lastMessage !== nextProps.lastMessage ||
+            this.props.showDateDivider !== nextProps.showDateDivider ||
+            this.props.hideHeader !== nextProps.hideHeader ||
+            this.props.ignoreStatus !== nextProps.ignoreStatus ||
+            this.props.font !== nextProps.font || (this.props.font && nextProps.font && this.props.font.size !== nextProps.font.size) ||
+            this.props.className !== nextProps.className ||
+            this.props.dateFormater !== nextProps.dateFormater ||
+            this.props.textContentConverter !== nextProps.textContentConverter ||
+            this.props.avatarSize !== nextProps.avatarSize ||
+            this.props.children !== nextProps.children ||
+            this.props.staticUI !== nextProps.staticUI);
     }
 
     componentDidUpdate() {
@@ -122,6 +141,8 @@ class MessageListItem extends Component {
             ...other
         } = this.props;
 
+        this.lastMessageUpdateId = message.updateId;
+
         const needCheckResend = !ignoreStatus && message.needCheckResend;
         const needResend = !ignoreStatus && needCheckResend && message.needResend;
 
@@ -148,6 +169,9 @@ class MessageListItem extends Component {
 
         if (!hideHeader) {
             const sender = message.getSender(App.members);
+            if (sender.temp) {
+                this.needGetSendInfo = sender.id;
+            }
             headerView = (<div className="app-message-item-header">
                 <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu.bind(this, sender)} onClick={MemberProfileDialog.show.bind(null, sender, null)} />
                 <header style={titleFontStyle}>

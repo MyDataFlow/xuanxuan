@@ -47,6 +47,7 @@ var crtInfo = CertInformation{
     KeyName:            util.GetProgramName() + ".key",
     IsCA:               true}
 
+//SSL证书处理
 func CreateSignedCertKey() (string, string, error) {
     crtPath := util.Config.CrtPath + util.GetProgramName() + ".crt"
     keyPath := util.Config.CrtPath + util.GetProgramName() + ".key"
@@ -79,6 +80,7 @@ func CreateSignedCertKey() (string, string, error) {
     return crtPath, keyPath, write(crtInfo.KeyName, "PRIVATE KEY", buf)
 }
 
+//写入
 func write(filename, crtType string, p []byte) error {
     filename = util.Config.CrtPath + filename
     err := util.Mkdir(util.Config.CrtPath)
@@ -95,6 +97,7 @@ func write(filename, crtType string, p []byte) error {
     return pem.Encode(fileHandle, b)
 }
 
+//证书信息
 func newCertificate(info CertInformation) *x509.Certificate {
     return &x509.Certificate{
         SerialNumber: big.NewInt(mrd.Int63()),

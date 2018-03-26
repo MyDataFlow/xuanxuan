@@ -26,6 +26,14 @@ class ChatTitle extends Component {
         return replaceViews('chats/chat-title', ChatTitle);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return (this.props.className !== nextProps.className ||
+            this.props.children !== nextProps.children ||
+            this.props.chat !== nextProps.chat || this.lastChatUpdateId !== nextProps.chat.updateId ||
+            (nextProps.chat.isOne2One && nextProps.chat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId)
+        );
+    }
+
     render() {
         const {
             chat,
@@ -37,6 +45,8 @@ class ChatTitle extends Component {
         const chatName = chat.getDisplayName(App, true);
         const theOtherOne = chat.isOne2One ? chat.getTheOtherOne(App) : null;
         const onTitleClick = theOtherOne ? MemberProfileDialog.show.bind(null, theOtherOne, null) : null;
+        this.lastOtherOneUpdateId = theOtherOne && theOtherOne.updateId;
+        this.lastChatUpdateId = chat.updateId;
 
         return (<div className={HTML.classes('chat-title heading', className)}>
             <ChatAvatar chat={chat} size={24} className={theOtherOne ? 'state' : ''} onClick={onTitleClick} />

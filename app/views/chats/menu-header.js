@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import SearchControl from '../../components/search-control';
 import Icon from '../../components/icon';
@@ -6,7 +6,7 @@ import Lang from '../../lang';
 import ChatCreateDialog from './chat-create-dialog';
 import replaceViews from '../replace-views';
 
-class MenuHeader extends Component {
+class MenuHeader extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
         onSearchChange: PropTypes.func,

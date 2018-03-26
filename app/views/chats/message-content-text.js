@@ -19,6 +19,10 @@ class MessageContentText extends Component {
         return replaceViews('chats/message-content-text', MessageContentText);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.className !== this.props.className || nextProps.contentConverter !== this.props.contentConverter || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
+    }
+
     render() {
         let {
             message,

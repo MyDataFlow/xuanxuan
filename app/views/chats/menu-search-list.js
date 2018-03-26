@@ -7,6 +7,8 @@ import ContextMenu from '../../components/context-menu';
 import {ChatListItem} from './chat-list-item';
 import replaceViews from '../replace-views';
 import ROUTES from '../common/routes';
+import ListItem from '../../components/list-item';
+import Lang from '../../lang';
 
 export default class MenuSearchList extends Component {
     static propTypes = {
@@ -15,6 +17,9 @@ export default class MenuSearchList extends Component {
         filter: PropTypes.string,
         children: PropTypes.any,
         onRequestClearSearch: PropTypes.func,
+        startPageSize: PropTypes.number,
+        morePageSize: PropTypes.number,
+        defaultPage: PropTypes.number
     };
 
     static defaultProps = {
@@ -23,6 +28,9 @@ export default class MenuSearchList extends Component {
         filter: null,
         children: null,
         onRequestClearSearch: null,
+        startPageSize: 20,
+        morePageSize: 10,
+        defaultPage: 1
     };
 
     static get MenuSearchList() {
@@ -33,6 +41,7 @@ export default class MenuSearchList extends Component {
         super(props);
         this.state = {
             select: '',
+            page: props.defaultPage
         };
     }
 
@@ -83,7 +92,8 @@ export default class MenuSearchList extends Component {
         hotkeys.deleteScope('chatsMenuSearch');
     }
 
-    handleItemContextMenu = (chat, e) => {
+    handleItemContextMenu = e => {
+        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
         const menuItems = App.im.ui.createChatContextMenuItems(chat, this.props.filter, '');
         if (menuItems && menuItems.length) {
             ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
@@ -98,6 +108,9 @@ export default class MenuSearchList extends Component {
             className,
             children,
             onRequestClearSearch,
+            startPageSize,
+            morePageSize,
+            defaultPage,
             ...other
         } = this.props;
 
@@ -109,23 +122,33 @@ export default class MenuSearchList extends Component {
         this.select = select;
         this.chats = chats;
 
-        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
-            {
-                chats.map((chat, idx) => {
-                    const isSelected = select && chat.gid === select.gid;
-                    if (isSelected) {
-                        this.selectIndex = idx;
-                    }
-                    return (<ChatListItem
-                        onMouseEnter={() => this.setState({select: chat})}
-                        onContextMenu={this.handleItemContextMenu.bind(this, chat)}
-                        key={chat.gid}
-                        filterType={filter}
-                        chat={chat}
-                        className={HTML.classes('item', {hover: isSelected})}
-                    />);
-                })
+        const list = chats;
+        const listViews = [];
+        const {page} = this.state;
+        const maxIndex = page ? Math.min(list.length, startPageSize + (page > 1 ? (page - 1) * morePageSize : 0)) : list.length;
+        for (let i = 0; i < maxIndex; i += 1) {
+            const chat = list[i];
+            const isSelected = select && chat.gid === select.gid;
+            if (isSelected) {
+                this.selectIndex = i;
             }
+            listViews.push(<ChatListItem
+                onMouseEnter={() => this.setState({select: chat})}
+                onContextMenu={this.handleItemContextMenu.bind(this, chat)}
+                key={chat.gid}
+                data-gid={chat.gid}
+                filterType={filter}
+                chat={chat}
+                className={HTML.classes('item', {hover: isSelected})}
+            />);
+        }
+        const notShowCount = list.length - maxIndex;
+        if (notShowCount) {
+            listViews.push(<ListItem key="showMore" icon="chevron-double-down" className="flex-middle item muted" title={<span className="title small">{Lang.format('common.clickShowMoreFormat', notShowCount)}</span>} onClick={this.handleRequestMorePage} />);
+        }
+
+        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
+            {listViews}
             {children}
         </div>);
     }

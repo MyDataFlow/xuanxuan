@@ -80,10 +80,12 @@ func RequestInfo(addr string, postData []byte) ([]byte, error) {
     return body, nil
 }
 
+//http
 func httpRequest() *http.Client {
     return &http.Client{}
 }
 
+//https
 func httpsRequest() *http.Client {
     tr := &http.Transport{
         TLSClientConfig: &tls.Config{InsecureSkipVerify: true},

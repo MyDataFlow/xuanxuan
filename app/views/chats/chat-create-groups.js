@@ -9,6 +9,7 @@ import Messager from '../../components/messager';
 import {MemberListItem} from '../common/member-list-item';
 import ROUTES from '../common/routes';
 import replaceViews from '../replace-views';
+import {MemberList} from '../common/member-list';
 
 class ChatCreateGroups extends Component {
     static propTypes = {
@@ -117,6 +118,14 @@ class ChatCreateGroups extends Component {
         return member.id === App.profile.userId || !!this.state.choosed[member.id];
     }
 
+    renderMemberItem = member => {
+        if (this.isMatchSearch(member)) {
+            const isChoosed = this.isChoosed(member);
+            return <MemberListItem className={isChoosed ? 'primary-pale' : ''} onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member}>{isChoosed && <Icon name="check text-success" />}</MemberListItem>;
+        }
+        return null;
+    };
+
     render() {
         const {
             className,
@@ -154,17 +163,7 @@ class ChatCreateGroups extends Component {
                         <SearchControl defaultValue={this.state.search} onSearchChange={this.handleSearchChange} className="flex-none" style={{width: HTML.rem(200)}} />
                     </div>
                     <div className="cell scroll-y has-padding-sm">
-                        <div className="list fluid compact app-chat-create-groups-member-list">
-                            {
-                                this.members.map(member => {
-                                    if (this.isMatchSearch(member)) {
-                                        const isChoosed = this.isChoosed(member);
-                                        return <MemberListItem className={isChoosed ? 'primary-pale' : ''} onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member}>{isChoosed && <Icon name="check text-success" />}</MemberListItem>;
-                                    }
-                                    return null;
-                                })
-                            }
-                        </div>
+                        <MemberList className="fluid compact app-chat-create-groups-member-list" members={this.members} itemRender={this.renderMemberItem} />
                     </div>
                 </div>
             </div>

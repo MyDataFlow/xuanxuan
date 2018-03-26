@@ -29,10 +29,6 @@ func InitWs() {
         serveWs(hub, w, r)
     })
 
-    http.HandleFunc(ownSocket, func(w http.ResponseWriter, r *http.Request) {
-        ownWs(hub, w, r)
-    })
-
     addr := util.Config.Ip + ":" + util.Config.ChatPort
     util.LogInfo().Println("websocket start,listen addr:", addr, webSocket)
 

@@ -36,6 +36,9 @@ const createImageContextMenuItems = (url, dataType) => {
         items.push({
             label: Lang.string('menu.image.saveAs'),
             click: () => {
+                if (url.startsWith('file://')) {
+                    url = url.substr(6);
+                }
                 return Platform.dialog.saveAsImageFromUrl(url, dataType).then(filename => {
                     if (filename) {
                         Messager.show(Lang.format('file.fileSavedAt.format', filename), {
@@ -60,6 +63,9 @@ const createImageContextMenuItems = (url, dataType) => {
         items.push({
             label: Lang.string('menu.image.open'),
             click: () => {
+                if (url.startsWith('file://')) {
+                    url = url.substr(6);
+                }
                 Platform.ui.openFileItem(url);
             }
         });

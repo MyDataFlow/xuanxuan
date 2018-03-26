@@ -11,18 +11,23 @@ import {ChatHistory} from './chat-history';
 import {ChatSearchResult} from './chat-search-result';
 import replaceViews from '../replace-views';
 import DateHelper from '../../utils/date-helper';
+import ListItem from '../../components/list-item';
 
 class ChatsHistory extends Component {
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
         children: PropTypes.any,
+        startPageSize: PropTypes.number,
+        morePageSize: PropTypes.number,
     };
 
     static defaultProps = {
         className: null,
         chat: null,
         children: null,
+        startPageSize: 20,
+        morePageSize: 10,
     };
 
     static get ChatsHistory() {
@@ -53,7 +58,8 @@ class ChatsHistory extends Component {
             searchProgress: 0,
             expanded: chat ? {contacts: chat.isOne2One, groups: chat.isGroupOrSystem} : {contacts: true, groups: false},
             chats: this.chats,
-            messageGoto: null
+            messageGoto: null,
+            groupPage: {contacts: 1, groups: 1}
         };
     }
 
@@ -158,6 +164,7 @@ class ChatsHistory extends Component {
                 }
                 this.searchTask = App.im.chats.createCountMessagesTask(chats, search, searchFilterTime);
                 this.setState({
+                    groupPage: {contacts: 1, groups: 1},
                     searchResult: {},
                     searchResultTotal: 0,
                     searchTip: Lang.string('chats.history.searching'),
@@ -220,6 +227,12 @@ class ChatsHistory extends Component {
         }
     }
 
+    handleRequestMorePage(group) {
+        const {groupPage} = this.state;
+        groupPage[group] += 1;
+        this.setState({groupPage});
+    }
+
     renderChatsGroup(group) {
         const {searchResult, searchFilterType} = this.state;
         if (searchResult && searchFilterType && searchFilterType !== group.name && searchFilterType !== 'choosed') {
@@ -243,16 +256,26 @@ class ChatsHistory extends Component {
             }
             itemsArray.push(chat);
         });
+
+        const {startPageSize, morePageSize} = this.props;
+        const listViews = [];
+        const page = this.state.groupPage[group.name];
+        const maxIndex = page ? Math.min(itemsArray.length, startPageSize + (page > 1 ? (page - 1) * morePageSize : 0)) : itemsArray.length;
+        for (let i = 0; i < maxIndex; i += 1) {
+            const item = itemsArray[i];
+            listViews.push(this.renderChatItem(item));
+        }
+        const notShowCount = itemsArray.length - maxIndex;
+        if (notShowCount) {
+            listViews.push(<ListItem key="showMore" icon="chevron-double-down" className="flex-middle item muted" title={<span className="title small">{Lang.format('common.clickShowMoreFormat', notShowCount)}</span>} onClick={this.handleRequestMorePage.bind(this, group.name)} />);
+        }
+
         return (<div key={group.name} className="app-chats-history-menu-group">
             <a className="heading" onClick={this.handleGroupHeaderClick.bind(this, group.name)}>
                 <Avatar className="text-primary" icon={isExpanded ? 'menu-down' : 'menu-right'} />
                 <div className="text-primary">{Lang.string(`chats.history.group.${group.name}`)} ({itemsArray.length})</div>
             </a>
-            {isExpanded && <div className="app-chats-history-menu-list list compact">
-                {
-                    itemsArray.map(this.renderChatItem.bind(this))
-                }
-            </div>}
+            {isExpanded && <div className="app-chats-history-menu-list list compact">{listViews}</div>}
         </div>);
     }
 
@@ -287,6 +310,8 @@ class ChatsHistory extends Component {
             chat,
             className,
             children,
+            startPageSize,
+            morePageSize,
             ...other
         } = this.props;
 

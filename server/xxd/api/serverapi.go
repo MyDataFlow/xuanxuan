@@ -96,6 +96,7 @@ func UploadFileInfo(serverName string, jsonData []byte) (string, error) {
     return parseData.FileID(), nil
 }
 
+//用户ID
 func (pd ParseData) loginUserID() int64 {
     data, ok := pd["data"]
     if !ok {
@@ -107,6 +108,7 @@ func (pd ParseData) loginUserID() int64 {
     return ret
 }
 
+//文件id
 func (pd ParseData) FileID() string {
     data, ok := pd["data"]
     if !ok {

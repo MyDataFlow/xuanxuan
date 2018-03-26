@@ -135,6 +135,9 @@ export default class FileData extends Entity {
         if (originFile) {
             if (!this._viewUrl) {
                 this._viewUrl = originFile.path || this.localPath;
+                if (this._viewUrl && !this._viewUrl.startsWith('http://') && !this._viewUrl.startsWith('https://') && !this._viewUrl.startsWith('file://')) {
+                    this._viewUrl = `file://${this._viewUrl}`;
+                }
             }
             if (!this._viewUrl) {
                 if (originFile.blob) {

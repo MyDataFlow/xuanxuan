@@ -14,6 +14,15 @@ if (global.DEBUG) {
         return console._error(errMessage, ...args);
     };
 
+    // Mute react router warning.
+    console._warn = console.warn;
+    console.warn = (errMessage, ...args) => {
+        if (typeof errMessage === 'string' && errMessage.startsWith('iterable.length has been deprecated, use iterable.size or iterable.count')) {
+            return;
+        }
+        return console._warn(errMessage, ...args);
+    };
+
     if (process.browser || process.type === 'renderer') {
         const STYLE = {
             rounded: 'border-radius: 3px;',

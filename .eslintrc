@@ -74,7 +74,7 @@
   "settings": {
     "import/resolver": {
       "webpack": {
-        "config": "webpack.config.development.js"
+        "config": "../build/webpack.config.development.js"
       },
       "babel-module": {
         "alias": {

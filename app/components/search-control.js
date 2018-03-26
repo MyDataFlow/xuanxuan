@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import InputControl from './input-control';
 import Icon from './icon';
@@ -6,7 +6,7 @@ import StringHelper from '../utils/string-helper';
 import DelayAction from '../utils/delay-action';
 import Lang from '../lang';
 
-class SearchControl extends Component {
+class SearchControl extends PureComponent {
     static propTypes = {
         placeholder: PropTypes.any,
         changeDelay: PropTypes.number,

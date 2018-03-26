@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import App from '../../core';
 import {Index as LoginView} from '../login';
 import {Index as MainView} from '../main';
 import replaceViews from '../replace-views';
 
-class AppView extends Component {
+class AppView extends PureComponent {
     static get AppView() {
         return replaceViews('index/app-view', AppView);
     }

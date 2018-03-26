@@ -2,6 +2,7 @@
   "name": "xuanxuan",
   "productName": "喧喧",
   "version": "1.4.0",
+  "buildVersion": "build20180314",
   "description": "企业即时通讯平台",
   "main": "./main.js",
   "author": {

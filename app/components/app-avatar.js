@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Avatar from './avatar';
 
@@ -9,7 +9,7 @@ import Avatar from './avatar';
  * @class AppAvatar
  * @extends {Component}
  */
-export default class AppAvatar extends Component {
+export default class AppAvatar extends PureComponent {
     /**
      * Default properties values
      *

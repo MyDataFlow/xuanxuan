@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import {STATUS} from '../../core/models/member';
 import Lang from '../../lang';
@@ -15,7 +15,7 @@ const statusColors = {
 };
 
 
-class StatusDot extends Component {
+class StatusDot extends PureComponent {
     static get StatusDot() {
         return replaceViews('common/status-dot', StatusDot);
     }

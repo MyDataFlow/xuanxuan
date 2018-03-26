@@ -195,7 +195,7 @@ const createCatureScreenContextMenuItems = (chat) => {
     return items;
 };
 
-const createSendboxToolbarItems = (chat, config) => {
+const createSendboxToolbarItems = (chatGid, showMessageTip, captureScreenHotkey) => {
     const items = [{
         id: 'emoticon',
         icon: 'emoticon',
@@ -205,43 +205,46 @@ const createSendboxToolbarItems = (chat, config) => {
                 sendContentToChat(Emojione.convert(emoji.unicode) + ' ');
             });
         }
-    }, {
-        id: 'image',
-        icon: 'image',
-        label: Lang.string('chat.sendbox.toolbar.image'),
-        click: () => {
-            Platform.dialog.showOpenDialog({
-                filters: [
-                    {name: 'Images', extensions: ['jpg', 'png', 'gif']},
-                ]
-            }, files => {
-                if (files && files.length) {
-                    sendContentToChat(files[0], 'image', chat.gid);
-                }
-            });
-        }
-    }, {
-        id: 'file',
-        icon: 'file-outline',
-        label: Lang.string('chat.sendbox.toolbar.file'),
-        click: () => {
-            Platform.dialog.showOpenDialog(null, files => {
-                if (files && files.length) {
-                    Server.sendFileMessage(files[0], chat);
-                }
-            });
-        }
     }];
+    if (profile.user.isVersionSupport('fileServer')) {
+        items.push({
+            id: 'image',
+            icon: 'image',
+            label: Lang.string('chat.sendbox.toolbar.image'),
+            click: () => {
+                Platform.dialog.showOpenDialog({
+                    filters: [
+                        {name: 'Images', extensions: ['jpg', 'png', 'gif']},
+                    ]
+                }, files => {
+                    if (files && files.length) {
+                        sendContentToChat(files[0], 'image', chatGid);
+                    }
+                });
+            }
+        }, {
+            id: 'file',
+            icon: 'file-outline',
+            label: Lang.string('chat.sendbox.toolbar.file'),
+            click: () => {
+                Platform.dialog.showOpenDialog(null, files => {
+                    if (files && files.length) {
+                        Server.sendFileMessage(files[0], chats.get(chatGid));
+                    }
+                });
+            }
+        });
+    }
     if (Platform.screenshot) {
         items.push({
             id: 'captureScreen',
             icon: 'content-cut rotate-270 inline-block',
-            label: Lang.string('chat.sendbox.toolbar.captureScreen') + (config ? ` (${config.captureScreenHotkey})` : ''),
+            label: Lang.string('chat.sendbox.toolbar.captureScreen') + (captureScreenHotkey || ''),
             click: () => {
                 captureAndCutScreenImage();
             },
             contextMenu: e => {
-                ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chat));
+                ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chats.get(chatGid)));
                 e.preventDefault();
             }
         });
@@ -254,8 +257,7 @@ const createSendboxToolbarItems = (chat, config) => {
             ChatChangeFontPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
         }
     });
-    const {user} = profile;
-    if (user && user.config.showMessageTip) {
+    if (showMessageTip) {
         items.push({
             id: 'tips',
             icon: 'comment-question-outline',

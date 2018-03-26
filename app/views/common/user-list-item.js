@@ -23,6 +23,10 @@ export default class UserListItem extends Component {
         children: null,
     };
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.children !== this.props.children || nextProps.className !== this.props.className || nextProps.avatarSize !== this.props.avatarSize || nextProps.avatarClassName !== this.props.avatarClassName || nextProps.user !== this.props.user || nextProps.user.account !== this.props.user.account || nextProps.user.avatar !== this.props.user.avatar || nextProps.user.realname !== this.props.user.realname || nextProps.user.server !== this.props.user.server;
+    }
+
     render() {
         const {
             user,

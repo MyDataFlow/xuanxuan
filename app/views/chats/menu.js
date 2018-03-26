@@ -48,6 +48,10 @@ class Menu extends Component {
         }
     };
 
+    onRequestClearSearch = () => {
+        this.menuHeader.clearSearch();
+    };
+
     render() {
         const {
             filter,
@@ -65,7 +69,7 @@ class Menu extends Component {
                 onSearchFocus={this.handleSearchFocusChange}
                 className="dock-top"
             />
-            <MenuList onRequestClearSearch={() => this.menuHeader.clearSearch()} search={this.state.searchFocus ? this.state.search : ''} filter={filter} className="dock-bottom" />
+            <MenuList onRequestClearSearch={this.onRequestClearSearch} search={this.state.searchFocus ? this.state.search : ''} filter={filter} className="dock-bottom" />
             {children}
         </div>);
     }

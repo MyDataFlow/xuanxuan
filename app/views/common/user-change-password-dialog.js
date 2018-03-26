@@ -41,13 +41,13 @@ class UserChangePassword extends Component {
 
     handleConfirmBtnClick = () => {
         if (StringHelper.isEmpty(this.state.password1)) {
-            return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.password1'))});
+            return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.newPassword'))});
         }
         if (this.state.password1.length < 6) {
             return this.setState({message: Lang.string('user.changePassword.denySimplePassword')});
         }
         if (StringHelper.isEmpty(this.state.password2)) {
-            return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.password2'))});
+            return this.setState({message: Lang.format('user.changePassword.inputRequired', Lang.string('user.changePassword.newPasswordRepeat'))});
         }
         if (this.state.password1 !== this.state.password2) {
             return this.setState({message: Lang.string('user.changePassword.passwordNotSame')});

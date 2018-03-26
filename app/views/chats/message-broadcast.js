@@ -25,6 +25,10 @@ class MessageBroadcast extends Component {
         return replaceViews('chats/message-broadcast', MessageBroadcast);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
+    }
+
     render() {
         const {
             message,

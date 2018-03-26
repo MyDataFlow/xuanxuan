@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import Avatar from '../../components/avatar';
 import Lang from '../../lang';
@@ -6,7 +6,7 @@ import {ChatCreateGroups} from './chat-create-groups';
 import {ChatJoinPublic} from './chat-join-public';
 import replaceViews from '../replace-views';
 
-class ChatCreateView extends Component {
+class ChatCreateView extends PureComponent {
     static propTypes = {
         onRequestClose: PropTypes.func,
         className: PropTypes.string,

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 
 /**
  * Click outside wrapper component
@@ -21,7 +21,7 @@ import React, {Component, PropTypes} from 'react';
  * @class ClickOutsideWrapper
  * @extends {Component}
  */
-export default class ClickOutsideWrapper extends Component {
+export default class ClickOutsideWrapper extends PureComponent {
     /**
      * Default properties values
      *

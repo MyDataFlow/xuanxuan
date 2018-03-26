@@ -1,12 +1,13 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import Config from 'Config';
 import HTML from '../../utils/html-helper';
 import {Form as LoginForm} from './form';
 import {BuildInfo} from '../common/build-info';
 import App from '../../core';
 import replaceViews from '../replace-views';
+import Member from '../../core/models/member';
 
-class Index extends Component {
+class Index extends PureComponent {
     static get Index() {
         return replaceViews('login/index', Index);
     }

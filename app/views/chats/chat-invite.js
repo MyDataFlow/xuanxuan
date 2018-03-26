@@ -5,7 +5,7 @@ import SearchControl from '../../components/search-control';
 import Messager from '../../components/messager';
 import Lang from '../../lang';
 import App from '../../core';
-import {MemberListItem} from '../common/member-list-item';
+import {MemberList} from '../common/member-list';
 import ROUTES from '../common/routes';
 import replaceViews from '../replace-views';
 
@@ -118,26 +118,14 @@ class ChatInvite extends Component {
                 <div className="has-padding-sm flex-none darken">
                     <SearchControl onSearchChange={this.handleSearchChange} />
                 </div>
-                <div className="list flex-auto scroll-y compact">
-                    {
-                        items.map(member => {
-                            return <MemberListItem avatarSize={24} key={member.id} onClick={this.handleMemberItemClick.bind(this, member)} member={member} />;
-                        })
-                    }
-                </div>
+                <MemberList className="flex-auto scroll-y compact" members={items} onItemClick={this.handleMemberItemClick} eventBindObject={this} listItemProps={{avatarSize: 24}} />
             </div>
             <div className="cell column single flex-auto divider-left">
                 <div className="heading flex-none primary-pale">
                     <div className="title text-accent flex-auto">{Lang.string('chat.invite.choosed')} ({choosedItems.length})</div>
                     <div className="flex-none has-padding-h"><button type="button" disabled={!choosedItems.length} className="btn primary rounded btn-wide" onClick={this.handleInviteBtnClick}>{Lang.string('chat.invite')}</button></div>
                 </div>
-                <div className="list flex-auto scroll-y compact">
-                    {
-                        choosedItems.map(member => {
-                            return <MemberListItem avatarSize={24} onClick={this.handleMemberItemClick.bind(this, member)} key={member.id} member={member} />;
-                        })
-                    }
-                </div>
+                <MemberList className="flex-auto scroll-y compact" members={choosedItems} onItemClick={this.handleMemberItemClick} eventBindObject={this} listItemProps={{avatarSize: 24}} />
             </div>
         </div>);
     }

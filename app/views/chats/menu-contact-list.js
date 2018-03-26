@@ -39,20 +39,16 @@ export default class MenuContactList extends Component {
 
     constructor(props) {
         super(props);
+        const user = App.user;
         this.state = {
-            groupType: null,
+            groupType: user ? user.config.contactsGroupByType : 'normal',
             dragging: false,
             dropTarget: null
         };
     }
 
     get groupType() {
-        let {groupType} = this.state;
-        if (!groupType) {
-            const user = App.user;
-            groupType = user ? user.config.contactsGroupByType : 'normal';
-        }
-        return groupType;
+        return this.state.groupType;
     }
 
     set groupType(groupType) {
@@ -85,14 +81,15 @@ export default class MenuContactList extends Component {
         e.stopPropagation();
     };
 
-    handleItemContextMenu(chat, e) {
+    handleItemContextMenu = (e) => {
+        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
         const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contacts', this.state.groupType);
         ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
         e.preventDefault();
     }
 
     itemCreator = chat => {
-        return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
+        return <ChatListItem onContextMenu={this.handleItemContextMenu} data-gid={chat.gid} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
     };
 
     handleHeadingContextMenu(group, e) {
@@ -169,7 +166,7 @@ export default class MenuContactList extends Component {
         };
         return (<header
             onContextMenu={this.handleHeadingContextMenu.bind(this, group)}
-            draggable={this.state.groupType === 'category'}
+            draggable={this.groupType === 'category'}
             onDragOver={this.handleDragOver.bind(this, group)}
             onDrop={this.handleDrop.bind(this, group)}
             onDragStart={this.handleDragStart.bind(this, group)}
@@ -224,7 +221,16 @@ export default class MenuContactList extends Component {
             >
                 <div className="btn-wrapper hint--left" data-hint={Lang.string('common.setting')}><Button onClick={this.handleSettingBtnClick} className="iconbutton rounded" icon="format-list-bulleted" /></div>
             </MemberListItem> : null}
-            {
+            <GroupList
+                group={{list: chats, root: true}}
+                defaultExpand={this.defaultExpand}
+                itemCreator={this.itemCreator}
+                headingCreator={this.headingCreator}
+                onExpandChange={this.onExpandChange}
+                hideEmptyGroup={groupType !== 'category'}
+                forceCollapse={!!this.state.dragging}
+            />
+            {/* {
                 GroupList.render(chats, {
                     defaultExpand: this.defaultExpand,
                     itemCreator: this.itemCreator,
@@ -233,7 +239,7 @@ export default class MenuContactList extends Component {
                     hideEmptyGroup: groupType !== 'category',
                     forceCollapse: !!this.state.dragging
                 })
-            }
+            } */}
             {children}
         </div>);
     }

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Icon from './icon';
 import Avatar from './avatar';
@@ -10,7 +10,7 @@ import Avatar from './avatar';
  * @class ListItem
  * @extends {Component}
  */
-export default class ListItem extends Component {
+export default class ListItem extends PureComponent {
     /**
      * Default properties values
      *
@@ -89,7 +89,7 @@ export default class ListItem extends Component {
             }
         }
         let contentView = null;
-        const multiLines = !subtitleView && !children;
+        const multiLines = subtitleView || children;
         if (multiLines) {
             contentView = (<div className="content">
                 {titleView}

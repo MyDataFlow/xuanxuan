@@ -64,7 +64,7 @@ class Member extends Entity {
 
     set status(newStatus) {
         this._status.change(newStatus);
-        this.$set('status', this._status.value);
+        this.renewUpdateId();
     }
 
     get isOnline() {

@@ -24,10 +24,12 @@ const (
     GB = 1024 * MB
 )
 
+//获取 年月日
 func GetYmd() string {
     return time.Now().Format("20060102")
 }
 
+//以路径形式输出 年/月/日
 func GetYmdPath(timeStamp int64) string {
     if timeStamp == 0 {
         return time.Now().Format("2006/01/02/")
@@ -36,10 +38,12 @@ func GetYmdPath(timeStamp int64) string {
     return time.Unix(timeStamp, 0).Format("2006/01/02/")
 }
 
+//输出时间戳
 func GetUnixTime() int64 {
     return time.Now().Unix()
 }
 
+//MD5加密
 func GetMD5(str string) string {
     md5H := md5.New()
     md5H.Write([]byte(str))
@@ -48,6 +52,7 @@ func GetMD5(str string) string {
     return hex.EncodeToString(cipherStr)
 }
 
+//获取程序名称
 func GetProgramName() string {
     return filepath.Base(os.Args[0])
 }
@@ -60,6 +65,7 @@ func SleepMillisecond(Millisecond int) {
     time.Sleep(time.Duration(Millisecond) * time.Millisecond)
 }
 
+//生成文件夹
 func Mkdir(path string) error {
     if IsNotExist(path) {
         err := os.MkdirAll(path, os.ModePerm)
@@ -71,6 +77,7 @@ func Mkdir(path string) error {
     return nil
 }
 
+//判断文件是否存在
 func IsNotExist(path string) bool {
     _, err := os.Stat(path)
     if err != nil {
@@ -80,6 +87,7 @@ func IsNotExist(path string) bool {
     return false
 }
 
+//判断目录是否存在
 func IsDir(path string) bool {
     info, err := os.Stat(path)
     if err == nil && info.IsDir() {
@@ -89,10 +97,12 @@ func IsDir(path string) bool {
     return false
 }
 
+//文件名
 func FileBaseName(path string) string {
     return filepath.Base(path)
 }
 
+//删除指定目录或文件
 func Rm(path string) error {
     err := os.Remove(path)
     if err != nil {

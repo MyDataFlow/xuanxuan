@@ -23,6 +23,7 @@
     "common.exitIM": "立即退出",
     "common.waiting": "正在操作，请稍后...",
     "common.loading": "正在加载，请稍后...",
+    "common.clickShowMoreFormat": "还有 {0} 项…",
 
     "menu.about": "关于",
     "menu.hideCurrentWindow": "隐藏当前窗口",
@@ -385,7 +386,6 @@
     "usermenu.exit": "退出",
 
     "user.changePassword.heading": "修改密码",
-    "user.changePassword.oldPassword": "旧密码",
     "user.changePassword.newPassword": "新密码",
     "user.changePassword.newPasswordRepeat": "重复新密码",
     "user.changePassword.btn.confirm": "更改密码",
