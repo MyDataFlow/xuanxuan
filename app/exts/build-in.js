@@ -80,7 +80,7 @@ if (buildIns && Array.isArray(buildIns)) {
 const buildInConfigFile = path.join(buildInsPath, 'config.json');
 const buildInConfig = fse.readJsonSync(buildInConfigFile, {throws: false});
 if (buildInConfig) {
-    updateConfig(updateConfig);
+    updateConfig(buildInConfig);
 }
 
 export default exts;
