@@ -44,6 +44,12 @@ func CreateUid(serverName string, userID int64, key string) error {
 func GetUid(serverName string, userID string) (string,error) {
     url := Config.LogPath + serverName + "/" + userID
 
+    _, err := os.Stat(url)
+    if err != nil && os.IsNotExist(err) {
+        userIDint, _ := strconv.ParseInt(userID, 10, 64)
+        CreateUid(serverName, userIDint, GetMD5(serverName + userID))
+    }
+
     file, err := os.Open(url)
     if err != nil {
         LogError().Println("Cannot open file",url,err)
