@@ -4,8 +4,7 @@ import Platform from 'Platform';
 import DateHelper from '../../utils/date-helper';
 import replaceViews from '../replace-views';
 
-const setting = Platform.setting || Config;
-const PKG = setting.pkg;
+const PKG = Config.pkg;
 
 class BuildInfo extends PureComponent {
     static get BuildInfo() {
@@ -35,7 +34,7 @@ class BuildInfo extends PureComponent {
     }
 
     render() {
-        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (` (${DateHelper.format(PKG.distributeTime, 'YYYYMMDDHHmm')})`) : null}{PKG.buildVersion ? `.${PKG.buildVersion}` : null} {setting.system.specialVersion ? (` for ${setting.system.specialVersion}`) : ''} {DEBUG ? '[debug]' : ''}</div>;
+        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (` (${DateHelper.format(PKG.distributeTime, 'YYYYMMDDHHmm')})`) : null}{PKG.buildVersion ? `.${PKG.buildVersion}` : null} {Config.system.specialVersion ? (` for ${Config.system.specialVersion}`) : ''} {DEBUG ? '[debug]' : ''}</div>;
     }
 }
 

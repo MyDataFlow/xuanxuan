@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import Config from 'Config';
 import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
 import timeSequence from '../../utils/time-sequence';
@@ -10,7 +11,7 @@ class UserConfig {
         if (config && config.version !== DEFAULT.version) {
             config = null;
         }
-        this.$ = Object.assign({}, DEFAULT, config);
+        this.$ = Object.assign({}, DEFAULT, Config.system.defaultConfig, config);
 
         this.changeAction = new DelayAction(() => {
             this.onChange(this.lastChange, this);

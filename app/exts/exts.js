@@ -1,8 +1,9 @@
+import Config from 'Config';
 import buildIns from './build-in';
 import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';
-import PKG from '../package.json';
+import Lang from '../lang';
 
 const EVENT = {
     onChange: 'Extension.onChange'
@@ -10,12 +11,14 @@ const EVENT = {
 
 const exts = [];
 
+const PKG = Config.pkg;
+
 buildIns.forEach((buildIn, idx) => {
     if (!buildIn.publisher) {
-        buildIn.publisher = '易软天创';
+        buildIn.publisher = Config.exts.buildInPublisher || Lang.string('app.company');
     }
     if (!buildIn.author) {
-        buildIn.author = '易软天创';
+        buildIn.author = Config.exts.buildInAuthor || Lang.string('app.company');
     }
     ['version', 'license', 'homepage', 'bugs', 'repository'].forEach(key => {
         buildIn[key] = PKG[key];
