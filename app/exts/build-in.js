@@ -1,5 +1,5 @@
 import {env, fs as fse} from 'Platform';
-import Config from 'Config';
+import Config, {updateConfig} from 'Config';
 import path from 'path';
 import Lang from '../lang';
 
@@ -75,6 +75,12 @@ if (buildIns && Array.isArray(buildIns)) {
             }
         }
     });
+}
+
+const buildInConfigFile = path.join(buildInsPath, 'config.json');
+const buildInConfig = fse.readJsonSync(buildInConfigFile, {throws: false});
+if (buildInConfig) {
+    updateConfig(updateConfig);
 }
 
 export default exts;
