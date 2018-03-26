@@ -1,3 +1,4 @@
+import Config from 'Config';
 import React, {PureComponent, PropTypes} from 'react';
 import InputControl from '../../components/input-control';
 import Checkbox from '../../components/checkbox';
@@ -49,7 +50,7 @@ class FormView extends PureComponent {
         const lastSavedUser = App.profile.getLastSavedUser();
         const entryParams = App.ui.entryParams;
         const state = {
-            serverUrl: '',
+            serverUrl: Config.ui.serverUrl || '',
             account: '',
             password: '',
             rememberPassword: true,
@@ -64,7 +65,9 @@ class FormView extends PureComponent {
             state.account = entryParams.account || '';
             state.password = entryParams.password || '';
         } else if (lastSavedUser) {
-            state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
+            if (!Config.ui.serverUrl) {
+                state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
+            }
             state.account = lastSavedUser.account || '';
             state.password = lastSavedUser.rememberPassword ? lastSavedUser.password : '';
             state.rememberPassword = lastSavedUser.rememberPassword;
@@ -210,7 +213,7 @@ class FormView extends PureComponent {
 
         return (<div className={HTML.classes('app-login-form', className)} {...other}>
             {this.state.message && <div className="app-login-message danger box">{this.state.message}</div>}
-            <InputControl
+            {Config.ui.serverUrl ? null : <InputControl
                 value={this.state.serverUrl}
                 autoFocus
                 disabled={this.state.logining}
@@ -220,7 +223,7 @@ class FormView extends PureComponent {
                 className="relative app-login-server-control"
             >
                 {this.serverSwitchBtn}
-            </InputControl>
+            </InputControl>}
             <InputControl
                 value={this.state.account}
                 disabled={this.state.logining}

@@ -12,6 +12,7 @@ package util
 import (
     "os"
     "io/ioutil"
+    "strconv"
 )
 
 //生成唯一ID 作用于文件在websocket和http不同协议中识别用户
@@ -43,6 +44,12 @@ func CreateUid(serverName string, userID int64, key string) error {
 //获取用户唯一ID
 func GetUid(serverName string, userID string) (string,error) {
     url := Config.LogPath + serverName + "/" + userID
+
+    _, err := os.Stat(url)
+    if err != nil && os.IsNotExist(err) {
+        userIDint, _ := strconv.ParseInt(userID, 10, 64)
+        CreateUid(serverName, userIDint, GetMD5(serverName + userID))
+    }
 
     file, err := os.Open(url)
     if err != nil {

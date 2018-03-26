@@ -13,6 +13,7 @@ import (
     "github.com/Unknwon/goconfig"
     "log"
     "strings"
+    "os"
 )
 
 type RanzhiServer struct {
@@ -44,7 +45,8 @@ const configPath = "config/xxd.conf"
 var Config = ConfigIni{SiteType: "singleSite", RanzhiServer: make(map[string]RanzhiServer)}
 
 func init() {
-    data, err := goconfig.LoadConfigFile(configPath)
+    dir, _ := os.Getwd()
+    data, err := goconfig.LoadConfigFile(dir + "/" + configPath)
     if err != nil {
 
         Config.Ip = "127.0.0.1"
@@ -59,8 +61,8 @@ func init() {
         Config.DefaultServer = "xuanxuan"
         Config.RanzhiServer["xuanxuan"] = RanzhiServer{"serverInfo", []byte("serverInfo")}
 
-        Config.LogPath = "log/"
-        Config.CrtPath = "certificate/"
+        Config.LogPath = dir + "/log/"
+        Config.CrtPath = dir + "/certificate/"
 
         log.Println("config init error，use default conf!")
         log.Println(Config)
@@ -201,21 +203,23 @@ func getRanzhi(config *goconfig.ConfigFile) {
 
 //获取日志路径
 func getLogPath(config *goconfig.ConfigFile) (err error) {
-    Config.LogPath, err = config.GetValue("log", "logPath")
+    dir, _ := os.Getwd()
+    logPath, err := config.GetValue("log", "logPath")
     if err != nil {
         log.Fatal("config: get server log path error,", err)
     }
-
+    Config.LogPath = dir + "/" + logPath
     return
 }
 
 //获取证书路径
 func getCrtPath(config *goconfig.ConfigFile) (err error) {
-    Config.CrtPath, err = config.GetValue("certificate", "crtPath")
+    dir, _ := os.Getwd()
+    crtPath, err := config.GetValue("certificate", "crtPath")
     if err != nil {
         log.Fatal("config: get certificate crt path error,", err)
     }
-
+    Config.CrtPath = dir + "/" + crtPath
     return
 }
 
