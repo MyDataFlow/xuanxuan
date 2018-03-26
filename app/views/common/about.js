@@ -31,9 +31,9 @@ class About extends PureComponent {
             <section className="text-center">
                 <img src={`${Config.media['image.path']}logo.png`} alt="logo" />
                 <BuildInfo className="space-sm" />
-                <div className="space-xl"><a target="_blank" className="btn rounded text-primary strong" href={Config.pkg.homepage}><strong>{Config.pkg.homepage}</strong></a></div>
-                <div><a target="_blank" className="btn rounded" href="https://github.com/easysoft/xuanxuan/blob/master/LICENSE">{`Open source license ${Config.pkg.license}`}</a></div>
-                <div><a target="_blank" className="btn rounded" href="http://cnezsoft.com/">{Lang.format('common.copyrightFormat', {year: new Date().getFullYear(), name: Config.pkg.company})}</a></div>
+                {Config.pkg.homepage ? <div className="space-xl"><a target="_blank" className="btn rounded text-primary strong" href={Config.pkg.homepage}><strong>{Config.pkg.homepage}</strong></a></div> : null}
+                {Config.pkg.license ? <div><a target="_blank" className="btn rounded" href="https://github.com/easysoft/xuanxuan/blob/master/LICENSE">{`Open source license ${Config.pkg.license}`}</a></div> : null}
+                {Config.pkg.company ? <div><a target="_blank" className="btn rounded" href="http://cnezsoft.com/">{Lang.format('common.copyrightFormat', {year: new Date().getFullYear(), name: Config.pkg.company})}</a></div> : null}
                 <div><a target="_blank" className="btn rounded" href="http://emojione.com/">Emoji provided free by EmojiOne</a></div>
             </section>
         </div>);
