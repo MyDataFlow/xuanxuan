@@ -65,7 +65,9 @@ class FormView extends PureComponent {
             state.account = entryParams.account || '';
             state.password = entryParams.password || '';
         } else if (lastSavedUser) {
-            state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
+            if (!Config.ui.serverUrl) {
+                state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
+            }
             state.account = lastSavedUser.account || '';
             state.password = lastSavedUser.rememberPassword ? lastSavedUser.password : '';
             state.rememberPassword = lastSavedUser.rememberPassword;
