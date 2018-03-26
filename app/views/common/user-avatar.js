@@ -23,7 +23,7 @@ class UserAvatar extends PureComponent {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.className !== this.props.className || nextProps.user !== this.props.user || nextProps.user.status !== this.props.user.status || nextProps.user.avatar !== this.props.user.avatar || nextProps.user.realname !== this.props.user.realname;
+        return nextProps.className !== this.props.className || nextProps.user !== this.props.user || !nextProps.user || !this.props.user || nextProps.user.status !== this.props.user.status || nextProps.user.avatar !== this.props.user.avatar || nextProps.user.realname !== this.props.user.realname;
     }
 
     render() {
