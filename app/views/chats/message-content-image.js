@@ -4,8 +4,6 @@ import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
 import Emojione from '../../components/emojione';
-import Icon from '../../components/icon';
-import Avatar from '../../components/avatar';
 import ImageViewer from '../../components/image-viewer';
 import replaceViews from '../replace-views';
 import ImageHolder from '../../components/image-holder';
@@ -51,7 +49,7 @@ class MessageContentImage extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content || nextState.download !== this.state.download || nextState.url || this.state.url;
+        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.updateId !== this.lastMessageUpdateId || nextState.download !== this.state.download || nextState.url || this.state.url;
     }
 
     componentDidUpdate() {
@@ -84,7 +82,7 @@ class MessageContentImage extends Component {
         e.preventDefault();
     }
 
-    handleImageDoubleClick = e => {
+    handleImageDoubleClick = () => {
         ImageViewer.show(this.state.url || this.imageUrl, null, null);
     }
 
@@ -95,6 +93,7 @@ class MessageContentImage extends Component {
             ...other
         } = this.props;
 
+        this.lastMessageUpdateId = message.updateId;
         let image = message.imageContent;
 
         if (image.type === 'emoji') {

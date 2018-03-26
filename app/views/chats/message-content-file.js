@@ -18,7 +18,7 @@ class MessageContentFile extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
+        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.updateId !== this.lastMessageUpdateId;
     }
 
     render() {
@@ -29,6 +29,7 @@ class MessageContentFile extends Component {
         } = this.props;
 
         const content = message.fileContent;
+        this.lastMessageUpdateId = message.updateId;
 
         return <FileListItem className={HTML.classes('app-message-content-file layer rounded flex-inline shadow-2 list-item', className)} file={content} {...other} />;
     }
