@@ -12,6 +12,7 @@ package util
 import (
     "os"
     "io/ioutil"
+    "strconv"
 )
 
 //生成唯一ID 作用于文件在websocket和http不同协议中识别用户
