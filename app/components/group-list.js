@@ -185,7 +185,7 @@ export default class GroupList extends PureComponent {
         } = group;
 
         if (root) {
-            return (<div className={HTML.classes('app-group-list-root', className)} {...other}>
+            return (<div className={HTML.classes('app-group-list-root list', className)} {...other}>
                 {GroupList.render(list, this.props, this.state.page, this.handleRequestMorePage)}
             </div>);
         }
