@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `im_message` (
   `cgid` char(40) NOT NULL DEFAULT '',
   `user` varchar(30) NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `order` mediumint(8) unsigned NOT NULL,
+  `order` bigint(8) unsigned NOT NULL,
   `type` enum('normal', 'broadcast') NOT NULL DEFAULT 'normal',
   `content` text NOT NULL DEFAULT '',
   `contentType` enum('text', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
