@@ -20,14 +20,16 @@
       <tr>
         <th class='w-80px'><?php echo $lang->chat->version;?></th>
         <td><?php echo $config->xuanxuan->version;?></td>
+        <td></td>
       </tr>
       <tr>
         <th><?php echo $lang->chat->key;?></th>
         <td><?php echo html::input('key', $config->xuanxuan->key, "class='form-control'");?></td>
+        <td><?php echo html::a('javascript:void(0)', $lang->chat->createKey, 'onclick="createKey()"');?></td>
       </tr>
       <tr>
         <th></th>
-        <td><?php echo html::submitButton();?></td>
+        <td colspan='2'><?php echo html::submitButton();?></td>
       </tr>
     </table>
   </form>

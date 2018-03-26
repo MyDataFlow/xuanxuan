@@ -3,6 +3,7 @@ $lang->chat->settings = 'Xuanxuan Settings';
 $lang->chat->version  = 'Version';
 $lang->chat->key      = 'Secret';
 
+$lang->chat->createKey      = 'New';
 $lang->chat->upgradeSuccess = 'Upgrade success.';
 $lang->chat->upgradeFail    = 'Upgrade fail.';
 $lang->chat->latestVersion  = 'Xuanxuan is already the latest version.';
