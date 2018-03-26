@@ -3,6 +3,7 @@ $lang->chat->settings = '喧喧设置';
 $lang->chat->version  = '版本';
 $lang->chat->key      = '密钥';
 
+$lang->chat->createKey      = '重新生成密钥';
 $lang->chat->upgradeSuccess = '升级成功！';
 $lang->chat->upgradeFail    = '升级失败！';
 $lang->chat->latestVersion  = '喧喧已经是最新版！';
