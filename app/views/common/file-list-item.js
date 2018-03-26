@@ -47,6 +47,10 @@ class FileListItem extends Component {
         this.checkLocalPath();
     }
 
+    shouldComponentUpdate(nextProps, nextStates) {
+        return nextStates.download !== this.state.download || nextStates.localPath !== this.state.localPath || nextProps.className !== this.props.className || nextProps.smallIcon !== this.props.smallIcon || nextProps.showSender !== this.props.showSender || nextProps.showDate !== this.props.showDate || nextProps.file !== this.props.file || nextProps.file.send !== this.props.file.send || nextProps.file.id !== this.props.file.id || nextProps.file.name !== this.props.file.name;
+    }
+
     componentDidUpdate() {
         this.checkLocalPath();
     }

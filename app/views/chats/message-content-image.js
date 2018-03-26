@@ -4,8 +4,6 @@ import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
 import Emojione from '../../components/emojione';
-import Icon from '../../components/icon';
-import Avatar from '../../components/avatar';
 import ImageViewer from '../../components/image-viewer';
 import replaceViews from '../replace-views';
 import ImageHolder from '../../components/image-holder';
@@ -49,6 +47,11 @@ class MessageContentImage extends Component {
             this.downloadImage(image);
         }
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.className !== this.props.className || nextProps.message !== this.props.message || nextProps.message.updateId !== this.lastMessageUpdateId || nextState.download !== this.state.download || nextState.url || this.state.url;
+    }
+
     componentDidUpdate() {
         this.componentDidMount();
     }
@@ -72,10 +75,15 @@ class MessageContentImage extends Component {
         }
     }
 
-    handleImageContextMenu(url, dataType, e) {
-        const items = App.ui.createImageContextMenuItems(url, dataType);
+    handleImageContextMenu = e => {
+        if (isBrowser) return;
+        const items = App.ui.createImageContextMenuItems(this.state.url || this.imageUrl, this.imageType);
         App.ui.showContextMenu({x: e.pageX, y: e.pageY}, items);
         e.preventDefault();
+    }
+
+    handleImageDoubleClick = () => {
+        ImageViewer.show(this.state.url || this.imageUrl, null, null);
     }
 
     render() {
@@ -85,6 +93,7 @@ class MessageContentImage extends Component {
             ...other
         } = this.props;
 
+        this.lastMessageUpdateId = message.updateId;
         let image = message.imageContent;
 
         if (image.type === 'emoji') {
@@ -95,11 +104,13 @@ class MessageContentImage extends Component {
             />);
         }
         if (image.type === 'base64') {
+            this.imageUrl = image.content;
+            this.imageType = image.type;
             return (<img
-                onContextMenu={isBrowser ? null : this.handleImageContextMenu.bind(this, image.content, image.type)}
+                onContextMenu={this.handleImageContextMenu}
                 data-fail={Lang.string('file.downloadFailed')}
                 onError={e => e.target.classList.add('broken')}
-                onDoubleClick={ImageViewer.show.bind(this, image.content, null, null)}
+                onDoubleClick={this.handleImageDoubleClick}
                 src={image.content}
                 alt={image.type}
             />);
@@ -115,9 +126,9 @@ class MessageContentImage extends Component {
             const imageUrl = this.state.url;
             if (imageUrl) {
                 holderProps.status = 'ok';
-                holderProps.onContextMenu = isBrowser ? null : this.handleImageContextMenu.bind(this, imageUrl, '');
+                holderProps.onContextMenu = this.handleImageContextMenu;
                 holderProps.source = imageUrl;
-                holderProps.onDoubleClick = ImageViewer.show.bind(this, imageUrl, null, null);
+                holderProps.onDoubleClick = this.handleImageDoubleClick;
             } else {
                 holderProps.status = 'loading';
                 holderProps.progress = typeof this.state.download === 'number' ? this.state.download : 0;

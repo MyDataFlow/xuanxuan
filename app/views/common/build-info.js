@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import Config from 'Config';
 import Platform from 'Platform';
 import DateHelper from '../../utils/date-helper';
@@ -7,7 +7,7 @@ import replaceViews from '../replace-views';
 const setting = Platform.setting || Config;
 const PKG = setting.pkg;
 
-class BuildInfo extends Component {
+class BuildInfo extends PureComponent {
     static get BuildInfo() {
         return replaceViews('common/build-info', BuildInfo);
     }

@@ -30,6 +30,10 @@ class MemberProfile extends Component {
         hideChatBtn: false,
     };
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.compact !== this.props.compact || nextProps.className !== this.props.className || nextProps.hideChatBtn !== this.props.hideChatBtn || nextProps.onRequestClose !== this.props.onRequestClose || nextProps.member !== this.props.member || this.lastMemberUpdateId !== nextProps.member.updateId;
+    }
+
     render() {
         const {
             member,
@@ -42,6 +46,7 @@ class MemberProfile extends Component {
 
         const roleName = member.getRoleName(App);
         const deptName = member.getDeptName(App);
+        this.lastMemberUpdateId = member.updateId;
 
         return (<div
             {...other}

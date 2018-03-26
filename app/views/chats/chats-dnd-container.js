@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import StringHelper from '../../utils/string-helper';
 import Lang from '../../lang';
@@ -7,7 +7,7 @@ import API from '../../network/api';
 import Emojione from '../../components/emojione';
 import replaceViews from '../replace-views';
 
-class ChatsDndContainer extends Component {
+class ChatsDndContainer extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
     };

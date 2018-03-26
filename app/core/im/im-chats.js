@@ -1,3 +1,4 @@
+import Config from 'Config';
 import Chat from '../models/chat';
 import ChatMessage from '../models/chat-message';
 import profile from '../profile';
@@ -11,7 +12,7 @@ import timeSequence from '../../utils/time-sequence';
 import Lang from '../../lang';
 import Server from '../server';
 
-const CHATS_LIMIT_DEFAULT = 100;
+const CHATS_LIMIT_DEFAULT = Config.ui['chat.flow.size'];
 const MAX_RECENT_TIME = 1000 * 60 * 60 * 24 * 7;
 const SEARCH_SCORE_MAP = {
     matchAll: 100,
@@ -173,6 +174,7 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
             const result = rawData ? chatMessages : chatMessages.map(ChatMessage.create);
             if (!skipAdd && cgid) {
                 chat.addMessages(result, profile.userId, true, true);
+                chat.localMessagesLoaded = true;
                 Events.emitDataChange({chats: {[cgid]: chat}});
             }
             return Promise.resolve(result);
@@ -260,9 +262,6 @@ const init = (chatArr) => {
                     chat.isDeleteOne2One = true;
                     Server.tryGetTempUserInfo(member.id);
                 }
-            }
-            if (!chat.hasSetMessages && chat.visible) {
-                loadChatMessages(chat);
             }
         });
         Events.emit(EVENT.init, chats);

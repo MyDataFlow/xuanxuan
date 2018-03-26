@@ -195,7 +195,7 @@ const createCatureScreenContextMenuItems = (chat) => {
     return items;
 };
 
-const createSendboxToolbarItems = (chat, config) => {
+const createSendboxToolbarItems = (chatGid, showMessageTip, captureScreenHotkey) => {
     const items = [{
         id: 'emoticon',
         icon: 'emoticon',
@@ -218,7 +218,7 @@ const createSendboxToolbarItems = (chat, config) => {
                     ]
                 }, files => {
                     if (files && files.length) {
-                        sendContentToChat(files[0], 'image', chat.gid);
+                        sendContentToChat(files[0], 'image', chatGid);
                     }
                 });
             }
@@ -229,7 +229,7 @@ const createSendboxToolbarItems = (chat, config) => {
             click: () => {
                 Platform.dialog.showOpenDialog(null, files => {
                     if (files && files.length) {
-                        Server.sendFileMessage(files[0], chat);
+                        Server.sendFileMessage(files[0], chats.get(chatGid));
                     }
                 });
             }
@@ -239,12 +239,12 @@ const createSendboxToolbarItems = (chat, config) => {
         items.push({
             id: 'captureScreen',
             icon: 'content-cut rotate-270 inline-block',
-            label: Lang.string('chat.sendbox.toolbar.captureScreen') + (config ? ` (${config.captureScreenHotkey})` : ''),
+            label: Lang.string('chat.sendbox.toolbar.captureScreen') + (captureScreenHotkey || ''),
             click: () => {
                 captureAndCutScreenImage();
             },
             contextMenu: e => {
-                ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chat));
+                ContextMenu.show({x: e.pageX, y: e.pageY}, createCatureScreenContextMenuItems(chats.get(chatGid)));
                 e.preventDefault();
             }
         });
@@ -257,8 +257,7 @@ const createSendboxToolbarItems = (chat, config) => {
             ChatChangeFontPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
         }
     });
-    const {user} = profile;
-    if (user && user.config.showMessageTip) {
+    if (showMessageTip) {
         items.push({
             id: 'tips',
             icon: 'comment-question-outline',

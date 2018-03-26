@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 import Skin from '../utils/skin';
 import Icon from '../components/icon';
@@ -10,7 +10,7 @@ import Icon from '../components/icon';
  * @class Button
  * @extends {Component}
  */
-export default class Button extends Component {
+export default class Button extends PureComponent {
     /**
      * Default properties values
      *

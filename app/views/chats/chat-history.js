@@ -242,7 +242,7 @@ class ChatHistory extends Component {
         });
     }
 
-    convertContent(content) {
+    convertContent = content => {
         if (this.props.searchKeys && this.contentConvertPattern && this.contentConvertPattern.test(content)) {
             content = content.replace(this.contentConvertPattern, "<span class='highlight'>$1</span>");
         }
@@ -261,7 +261,7 @@ class ChatHistory extends Component {
             lastMessage={lastMessage}
             key={message.gid}
             message={message}
-            textContentConverter={this.convertContent.bind(this)}
+            textContentConverter={this.convertContent}
         />);
     }
 

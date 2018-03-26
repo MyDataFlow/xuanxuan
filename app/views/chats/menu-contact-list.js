@@ -81,14 +81,15 @@ export default class MenuContactList extends Component {
         e.stopPropagation();
     };
 
-    handleItemContextMenu(chat, e) {
+    handleItemContextMenu = (e) => {
+        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
         const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contacts', this.state.groupType);
         ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
         e.preventDefault();
     }
 
     itemCreator = chat => {
-        return <ChatListItem onContextMenu={this.handleItemContextMenu.bind(this, chat)} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
+        return <ChatListItem onContextMenu={this.handleItemContextMenu} data-gid={chat.gid} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
     };
 
     handleHeadingContextMenu(group, e) {
@@ -220,7 +221,16 @@ export default class MenuContactList extends Component {
             >
                 <div className="btn-wrapper hint--left" data-hint={Lang.string('common.setting')}><Button onClick={this.handleSettingBtnClick} className="iconbutton rounded" icon="format-list-bulleted" /></div>
             </MemberListItem> : null}
-            {
+            <GroupList
+                group={{list: chats, root: true}}
+                defaultExpand={this.defaultExpand}
+                itemCreator={this.itemCreator}
+                headingCreator={this.headingCreator}
+                onExpandChange={this.onExpandChange}
+                hideEmptyGroup={groupType !== 'category'}
+                forceCollapse={!!this.state.dragging}
+            />
+            {/* {
                 GroupList.render(chats, {
                     defaultExpand: this.defaultExpand,
                     itemCreator: this.itemCreator,
@@ -229,7 +239,7 @@ export default class MenuContactList extends Component {
                     hideEmptyGroup: groupType !== 'category',
                     forceCollapse: !!this.state.dragging
                 })
-            }
+            } */}
             {children}
         </div>);
     }

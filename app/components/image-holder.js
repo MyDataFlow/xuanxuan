@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import Icon from './icon';
 import Avatar from './avatar';
 import Lang from '../lang';
@@ -10,7 +10,7 @@ import HTML from '../utils/html-helper';
  * @class ImageHolder
  * @extends {Component}
  */
-export default class ImageHolder extends Component {
+export default class ImageHolder extends PureComponent {
     static defaultProps = {
         style: null,
         source: null,

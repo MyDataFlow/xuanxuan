@@ -24,6 +24,14 @@ class ChatHeader extends Component {
         return replaceViews('chats/chat-header', ChatHeader);
     }
 
+    shouldComponentUpdate(nextProps) {
+        return (this.props.className !== nextProps.className ||
+            this.props.children !== nextProps.children ||
+            this.props.chat !== nextProps.chat || this.lastChatUpdateId !== nextProps.chat.updateId ||
+            (nextProps.chat.isOne2One && nextProps.chat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId)
+        );
+    }
+
     render() {
         const {
             chat,
@@ -32,6 +40,11 @@ class ChatHeader extends Component {
             showSidebarIcon,
             ...other
         } = this.props;
+
+        this.lastChatUpdateId = chat.updateId;
+        if (chat.isOne2One) {
+            this.lastOtherOneUpdateId = chat.getTheOtherOne(App).updateId;
+        }
 
         return (<div
             {...other}

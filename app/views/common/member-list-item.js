@@ -29,6 +29,10 @@ class MemberListItem extends Component {
         children: null,
     };
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.children !== this.props.children || nextProps.className !== this.props.className || nextProps.avatarSize !== this.props.avatarSize || nextProps.showStatusDot !== this.props.showStatusDot || nextProps.avatarClassName !== this.props.avatarClassName || nextProps.title !== this.props.title || nextProps.member !== this.props.member || nextProps.member.updateId !== this.lastMemberUpdateId;
+    }
+
     render() {
         const {
             member,
@@ -40,6 +44,8 @@ class MemberListItem extends Component {
             title,
             ...other
         } = this.props;
+
+        this.lastMemberUpdateId = member.updateId;
 
         let titleView = null;
         if (title) {

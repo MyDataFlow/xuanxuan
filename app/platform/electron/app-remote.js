@@ -224,6 +224,9 @@ class AppRemote {
             if (!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = `file://${this.entryPath}/${options.url}`;
             }
+            if (DEBUG) {
+                url += '?react_perf';
+            }
             if (options.hashRoute) {
                 url += `#${options.hashRoute}`;
             }

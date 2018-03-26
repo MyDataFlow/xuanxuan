@@ -82,8 +82,8 @@ export default class Index extends Component {
         }
     }
 
-    handleAppCloseBtnClick(app, e) {
-        const result = Exts.ui.closeApp(app.id);
+    handleAppCloseBtnClick = e => {
+        const result = Exts.ui.closeApp(e.currentTarget.attributes['data-id'].value);
         if (result === 'refresh') {
             this.forceUpdate();
         }
@@ -140,7 +140,6 @@ export default class Index extends Component {
                 {
                     openedApps.map(openedApp => {
                         const isCurrentApp = Exts.ui.isCurrentOpenedApp(openedApp.id);
-                        const navStyle = isCurrentApp ? {color: openedApp.app.appAccentColor} : null;
                         return (<NavLink
                             onContextMenu={this.handleOpenedAppContextMenu.bind(this, openedApp)}
                             key={openedApp.id}
@@ -149,10 +148,10 @@ export default class Index extends Component {
                             id={`ext-nav-item-${openedApp.name}`}
                             title={openedApp.app.description ? `${openedApp.app.displayName} - ${openedApp.app.description}` : openedApp.app.displayName}
                         >
-                            <Avatar style={navStyle} auto={openedApp.app.appIcon} className="rounded" />
+                            <Avatar foreColor={isCurrentApp ? openedApp.app.appAccentColor : null} auto={openedApp.app.appIcon} className="rounded" />
                             {this.state.loading[openedApp.id] && <Avatar icon="loading spin" className="circle loading-icon" />}
                             <span className="text">{openedApp.app.displayName}</span>
-                            {!openedApp.isFixed && <div title={Lang.string('common.close')} className="close rounded"><Icon name="close" onClick={this.handleAppCloseBtnClick.bind(this, openedApp)} /></div>}
+                            {!openedApp.isFixed && <div title={Lang.string('common.close')} className="close rounded"><Icon data-id={openedApp.id} name="close" onClick={this.handleAppCloseBtnClick} /></div>}
                         </NavLink>);
                     })
                 }

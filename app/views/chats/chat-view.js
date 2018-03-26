@@ -32,6 +32,7 @@ class ChatView extends Component {
 
     componentDidMount() {
         const {chatGid} = this.props;
+        const chat = App.im.chats.get(chatGid);
         this.dataChangeHandler = App.events.onDataChange(data => {
             if (
                 (data.chats && data.chats[chatGid]) ||

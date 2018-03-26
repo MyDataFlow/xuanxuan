@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {HashRouter as Router, Route, Switch} from 'react-router-dom';
 import ImageCutterApp from './app-image-cutter';
 import {AppView} from './app-view';
 import replaceViews from '../replace-views';
 
-class Index extends Component {
+class Index extends PureComponent {
     static get Index() {
         return replaceViews('index/index', Index);
     }

@@ -5,6 +5,7 @@ import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
 import {DraftEditor} from '../common/draft-editor';
+import {ChatSendboxToolbar} from './chat-sendbox-toolbar';
 import MessagesPreivewDialog from './messages-preview-dialog';
 import replaceViews from '../replace-views';
 
@@ -154,6 +155,7 @@ class ChatSendbox extends Component {
             }
         }
         placeholder = placeholder || Lang.string('chat.sendbox.placeholder.sendMessage');
+        const userConfig = App.userConfig;
 
         return (<div
             {...other}
@@ -166,27 +168,7 @@ class ChatSendbox extends Component {
                 onChange={this.handleOnChange}
                 onReturnKeyDown={this.handleOnReturnKeyDown}
             />
-            <div className="dock-bottom app-chat-sendbox-toolbar flex">
-                <div className="toolbar flex flex-middle flex-auto">
-                    {
-                        App.im.ui.createSendboxToolbarItems(chat, App.profile.userConfig).map(item => <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon name={item.icon} /></button></div>)
-                    }
-                    <div className="hint--top has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.previewDraft')} onClick={this.handlePreviewBtnClick}><button disabled={this.state.sendButtonDisabled} className="btn iconbutton rounded" type="button"><Icon name="file-document-box" /></button></div>
-                </div>
-                <div className="toolbar flex flex-none flex-middle">
-                    <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (Enter)`} onClick={this.handleSendButtonClick}>
-                        <button
-                            className={HTML.classes('btn iconbutton rounded', {
-                                disabled: this.state.sendButtonDisabled,
-                                'text-primary': !this.state.sendButtonDisabled
-                            })}
-                            type="button"
-                        >
-                            <Icon className="icon-2x" name="keyboard-return" />
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <ChatSendboxToolbar className="dock-bottom" chatGid={chat.gid} showMessageTip={userConfig && userConfig.showMessageTip} captureScreenHotkey={userConfig && userConfig.captureScreenHotkey} sendButtonDisabled={this.state.sendButtonDisabled} onSendButtonClick={this.handleSendButtonClick} onPreviewButtonClick={this.handlePreviewBtnClick} />
         </div>);
     }
 }

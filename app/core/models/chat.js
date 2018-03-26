@@ -1,3 +1,4 @@
+import Config from 'Config';
 import Entity from './entity';
 import Status from '../../utils/status';
 import Lang from '../../lang';
@@ -23,7 +24,7 @@ const COMMITTERS_TYPES = {
     all: 'all'
 };
 
-const MAX_MESSAGE_COUNT = 100;
+const MAX_MESSAGE_COUNT = Config.ui['chat.flow.size'];
 const DISMISS_VISIBLE_TIME = 1000 * 60 * 60 * 24 * 90;
 
 class Chat extends Entity {
@@ -44,11 +45,13 @@ class Chat extends Entity {
         mute: {type: 'boolean', indexed: true},
         public: {type: 'boolean', indexed: true},
         admins: {type: 'set'},
-        members: {type: 'set'},
-        members: {type: 'set', setter: (val, obj) => {
-            obj._membersSet = null;
-            return val;
-        }},
+        members: {
+            type: 'set',
+            setter: (val, obj) => {
+                obj._membersSet = null;
+                return val;
+            }
+        },
         committers: {type: 'string'},
         category: {type: 'string'},
     });
@@ -623,6 +626,8 @@ class Chat extends Entity {
         if (limitSize && this._messages.length > MAX_MESSAGE_COUNT) {
             this._messages.splice(0, this._messages.length - MAX_MESSAGE_COUNT);
         }
+
+        this.renewUpdateId();
 
         return this;
     }

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PureComponent, PropTypes} from 'react';
 import HTML from '../utils/html-helper';
 
 /**
@@ -12,7 +12,7 @@ import HTML from '../utils/html-helper';
  * @class MDIcon
  * @extends {Component}
  */
-export default class MDIcon extends Component {
+export default class MDIcon extends PureComponent {
     /**
      * Default values of properties
      *

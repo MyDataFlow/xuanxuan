@@ -16,23 +16,23 @@ class CacheContainer extends Component {
 
     static propTypes = {
         match: PropTypes.any,
-        history: PropTypes.any,
         location: PropTypes.any,
-        staticContext: PropTypes.any,
+        history: PropTypes.any,
+        staticContext: PropTypes.any
     };
 
     static defaultProps = {
         match: null,
-        history: null,
         location: null,
-        staticContext: null,
+        history: PropTypes.any,
+        staticContext: PropTypes.any
     };
 
     render() {
-        let {
+        const {
             match,
-            history,
             location,
+            history,
             staticContext,
             ...other
         } = this.props;

@@ -37,6 +37,18 @@ class ChatAvatar extends Component {
         return replaceViews('chats/chat-avatar', ChatAvatar);
     }
 
+    shouldComponentUpdate(nextProps) {
+        const nextChat = nextProps.chat;
+        const chat = this.props.chat;
+        if (chat !== nextChat) {
+            return true;
+        }
+        if (nextProps.grayOffline && nextChat.isOne2One && nextChat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId) {
+            return true;
+        }
+        return false;
+    }
+
     render() {
         const {
             chat,
@@ -52,6 +64,7 @@ class ChatAvatar extends Component {
 
         if (chat.isOne2One) {
             const theOtherOne = chat.getTheOtherOne(App);
+            this.lastOtherOneUpdateId = theOtherOne.updateId;
             const grayscale = grayOffline && (theOtherOne.isOffline || !App.profile.isUserOnline);
             return <UserAvatar size={avatarSize} user={theOtherOne} className={HTML.classes(className, avatarClassName, {grayscale})} {...other} />;
         }
