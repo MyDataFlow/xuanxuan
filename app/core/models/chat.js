@@ -553,6 +553,7 @@ class Chat extends Entity {
                 mutedMessages.push(message);
             }
         });
+        this.renewUpdateId();
         return mutedMessages;
     }
 
