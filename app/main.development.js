@@ -1,5 +1,5 @@
 import electron, {app as ElectronApp, Menu, shell} from 'electron';
-import {pkg as PKG} from 'Config';
+import Config from './config';
 import DEBUG from './utils/debug';
 import application from './platform/electron/app-remote';
 import Lang from './lang';
@@ -154,7 +154,7 @@ const createMenu = () => {
             submenu: [{
                 label: Lang.string('menu.website'),
                 click() {
-                    shell.openExternal(PKG.homepage);
+                    shell.openExternal(Config.pkg.homepage);
                 }
             }, {
                 label: Lang.string('menu.project'),
@@ -207,9 +207,9 @@ ElectronApp.on('activate', () => {
 if(typeof ElectronApp.setAboutPanelOptions === 'function') {
     ElectronApp.setAboutPanelOptions({
         applicationName: Lang.title,
-        applicationVersion: PKG.version,
+        applicationVersion: Config.pkg.version,
         copyright: 'Copyright (C) 2017 cnezsoft.com',
-        credits: 'Licence: ' + PKG.license,
+        credits: 'Licence: ' + Config.pkg.license,
         version: DEBUG ? '[debug]' : ''
     });
 }
