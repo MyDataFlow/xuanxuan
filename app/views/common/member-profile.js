@@ -64,7 +64,7 @@ class MemberProfile extends Component {
                         {deptName ? <div>{(!roleName) ? <Icon name="account-card-details text-gray" /> : null}{deptName}</div> : null}
                     </div>
                 </div>
-                {!hideChatBtn && member.account !== App.profile.userAccount && <a href={`#${ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))}`} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline" /> {Lang.string('member.profile.sendMessage')}</a>}
+                {!hideChatBtn && member.account !== App.profile.userAccount && <a href={`#${ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))}`} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline" /> &nbsp;{Lang.string('member.profile.sendMessage')}</a>}
             </header>
             <div className="divider" />
             <div className="heading">
