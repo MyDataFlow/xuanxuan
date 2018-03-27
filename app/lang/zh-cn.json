@@ -25,6 +25,8 @@
     "common.waiting": "正在操作，请稍后...",
     "common.loading": "正在加载，请稍后...",
     "common.clickShowMoreFormat": "还有 {0} 项…",
+    "common.copyCode": "复制代码",
+    "common.copied": "已复制",
 
     "menu.about": "关于",
     "menu.hideCurrentWindow": "隐藏当前窗口",

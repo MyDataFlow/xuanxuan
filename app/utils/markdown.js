@@ -1,5 +1,6 @@
 import Marked from 'marked';
 import HighlightJS from 'highlight.js';
+import Lang from '../lang';
 
 const renderer = new Marked.Renderer();
 
@@ -17,7 +18,7 @@ renderer.code = (code, lang) => {
         }
     }
     const result = HighlightJS.highlightAuto(code, lang ? [lang] : undefined);
-    return `<pre${fileName ? (` data-name="${fileName}"`) : ''}><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
+    return `<pre class="code-block" ${fileName ? (` data-name="${fileName}"`) : ''}><div class="hint--bottom-left btn-copy-code app-link" data-url="@copyCode/${lang || ''}" data-hint="${Lang.string('common.copyCode')}"><button class="btn iconbutton rounded primary-pale text-primary" type="button"><i class="icon mdi mdi-content-copy"></i></button></div><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
 };
 
 /**

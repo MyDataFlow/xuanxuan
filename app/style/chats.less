@@ -737,3 +737,38 @@
     }
   }
 }
+
+.code-block {
+  position: relative;
+
+  > code {
+    display: block;
+  }
+
+  > .btn-copy-code {
+    position: absolute;
+    right: (5*@rem);
+    top: (5*@rem);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity @animation-type @animation-speed-normal;
+
+    &:hover + code {
+      outline: fade(@color-primary, 20%) (3*@rem) solid;
+      outline-offset: (4*@rem);
+    }
+  }
+
+  &[data-name] {
+    > .btn-copy-code {
+      top: (25*@rem);
+    }
+  }
+
+  &:hover {
+    > .btn-copy-code {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}

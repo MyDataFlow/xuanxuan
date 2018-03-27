@@ -51,6 +51,7 @@
   pointer-events: none;
   transition: 0.15s ease;
   transition-delay: 0;
+  transition-property: transform, opacity, visibility;
 }
 
 [data-hint]:hover:before,
@@ -534,40 +535,40 @@
  */
 
 .hint--success:after {
-  background-color: #458746;
-  text-shadow: 0 -1px 0px #1a321a;
+  background-color: @color-success;
+  text-shadow: 0 -1px 0px darken(@color-success, 10%);
 }
 
 .hint--success.hint--top-left:before {
-  border-top-color: #458746;
+  border-top-color: @color-success;
 }
 
 .hint--success.hint--top-right:before {
-  border-top-color: #458746;
+  border-top-color: @color-success;
 }
 
 .hint--success.hint--top:before {
-  border-top-color: #458746;
+  border-top-color: @color-success;
 }
 
 .hint--success.hint--bottom-left:before {
-  border-bottom-color: #458746;
+  border-bottom-color: @color-success;
 }
 
 .hint--success.hint--bottom-right:before {
-  border-bottom-color: #458746;
+  border-bottom-color: @color-success;
 }
 
 .hint--success.hint--bottom:before {
-  border-bottom-color: #458746;
+  border-bottom-color: @color-success;
 }
 
 .hint--success.hint--left:before {
-  border-left-color: #458746;
+  border-left-color: @color-success;
 }
 
 .hint--success.hint--right:before {
-  border-right-color: #458746;
+  border-right-color: @color-success;
 }
 
 
@@ -656,7 +657,7 @@
 
 .hint--no-animate:before,
 .hint--no-animate:after {
-  transition-duration: 0ms;
+  transition-duration: 0;
 }
 
 .hint--bounce:before,

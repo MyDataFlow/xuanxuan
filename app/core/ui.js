@@ -78,13 +78,32 @@ const onAppLinkClick = (type, listener) => {
     return Events.on(`${EVENT.app_link}.${type}`, listener);
 };
 
-const emitAppLinkClick = (type, target) => {
-    return Events.emit(`${EVENT.app_link}.${type}`, target);
+const emitAppLinkClick = (type, target, element) => {
+    return Events.emit(`${EVENT.app_link}.${type}`, target, element);
 };
 
 onAppLinkClick('Member', target => {
     MemberProfileDialog.show(target);
 });
+
+let clearCopyCodeTip = null;
+if (Platform.clipboard && Platform.clipboard.writeText) {
+    onAppLinkClick('copyCode', (codeLang, element) => {
+        if (clearCopyCodeTip) {
+            clearTimeout(clearCopyCodeTip);
+            clearCopyCodeTip = null;
+        }
+        const code = element.nextElementSibling.innerText;
+        Platform.clipboard.writeText(code);
+        element.setAttribute('data-hint', Lang.string('common.copied'));
+        element.classList.add('hint--success');
+        clearCopyCodeTip = setTimeout(() => {
+            clearCopyCodeTip = null;
+            element.setAttribute('data-hint', Lang.string('common.copyCode'));
+            element.classList.remove('hint--success');
+        }, 2000);
+    });
+}
 
 Server.onUserLogin((user, loginError) => {
     if (!loginError && user.isFirstSignedToday) {
@@ -138,7 +157,7 @@ document.addEventListener('click', e => {
             e.preventDefault();
         } else if (link.startsWith('@')) {
             const params = link.substr(1).split('/');
-            emitAppLinkClick(params[0], params[1]);
+            emitAppLinkClick(params[0], params[1], target);
             e.preventDefault();
         }
     }
