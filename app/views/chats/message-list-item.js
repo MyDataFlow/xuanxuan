@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import App from '../../core';
@@ -14,7 +15,28 @@ import {MessageContentText} from './message-content-text';
 import {MessageBroadcast} from './message-broadcast';
 import replaceViews from '../replace-views';
 
+const IS_COPY_AVALIABLE = Platform.clipboard && Platform.clipboard.writeText;
 const showTimeLabelInterval = 1000 * 60 * 5;
+const MESSAGE_ACTIONS = {
+    copy: {
+        icon: 'mdi-content-copy',
+        label: Lang.string('chat.message.copy'),
+        click: message => {
+            if (IS_COPY_AVALIABLE) {
+                (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(message._renderedTextContent);
+            }
+        }
+    },
+    copyMarkdown: {
+        icon: 'mdi-markdown',
+        label: Lang.string('chat.message.copyMarkdown'),
+        click: message => {
+            if (IS_COPY_AVALIABLE) {
+                Platform.clipboard.writeText(message.content);
+            }
+        }
+    }
+};
 
 export default class MessageListItem extends Component {
     static propTypes = {
@@ -50,6 +72,11 @@ export default class MessageListItem extends Component {
         return replaceViews('chats/message-list-item', MessageListItem);
     }
 
+    constructor(props) {
+        super(props);
+        this.state = {hover: false, sharing: false};
+    }
+
     componentDidMount() {
         if (!this.props.ignoreStatus) {
             this.checkResendMessage();
@@ -60,8 +87,10 @@ export default class MessageListItem extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps) {
-        return (this.props.message !== nextProps.message || nextProps.message.updateId !== this.lastMessageUpdateId ||
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            this.state.hover !== nextState.hover || this.state.sharing !== nextState.sharing ||
+            this.props.message !== nextProps.message || nextProps.message.updateId !== this.lastMessageUpdateId ||
             this.props.lastMessage !== nextProps.lastMessage ||
             this.props.showDateDivider !== nextProps.showDateDivider ||
             this.props.hideHeader !== nextProps.hideHeader ||
@@ -108,19 +137,50 @@ export default class MessageListItem extends Component {
     }
 
 
-    handleResendBtnClick = e => {
+    handleResendBtnClick = () => {
         const message = this.props.message;
         message.date = new Date().getTime();
         if (message.needCheckResend) {
             App.im.server.sendChatMessage(message);
         }
         this.forceUpdate();
-    }
+    };
 
-    handleDeleteBtnClick = e => {
+    handleDeleteBtnClick = () => {
         const message = this.props.message;
         if (message.needCheckResend) {
             App.im.chats.deleteLocalMessage(this.props.message);
+        }
+    };
+
+    handleMouseEnter = () => {
+        this.setState({hover: true});
+    };
+
+    handleMouseLeave = () => {
+        this.setState({hover: false});
+    }
+
+    handleShareBtnClick = e => {
+        if (this.actions && this.actions.length) {
+            const pos = {x: e.pageX, y: e.pageY};
+            const items = this.actions.map(actionName => {
+                const action = MESSAGE_ACTIONS[actionName];
+                return {
+                    label: action.label,
+                    icon: action.icon,
+                    click: () => {
+                        action.click(this.props.message);
+                    }
+                };
+            });
+            if (items.length) {
+                this.setState({sharing: true}, () => {
+                    App.ui.showContextMenu(pos, items, {onHidden: () => {
+                        this.setState({sharing: false});
+                    }});
+                });
+            }
         }
     }
 
@@ -170,6 +230,8 @@ export default class MessageListItem extends Component {
         let timeLabelView = null;
         let contentView = null;
         let resendButtonsView = null;
+        let isTextContentType = false;
+        const actions = [];
 
         const titleFontStyle = font ? {
             fontSize: `${font.title}px`,
@@ -195,7 +257,9 @@ export default class MessageListItem extends Component {
         } else if (message.isImageContent) {
             contentView = <MessageContentImage message={message} />;
         } else {
-            contentView = <MessageContentText contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
+            contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
+            actions.push('copy', 'copyMarkdown');
+            isTextContentType = true;
         }
 
         if (!headerView) {
@@ -213,17 +277,29 @@ export default class MessageListItem extends Component {
             </nav>);
         }
 
+        let actionsView = null;
+        this.actions = actions;
+        if ((this.state.hover || this.state.sharing) && actions.length) {
+            actionsView = (<div className="app-message-actions">
+                <div className="hint--bottom-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
+            </div>);
+        }
+
         return (<div
+            onMouseEnter={isTextContentType ? this.handleMouseEnter : null}
+            onMouseLeave={isTextContentType ? this.handleMouseLeave : null}
             {...other}
             className={HTML.classes('app-message-item', className, {
                 'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
                 'app-message-send-fail': !ignoreStatus && needResend,
-                'with-avatar': !hideHeader
+                'with-avatar': !hideHeader,
+                sharing: this.state.sharing
             })}
         >
             {showDateDivider && <MessageDivider date={message.date} />}
             {headerView}
             {timeLabelView}
+            {actionsView}
             {contentView && <div className="app-message-content">{contentView}</div>}
             {resendButtonsView}
         </div>);

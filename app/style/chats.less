@@ -131,6 +131,44 @@
     margin-top: @space-sm;
   }
 }
+.app-message-item {
+  position: relative;
+}
+.app-message-content {
+  margin-right: (22*@rem);
+  outline: transparent 0 solid;
+  transition: @animation-speed-normal;
+  transition-property: outline, background;
+}
+.app-message-actions {
+  position: absolute;
+  right: (2*@rem);
+  top: 0;
+
+  &:hover {
+    + .app-message-content {
+      outline: @color-pale (2*@rem) solid;
+      outline-offset: (1*@rem);
+
+    }
+  }
+
+  .sharing & {
+    + .app-message-content {
+      outline: @color-pale (4*@rem) solid;
+      background-color: @color-pale;
+      outline-offset: (-1*@rem);
+    }
+  }
+
+  .with-avatar & {
+    top: (12*@rem);
+  }
+
+  .with-avatar .app-message-divider + .app-message-item-header + & {
+    top: (42*@rem);
+  }
+}
 .app-message-list-simple {
   .app-message-item {
     padding: (10*@rem);
