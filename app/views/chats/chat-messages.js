@@ -27,24 +27,32 @@ class ChatMessages extends Component {
     }
 
     componentDidMount() {
-        const {chat} = this.props;
-        if (!chat.localMessagesLoaded) {
-            this.loadChatMessagesTask = setTimeout(() => {
-                App.im.chats.loadChatMessages(chat).then(() => {
-                    this.setState({loading: false});
-                });
-                this.loadChatMessagesTask = null;
-            }, 400);
-        }
+        this.loadChatMessages();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.loading !== this.state.loading || this.props.className !== nextProps.className || this.props.chat !== nextProps.chat || this.lastChatUpdateId !== nextProps.updateId;
     }
 
+    componentDidUpdate() {
+        this.loadChatMessages();
+    }
+
     componentWillUnmount() {
         if (this.loadChatMessagesTask) {
             clearTimeout(this.loadChatMessagesTask);
+        }
+    }
+
+    loadChatMessages() {
+        const {chat} = this.props;
+        if (!chat.localMessagesLoaded && !this.loadChatMessagesTask) {
+            this.loadChatMessagesTask = setTimeout(() => {
+                App.im.chats.loadChatMessages(chat).then(() => {
+                    this.setState({loading: false});
+                });
+                this.loadChatMessagesTask = null;
+            }, 400);
         }
     }
 

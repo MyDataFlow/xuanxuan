@@ -263,6 +263,8 @@ const init = (chatArr) => {
                     Server.tryGetTempUserInfo(member.id);
                 }
             }
+            chat.renewUpdateId();
+            delete chat.localMessagesLoaded;
         });
         Events.emit(EVENT.init, chats);
     }
