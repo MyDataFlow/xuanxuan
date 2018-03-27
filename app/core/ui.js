@@ -74,6 +74,33 @@ const createImageContextMenuItems = (url, dataType) => {
     return items;
 };
 
+const createLinkContextMenu = (link, text) => {
+    const items = [{
+        label: Lang.string('common.openLink'),
+        click: () => {
+            Platform.ui.openExternal(link);
+        }
+    }];
+    if (Platform.clipboard && Platform.clipboard.writeText) {
+        items.push({
+            label: Lang.string('common.copyLink'),
+            click: () => {
+                Platform.clipboard.writeText(link);
+            }
+        });
+
+        if (text) {
+            items.push({
+                label: Lang.format('common.copyFormat', text.length > 25 ? `${text.substr(0, 25)}…` : text),
+                click: () => {
+                    Platform.clipboard.writeText(text);
+                }
+            });
+        }
+    }
+    return items;
+};
+
 const onAppLinkClick = (type, listener) => {
     return Events.on(`${EVENT.app_link}.${type}`, listener);
 };
@@ -303,5 +330,6 @@ export default {
     showContextMenu: ContextMenu.show,
     modal,
     createImageContextMenuItems,
+    createLinkContextMenu,
     reloadWindow,
 };

@@ -27,6 +27,10 @@
     "common.clickShowMoreFormat": "还有 {0} 项…",
     "common.copyCode": "复制代码",
     "common.copied": "已复制",
+    "common.openLink": "打开链接",
+    "common.copyLink": "复制链接",
+    "common.copyText": "复制文本",
+    "common.copyFormat": "复制 “{0}”",
 
     "menu.about": "关于",
     "menu.hideCurrentWindow": "隐藏当前窗口",

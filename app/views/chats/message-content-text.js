@@ -23,6 +23,20 @@ class MessageContentText extends Component {
         return nextProps.className !== this.props.className || nextProps.contentConverter !== this.props.contentConverter || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
     }
 
+    handleContextMenu = e => {
+        if (e.target.tagName === 'A') {
+            const link = e.target.href;
+            if (link && (link.startsWith('http://') || link.startsWith('https://'))) {
+                let linkText = document.getSelection().toString();
+                if (linkText === '') {
+                    linkText = e.target.innerText;
+                }
+                App.ui.showContextMenu({x: e.pageX, y: e.pageY}, App.ui.createLinkContextMenu(link, linkText));
+                e.preventDefault();
+            }
+        }
+    };
+
     render() {
         let {
             message,
@@ -35,6 +49,7 @@ class MessageContentText extends Component {
 
         return (<div
             {...other}
+            onContextMenu={this.handleContextMenu}
             className={HTML.classes('app-message-content-text markdown-content', className, {
                 'is-content-block': message.isBlockContent
             })}
