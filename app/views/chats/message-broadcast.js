@@ -39,7 +39,12 @@ class MessageBroadcast extends Component {
             ...other
         } = this.props;
 
-        let content = message.renderedTextContent(App.im.ui.renderChatMessageContent, App.im.ui.linkMembersInText);
+        let content = message.renderedTextContent(content => {
+            if (content.startsWith('我')) {
+                content = `@${message.getSender(App.members).account}${content.substr(1)}`;
+            }
+            return content;
+        }, App.im.ui.renderChatMessageContent, App.im.ui.linkMembersInText);
 
         if (StringHelper.isNotEmpty(prefix)) {
             content = prefix + content;

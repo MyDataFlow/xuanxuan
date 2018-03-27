@@ -147,7 +147,7 @@ const createChat = chat => {
         if (theChat) {
             const groupUrl = `#/chats/groups/${theChat.gid}`;
             if (theChat.isGroup) {
-                sendBoardChatMessage(Lang.format('chat.createNewChat.format', `[**[${theChat.getDisplayName({members, user: profile.user})}](${groupUrl})**]`), theChat);
+                sendBoardChatMessage(Lang.format('chat.createNewChat.format', `@${profile.user.account}`, `[**[${theChat.getDisplayName({members, user: profile.user})}](${groupUrl})**]`), theChat);
             }
         }
         return Promise.resolve(theChat);

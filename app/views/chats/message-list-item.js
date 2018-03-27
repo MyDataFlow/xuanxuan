@@ -16,7 +16,7 @@ import replaceViews from '../replace-views';
 
 const showTimeLabelInterval = 1000 * 60 * 5;
 
-class MessageListItem extends Component {
+export default class MessageListItem extends Component {
     static propTypes = {
         message: PropTypes.object.isRequired,
         lastMessage: PropTypes.object,
@@ -143,14 +143,27 @@ class MessageListItem extends Component {
 
         this.lastMessageUpdateId = message.updateId;
 
-        const needCheckResend = !ignoreStatus && message.needCheckResend;
-        const needResend = !ignoreStatus && needCheckResend && message.needResend;
-
+        const basicFontStyle = font ? {
+            fontSize: `${font.size}px`,
+            lineHeight: font.lineHeight,
+        } : null;
         if (showDateDivider === 0) {
             showDateDivider = !lastMessage || !DateHelper.isSameDay(message.date, lastMessage.date);
         }
+
+        if (message.isBroadcast) {
+            return (<div className={HTML.classes('app-message-item app-message-item-broadcast', className)} {...other}>
+                {showDateDivider && <MessageDivider date={message.date} />}
+                <MessageBroadcast contentConverter={textContentConverter} style={basicFontStyle} message={message} />
+            </div>);
+        }
+
+        const needCheckResend = !ignoreStatus && message.needCheckResend;
+        const needResend = !ignoreStatus && needCheckResend && message.needResend;
+
+
         if (hideHeader === 0) {
-            hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId;
+            hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId && lastMessage.type === message.type;
         }
 
         let headerView = null;
@@ -158,10 +171,6 @@ class MessageListItem extends Component {
         let contentView = null;
         let resendButtonsView = null;
 
-        const basicFontStyle = font ? {
-            fontSize: `${font.size}px`,
-            lineHeight: font.lineHeight,
-        } : null;
         const titleFontStyle = font ? {
             fontSize: `${font.title}px`,
             lineHeight: font.titleLineHeight,
@@ -181,9 +190,7 @@ class MessageListItem extends Component {
             </div>);
         }
 
-        if (message.isBroadcast) {
-            contentView = <MessageBroadcast contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
-        } else if (message.isFileContent) {
+        if (message.isFileContent) {
             contentView = <MessageContentFile message={message} />;
         } else if (message.isImageContent) {
             contentView = <MessageContentImage message={message} />;
@@ -222,5 +229,3 @@ class MessageListItem extends Component {
         </div>);
     }
 }
-
-export default MessageListItem;

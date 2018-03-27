@@ -65,7 +65,7 @@ class ChatInvite extends Component {
             App.im.ui.createGroupChat(members).then(newChat => {
                 const groupUrl = `#${ROUTES.chats.groups.id(newChat.gid)}`;
                 this.requestClose();
-                App.im.server.sendBoardChatMessage(Lang.format('chat.inviteAndCreateNewChat.format', `[**[${newChat.getDisplayName(App)}](${groupUrl})**]`), chat);
+                App.im.server.sendBoardChatMessage(Lang.format('chat.inviteAndCreateNewChat.format', `@${App.profile.user.account}`, `[**[${newChat.getDisplayName(App)}](${groupUrl})**]`), chat);
                 window.location.hash = groupUrl;
             }).catch(error => {
                 if (error) {
@@ -75,7 +75,7 @@ class ChatInvite extends Component {
         } else {
             App.im.server.inviteMembersToChat(chat, members).then(chat => {
                 if (chat) {
-                    const broadcast = App.im.server.createBoardChatMessage(Lang.format('chat.inviteMembersJoinChat.format', members.map(x => `@${x.account}`).join('、')), chat);
+                    const broadcast = App.im.server.createBoardChatMessage(Lang.format('chat.inviteMembersJoinChat.format', `@${App.profile.user.account}`, members.map(x => `@${x.account}`).join('、')), chat);
                     App.im.server.sendChatMessage(broadcast, chat);
                 }
                 this.requestClose();
