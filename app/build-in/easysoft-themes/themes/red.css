@@ -1,0 +1,76 @@
+.primary {
+  background-color: #e62340!important;
+  border-color: #e62340!important;
+}
+.gray,
+.primary-pale {
+  background-color: #fceaea!important;
+  border-color: #fceaea!important;
+}
+.text-primary,
+.primary-pale.text-tint,
+.primary-pale .active {
+  color: #e62340!important;
+}
+.primary.outline {
+  border-color: #e62340!important;
+  color: #e62340!important;
+}
+.primary.outline.hover-solid:hover,
+.primary.outline .active {
+  background-color: #e62340!important;
+  color: #fff!important;
+}
+.text-secondary {
+  color: #f5515f;
+}
+.markdown-content a {
+  color: #e62340;
+}
+.input:focus,
+.textarea:focus,
+.select > select:focus {
+  border-color: #f5515f;
+  box-shadow: 0 0 0 0.1rem #fceaea;
+}
+.radio > input:focus + label:before,
+.checkbox > input:focus + label:before {
+  border-color: #f5515f;
+  box-shadow: inset 0 0 0 0.05rem #fceaea, 0 0 0 0.1rem #fceaea;
+}
+.checkbox > input:checked + label:before,
+.checkbox > input:checked + label:after {
+  background-color: #e62340;
+}
+.iconbutton {
+  color: #e62340;
+}
+.iconbutton:hover {
+  color: #f5515f;
+}
+.iconbutton:focus {
+  background-color: #fceaea;
+}
+.app-chat-sidebar .tabs > .nav > a.active {
+  color: #e62340;
+  box-shadow: inset 0 -0.1rem 0 0 #f5515f;
+}
+
+.app-login {
+  background-image: linear-gradient(135deg, #f5515f 0%, #e62340 100%);
+}
+.app-chat-group-list .app-group-list .heading > .title {
+  color: #e62340;
+}
+.app-chat-group-list .app-group-list .heading > .icon {
+  color: #e62340;
+}
+.app-exts-nav {
+  background-color: #fceaea;
+}
+.app-ext-common-header > .nav > a.active {
+  color: #f5515f;
+}
+.app-message-content-text.is-content-block {
+  background-color: #fceaea;
+}
