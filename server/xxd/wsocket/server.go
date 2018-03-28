@@ -69,8 +69,8 @@ func cronReport(hub *Hub) {
             select {
             case <-reportTicker.C:
                 for server := range util.Config.RanzhiServer {
-                    message, users, hasMsg := api.ReportAndGetNotify(server)
-                    if hasMsg {
+                    message, users, noMsg := api.ReportAndGetNotify(server)
+                    if noMsg {
                         continue
                     }
                     for userID, client := range hub.clients[server] {

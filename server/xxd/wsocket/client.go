@@ -69,7 +69,7 @@ type SendMsg struct {
 func dataProcessing(message []byte, client *Client) error {
     parseData, err := api.ApiParse(message, util.Token)
     if err != nil {
-        util.LogError().Println("recve client message error")
+        util.LogError().Println("receive client message error")
         return err
     }
 
@@ -163,7 +163,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
     // 成功后返回gl数据给客户端
     client.send <- getlist
 
-    //获取历史消息
+    //获取离线消息
     offlineMessages, err := api.GetofflineMessages(client.serverName, client.userID)
     if err != nil {
         util.LogError().Println("chat get offline messages error")
@@ -229,7 +229,7 @@ func transitData(message []byte, userID int64, client *Client) error {
     return X2cSend(client.serverName, sendUsers, x2cMessage, client)
 }
 
-//消息发送 由XXD发送给XXC.或未指定用户,刚为广播
+//消息发送 由XXD发送给XXC.或未指定用户,默认为广播
 func X2cSend(serverName string, sendUsers []int64, message []byte, client *Client) error {
     if len(sendUsers) == 0 {
         //send all
@@ -271,12 +271,10 @@ func (c *Client) readPump() {
 
         //返回user id 、登录响应的数据、ok
         if dataProcessing(message, c) != nil {
-
             util.LogInfo().Println("client exit ip:", c.conn.RemoteAddr())
             break
         }
     }
-
 }
 
 // writePump pumps messages from the hub to the websocket connection.
@@ -327,7 +325,7 @@ func (c *Client) writePump() {
 func sendFail(message []byte, c *Client) {
     parseData, err := api.ApiParse(message, util.Token)
     if err != nil {
-        util.LogError().Println("recve client message error")
+        util.LogError().Println("receive client message error")
         return
     }
 

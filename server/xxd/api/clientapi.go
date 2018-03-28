@@ -173,7 +173,7 @@ func UserGetlist(serverName string, userID int64) ([]byte, error) {
     }
 
     // 固定的json格式
-  request := []byte(`{"module":"chat","method":"userGetlist","params":[""],"userID":` + util.Int642String(userID) + `}`)
+    request := []byte(`{"module":"chat","method":"userGetlist","params":[""],"userID":` + util.Int642String(userID) + `}`)
 
     message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
     if err != nil {
@@ -337,8 +337,8 @@ func ReportAndGetNotify(server string) ([]byte, interface{}, bool){
         return nil, nil, false
     }
 
-    //go util.DBDeleteOffline(server, offline)
-    //go util.DBDeleteSendfail(server, sendfail)
+    go util.DBDeleteOffline(server, offline)
+    go util.DBDeleteSendfail(server, sendfail)
     return retData, jsonDeCode["user"], jsonDeCode["data"] == ""
 }
 
