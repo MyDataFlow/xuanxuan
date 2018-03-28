@@ -18,10 +18,9 @@ import (
 )
 
 const webSocket = "/ws"
-var hub *Hub
 
 func InitWs() {
-    hub = newHub()
+    hub := newHub()
     go hub.run()
 
     // 初始化路由
