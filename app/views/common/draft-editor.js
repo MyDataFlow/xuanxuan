@@ -257,7 +257,7 @@ class DraftEditor extends PureComponent {
         if (this.props.onPastedText) {
             this.props.onPastedText(text, html);
         } else {
-            this.appendContent(text);
+            this.appendContent(text || html);
         }
         return 'handled';
     }
