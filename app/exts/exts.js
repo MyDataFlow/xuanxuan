@@ -1,5 +1,5 @@
 import Config from 'Config';
-import buildIns from './build-in';
+import buildIns from './build-in/';
 import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';

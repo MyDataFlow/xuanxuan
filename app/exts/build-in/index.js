@@ -1,7 +1,7 @@
 import {env, fs as fse} from 'Platform';
 import Config, {updateConfig} from 'Config';
 import path from 'path';
-import Lang from '../lang';
+import Lang from '../../lang';
 
 const exts = [{
     name: 'home',
