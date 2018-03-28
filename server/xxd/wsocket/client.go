@@ -301,8 +301,8 @@ func (c *Client) writePump() {
                 util.LogError().Println("The hub closed the channel")
                 return
             }
-
             if err := c.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
+                go sendFail(message, c)
                 util.LogError().Println("write message error", err)
                 return
             }
@@ -319,6 +319,25 @@ func (c *Client) writePump() {
             if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
                 util.LogError().Println("write ping message error:", err)
                 return
+            }
+        }
+    }
+}
+
+func sendFail(message []byte, c *Client) {
+    parseData, err := api.ApiParse(message, util.Token)
+    if err != nil {
+        util.LogError().Println("recve client message error")
+        return
+    }
+
+    if parseData.Module() + "." + parseData.Method() == "chat.message" {
+        if data, ok := parseData["data"].([]interface{}); ok{
+            for _, item := range data {
+                dataMap := item.(map[string]interface{})
+                if gid, ok := dataMap["gid"].(string); ok {
+                    util.DBInsertSendfail(c.serverName, c.userID, gid)
+                }
             }
         }
     }

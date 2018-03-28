@@ -12,6 +12,7 @@ package api
 import (
     "xxd/hyperttp"
     "xxd/util"
+    "encoding/json"
 )
 
 var newline = []byte{'\n'}
@@ -279,6 +280,66 @@ func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
     }
 
     return retData, nil
+}
+
+func ReportAndGetNotify(server string) ([]byte, interface{}, bool){
+    ranzhiServer, ok := RanzhiServer(server)
+    if !ok {
+        util.LogError().Println("no ranzhi server name")
+        return nil, nil, false
+    }
+    //get offline data and sendfail message id from SQLite.
+    offline, _ := util.DBSelectOffline(server)
+    sendfail, _ := util.DBSelectSendfail(server)
+
+    //create json map for xxb
+    trunk := make(map[string]interface{})
+    data := make(map[string]interface{})
+
+    data["offline"] = offline
+    data["sendfail"] = sendfail
+
+    trunk["module"] = "chat"
+    trunk["method"] = "notify"
+    trunk["data"]   = data
+
+    //encode json
+    jsonCode, err := json.Marshal(trunk);
+
+    if err != nil {
+        util.LogError().Println("encode json error:", err)
+        return nil, nil, false
+    }
+
+    message, err := aesEncrypt(jsonCode, ranzhiServer.RanzhiToken)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil, nil, false
+    }
+
+    //send message to xxb and get notify data
+    retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
+    if err != nil {
+        util.LogError().Println("hyperttp request info error:", err)
+        return nil, nil, false
+    }
+
+    jsonDeCode, _ := ApiParse(retMessage, ranzhiServer.RanzhiToken)
+
+    if jsonDeCode.Result() != "success" {
+        util.LogError().Println("request info status:", jsonDeCode.Result())
+        return nil, nil, false
+    }
+
+    retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
+    if err != nil {
+        util.LogError().Println("get notify message swap token error:", err)
+        return nil, nil, false
+    }
+
+    //go util.DBDeleteOffline(server, offline)
+    //go util.DBDeleteSendfail(server, sendfail)
+    return retData, jsonDeCode["user"], jsonDeCode["data"] == ""
 }
 
 // 与客户端间的错误通知
