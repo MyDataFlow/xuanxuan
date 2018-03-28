@@ -17,7 +17,6 @@ import (
 )
 
 func main() {
-
     crontask.CronTask()
 
     go server.InitHttp()
@@ -27,7 +26,6 @@ func main() {
 }
 
 func exitServer() {
-
     for util.Run && util.GetNumGoroutine() > 2 {
         //util.Println("sleep ...")
         util.Sleep(3)

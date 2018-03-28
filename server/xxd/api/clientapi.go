@@ -282,7 +282,7 @@ func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
     return retData, nil
 }
 
-func ReportAndGetNotify(server string) ([]byte, interface{}, bool){
+func ReportAndGetNotify(server string) ([]byte, []int64, bool){
     ranzhiServer, ok := RanzhiServer(server)
     if !ok {
         util.LogError().Println("no ranzhi server name")
@@ -331,15 +331,16 @@ func ReportAndGetNotify(server string) ([]byte, interface{}, bool){
         return nil, nil, false
     }
 
-    retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
-    if err != nil {
-        util.LogError().Println("get notify message swap token error:", err)
+    users := jsonDeCode.SendUsers()
+
+    x2cMessage := ApiUnparse(jsonDeCode, util.Token)
+    if x2cMessage == nil {
         return nil, nil, false
     }
 
     go util.DBDeleteOffline(server, offline)
     go util.DBDeleteSendfail(server, sendfail)
-    return retData, jsonDeCode["user"], jsonDeCode["data"] == ""
+    return x2cMessage, users, jsonDeCode["data"] == ""
 }
 
 // 与客户端间的错误通知

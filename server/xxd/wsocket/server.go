@@ -77,7 +77,7 @@ func cronReport(hub *Hub) {
                         if users == nil {
                             client.send <- message
                         }else{
-                            for _, uid := range users.([]int64) {
+                            for _, uid := range users {
                                 if uid == userID {
                                     client.send <- message
                                 }
