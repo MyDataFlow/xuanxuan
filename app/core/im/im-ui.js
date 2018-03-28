@@ -581,6 +581,31 @@ const createGroupHeadingContextMenu = (group, type = 'contact') => {
     return menus;
 };
 
+const hasMessageContextMenu = message => {
+    return message.isTextContent && Platform.clipboard && Platform.clipboard.writeText;
+};
+
+const createMessageContextMenu = message => {
+    const items = [];
+    if (message.isTextContent && Platform.clipboard && Platform.clipboard.writeText) {
+        items.push({
+            icon: 'mdi-content-copy',
+            label: Lang.string('chat.message.copy'),
+            click: () => {
+                console.log('>', message._renderedTextContent);
+                (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(message._renderedTextContent);
+            }
+        }, {
+            icon: 'mdi-markdown',
+            label: Lang.string('chat.message.copyMarkdown'),
+            click: () => {
+                Platform.clipboard.writeText(message.content);
+            }
+        });
+    }
+    return items;
+};
+
 profile.onSwapUser(user => {
     activedChatId = null;
     activeCaches = {};
@@ -659,6 +684,8 @@ export default {
     createChatMemberContextMenuItems,
     onRenderChatMessageContent,
     createGroupHeadingContextMenu,
+    hasMessageContextMenu,
+    createMessageContextMenu,
 
     get currentActiveChatId() {
         return activedChatId;

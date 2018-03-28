@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import Platform from 'Platform';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import App from '../../core';
@@ -15,28 +14,7 @@ import {MessageContentText} from './message-content-text';
 import {MessageBroadcast} from './message-broadcast';
 import replaceViews from '../replace-views';
 
-const IS_COPY_AVALIABLE = Platform.clipboard && Platform.clipboard.writeText;
 const showTimeLabelInterval = 1000 * 60 * 5;
-const MESSAGE_ACTIONS = {
-    copy: {
-        icon: 'mdi-content-copy',
-        label: Lang.string('chat.message.copy'),
-        click: message => {
-            if (IS_COPY_AVALIABLE) {
-                (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(message._renderedTextContent);
-            }
-        }
-    },
-    copyMarkdown: {
-        icon: 'mdi-markdown',
-        label: Lang.string('chat.message.copyMarkdown'),
-        click: message => {
-            if (IS_COPY_AVALIABLE) {
-                Platform.clipboard.writeText(message.content);
-            }
-        }
-    }
-};
 
 export default class MessageListItem extends Component {
     static propTypes = {
@@ -75,6 +53,7 @@ export default class MessageListItem extends Component {
     constructor(props) {
         super(props);
         this.state = {hover: false, sharing: false};
+        this.hasContextMenu = App.im.ui.hasMessageContextMenu(props.message);
     }
 
     componentDidMount() {
@@ -162,18 +141,9 @@ export default class MessageListItem extends Component {
     }
 
     handleShareBtnClick = e => {
-        if (this.actions && this.actions.length) {
+        if (this.hasContextMenu) {
             const pos = {x: e.pageX, y: e.pageY};
-            const items = this.actions.map(actionName => {
-                const action = MESSAGE_ACTIONS[actionName];
-                return {
-                    label: action.label,
-                    icon: action.icon,
-                    click: () => {
-                        action.click(this.props.message);
-                    }
-                };
-            });
+            const items = App.im.ui.createMessageContextMenu(this.props.message);
             if (items.length) {
                 this.setState({sharing: true}, () => {
                     App.ui.showContextMenu(pos, items, {onHidden: () => {
@@ -230,8 +200,6 @@ export default class MessageListItem extends Component {
         let timeLabelView = null;
         let contentView = null;
         let resendButtonsView = null;
-        let isTextContentType = false;
-        const actions = [];
 
         const titleFontStyle = font ? {
             fontSize: `${font.title}px`,
@@ -258,8 +226,6 @@ export default class MessageListItem extends Component {
             contentView = <MessageContentImage message={message} />;
         } else {
             contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
-            actions.push('copy', 'copyMarkdown');
-            isTextContentType = true;
         }
 
         if (!headerView) {
@@ -278,16 +244,15 @@ export default class MessageListItem extends Component {
         }
 
         let actionsView = null;
-        this.actions = actions;
-        if ((this.state.hover || this.state.sharing) && actions.length) {
+        if ((this.state.hover || this.state.sharing) && this.hasContextMenu) {
             actionsView = (<div className="app-message-actions">
                 <div className="hint--bottom-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
             </div>);
         }
 
         return (<div
-            onMouseEnter={isTextContentType ? this.handleMouseEnter : null}
-            onMouseLeave={isTextContentType ? this.handleMouseLeave : null}
+            onMouseEnter={this.hasContextMenu ? this.handleMouseEnter : null}
+            onMouseLeave={this.hasContextMenu ? this.handleMouseLeave : null}
             {...other}
             className={HTML.classes('app-message-item', className, {
                 'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
