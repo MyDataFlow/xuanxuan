@@ -77,6 +77,7 @@ func (h *Hub) run() {
             if _, ok := h.clients[client.serverName][client.userID]; ok {
                 close(client.send)
                 delete(h.clients[client.serverName], client.userID)
+                util.DBInsertOffline(client.serverName, client.userID)
             }
 
         case sendMsg := <-h.multicast:
