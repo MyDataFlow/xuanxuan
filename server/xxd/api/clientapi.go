@@ -335,7 +335,7 @@ func ReportAndGetNotify(server string) ([]byte, []int64, bool){
 
     trunk["module"] = "chat"
     trunk["method"] = "notify"
-    trunk["data"]   = data
+    trunk["params"]   = data
 
     //encode json
     jsonCode, err := json.Marshal(trunk);
