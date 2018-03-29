@@ -41,7 +41,7 @@ http://xuan.im
 
 注意：你需要为你的服务器端部署通过官方验证的证书才可以使用浏览器端客户端。
 
-更多帮助参见 [浏览器端部署和使用指南](https://github.com/easysoft/xuanxuan/blob/master/doc/browser-usage.md)
+更多帮助参见 [浏览器端部署和使用指南](http://xuan.im/page/browser-usage.html)
 
 ### 服务器端
 
@@ -57,11 +57,11 @@ http://xuan.im
 
 客户端与服务器端 API 参考：[API 文档](http://xuan.im/page/3.html)。服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js、go、swift）实现自己的服务器端。
 
-官方默认的服务器使用 `go` 语言实现（简称为 `xxd` 服务），你可以在 [`/server/xxd/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/xxd) 目录下找到源代码。xxd 服务提供了 `WebSocket` 和 `https` 接口供客户端使用。
+官方默认的服务器使用 `go` 语言实现（简称为 `xxd` 服务），你可以在 [`/xxd/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/xxd) 目录下找到源代码。xxd 服务提供了 `WebSocket` 和 `https` 接口供客户端使用。
 
 `xxd` 服务本身并不存储和管理用户资料和消息数据，而是使用应用更为广泛的 http 协议与另一个服务器（简称 `http` 服务）通信。这样你只需要在你自己的网站上开发一系列 `http` 接口即可为你的网站用户启用喧喧。
 
-官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/server/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
+官方默认提供的 `http` 服务是基于开源协同办公软件 [然之协同](https://github.com/easysoft/rangerteam) 开发，你可以在 [`/server/ranzhi/`](http://git.oschina.net/wwccss/xuanxuan/blob/master/ranzhi) 目录下找到相关源代码。然之协同服务器部署请参考：[服务器部署指南](http://xuan.im/page/2.html)。
 
 在 1.4 版本之后，还提供了独立的服务器端 XXB，这样可以不依赖然之协同办公系统，XXB 服务器使用参考 http://xuan.im/page/2.html 。
 

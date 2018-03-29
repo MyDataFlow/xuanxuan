@@ -5,7 +5,7 @@
 
 ## 数据库设计参考
 
-MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/ranzhi/db/xuanxuan.sql
+MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/ranzhi/db/xuanxuan.sql
 
 ### Chat 表
 
