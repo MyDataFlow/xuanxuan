@@ -327,15 +327,15 @@ func ReportAndGetNotify(server string) ([]byte, []int64, bool){
     sendfail, _ := util.DBSelectSendfail(server)
 
     //create json map for xxb
-    trunk := make(map[string]interface{})
-    data := make(map[string]interface{})
+    trunk  := make(map[string]interface{})
+    params := make(map[string]interface{})
 
-    data["offline"] = offline
-    data["sendfail"] = sendfail
+    params["offline"]  = offline
+    params["sendfail"] = sendfail
 
     trunk["module"] = "chat"
     trunk["method"] = "notify"
-    trunk["params"]   = data
+    trunk["params"] = params
 
     //encode json
     jsonCode, err := json.Marshal(trunk);
