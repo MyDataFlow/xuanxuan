@@ -13,6 +13,7 @@ import (
     "flag"
     "os"
     "runtime"
+    "database/sql"
 )
 
 const Version = "v1.4.0"
@@ -21,12 +22,15 @@ var Run bool = true
 var IsTest bool = false
 var Token []byte
 var TempToken string
+var DBConn *sql.DB
 
 func init() {
 
     isTest := flag.Bool("test", false, "server test model")
     flag.Parse()
     IsTest = *isTest
+
+    DBConn = InitDB()
 
     // xxd 启动时根据时间生成token
     timeStr := Int642String(GetUnixTime())
@@ -54,5 +58,6 @@ func GetNumGoroutine() int {
 
 func Exit(extStr string) {
     Println(extStr)
+    DBConn.Close()
     os.Exit(1)
 }

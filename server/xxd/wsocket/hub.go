@@ -51,7 +51,7 @@ func (h *Hub) run() {
                 close(cRegister.client.send)
                 continue
             }
-
+            go util.DBUserLogin(cRegister.client.serverName, cRegister.client.userID)
             // 判断用户是否已经存在
             if client, ok := h.clients[cRegister.client.serverName][cRegister.client.userID]; ok {
                 //重复登录,返回旧的client
@@ -77,6 +77,7 @@ func (h *Hub) run() {
             if _, ok := h.clients[client.serverName][client.userID]; ok {
                 close(client.send)
                 delete(h.clients[client.serverName], client.userID)
+                util.DBInsertOffline(client.serverName, client.userID)
             }
 
         case sendMsg := <-h.multicast:

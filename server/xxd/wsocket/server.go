@@ -13,12 +13,11 @@ import (
     "net/http"
     "xxd/util"
     "xxd/hyperttp/server"
+    "time"
+    "xxd/api"
 )
 
-const (
-    webSocket = "/ws"
-    ownSocket = "/ownData"
-)
+const webSocket = "/ws"
 
 func InitWs() {
     hub := newHub()
@@ -31,6 +30,8 @@ func InitWs() {
 
     addr := util.Config.Ip + ":" + util.Config.ChatPort
     util.LogInfo().Println("websocket start,listen addr:", addr, webSocket)
+
+    go cronReport(hub)
 
     // 创建服务器
     if util.Config.IsHttps != "1" {
@@ -52,4 +53,39 @@ func InitWs() {
             util.Exit("wss websocket server listen err")
         }
     }
+}
+
+//Report offline user id and send fail message id
+//Get notify send to client
+func cronReport(hub *Hub) {
+    go func() {
+        reportTicker := time.NewTicker(60 * time.Second)
+
+        defer func() {
+            reportTicker.Stop()
+        }()
+
+        for util.Run {
+            select {
+            case <-reportTicker.C:
+                for server := range util.Config.RanzhiServer {
+                    message, users, noMsg := api.ReportAndGetNotify(server)
+                    if noMsg {
+                        continue
+                    }
+                    for userID, client := range hub.clients[server] {
+                        if users == nil {
+                            client.send <- message
+                        }else{
+                            for _, uid := range users {
+                                if uid == userID {
+                                    client.send <- message
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }()
 }
