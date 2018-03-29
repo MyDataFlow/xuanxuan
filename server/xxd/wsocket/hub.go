@@ -9,7 +9,9 @@
  */
 package wsocket
 
-import "xxd/util"
+import (
+    "xxd/util"
+)
 
 // hub maintains the set of active clients and broadcasts messages to the
 // clients.
@@ -51,7 +53,7 @@ func (h *Hub) run() {
                 close(cRegister.client.send)
                 continue
             }
-
+            go util.DBUserLogin(cRegister.client.serverName, cRegister.client.userID)
             // 判断用户是否已经存在
             if client, ok := h.clients[cRegister.client.serverName][cRegister.client.userID]; ok {
                 //重复登录,返回旧的client
