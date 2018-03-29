@@ -240,7 +240,7 @@ export default class MessageListItem extends Component {
         let actionsView = null;
         if (this.hasContextMenu) {
             actionsView = (<div className="app-message-actions">
-                <div className="hint--bottom-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
+                <div className="hint--top-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
             </div>);
         }
 
