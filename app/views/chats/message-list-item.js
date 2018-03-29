@@ -134,7 +134,7 @@ export default class MessageListItem extends Component {
 
     handleShareBtnClick = e => {
         if (this.hasContextMenu) {
-            const pos = {x: e.pageX, y: e.pageY};
+            const pos = {x: e.pageX, y: e.pageY, direction: 'bottom-left'};
             const items = App.im.ui.createMessageContextMenu(this.props.message);
             if (items.length) {
                 this.setState({sharing: true}, () => {

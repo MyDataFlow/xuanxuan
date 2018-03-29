@@ -142,7 +142,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
                 icon: 'dots-horizontal',
                 label: Lang.string('chat.toolbor.more'),
                 click: e => {
-                    ContextMenu.show({x: e.pageX, y: e.pageY}, moreItems);
+                    ContextMenu.show({x: e.pageX, y: e.pageY, direction: 'bottom-left'}, moreItems);
                 }
             });
         }
