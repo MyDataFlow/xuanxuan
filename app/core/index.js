@@ -7,6 +7,7 @@ import notice from './notice';
 import events from './events';
 import ui from './ui';
 import models from './models';
+import todo from './todo';
 
 const app = {
     profile,
@@ -18,6 +19,7 @@ const app = {
     events,
     ui,
     models,
+    todo,
 
     get user() {
         return profile.user;
