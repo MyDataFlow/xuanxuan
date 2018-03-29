@@ -16,7 +16,7 @@ import (
     "database/sql"
 )
 
-const Version = "v1.4.0"
+const Version = "v1.5.0"
 
 var Run bool = true
 var IsTest bool = false
