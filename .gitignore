@@ -58,3 +58,6 @@ issues.md
 
 # xxd tmp files
 server/xxd/tmpfile
+
+app/package-lock.json
+package-lock.json
