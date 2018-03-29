@@ -30,7 +30,6 @@ let chatJoinTask = null;
 
 Server.socket.setHandler(imServerHandlers);
 
-
 let historyFetchingPager = null;
 
 const isFetchingHistory = () => {
