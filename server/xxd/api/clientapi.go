@@ -282,6 +282,40 @@ func GetofflineMessages(serverName string, userID int64) ([]byte, error) {
     return retData, nil
 }
 
+//获取离线通知
+func GetOfflineNotify(serverName string, userID int64) ([]byte, error) {
+    ranzhiServer, ok := RanzhiServer(serverName)
+    if !ok {
+        util.LogError().Println("no ranzhi server name")
+        return nil, util.Errorf("%s\n", "no ranzhi server name")
+    }
+
+    // 固定的json格式
+    request := []byte(`{"module":"chat","method":"getOfflineNotify","userID":` + util.Int642String(userID) + `}`)
+    message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil, err
+    }
+
+    // 到http服务器请求get list数据
+    retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
+    if err != nil {
+        util.LogError().Println("hyperttp request info error:", err)
+        return nil, err
+    }
+
+    //由于http服务器和客户端的token不一致，所以需要进行交换
+    retData, err := SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
+    if err != nil {
+        util.LogError().Println("get off line message swap token error:", err)
+        return nil, err
+    }
+
+    return retData, nil
+}
+
+
 func ReportAndGetNotify(server string) ([]byte, []int64, bool){
     ranzhiServer, ok := RanzhiServer(server)
     if !ok {
