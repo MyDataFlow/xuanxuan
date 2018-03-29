@@ -172,6 +172,13 @@ func chatLogin(parseData api.ParseData, client *Client) error {
     }
     client.send <- offlineMessages
 
+    offlineNotify, err := api.GetOfflineNotify(client.serverName, client.userID)
+    if err != nil {
+        util.LogError().Println("chat get offline notify error")
+        return  err
+    }
+    client.send <- offlineNotify
+
     // 推送当前登录用户信息给其他在线用户
     // 因为是broadcast类型，所以不需要初始化userID
     client.hub.broadcast <- SendMsg{serverName: client.serverName, message: loginData}
