@@ -26,7 +26,7 @@ const checkUploadFileSize = (size) => {
 
 const loadFiles = (category = '', limit = 0, offset = 0, reverse = true, returnCount = false) => {
     category = category ? category.toLowerCase() : false;
-    return chats.loadChatMessages(null, x => x.contentType === 'file', limit, offset, reverse, true, true, returnCount).then(data => {
+    return chats.getChatMessages(null, x => x.contentType === 'file', limit, offset, reverse, true, true, returnCount).then(data => {
         if (data && data.length) {
             const files = data.map(x => FileData.create(JSON.parse(x.content))).filter(x => ((!category || x.category === category) && x.isOK));
             return Promise.resolve(files);

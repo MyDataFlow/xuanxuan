@@ -14,6 +14,7 @@ class MessageList extends Component {
         listItemProps: PropTypes.object,
         children: PropTypes.any,
         listItemCreator: PropTypes.func,
+        header: PropTypes.any
     };
 
     static defaultProps = {
@@ -25,6 +26,7 @@ class MessageList extends Component {
         listItemProps: null,
         children: null,
         listItemCreator: null,
+        header: null,
     };
 
     static get MessageList() {
@@ -33,7 +35,7 @@ class MessageList extends Component {
 
     componentDidMount() {
         if (this.props.stayBottom) {
-            this.scrollToBottom(800);
+            this.scrollToBottom();
         }
     }
 
@@ -41,7 +43,12 @@ class MessageList extends Component {
         if (this.props.stayBottom) {
             const {messages} = this.props;
             if (this.checkHasNewMessages(messages)) {
-                this.scrollToBottom(500);
+                this.scrollToBottom();
+            } else {
+                const lastFirstMessage = this.checkHasNewOlderMessages(messages);
+                if (lastFirstMessage) {
+                    document.getElementById(`message-${lastFirstMessage.gid}`).scrollIntoView({block: 'end', behavior: 'instant'});
+                }
             }
         }
     }
@@ -52,6 +59,9 @@ class MessageList extends Component {
 
     scrollToBottom = (utilTime = 0) => {
         this.messageEndEle.scrollIntoView({block: 'end', behavior: 'instant'});
+        if (!utilTime) {
+            return;
+        }
 
         const now = new Date().getTime();
         if (utilTime) {
@@ -71,12 +81,18 @@ class MessageList extends Component {
     }
 
     checkHasNewMessages(messages) {
-        if (!this.lastMessage || !messages || !messages.length) {
-            return true;
-        }
-        const thisLastMessage = messages[messages.length - 1];
-        if (thisLastMessage.date > this.lastMessage.date || thisLastMessage.id > this.lastMessage.id) {
-            return true;
+        const lastMessage = this.lastMessage;
+        const thisLastMessage = messages && messages.length ? messages[messages.length - 1] : null;
+        this.lastMessage = thisLastMessage;
+        return lastMessage !== thisLastMessage && thisLastMessage && ((!lastMessage && thisLastMessage) || thisLastMessage.date > lastMessage.date || thisLastMessage.id > lastMessage.id);
+    }
+
+    checkHasNewOlderMessages(messages) {
+        const lastFirstMessage = this.lastFirstMessage;
+        const thisFirstMessage = messages && messages.length ? messages[0] : null;
+        this.lastFirstMessage = thisFirstMessage;
+        if (thisFirstMessage && lastFirstMessage && (thisFirstMessage.date < lastFirstMessage.date || thisFirstMessage.id < lastFirstMessage.id)) {
+            return lastFirstMessage;
         }
     }
 
@@ -91,6 +107,7 @@ class MessageList extends Component {
             listItemProps,
             listItemCreator,
             staticUI,
+            header,
             ...other
         } = this.props;
 
@@ -100,9 +117,10 @@ class MessageList extends Component {
             {...other}
             className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
         >
+            {header}
             {
                 messages && messages.map(message => {
-                    const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps} />;
+                    const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem id={`message-${message.gid}`} staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps} />;
                     lastMessage = message;
                     return messageListItem;
                 })
