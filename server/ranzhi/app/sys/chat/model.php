@@ -267,7 +267,7 @@ class chatModel extends model
         if(isset($chat->star)) $chat->star = (int)$chat->star;
         if(isset($chat->hide)) $chat->hide = (int)$chat->hide;
         if(isset($chat->mute)) $chat->mute = (int)$chat->mute;
-        
+
         return $chat;
     }
 
@@ -617,6 +617,47 @@ class chatModel extends model
             $data->user    = $user;
             $data->message = helper::jsonEncode($messages);
             $this->dao->insert(TABLE_IM_USERMESSAGE)->data($data)->exec();
+        }
+        return !dao::isError();
+    }
+
+    /**
+     * Get offline notify.
+     * @param $userID
+     * @return array
+     */
+    public function getOfflineNotify($userID)
+    {
+
+        return array();
+    }
+
+    /**
+     * Upgrade offline user status.
+     * @param array $offline
+     * @access public
+     * @return bool
+     */
+    public function offlineUser($offline = array())
+    {
+        $this->dao->update(TABLE_USER)->set('status')->eq('offline')->where('id')->in(array_values($offline))->exec();
+        return !dao::isError();
+    }
+
+    /**
+     * Add offline messages according to the gid of messages that failed to be sent.
+     * @param array $sendfail
+     * @access public
+     * @return bool
+     */
+    public function sendFailMessage($sendfail = array())
+    {
+        foreach($sendfail as $userID => $gid)
+        {
+            if(empty($gid)) continue;
+            $idList   = $this->dao->select('id')->from(TABLE_IM_MESSAGE)->where('gid')->in(array_values($gid))->fetchAll('id');
+            $messages = $this->getMessageList(array_values($idList));
+            $this->saveOfflineMessages($messages, $userID);
         }
         return !dao::isError();
     }

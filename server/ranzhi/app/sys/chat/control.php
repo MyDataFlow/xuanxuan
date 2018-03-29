@@ -1059,4 +1059,46 @@ class chat extends control
 
         die($this->app->encrypt($this->output));
     }
+
+    /**
+     * Get latest notification and offline user.
+     * @param array $offline
+     * @param array $sendfail
+     * @access public
+     * @return void
+     */
+    public function notify($offline = array(), $sendfail = array())
+    {
+        if(!empty($offline))  $this->chat->offlineUser($offline);
+        if(!empty($sendfail)) $this->chat->sendFailMessage($sendfail);
+
+        $this->output->result = 'success';
+        $this->output->data   = array();
+        $this->output->users  = array();
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
+     * Get offline notify by user id.
+     * @param int $userID
+     * @access public
+     * @return void
+     */
+    public function getOfflineNotify($userID = 0)
+    {
+        $messages = $this->chat->getOfflineNotify($userID);
+        if(dao::isError())
+        {
+            $this->output->result  = 'fail';
+            $this->output->message = 'Get offline notify fail.';
+        }
+        else
+        {
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $messages;
+        }
+        $this->output->method = 'notify';
+        die($this->app->encrypt($this->output));
+    }
 }

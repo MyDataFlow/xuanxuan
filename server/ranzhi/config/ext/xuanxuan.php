@@ -33,3 +33,5 @@ $config->xuanxuan->enabledMethods['chat']['message']            = 'message';
 $config->xuanxuan->enabledMethods['chat']['history']            = 'history';
 $config->xuanxuan->enabledMethods['chat']['settings']           = 'settings';
 $config->xuanxuan->enabledMethods['chat']['uploadfile']         = 'uploadFile';
+$config->xuanxuan->enabledMethods['chat']['getofflinenotify']   = 'getofflinenotify';
+$config->xuanxuan->enabledMethods['chat']['notify']             = 'notify';
