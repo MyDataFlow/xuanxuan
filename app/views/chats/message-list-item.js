@@ -52,7 +52,7 @@ export default class MessageListItem extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {hover: false, sharing: false};
+        this.state = {sharing: false};
         this.hasContextMenu = App.im.ui.hasMessageContextMenu(props.message);
     }
 
@@ -68,7 +68,7 @@ export default class MessageListItem extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         return (
-            this.state.hover !== nextState.hover || this.state.sharing !== nextState.sharing ||
+            this.state.sharing !== nextState.sharing ||
             this.props.message !== nextProps.message || nextProps.message.updateId !== this.lastMessageUpdateId ||
             this.props.lastMessage !== nextProps.lastMessage ||
             this.props.showDateDivider !== nextProps.showDateDivider ||
@@ -131,14 +131,6 @@ export default class MessageListItem extends Component {
             App.im.chats.deleteLocalMessage(this.props.message);
         }
     };
-
-    handleMouseEnter = () => {
-        this.setState({hover: true});
-    };
-
-    handleMouseLeave = () => {
-        this.setState({hover: false});
-    }
 
     handleShareBtnClick = e => {
         if (this.hasContextMenu) {
@@ -244,7 +236,7 @@ export default class MessageListItem extends Component {
         }
 
         let actionsView = null;
-        if ((this.state.hover || this.state.sharing) && this.hasContextMenu) {
+        if (this.hasContextMenu) {
             actionsView = (<div className="app-message-actions">
                 <div className="hint--bottom-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
             </div>);

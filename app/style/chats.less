@@ -144,6 +144,7 @@
   position: absolute;
   right: (2*@rem);
   top: 0;
+  display: none;
 
   &:hover {
     + .app-message-content {
@@ -162,11 +163,15 @@
   }
 
   .with-avatar & {
-    top: (12*@rem);
+    top: (31*@rem);
   }
 
   .with-avatar .app-message-divider + .app-message-item-header + & {
-    top: (42*@rem);
+    top: (61*@rem);
+  }
+
+  .app-message-item:hover & {
+    display: block;
   }
 }
 .app-message-list-simple {
