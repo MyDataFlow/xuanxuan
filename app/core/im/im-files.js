@@ -55,11 +55,12 @@ const search = (keys, category = '') => {
 
 const uploadFile = (file, onProgress, copyCache) => {
     file = FileData.create(file);
-    let progressTime = 0;
+    let progressTime = 0, lastProgress = 0;
     return API.uploadFile(profile.user, file, progress => {
         const now = new Date().getTime();
-        if ((now - progressTime) > MIN_PROGRESS_CHANGE_INTERVAL) {
+        if (progress !== lastProgress && (now - progressTime) > MIN_PROGRESS_CHANGE_INTERVAL) {
             progressTime = now;
+            lastProgress = progress;
             if (onProgress) {
                 onProgress(progress, file);
             }
