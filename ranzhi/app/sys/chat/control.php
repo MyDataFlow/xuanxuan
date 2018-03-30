@@ -1061,7 +1061,6 @@ class chat extends control
     }
 
     /**
-<<<<<<< HEAD
      * Get latest notification and offline user.
      * @param array $offline
      * @param array $sendfail
@@ -1076,11 +1075,36 @@ class chat extends control
         $this->output->result = 'success';
         $this->output->data   = array();
         $this->output->users  = array();
-=======
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
+     * Get offline notify by user id.
+     * @param int $userID
+     * @access public
+     * @return void
+     */
+    public function getOfflineNotify($userID = 0)
+    {
+        $messages = $this->chat->getOfflineNotify($userID);
+        if(dao::isError())
+        {
+            $this->output->result = 'fail';
+            $this->output->message = 'Get offline notify fail.';
+        }
+        else
+        {
+            $this->output->result = 'success';
+            $this->output->users = array($userID);
+            $this->output->data = $messages;
+        }
+        $this->output->method = 'notify';
+    }
+
+    /**
      * Create, edit or delte todo
-     *
-     * @param  object $todo
-     * @param  int    $userID
+     * @param string $todo
+     * @param int    $userID
      * @access public
      * @return void
      */
@@ -1096,17 +1120,17 @@ class chat extends control
                     $todo = $this->loadModel('todo')->getById($todo->id);
                     if($todo->account != $user->account)
                     {
-                        $this->output->result  = 'fail';
+                        $this->output->result = 'fail';
                         $this->output->message = 'Cannot delete todo item witch not yours.';
-                        $this->output->data    = $todo;
-                        $this->output->user    = $user;
+                        $this->output->data = $todo;
+                        $this->output->user = $user;
                     }
                     else
                     {
                         $this->dao->delete()->from(TABLE_TODO)->where('id')->eq($todo->id)->exec();
                         if(dao::isError())
                         {
-                            $this->output->result  = 'fail';
+                            $this->output->result = 'fail';
                             $this->output->message = dao::getError();
                         }
                         else
@@ -1114,7 +1138,7 @@ class chat extends control
                             $this->loadModel('action')->create('todo', $todoID, 'deleted');
                             $this->action->logHistory($actionID, $changes);
                             $this->output->result = 'success';
-                            $this->output->data   = $todo;
+                            $this->output->data = $todo;
                         }
                     }
                 }
@@ -1124,7 +1148,7 @@ class chat extends control
                     $changes = $this->loadModel('todo')->update($todo->id);
                     if(dao::isError())
                     {
-                        $this->output->result  = 'fail';
+                        $this->output->result = 'fail';
                         $this->output->message = dao::getError();
                     }
                     else
@@ -1132,7 +1156,7 @@ class chat extends control
                         $this->loadModel('action')->create('todo', $todoID, 'edited', 'from xuanxuan.');
                         $this->action->logHistory($actionID, $changes);
                         $this->output->result = 'success';
-                        $this->output->data   = $todo;
+                        $this->output->data = $todo;
                     }
                 }
             }
@@ -1142,7 +1166,7 @@ class chat extends control
                 $todoID = $this->loadModel('todo')->create($todo->date, $user->account);
                 if(dao::isError())
                 {
-                    $this->output->result  = 'fail';
+                    $this->output->result = 'fail';
                     $this->output->message = dao::getError();
                 }
                 else
@@ -1150,43 +1174,19 @@ class chat extends control
                     $this->loadModel('action')->create('todo', $todoID, 'created');
                     $todo->id = $todoID;
                     $this->output->result = 'success';
-                    $this->output->data   = $todo;
+                    $this->output->data = $todo;
                 }
             }
         }
         else
         {
             $this->output->message = 'The todo param is not an object.';
-            $this->output->result  = 'fail';
+            $this->output->result = 'fail';
         }
-        $this->output->users  = array($userID);
->>>>>>> de0c42a3bd12929d78725209b8e1510fb04165f1
-        die($this->app->encrypt($this->output));
+        $this->output->users = array($userID);
     }
 
     /**
-<<<<<<< HEAD
-     * Get offline notify by user id.
-     * @param int $userID
-     * @access public
-     * @return void
-     */
-    public function getOfflineNotify($userID = 0)
-    {
-        $messages = $this->chat->getOfflineNotify($userID);
-        if(dao::isError())
-        {
-            $this->output->result  = 'fail';
-            $this->output->message = 'Get offline notify fail.';
-        }
-        else
-        {
-            $this->output->result = 'success';
-            $this->output->users  = array($userID);
-            $this->output->data   = $messages;
-        }
-        $this->output->method = 'notify';
-=======
      * Get todoes list
      *
      * @param  string $mode
@@ -1224,7 +1224,6 @@ class chat extends control
         $this->output->data   = $todos;
         $this->output->result = 'success';
         $this->output->users  = array($userID);
->>>>>>> de0c42a3bd12929d78725209b8e1510fb04165f1
         die($this->app->encrypt($this->output));
     }
 }
