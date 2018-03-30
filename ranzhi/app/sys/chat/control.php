@@ -1103,12 +1103,12 @@ class chat extends control
 
     /**
      * Create, edit or delte todo
-     * @param string $todo
-     * @param int    $userID
+     * @param  object $todo
+     * @param  int    $userID
      * @access public
      * @return void
      */
-    public function upsertTodo($todo = '', $userID = 0)
+    public function upsertTodo($todo, $userID = 0)
     {
         $user = $this->chat->getUserByUserID($userID);
         if(is_object($todo))
@@ -1135,8 +1135,8 @@ class chat extends control
                         }
                         else
                         {
-                            $this->loadModel('action')->create('todo', $todoID, 'deleted');
-                            $this->action->logHistory($actionID, $changes);
+                            $this->loadModel('action')->create('todo', $todo->id, 'deleted');
+
                             $this->output->result = 'success';
                             $this->output->data   = $todo;
                         }
@@ -1153,8 +1153,9 @@ class chat extends control
                     }
                     else
                     {
-                        $this->loadModel('action')->create('todo', $todoID, 'edited', 'from xuanxuan.');
+                        $actionID = $this->loadModel('action')->create('todo', $todo->id, 'edited', 'from xuanxuan.');
                         $this->action->logHistory($actionID, $changes);
+
                         $this->output->result = 'success';
                         $this->output->data   = $todo;
                     }
@@ -1173,6 +1174,7 @@ class chat extends control
                 {
                     $this->loadModel('action')->create('todo', $todoID, 'created');
                     $todo->id = $todoID;
+
                     $this->output->result = 'success';
                     $this->output->data   = $todo;
                 }
