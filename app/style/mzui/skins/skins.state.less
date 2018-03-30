@@ -61,6 +61,11 @@ a {
       transform: scale(@state-active-scale);
     }
   }
+
+  &.disabled,
+  &[disabled] {
+    &:after {display: none!important}
+  }
 }
 
 .state-click-throuth {
@@ -78,12 +83,9 @@ a {
   -webkit-filter: grayscale(100%);
   opacity: @state-disabled-opacity!important;
   box-shadow: none!important;
-
-  &:after {display: none!important}
 }
 
-.as-load-indicator,
-.loading {
+.as-load-indicator {
   color: transparent!important;
 
   > * {visibility: hidden;}
@@ -131,6 +133,7 @@ a {
     color: @color-gray;
     transition: .2s @animation-type;
     transition-property: visibility, opacity;
+    z-index: 1050;
   }
   &:before {
     content: attr(data-loading);
@@ -161,6 +164,7 @@ a {
     margin-top: -15px;
     margin-left: -15px;
     z-index: 11;
+    z-index: 1051;
   }
 
   &.loading {

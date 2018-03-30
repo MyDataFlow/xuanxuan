@@ -150,7 +150,7 @@ const countChatMessages = (cgid, filter) => {
     return collection.count();
 };
 
-const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = false, rawData = false, returnCount = false) => {
+const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = true, rawData = false, returnCount = false) => {
     const cgid = chat ? chat.gid : null;
     let collection = db.database.chatMessages.orderBy('id').and(x => {
         return (!cgid || x.cgid === cgid) && (!queryCondition || queryCondition(x));
@@ -174,7 +174,6 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
             const result = rawData ? chatMessages : chatMessages.map(ChatMessage.create);
             if (!skipAdd && cgid) {
                 chat.addMessages(result, profile.userId, true, true);
-                chat.localMessagesLoaded = true;
                 Events.emitDataChange({chats: {[cgid]: chat}});
             }
             return Promise.resolve(result);
@@ -183,12 +182,37 @@ const loadChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, off
     });
 };
 
+/**
+ * Load chat messages
+ *
+ * @param {Chat} chat
+ */
+const loadChatMessages = (chat) => {
+    let loadingOffset = chat.loadingOffset;
+    if (loadingOffset === true) {
+        return Promise.reject();
+    }
+    if (!loadingOffset) {
+        loadingOffset = 0;
+    }
+    const limit = loadingOffset ? 20 : CHATS_LIMIT_DEFAULT;
+    return getChatMessages(chat, null, limit, loadingOffset, true, false).then(chatMessages => {
+        if (!chatMessages || chatMessages.length < limit) {
+            loadingOffset = true;
+        } else {
+            loadingOffset += limit;
+        }
+        chat.loadingOffset = loadingOffset;
+        return Promise.resolve(chatMessages);
+    });
+};
+
 const searchChatMessages = (chat, searchKeys = '', minDate = 0, returnCount = false) => {
     if (typeof minDate === 'string') {
         minDate = DateHelper.getTimeBeforeDesc(minDate);
     }
     const keys = searchKeys.toLowerCase().split(' ');
-    return loadChatMessages(chat, msg => {
+    return getChatMessages(chat, msg => {
         if (!msg.id || (minDate && msg.date < minDate)) {
             return false;
         }
@@ -264,7 +288,7 @@ const init = (chatArr) => {
                 }
             }
             chat.renewUpdateId();
-            delete chat.localMessagesLoaded;
+            delete chat.loadingOffset;
         });
         Events.emit(EVENT.init, chats);
     }
@@ -732,7 +756,7 @@ const remove = gid => {
 };
 
 const getChatFiles = (chat, includeFailFile = false) => {
-    return loadChatMessages(chat, (x => x.contentType === 'file'), 0).then(fileMessages => {
+    return getChatMessages(chat, (x => x.contentType === 'file'), 0).then(fileMessages => {
         let files = null;
         if (fileMessages && fileMessages.length) {
             if (includeFailFile) {
@@ -795,7 +819,7 @@ export default {
     search,
     getChatFiles,
     deleteLocalMessage,
-    loadChatMessages,
+    getChatMessages,
     updateChatMessages,
     saveChatMessages,
     getPublicChats,
@@ -810,4 +834,5 @@ export default {
     searchChatMessages,
     getChatCategories,
     getLastRecentChat,
+    loadChatMessages,
 };

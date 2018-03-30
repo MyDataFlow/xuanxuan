@@ -1061,6 +1061,7 @@ class chat extends control
     }
 
     /**
+<<<<<<< HEAD
      * Get latest notification and offline user.
      * @param array $offline
      * @param array $sendfail
@@ -1075,10 +1076,96 @@ class chat extends control
         $this->output->result = 'success';
         $this->output->data   = array();
         $this->output->users  = array();
+=======
+     * Create, edit or delte todo
+     *
+     * @param  object $todo
+     * @param  int    $userID
+     * @access public
+     * @return void
+     */
+    public function upsertTodo($todo = '', $userID = 0)
+    {
+        $user = $this->chat->getUserByUserID($userID);
+        if(is_object($todo))
+        {
+            if($todo->id)
+            {
+                if($todo->delete)
+                {
+                    $todo = $this->loadModel('todo')->getById($todo->id);
+                    if($todo->account != $user->account)
+                    {
+                        $this->output->result  = 'fail';
+                        $this->output->message = 'Cannot delete todo item witch not yours.';
+                        $this->output->data    = $todo;
+                        $this->output->user    = $user;
+                    }
+                    else
+                    {
+                        $this->dao->delete()->from(TABLE_TODO)->where('id')->eq($todo->id)->exec();
+                        if(dao::isError())
+                        {
+                            $this->output->result  = 'fail';
+                            $this->output->message = dao::getError();
+                        }
+                        else
+                        {
+                            $this->loadModel('action')->create('todo', $todoID, 'deleted');
+                            $this->action->logHistory($actionID, $changes);
+                            $this->output->result = 'success';
+                            $this->output->data   = $todo;
+                        }
+                    }
+                }
+                else
+                {
+                    $_POST = (array)$todo;
+                    $changes = $this->loadModel('todo')->update($todo->id);
+                    if(dao::isError())
+                    {
+                        $this->output->result  = 'fail';
+                        $this->output->message = dao::getError();
+                    }
+                    else
+                    {
+                        $this->loadModel('action')->create('todo', $todoID, 'edited', 'from xuanxuan.');
+                        $this->action->logHistory($actionID, $changes);
+                        $this->output->result = 'success';
+                        $this->output->data   = $todo;
+                    }
+                }
+            }
+            else
+            {
+                $_POST = (array)$todo;
+                $todoID = $this->loadModel('todo')->create($todo->date, $user->account);
+                if(dao::isError())
+                {
+                    $this->output->result  = 'fail';
+                    $this->output->message = dao::getError();
+                }
+                else
+                {
+                    $this->loadModel('action')->create('todo', $todoID, 'created');
+                    $todo->id = $todoID;
+                    $this->output->result = 'success';
+                    $this->output->data   = $todo;
+                }
+            }
+        }
+        else
+        {
+            $this->output->message = 'The todo param is not an object.';
+            $this->output->result  = 'fail';
+        }
+        $this->output->users  = array($userID);
+>>>>>>> de0c42a3bd12929d78725209b8e1510fb04165f1
         die($this->app->encrypt($this->output));
     }
 
     /**
+<<<<<<< HEAD
      * Get offline notify by user id.
      * @param int $userID
      * @access public
@@ -1099,6 +1186,45 @@ class chat extends control
             $this->output->data   = $messages;
         }
         $this->output->method = 'notify';
+=======
+     * Get todoes list
+     *
+     * @param  string $mode
+     * @param  string $orderBy
+     * @param  int    $recTotal
+     * @param  int    $recPerPage
+     * @param  int    $pageID
+     * @param  int    $userID
+     * @access public
+     * @return void
+     */
+    public function getTodoes($mode = 'all', $status = 'unclosed', $orderBy = 'date_asc', $recTotal = 0, $recPerPage = 20, $pageID = 1, $userID = 0)
+    {
+        $user = $this->chat->getUserByUserID($userID);
+        $this->app->loadClass('pager', $static = true);
+        $pager = new pager($recTotal, $recPerPage, $pageID);
+
+        if($mode == 'future')
+        {
+            $todos = $this->loadModel('todo')->getList('self', $user->account, 'future', empty($status) ? 'unclosed' : $status, $orderBy, $pager);
+        }
+        else if($mode == 'all')
+        {
+            $todos = $this->loadModel('todo')->getList('self', $user->account, 'all', empty($status) ? 'all' : $status, $orderBy, $pager);
+        }
+        else if($mode == 'undone')
+        {
+            $todos = $this->loadModel('todo')->getList('self', $user->account, 'before', empty($status) ? 'undone' : $status, $orderBy, $pager);
+        }
+        else
+        {
+            $todos = $this->loadModel('todo')->getList($mode, $user->account, 'all', empty($status) ? 'unclosed' : $status, $orderBy, $pager);
+        }
+
+        $this->output->data   = $todos;
+        $this->output->result = 'success';
+        $this->output->users  = array($userID);
+>>>>>>> de0c42a3bd12929d78725209b8e1510fb04165f1
         die($this->app->encrypt($this->output));
     }
 }

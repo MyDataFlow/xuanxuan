@@ -55,7 +55,8 @@ const checkVersionSupport = user => {
         messageOrder: compareVersionValue >= 0,
         userGetListWithId: compareVersionValue >= 0,
         wss: compareVersionValue > 0,
-        fileServer: uploadFileSize !== 0
+        fileServer: uploadFileSize !== 0,
+        todo: compareVersions(serverVersion, '1.4.0') > 0
     };
 };
 

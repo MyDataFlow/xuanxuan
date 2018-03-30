@@ -81,6 +81,8 @@ class AppSocket extends Socket {
             if (handler) {
                 result = handler(msg, this);
             }
+        } else {
+            result = msg.data;
         }
         if (result === undefined) {
             result = msg.isSuccess;

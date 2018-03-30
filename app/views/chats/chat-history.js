@@ -114,7 +114,7 @@ class ChatHistory extends Component {
             this.pageMark[gotoMessage.gid] = {page: pager.page};
             return Promise.resolve(pager);
         }
-        return App.im.chats.loadChatMessages(chat, msg => !!msg.id && msg.id <= gotoMessage.id, 0, 0, false, true, false, true).then(result => {
+        return App.im.chats.getChatMessages(chat, msg => !!msg.id && msg.id <= gotoMessage.id, 0, 0, false, true, false, true).then(result => {
             pager.page = Math.ceil(result.count / pager.recPerPage);
             this.pageMark[gotoMessage.gid] = {page: pager.page};
             return Promise.resolve(pager);
@@ -160,7 +160,7 @@ class ChatHistory extends Component {
             return;
         }
 
-        App.im.chats.loadChatMessages(chat, msg => !!msg.id, pager.recPerPage, pager.recPerPage * (pager.page - 1), false).then(messages => {
+        App.im.chats.getChatMessages(chat, msg => !!msg.id, pager.recPerPage, pager.recPerPage * (pager.page - 1), false).then(messages => {
             messages = ChatMessage.sort(messages);
             pager.pageRecCount = messages.length;
             this.setState({

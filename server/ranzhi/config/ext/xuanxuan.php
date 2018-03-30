@@ -33,5 +33,10 @@ $config->xuanxuan->enabledMethods['chat']['message']            = 'message';
 $config->xuanxuan->enabledMethods['chat']['history']            = 'history';
 $config->xuanxuan->enabledMethods['chat']['settings']           = 'settings';
 $config->xuanxuan->enabledMethods['chat']['uploadfile']         = 'uploadFile';
+<<<<<<< HEAD
 $config->xuanxuan->enabledMethods['chat']['getofflinenotify']   = 'getofflinenotify';
 $config->xuanxuan->enabledMethods['chat']['notify']             = 'notify';
+=======
+$config->xuanxuan->enabledMethods['chat']['upserttodo']         = 'upsertTodo';
+$config->xuanxuan->enabledMethods['chat']['gettodoes']          = 'getTodoes';
+>>>>>>> de0c42a3bd12929d78725209b8e1510fb04165f1

@@ -33,6 +33,8 @@
     "common.copyText": "复制文本",
     "common.copyFormat": "复制 “{0}”",
     "common.shareMenu": "共享…",
+    "common.required": "必填项",
+    "common.requiredField.format": "【{0}】为必填项",
 
     "menu.about": "关于",
     "menu.hideCurrentWindow": "隐藏当前窗口",
@@ -126,6 +128,7 @@
     "error.SERVER_VERSION_NOT_SUPPORT": "当前客户端（{0}）不支持所连接服务器版本 {1}，需要服务器版本为 {2} 以上。",
     "error.SERVER_VERSION_NOT_SUPPORT_IN_BROWSER": "浏览器端（{0}）不支持所连接服务器版本 {1}，需要服务器版本为 {2} 以上。",
     "error.RANZHI_SERVER_NOTSET": "没有找到然之服务器设置。",
+    "error.COMMON_ERROR": "操作失败，请稍后重试。",
 
     "login.serverUrl.label": "服务器",
     "login.serverUrl.hint": "https://xuanxuan.chat",
@@ -285,6 +288,7 @@
     "chat.message.atAll": "所有人",
     "chat.message.copy": "复制消息内容",
     "chat.message.copyMarkdown": "复制 Markdown",
+    "chat.noMoreMessage": "没有更多消息",
 
     "chat.sidebar.tab.profile.label": "资料",
     "chat.sidebar.tab.peoples.label": "成员",
@@ -294,6 +298,19 @@
     "chat.sidebar.close": "关闭侧边栏",
 
     "chat.message.resend": "重新发送",
+
+    "todo.create": "创建待办",
+    "todo.edit": "编辑待办",
+    "todo.label.name": "名称",
+    "todo.label.desc": "描述",
+    "todo.input.desc.hint": "支持 Markdown",
+    "todo.label.date": "日期",
+    "todo.label.pri": "优先级",
+    "todo.label.begin": "开始时间",
+    "todo.label.end": "结束时间",
+    "todo.createSuccess": "待办已添加。",
+    "todo.beginAndEndBothRequired": "起始时间和结束时间必须同时填写完整，如果不设定时间请全部留空。",
+    "todo.beginMustBeforeEnd": "结束时间必须晚于起始时间。",
 
     "navbar.chats.label": "最近聊天",
     "navbar.contacts.label": "联系人",

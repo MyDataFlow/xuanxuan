@@ -3,6 +3,8 @@ import HTML from '../../utils/html-helper';
 import App from '../../core';
 import {MessageList} from './message-list';
 import replaceViews from '../replace-views';
+import Spinner from '../../components/spinner';
+import Lang from '../../lang';
 
 class ChatMessages extends Component {
     static propTypes = {
@@ -22,12 +24,12 @@ class ChatMessages extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: !props.chat.localMessagesLoaded
+            loading: !props.chat.isLoadingOver
         };
     }
 
     componentDidMount() {
-        this.loadChatMessages();
+        this.loadChatMessages(400);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -35,7 +37,9 @@ class ChatMessages extends Component {
     }
 
     componentDidUpdate() {
-        this.loadChatMessages();
+        if (!this.props.chat.isFirstLoaded) {
+            this.loadChatMessages();
+        }
     }
 
     componentWillUnmount() {
@@ -44,15 +48,23 @@ class ChatMessages extends Component {
         }
     }
 
-    loadChatMessages() {
+    loadChatMessages(delay = 0) {
         const {chat} = this.props;
-        if (!chat.localMessagesLoaded && !this.loadChatMessagesTask) {
+        if (!chat.isLoadingOver && !this.loadChatMessagesTask) {
             this.loadChatMessagesTask = setTimeout(() => {
-                App.im.chats.loadChatMessages(chat).then(() => {
-                    this.setState({loading: false});
+                this.setState({loading: true}, () => {
+                    App.im.chats.loadChatMessages(chat).then(() => {
+                        this.setState({loading: false});
+                    });
+                    this.loadChatMessagesTask = null;
                 });
-                this.loadChatMessagesTask = null;
-            }, 400);
+            }, delay);
+        }
+    }
+
+    handleScroll = e => {
+        if (e.target.scrollTop === 0) {
+            this.loadChatMessages();
         }
     }
 
@@ -66,11 +78,18 @@ class ChatMessages extends Component {
         const font = App.profile.userConfig.chatFontSize;
         this.lastChatUpdateId = chat.updateId;
 
+        let headerView = null;
+        if (this.state.loading) {
+            headerView = <Spinner className="box" />;
+        } else if (chat.messages && chat.messages.length && chat.isLoadingOver) {
+            headerView = <div className="box small muted text-center">― {Lang.string('chat.noMoreMessage')} ―</div>;
+        }
+
         return (<div
+            className={HTML.classes('app-chat-messages white', className)}
             {...other}
-            className={HTML.classes('app-chat-messages white load-indicator', className, {loading: this.state.loading})}
         >
-            <MessageList font={font} className="dock scroll-y user-selectable" messages={chat.messages} />
+            <MessageList header={headerView} font={font} className="dock scroll-y user-selectable" messages={chat.messages} onScroll={chat.isLoadingOver ? null : this.handleScroll} />
         </div>);
     }
 }

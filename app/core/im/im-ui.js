@@ -22,6 +22,8 @@ import CoreServer from '../server';
 import ChatChangeFontPopover from '../../views/chats/chat-change-font-popover';
 import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
+import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
+import Todo from '../todo';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -140,7 +142,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
                 icon: 'dots-horizontal',
                 label: Lang.string('chat.toolbor.more'),
                 click: e => {
-                    ContextMenu.show({x: e.pageX, y: e.pageY}, moreItems);
+                    ContextMenu.show({x: e.pageX, y: e.pageY, direction: 'bottom-left'}, moreItems);
                 }
             });
         }
@@ -592,7 +594,6 @@ const createMessageContextMenu = message => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                console.log('>', message._renderedTextContent);
                 (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(message._renderedTextContent);
             }
         }, {
@@ -600,6 +601,16 @@ const createMessageContextMenu = message => {
             label: Lang.string('chat.message.copyMarkdown'),
             click: () => {
                 Platform.clipboard.writeText(message.content);
+            }
+        });
+    }
+    if (profile.user.isVersionSupport('todo')) {
+        items.push({
+            label: Lang.string('todo.create'),
+            icon: 'mdi-calendar-check',
+            click: (item, idx, e) => {
+                TodoEditorDialog.show(Todo.createTodoFromMessage(message));
+                e.preventDefault();
             }
         });
     }

@@ -26,7 +26,7 @@ const checkUploadFileSize = (size) => {
 
 const loadFiles = (category = '', limit = 0, offset = 0, reverse = true, returnCount = false) => {
     category = category ? category.toLowerCase() : false;
-    return chats.loadChatMessages(null, x => x.contentType === 'file', limit, offset, reverse, true, true, returnCount).then(data => {
+    return chats.getChatMessages(null, x => x.contentType === 'file', limit, offset, reverse, true, true, returnCount).then(data => {
         if (data && data.length) {
             const files = data.map(x => FileData.create(JSON.parse(x.content))).filter(x => ((!category || x.category === category) && x.isOK));
             return Promise.resolve(files);
@@ -55,11 +55,12 @@ const search = (keys, category = '') => {
 
 const uploadFile = (file, onProgress, copyCache) => {
     file = FileData.create(file);
-    let progressTime = 0;
+    let progressTime = 0, lastProgress = 0;
     return API.uploadFile(profile.user, file, progress => {
         const now = new Date().getTime();
-        if ((now - progressTime) > MIN_PROGRESS_CHANGE_INTERVAL) {
+        if (progress !== lastProgress && (now - progressTime) > MIN_PROGRESS_CHANGE_INTERVAL) {
             progressTime = now;
+            lastProgress = progress;
             if (onProgress) {
                 onProgress(progress, file);
             }

@@ -24,7 +24,6 @@ const COMMITTERS_TYPES = {
     all: 'all'
 };
 
-const MAX_MESSAGE_COUNT = Config.ui['chat.flow.size'];
 const DISMISS_VISIBLE_TIME = 1000 * 60 * 60 * 24 * 90;
 
 class Chat extends Entity {
@@ -624,10 +623,6 @@ class Chat extends Entity {
 
         this._messages = ChatMessage.sort(this._messages);
 
-        if (limitSize && this._messages.length > MAX_MESSAGE_COUNT) {
-            this._messages.splice(0, this._messages.length - MAX_MESSAGE_COUNT);
-        }
-
         this.renewUpdateId();
 
         return this;
@@ -647,6 +642,14 @@ class Chat extends Entity {
             }
         }
         return false;
+    }
+
+    get isLoadingOver() {
+        return this.loadingOffset === true;
+    }
+
+    get isFirstLoaded() {
+        return this.loadingOffset !== undefined;
     }
 
     static create(chat) {
