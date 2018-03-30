@@ -56,7 +56,7 @@ xxd/certificate
 xxd/log
 
 # documentation
-docs
+xxc/docs
 issues.md
 
 # xxd tmp files
