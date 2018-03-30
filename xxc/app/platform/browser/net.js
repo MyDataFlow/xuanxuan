@@ -1,8 +1,8 @@
 import network from '../common/network';
 
 network.downloadFile = (user, file, onProgress) => {
-    if (file.url) {
-        file.src = file.url;
+    if (!file.url) {
+        file.makeUrl(user);
     }
     return Promise.resolve(file);
 };

@@ -109,10 +109,32 @@ class Socket {
         this.client.on('close', this.handleClose.bind(this));
         this.client.on('error', this.handleError.bind(this));
         this.client.on('unexpected-response', this.handleError.bind(this));
+        this.client.on('pong', this.handlePong.bind(this));
+        this.client.on('ping', this.handlePing.bind(this));
     }
 
     reconnect() {
         return this.connect();
+    }
+
+    handlePing(data) {
+        if (this.onPing) {
+            this.onPing(data);
+        }
+
+        if (this.options && this.options.onPing) {
+            this.options.onPing(this, data);
+        }
+    }
+
+    handlePong(data) {
+        if (this.onPong) {
+            this.onPong(data);
+        }
+
+        if (this.options && this.options.onPong) {
+            this.options.onPong(this, data);
+        }
     }
 
     handleConnect() {

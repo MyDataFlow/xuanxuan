@@ -5,6 +5,7 @@ import {MemberListItem} from './member-list-item';
 import replaceViews from '../replace-views';
 import ListItem from '../../components/list-item';
 import Lang from '../../lang';
+import App from '../../core';
 
 class MemberList extends Component {
     static get MemberList() {
@@ -51,6 +52,22 @@ class MemberList extends Component {
         this.setState({page: this.state.page + 1});
     };
 
+    handleOnItemClick = e => {
+        const {onItemClick, eventBindObject} = this.props;
+        if (onItemClick) {
+            const member = App.members.get(e.currentTarget.attributes['data-id'].value);
+            onItemClick.call(eventBindObject, member);
+        }
+    };
+
+    handleOnItemContextMenu = e => {
+        const {onItemContextMenu, eventBindObject} = this.props;
+        if (onItemContextMenu) {
+            const member = App.members.get(e.currentTarget.attributes['data-id'].value);
+            onItemContextMenu.call(eventBindObject, member);
+        }
+    };
+
     render() {
         const {
             members,
@@ -83,7 +100,7 @@ class MemberList extends Component {
                 } else {
                     itemProps = listItemProps;
                 }
-                listViews.push(<MemberListItem avatarClassName={avatarClassName} onContextMenu={onItemContextMenu && onItemContextMenu.bind(eventBindObject, member)} onClick={onItemClick && onItemClick.bind(eventBindObject, member)} {...itemProps} key={member.account} member={member}>{contentRender && contentRender(member)}</MemberListItem>);
+                listViews.push(<MemberListItem data-id={member.id} avatarClassName={avatarClassName} onContextMenu={this.handleOnItemContextMenu} onClick={this.handleOnItemClick} {...itemProps} key={member.account} member={member}>{contentRender && contentRender(member)}</MemberListItem>);
             }
         }
         const notShowCount = members.length - maxIndex;

@@ -32,12 +32,6 @@ class MessageContentImage extends Component {
             download: null,
             url: message.attachFile ? message.attachFile.viewUrl : ''
         };
-        if (isBrowser) {
-            const image = message.imageContent;
-            if (image.type !== 'emoji' && image.type !== 'base64') {
-                this.state.url = FileData.create(image).makeUrl(App.user);
-            }
-        }
     }
 
     componentDidMount() {
@@ -67,7 +61,7 @@ class MessageContentImage extends Component {
                 this.setState({download: progress});
             }).then(file => {
                 if (this.unMounted) return;
-                this.setState({url: isBrowser ? file.src : `file://${file.localPath}`, download: true});
+                this.setState({url: isBrowser ? file.url : `file://${file.localPath}`, download: true});
             }).catch(error => {
                 if (this.unMounted) return;
                 this.setState({download: false});

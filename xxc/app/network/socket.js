@@ -3,7 +3,7 @@ import {Socket} from 'Platform';
 import SocketMessage from './socket-message';
 import Events from '../core/events';
 
-const PING_INTERVAL = DEBUG ? (1000 * 60) : (1000 * 60 * 3);
+const PING_INTERVAL = DEBUG ? (1000 * 60) : (1000 * 60 * 2);
 const LISTEN_TIMEOUT = 1000 * 15;
 
 const EVENT = {
@@ -61,10 +61,6 @@ class AppSocket extends Socket {
     }
 
     handleMessage(msg) {
-        if (msg.isSuccess) {
-            this.lastOkTime = this.lastHandTime;
-        }
-
         if (DEBUG) {
             console.collapse('SOCKET Data ⬇︎', 'purpleBg', msg.pathname, 'purplePale', msg.isSuccess ? 'OK' : 'FAILED', msg.isSuccess ? 'greenPale' : 'dangerPale');
             console.log('msg', msg);
@@ -132,7 +128,7 @@ class AppSocket extends Socket {
 
     onInit() {
         this.lastHandTime = 0;
-        this.lastOkTime = 0;
+        this.lastHandTime = 0;
     }
 
     onClose(code, reason, unexpected) {
@@ -259,7 +255,7 @@ class AppSocket extends Socket {
         if ((now - this.lastHandTime) > PING_INTERVAL * 2) {
             this.user.markDisconnect();
             this.close(null, 'ping_timeout');
-        } else {
+        } else if (!this.handlePing && !this.handlePong && !this.user.isVersionSupport('socketPing')) {
             return this.send('ping');
         }
     }
@@ -275,6 +271,15 @@ class AppSocket extends Socket {
         }
     }
 
+    onPing() {
+        this.lastHandTime = new Date().getTime();
+        console.collapse('SOCKET Ping ⬇︎', 'purpleBg', 'OK', 'greenPale');
+    }
+
+    onPong() {
+        this.onPing();
+    }
+
     /**
      * Start cyclical ping
      * @return {void}
@@ -284,7 +289,7 @@ class AppSocket extends Socket {
         if (this.isConnected) {
             this.pingTask = setInterval(() => {
                 const now = new Date().getTime();
-                if (now - this.lastOkTime > this.pingInterval) {
+                if (now - this.lastHandTime > this.pingInterval) {
                     this.ping();
                 }
             }, this.pingInterval / 2);
