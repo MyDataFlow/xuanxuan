@@ -21,6 +21,7 @@
 
 ```
 $ git clone https://github.com/easysoft/xuanxuan.git
+$ cd xuanxuan/xxc
 $ npm install
 $ npm run dev
 ```
@@ -65,7 +66,11 @@ $ npm -v
 $ git clone https://github.com/easysoft/xuanxuan.git
 ```
 
-下载完成后就会在你的系统创建一个名称为 `xuanxuan` 的目录，该目录内就是喧喧最新的源码。
+下载完成后就会在你的系统创建一个名称为 `xuanxuan` 的目录，该目录内就是喧喧最新的源码，其中客户端源码在 `xxc` 目录，以下所有操作都是在 `xxc` 目录下进行。
+
+```
+$ cd xuanxuan/xxc
+```
 
 如果你还没有安装或使用过 [git](https://git-scm.com/) 也不用担心，你仍然可以访问 [喧喧在 Github 上的页面](https://github.com/easysoft/xuanxuan)，直接点击 [“Download ZIP”](https://github.com/easysoft/xuanxuan/archive/master.zip) 来下载源码。下载完成后将 zip 文件解压到 `xuanxuan` 目录下即可。
 
