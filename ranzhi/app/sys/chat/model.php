@@ -25,9 +25,8 @@ class chatModel extends model
         $chat = $this->dao->select('*')->from(TABLE_IM_CHAT)->where('type')->eq('system')->fetch();
         if(!$chat)
         {
-            $id   = md5(time(). mt_rand());
             $chat = new stdclass();
-            $chat->gid         = substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
+            $chat->gid         = $this->createGID();
             $chat->name        = 'system group';
             $chat->type        = 'system';
             $chat->createdBy   = 'system';
@@ -628,8 +627,92 @@ class chatModel extends model
      */
     public function getOfflineNotify($userID)
     {
+        $messages = $this->dao->select('t2.*')->from(TABLE_IM_MESSAGESTATUS)->alias('t1')
+                ->leftjoin(TABLE_IM_MESSAGE)->alias('t2')->on("t2.gid = t1.gid")
+                ->where('t1.user')->eq($userID)
+                ->andWhere('t1.status')->eq('waiting')
+                ->andWhere('t2.type')->eq('notify')
+                ->fetchAll();
 
-        return array();
+        if(empty($messages)) return array();
+        $notify = $this->formatNotify($messages);
+        $gids   = array();
+        foreach($notify as $message) $gids[] = $message->gid;
+
+        $this->dao->update(TABLE_IM_MESSAGESTATUS)->set('status')->eq('sended')->where('gid')->in($gids)->andWhere('user')->eq($userID)->exec();
+        return $notify;
+    }
+
+    /**
+     * Get notify.
+     * @access public
+     * @return array
+     */
+    public function getNotify()
+    {
+        $onlineUsers = $this->getUserList('online');
+        if(empty($onlineUsers)) return array();
+        $onlineUsers = array_keys($onlineUsers);
+
+        $messages = $this->dao->select('t2.*')->from(TABLE_IM_MESSAGESTATUS)->alias('t1')
+                ->leftJoin(TABLE_IM_MESSAGE)->alias('t2')->on('t2.gid = t1.gid')
+                ->where('t1.status')->eq('waiting')
+                ->andWhere('t2.type')->eq('notify')
+                ->andWhere('t1.user')->in($onlineUsers)
+                ->groupBy('t1.gid')
+                ->fetchAll();
+        if(empty($messages)) return array();
+
+        $notify = $this->formatNotify($messages);
+        $data = array();
+        $gids = array();
+        foreach($notify as $message)
+        {
+            foreach($onlineUsers as $userID)
+            {
+                if(empty($message->user) || in_array($userID, $message->user)) $gids[$userID][] = $message->gid;
+                $data[$userID][] = $message;
+            }
+        }
+
+        foreach($gids as $userID => $gid)
+        {
+            $this->dao->update(TABLE_IM_MESSAGESTATUS)
+                ->set('status')->eq('sended')
+                ->where('gid')->in($gid)
+                ->andWhere('user')->eq($userID)
+                ->exec();
+        }
+        return $data;
+    }
+
+    /**
+     * Foramt messages for notify.
+     * @param object $messages
+     * @access public
+     * @return array
+     */
+    public function formatNotify($messages)
+    {
+        $notify = array();
+        foreach($messages as $message)
+        {
+            $data = new stdClass();
+            $messageData = json_decode($message->data);
+            $data->gid         = $message->gid;
+            $data->content     = $message->content;
+            $data->date        = strtotime($message->date);
+            $data->contentType = $message->contentType;
+            $data->title       = $messageData->title;
+            $data->subtitle    = $messageData->subtitle;
+            $data->url         = $messageData->url;
+            $data->actions     = $messageData->actions;
+            $data->sender      = $messageData->sender;
+            $data->users       = $messageData->target;
+
+            $notify[] = $data;
+        }
+        return $notify;
     }
 
     /**
@@ -640,7 +723,7 @@ class chatModel extends model
      */
     public function offlineUser($offline = array())
     {
-        $this->dao->update(TABLE_USER)->set('status')->eq('offline')->where('id')->in(array_values($offline))->exec();
+        $this->dao->update(TABLE_USER)->set('status')->eq('offline')->where('id')->in($offline)->exec();
         return !dao::isError();
     }
 
@@ -655,8 +738,8 @@ class chatModel extends model
         foreach($sendfail as $userID => $gid)
         {
             if(empty($gid)) continue;
-            $idList   = $this->dao->select('id')->from(TABLE_IM_MESSAGE)->where('gid')->in(array_values($gid))->fetchAll('id');
-            $messages = $this->getMessageList(array_values($idList));
+            $idList   = $this->dao->select('id')->from(TABLE_IM_MESSAGE)->where('gid')->in($gid)->fetchPairs();
+            $messages = $this->getMessageList($idList);
             $this->saveOfflineMessages($messages, $userID);
         }
         return !dao::isError();
@@ -747,4 +830,64 @@ EOT;
     {
         return $this->app->getBasepath() . 'db' . DS . 'upgradexuanxuan' . $version . '.sql';
     }
+
+    /**
+     * Insert message for notify.
+     * @param array  $target
+     * @param string $title
+     * @param string $subtitle
+     * @param string $content
+     * @param string $contentType
+     * @param string $url
+     * @param array  $actions
+     * @param int    $sender
+     * @access public
+     * @return bool
+     */
+    public function createNotify($target = '', $title = '', $subtitle = '', $content = '', $contentType = 'text', $url = '', $actions = array(), $sender = 0)
+	{
+		$users = $this->getUserList('', $target);
+
+		$info = array();
+		$info['title']    = $title;
+		$info['subtitle'] = $subtitle;
+		$info['url']	  = $url;
+		$info['actions']  = $actions;
+		$info['sender']	  = $sender;
+		$info['target']	  = array_keys($users);
+
+		$notify = new stdClass();
+		$notify->gid		 = $this->createGID();
+		$notify->cgid		 = '#notification';
+		$notify->user		 = 0;
+		$notify->date		 = helper::now();
+		$notify->order		 = 0;
+		$notify->type		 = 'notify';
+		$notify->content     = $content;
+		$notify->contentType = $contentType;
+		$notify->data		 = json_encode($info);
+
+		$this->dao->insert(TABLE_IM_MESSAGE)->data($notify)->exec();
+
+		foreach($info['target'] as $user)
+		{
+			$data = new stdClass();
+			$data->user   = $user;
+			$data->gid    = $notify->gid;
+			$data->status = 'waiting';
+			$this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
+		}
+        return !dao::isError();
+    }
+
+	/**
+	 * Create gid.
+	 * @access public
+	 * @return string
+	 */
+	public function createGID()
+	{
+		$id = md5(time(). mt_rand());
+		return substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
+	}
 }

@@ -17,35 +17,34 @@ import (
 	"strings"
 )
 
-func InitDB() *sql.DB{
-	dir , _ := os.Getwd()
-	println(dir + "/config/xxd.db")
-	DB, err := sql.Open("sqlite3", dir + "/config/xxd.db")
+func InitDB() *sql.DB {
+	dir, _ := os.Getwd()
+	DB, err := sql.Open("sqlite3", dir+"/config/xxd.db")
 	if err != nil {
-		LogError().Println("SQLite connect error", err);
+		LogError().Println("SQLite connect error", err)
 	}
-    return DB
+	return DB
 }
 
 func DBInsertOffline(server string, userID int64) {
 	stmt, err := DBConn.Prepare("INSERT INTO offline(server, userID) values(?,?)")
 	if err != nil {
-		LogError().Println("SQLite insert offline error", err);
+		LogError().Println("SQLite insert offline error", err)
 	}
 	stmt.Exec(server, userID)
 }
 
-func DBUserLogin(server string, userID int64){
+func DBUserLogin(server string, userID int64) {
 	_, err := DBConn.Exec("DELETE offline WHERE `server` = '" + server + "' AND `userID` = '" + string(userID) + "'")
 	if err != nil {
-		LogError().Println("SQLite delete offline user error", err);
+		LogError().Println("SQLite delete offline user error", err)
 	}
 }
 
 func DBInsertSendfail(server string, userID int64, gid string) {
 	stmt, err := DBConn.Prepare("INSERT INTO sendfail(server, userID, gid) values(?,?,?)")
 	if err != nil {
-		LogError().Println("SQLite insert sendfail error", err);
+		LogError().Println("SQLite insert sendfail error", err)
 	}
 	stmt.Exec(server, userID, gid)
 }
@@ -54,7 +53,7 @@ func DBSelectOffline(server string) ([]int, error) {
 	rows, err := DBConn.Query("SELECT `userID` FROM offline WHERE `server` = '" + server + "'")
 
 	if err != nil {
-		LogError().Println("SQLite Query offline error", err);
+		LogError().Println("SQLite Query offline error", err)
 		return []int{}, err
 	}
 
@@ -64,7 +63,7 @@ func DBSelectOffline(server string) ([]int, error) {
 		var userID int
 		err := rows.Scan(&userID)
 		if err != nil {
-			LogError().Println("SQLite scan offline userID error", err);
+			LogError().Println("SQLite scan offline userID error", err)
 			return []int{}, err
 		}
 		dict = append(dict, userID)
@@ -76,16 +75,16 @@ func DBSelectSendfail(server string) (map[int][]string, error) {
 	rows, err := DBConn.Query("SELECT `userID`,`gid` FROM sendfail WHERE `server` = '" + server + "'")
 
 	if err != nil {
-		LogError().Println("SQLite Query sendfail error", err);
+		LogError().Println("SQLite Query sendfail error", err)
 		return nil, err
 	}
 	dict := make(map[int][]string)
 	for rows.Next() {
 		var userID int
-		var gid	   string
+		var gid string
 		err := rows.Scan(&userID, &gid)
 		if err != nil {
-			LogError().Println("SQLite scan sendFail userID or gid error", err);
+			LogError().Println("SQLite scan sendFail userID or gid error", err)
 			return nil, err
 		}
 		dict[userID] = append(dict[userID], gid)
@@ -105,17 +104,17 @@ func DBDeleteOffline(server string, userID []int) {
 
 	_, err := DBConn.Exec("DELETE FROM offline WHERE `server` = '" + server + "' AND `userID` IN (" + strings.Join(IDs, ",") + ")")
 	if err != nil {
-		LogError().Println("SQLite DELETE offline error:", err);
+		LogError().Println("SQLite DELETE offline error:", err)
 	}
 }
 
-func DBDeleteSendfail(server string, gid map[int][]string)  {
+func DBDeleteSendfail(server string, gid map[int][]string) {
 	for userID, gids := range gid {
 		if len(gids) > 0 {
 			in := "'" + strings.Join(gids, "','") + "'"
 			_, err := DBConn.Exec("DELETE FROM sendfail WHERE `server` = '" + server + "' AND `userID` = " + string(userID) + " AND `gid` IN (" + in + ")")
 			if err != nil {
-				LogError().Println("SQLite DELETE sendfail error:", err);
+				LogError().Println("SQLite DELETE sendfail error:", err)
 			}
 		}
 	}

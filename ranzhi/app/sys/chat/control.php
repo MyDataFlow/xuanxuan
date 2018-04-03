@@ -1072,9 +1072,16 @@ class chat extends control
         if(!empty($offline))  $this->chat->offlineUser($offline);
         if(!empty($sendfail)) $this->chat->sendFailMessage($sendfail);
 
-        $this->output->result = 'success';
-        $this->output->data   = array();
-        $this->output->users  = array();
+        if(dao::isError())
+        {
+            $this->output->result  = 'fail';
+            $this->output->message = "Get notify fail.";
+        }
+        else
+        {
+            $this->output->result = 'success';
+            $this->output->data   = $this->chat->getNotify();
+        }
         die($this->app->encrypt($this->output));
     }
 
@@ -1099,6 +1106,7 @@ class chat extends control
             $this->output->data   = $messages;
         }
         $this->output->method = 'notify';
+        die($this->app->encrypt($this->output));
     }
 
     /**
