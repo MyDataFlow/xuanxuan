@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `im_message` (
   `user` varchar(30) NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `order` bigint(8) unsigned NOT NULL,
-  `type` enum('normal', 'broadcast') NOT NULL DEFAULT 'normal',
+  `type` enum('normal', 'broadcast', 'notify') NOT NULL DEFAULT 'normal',
   `content` text NOT NULL DEFAULT '',
   `contentType` enum('text', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
   `data` text NOT NULL DEFAULT '',
@@ -63,14 +63,12 @@ CREATE TABLE IF NOT EXISTS `im_chatuser`(
   UNIQUE KEY `chatuser` (`cgid`, `user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- DROP TABLE IF EXISTS `im_usermessage`;
-CREATE TABLE IF NOT EXISTS `im_usermessage`(
-  `id` mediumint(8) NOT NULL AUTO_INCREMENT,
-  `level` smallint(5) NOT NULL DEFAULT 3,
+-- DROP TABLE IF EXISTS `im_messagestatus`;
+CREATE TABLE `im_messagestatus` (
   `user` mediumint(8) NOT NULL DEFAULT 0,
-  `message` text NOT NULL DEFAULT '',
-  PRIMARY KEY `id` (`id`),
-  KEY `muser` (`user`)
+  `gid` char(40) NOT NULL DEFAULT '',
+  `status` enum('waiting','sended','readed','deleted') NOT NULL DEFAULT 'waiting',
+  UNIQUE KEY `user` (`user`,`gid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline';

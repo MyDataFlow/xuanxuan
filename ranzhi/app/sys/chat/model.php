@@ -782,8 +782,24 @@ EOT;
 
         switch($version)
         {
-        case '1.0': $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
+        case '1.0'  : $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
         case '1.1.0':
+        case '1.3.0': $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
+        case '1.4.0':
+            $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
+            $messagesList = $this->dao->select('*')->from(TABLE_IM_USERMESSAGE)->fetchAll();
+            if(!empty($messagesList)) foreach($messagesList as $messages)
+            {
+                $messages = json_decode($messages->message);
+                foreach($messages as $message)
+                {
+                    $data = new stdClass();
+                    $data->user   = $messages->uesr;
+                    $data->gid    = $message->gid;
+                    $data->status = 'waiting';
+                    $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
+                }
+            }
         default: $this->loadModel('setting')->setItem('system.sys.xuanxuan.global.version', $this->config->xuanxuan->version);
         }
 
