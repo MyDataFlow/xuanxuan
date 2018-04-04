@@ -10,60 +10,59 @@
 package api
 
 import (
-    "xxd/hyperttp"
-    "xxd/util"
-    "encoding/json"
+	"xxd/hyperttp"
+	"xxd/util"
 )
 
 var newline = []byte{'\n'}
 
 // 从客户端发来的登录请求，通过该函数转发到后台服务器进行登录验证
 func ChatLogin(clientData ParseData) ([]byte, int64, bool) {
-    ranzhiServer, ok := RanzhiServer(clientData.ServerName())
-    if !ok {
-        util.LogError().Println("no ranzhi server name")
-        return nil, -1, false
-    }
+	ranzhiServer, ok := RanzhiServer(clientData.ServerName())
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, -1, false
+	}
 
-    // 到http服务器请求，返回加密的结果
-    retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, ApiUnparse(clientData, ranzhiServer.RanzhiToken))
-    if err != nil {
-        util.LogError().Println("hyperttp request info error:", err)
-        return nil, -1, false
-    }
+	// 到http服务器请求，返回加密的结果
+	retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, ApiUnparse(clientData, ranzhiServer.RanzhiToken))
+	if err != nil {
+		util.LogError().Println("hyperttp request info error:", err)
+		return nil, -1, false
+	}
 
-    // 解析http服务器的数据,返回 ParseData 类型的数据
-    retData, err := ApiParse(retMessage, ranzhiServer.RanzhiToken)
-    if err != nil {
-        util.LogError().Println("api parse error:", err)
-        return nil, -1, false
-    }
+	// 解析http服务器的数据,返回 ParseData 类型的数据
+	retData, err := ApiParse(retMessage, ranzhiServer.RanzhiToken)
+	if err != nil {
+		util.LogError().Println("api parse error:", err)
+		return nil, -1, false
+	}
 
-    retMessage, err = SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
-    if err != nil {
-        util.LogError().Println("chat login swap token error:", err)
-        return nil, -1, false
-    }
+	retMessage, err = SwapToken(retMessage, ranzhiServer.RanzhiToken, util.Token)
+	if err != nil {
+		util.LogError().Println("chat login swap token error:", err)
+		return nil, -1, false
+	}
 
-    result := retData.Result() == "success"
-    if !result {
-        return nil, 0, false
-    }
+	result := retData.Result() == "success"
+	if !result {
+		return nil, 0, false
+	}
 
-    // 返回值：
-    // 1、返回给客户端加密后的数据
-    // 2、返回用户的ID
-    // 3、返回登录的结果
-    return retMessage, retData.loginUserID(), result
+	// 返回值：
+	// 1、返回给客户端加密后的数据
+	// 2、返回用户的ID
+	// 3、返回登录的结果
+	return retMessage, retData.loginUserID(), result
 }
 
 //客户端退出
 func ChatLogout(serverName string, userID int64) ([]byte, []int64, error) {
-    ranzhiServer, ok := RanzhiServer(serverName)
-    if !ok {
-        util.LogError().Println("no ranzhi server name")
-        return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
-    }
+	ranzhiServer, ok := RanzhiServer(serverName)
+	if !ok {
+		util.LogError().Println("no ranzhi server name")
+		return nil, nil, util.Errorf("%s\n", "no ranzhi server name")
+	}
 
 	request := []byte(`{"module":"chat","method":"logout","userID":` + util.Int642String(userID) + `}`)
 	message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
@@ -315,11 +314,11 @@ func GetOfflineNotify(serverName string, userID int64) ([]byte, error) {
 	return retData, nil
 }
 
-func ReportAndGetNotify(server string) ([]byte, []int64, bool) {
+func ReportAndGetNotify(server string) (map[int64][]byte, error) {
 	ranzhiServer, ok := RanzhiServer(server)
 	if !ok {
 		util.LogError().Println("no ranzhi server name")
-		return nil, nil, false
+		return nil, util.Errorf("%s\n", "no ranzhi server name")
 	}
 	//get offline data and sendfail message id from SQLite.
 	offline, _ := util.DBSelectOffline(server)
@@ -335,44 +334,37 @@ func ReportAndGetNotify(server string) ([]byte, []int64, bool) {
 	trunk["module"] = "chat"
 	trunk["method"] = "notify"
 	trunk["params"] = params
-	//encode json
-	jsonCode, err := json.Marshal(trunk)
-
-	if err != nil {
-		util.LogError().Println("encode json error:", err)
-		return nil, nil, false
-	}
-
-	message, err := aesEncrypt(jsonCode, ranzhiServer.RanzhiToken)
-	if err != nil {
-		util.LogError().Println("aes encrypt error:", err)
-		return nil, nil, false
-	}
 
 	//send message to xxb and get notify data
-	retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
+	retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, ApiUnparse(trunk, ranzhiServer.RanzhiToken))
 	if err != nil {
 		util.LogError().Println("hyperttp request info error:", err)
-		return nil, nil, false
+		return nil, err
 	}
 
-	jsonDeCode, _ := ApiParse(retMessage, ranzhiServer.RanzhiToken)
-
-	if jsonDeCode.Result() != "success" {
-		util.LogError().Println("request info status:", jsonDeCode.Result())
-		return nil, nil, false
+	decodeData, _ := ApiParse(retMessage, ranzhiServer.RanzhiToken)
+	if decodeData.Result() != "success" {
+		util.LogError().Println("request info status:", decodeData.Result())
+		return nil, err
 	}
 
-	users := jsonDeCode.SendUsers()
-
-	x2cMessage := ApiUnparse(jsonDeCode, util.Token)
-	if x2cMessage == nil {
-		return nil, nil, false
+	messageList := make(map[int64][]byte)
+	switch decodeData["data"].(type) {
+	  case map[string]interface{} :
+		  data := decodeData["data"].(map[string]interface{})
+		  for userID, messages := range data {
+		  	userNotify := make(map[string]interface{})
+		  	userNotify["module"] = "chat"
+		  	userNotify["method"] = "notify"
+		  	userNotify["data"] = messages
+		  	uid, _ := util.String2Int64(userID)
+		  	messageList[uid] = ApiUnparse(userNotify, util.Token)
+		  }
 	}
 
 	go util.DBDeleteOffline(server, offline)
 	go util.DBDeleteSendfail(server, sendfail)
-	return x2cMessage, users, jsonDeCode["data"] == ""
+	return messageList, nil
 }
 
 // 与客户端间的错误通知

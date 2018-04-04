@@ -350,13 +350,19 @@ class chatModel extends model
      */
     public function getOfflineMessages($userID = 0)
     {
-        $messages = array();
-        $dataList = $this->dao->select('*')->from(TABLE_IM_USERMESSAGE)->where('user')->eq($userID)->orderBy('level, id')->fetchAll();
-        foreach($dataList as $data)
-        {
-            $messages = array_merge($messages, json_decode($data->message));
-        }
-        if(!dao::isError()) $this->dao->delete()->from(TABLE_IM_USERMESSAGE)->where('user')->eq($userID)->exec();
+        $messages = $this->dao->select('t2.*')->from(TABLE_IM_MESSAGESTATUS)->alias('t1')
+            ->leftJoin(TABLE_IM_MESSAGE)->alias('t2')->on('t2.gid = t1.gid')
+            ->where('t1.user')->eq($userID)
+            ->andWhere('t1.status')->eq('waiting')
+            ->orderBy('t2.order desc, t2.id desc')
+            ->fetchAll();
+        if(empty($messages)) return $messages;
+
+        $this->dao->update(TABLE_IM_MESSAGESTATUS)
+            ->set('status')->eq('sended')
+            ->where('user')->eq($userID)
+            ->andWhere('status')->eq('waiting')
+            ->exec();
         return $messages;
     }
 
@@ -612,10 +618,14 @@ class chatModel extends model
     {
         foreach($users as $user)
         {
-            $data = new stdclass();
-            $data->user    = $user;
-            $data->message = helper::jsonEncode($messages);
-            $this->dao->insert(TABLE_IM_USERMESSAGE)->data($data)->exec();
+            foreach($messages as $message)
+            {
+                $data = new stdClass();
+                $data->user   = $user;
+                $data->gid    = $message->gid;
+                $data->status = 'waiting';
+                $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
+            }
         }
         return !dao::isError();
     }
@@ -723,6 +733,7 @@ class chatModel extends model
      */
     public function offlineUser($offline = array())
     {
+        if(empty($offline)) return true;
         $this->dao->update(TABLE_USER)->set('status')->eq('offline')->where('id')->in($offline)->exec();
         return !dao::isError();
     }
@@ -871,11 +882,11 @@ EOT;
 
 		foreach($info['target'] as $user)
 		{
-			$data = new stdClass();
-			$data->user   = $user;
-			$data->gid    = $notify->gid;
-			$data->status = 'waiting';
-			$this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
+            $data = new stdClass();
+            $data->user   = $user;
+            $data->gid    = $notify->gid;
+            $data->status = 'waiting';
+            $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
 		}
         return !dao::isError();
     }
@@ -887,7 +898,7 @@ EOT;
 	 */
 	public function createGID()
 	{
-		$id = md5(time(). mt_rand());
-		return substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
+	    $id = md5(time(). mt_rand());
+        return substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
 	}
 }
