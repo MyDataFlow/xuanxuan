@@ -357,7 +357,7 @@ class chatModel extends model
             ->andWhere('t2.type')->ne('notify')
             ->orderBy('t2.order desc, t2.id desc')
             ->fetchAll();
-        if(empty($messages)) return $messages;
+        if(empty($messages)) return array();
 
         $this->dao->update(TABLE_IM_MESSAGESTATUS)
             ->set('status')->eq('sended')
