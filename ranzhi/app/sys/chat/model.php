@@ -354,6 +354,7 @@ class chatModel extends model
             ->leftJoin(TABLE_IM_MESSAGE)->alias('t2')->on('t2.gid = t1.gid')
             ->where('t1.user')->eq($userID)
             ->andWhere('t1.status')->eq('waiting')
+            ->andWhere('t2.type')->ne('notify')
             ->orderBy('t2.order desc, t2.id desc')
             ->fetchAll();
         if(empty($messages)) return $messages;
