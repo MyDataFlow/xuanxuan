@@ -35,7 +35,6 @@ func DBInsertOffline(server string, userID int64) {
 }
 
 func DBUserLogin(server string, userID int64) {
-    Println("DELETE FROM offline WHERE `server` = '" + server + "' AND `userID` = '" + Int642String(userID) + "'")
     _, err := DBConn.Exec("DELETE FROM offline WHERE `server` = '" + server + "' AND `userID` = '" + Int642String(userID) + "'")
     if err != nil {
         LogError().Println("SQLite delete offline user error", err)
