@@ -83,7 +83,7 @@ http://xuan.im
 客户端主要使用的技术为 `Webpack + Electron + React`。使用下面的步骤快速进入开发状态：
 
 1. 下载源码：`git clone https://git.oschina.net/wwccss/xuanxuan.git`；
-2. 在源码目录执行：`npm install`；
+2. 进入源码目录的子目录 `xxc/`，执行：`npm install`；
 3. 启动 react hot server，执行：`npm run hot-server`；
 4. 启动客户端，执行：`npm run start-hot`。
 
