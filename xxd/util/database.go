@@ -35,7 +35,7 @@ func DBInsertOffline(server string, userID int64) {
 }
 
 func DBUserLogin(server string, userID int64) {
-    _, err := DBConn.Exec("DELETE offline WHERE `server` = '" + server + "' AND `userID` = '" + string(userID) + "'")
+    _, err := DBConn.Exec("DELETE FROM offline WHERE `server` = '" + server + "' AND `userID` = '" + Int642String(userID) + "'")
     if err != nil {
         LogError().Println("SQLite delete offline user error", err)
     }
@@ -104,7 +104,7 @@ func DBDeleteOffline(server string, userID []int) {
 
     _, err := DBConn.Exec("DELETE FROM offline WHERE `server` = '" + server + "' AND `userID` IN (" + strings.Join(IDs, ",") + ")")
     if err != nil {
-        LogError().Println("SQLite DELETE offline error:", err)
+        LogError().Println("SQLite DELETE offline users error:", err)
     }
 }
 
@@ -114,7 +114,7 @@ func DBDeleteSendfail(server string, gid map[int][]string) {
             in := "'" + strings.Join(gids, "','") + "'"
             _, err := DBConn.Exec("DELETE FROM sendfail WHERE `server` = '" + server + "' AND `userID` = " + string(userID) + " AND `gid` IN (" + in + ")")
             if err != nil {
-                LogError().Println("SQLite DELETE sendfail error:", err)
+                LogError().Println("SQLite DELETE sendfail messages error:", err)
             }
         }
     }
