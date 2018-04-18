@@ -1,4 +1,4 @@
-import electron, {app as ElectronApp, Menu, shell} from 'electron';
+import {app as ElectronApp, Menu, shell} from 'electron';
 import Config from './config';
 import DEBUG from './utils/debug';
 import application from './platform/electron/app-remote';
@@ -8,12 +8,12 @@ ElectronApp.commandLine.appendSwitch('ignore-certificate-errors');
 
 application.init(__dirname);
 
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support'); // eslint-disable-line
     sourceMapSupport.install();
 }
 
-if(DEBUG && DEBUG !== 'production') {
+if (DEBUG && DEBUG !== 'production') {
     require('electron-debug')(); // eslint-disable-line global-require
     const path = require('path'); // eslint-disable-line
     const p = path.join(__dirname, '..', 'app', 'node_modules'); // eslint-disable-line
@@ -25,7 +25,7 @@ ElectronApp.on('window-all-closed', () => {
     ElectronApp.quit();
 });
 
-const installExtensions = async() => {
+const installExtensions = async () => {
     if (DEBUG) {
         const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
@@ -36,7 +36,7 @@ const installExtensions = async() => {
         const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
         for (const name of extensions) { // eslint-disable-line
             try {
-                await installer.default(installer[name], forceDownload);
+                await installer.default(installer[name], forceDownload); // eslint-disable-line
             } catch (e) {} // eslint-disable-line
         }
     }
@@ -176,24 +176,22 @@ const createMenu = () => {
 
         const menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
-        if(DEBUG) {
+        if (DEBUG) {
             console.log('Mac os menu created.');
         }
-    } else {
-        if(DEBUG) {
-            console.log('\n>> Windows menu not avaliable now.');
-        }
+    } else if (DEBUG) {
+        console.log('\n>> Windows menu not avaliable now.');
     }
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-ElectronApp.on('ready', async() => {
+ElectronApp.on('ready', async () => {
     await installExtensions();
     application.ready();
     createMenu();
-    if(DEBUG) console.info('\n>> Electron app ready.');
+    if (DEBUG) console.info('\n>> Electron app ready.');
 });
 
 ElectronApp.on('activate', () => {
@@ -201,19 +199,19 @@ ElectronApp.on('activate', () => {
     // dock icon is clicked and there are no other windows open.
     application.openMainWindow();
     createMenu();
-    if(DEBUG) console.info('\n>> Electron app activate.');
+    if (DEBUG) console.info('\n>> Electron app activate.');
 });
 
-if(typeof ElectronApp.setAboutPanelOptions === 'function') {
+if (typeof ElectronApp.setAboutPanelOptions === 'function') {
     ElectronApp.setAboutPanelOptions({
         applicationName: Lang.title,
         applicationVersion: Config.pkg.version,
         copyright: 'Copyright (C) 2017 cnezsoft.com',
-        credits: 'Licence: ' + Config.pkg.license,
+        credits: `Licence: ${Config.pkg.license}`,
         version: DEBUG ? '[debug]' : ''
     });
 }
 
-if(DEBUG) {
+if (DEBUG) {
     console.info('\n>> Electron main process finish.');
 }
