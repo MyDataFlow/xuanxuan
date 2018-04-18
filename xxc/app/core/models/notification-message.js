@@ -17,6 +17,10 @@ export default class NotificationMessage extends ChatMessage {
         return this._sender;
     }
 
+    get senderId() {
+        return this.notification.sender.id || 'robot1';
+    }
+
     get isNotification() {
         return true;
     }

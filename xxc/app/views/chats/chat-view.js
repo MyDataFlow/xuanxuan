@@ -93,7 +93,7 @@ class ChatView extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-chat dock', className, {hidden})}
+            className={HTML.classes('app-chat dock', className, {hidden, 'chat-readonly': isReadOnly})}
         >
             {isRobot ? chatView : <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 {chatView}
