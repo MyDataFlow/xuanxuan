@@ -60,9 +60,11 @@ func InitWs() {
 func cronReport(hub *Hub) {
     go func() {
         reportTicker := time.NewTicker(60 * time.Second)
+        changeTicker := time.NewTicker(60 * time.Second)
 
         defer func() {
             reportTicker.Stop()
+            changeTicker.Stop()
         }()
 
         for util.Run {
@@ -75,6 +77,16 @@ func cronReport(hub *Hub) {
                             if client, ok := hub.clients[server][userID]; ok {
                                 client.send <- message
                             }
+                        }
+                    }
+                }
+
+            case <-changeTicker.C:
+                for server := range util.Config.RanzhiServer {
+                    getList, err := api.CheckUserChange(server)
+                    if getList != nil && err == nil {
+                        for _, client := range hub.clients[server] {
+                            client.send <- getList;
                         }
                     }
                 }
