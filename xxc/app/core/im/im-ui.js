@@ -94,15 +94,18 @@ const activeAndMapCacheChats = (chat, callback) => {
 };
 
 const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
-    const items = [{
-        id: 'star',
-        className: chat.star ? 'app-chat-star-icon stared' : 'app-chat-star-icon ',
-        icon: 'star-outline',
-        label: Lang.string(chat.star ? 'chat.toolbor.unstar' : 'chat.toolbor.star'),
-        click: () => {
-            Server.toggleChatStar(chat);
-        }
-    }];
+    const items = [];
+    if (!chat.isRobot) {
+        items.push({
+            id: 'star',
+            className: chat.star ? 'app-chat-star-icon stared' : 'app-chat-star-icon ',
+            icon: 'star-outline',
+            label: Lang.string(chat.star ? 'chat.toolbor.unstar' : 'chat.toolbor.star'),
+            click: () => {
+                Server.toggleChatStar(chat);
+            }
+        });
+    }
     if (chat.canInvite(profile.user)) {
         items.push({
             id: 'invite',

@@ -204,7 +204,7 @@ const chatNotify = (msg, socket) => {
         }
 
         if (messages && messages.length) {
-            messages = messages.forEach(x => {x.type = 'notification';});
+            messages.forEach(x => {x.type = 'notification';});
             chats.updateChatMessages(messages);
         }
     }

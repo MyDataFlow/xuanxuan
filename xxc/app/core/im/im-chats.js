@@ -131,7 +131,7 @@ const updateChatMessages = (messages, muted = false) => {
     const updatedChats = {};
     Object.keys(chatsMessages).forEach(cgid => {
         const chat = get(cgid);
-        if (chat && chat.id && chat.isMember(profile.userId)) {
+        if (chat && (chat.id || chat.isRobot) && chat.isMember(profile.userId)) {
             chat.addMessages(chatsMessages[cgid], profile.userId, true, muted);
             if (muted) {
                 chat.muteNotice();
@@ -295,7 +295,8 @@ const init = (chatArr) => {
             gid: 'littlexx',
             name: Lang.string('common.littlexx'),
             type: 'robot',
-            lastActiveTime: new Date().getTime() - Math.floor(MAX_RECENT_TIME / 2)
+            lastActiveTime: new Date().getTime() - Math.floor(MAX_RECENT_TIME / 2),
+            members: [profile.user.id]
         });
         update(chatArr);
         forEach(chat => {
