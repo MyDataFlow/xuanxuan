@@ -1194,6 +1194,7 @@ class chat extends control
             $this->output->result  = 'fail';
         }
         $this->output->users = array($userID);
+        die($this->app->encrypt($this->output));
     }
 
     /**
