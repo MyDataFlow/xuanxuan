@@ -143,7 +143,7 @@ class chatModel extends model
     {
         if(empty($user->id)) return null;
         $this->dao->update(TABLE_USER)->data($user)->where('id')->eq($user->id)->exec();
-        $this->loadModel('action')->setItem('user', $user->id, 'update');
+        $this->loadModel('action')->create('user', $user->id, 'update');
         return $this->getUserByUserID($user->id);
     }
 
