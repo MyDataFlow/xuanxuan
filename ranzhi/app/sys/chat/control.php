@@ -172,6 +172,7 @@ class chat extends control
         }
         else
         {
+            $this->loadModel('action')->create('user', $userID, 'update');
             $this->output->result = 'success';
             $this->output->users  = array_keys($users);
             $this->output->data   = $user;
