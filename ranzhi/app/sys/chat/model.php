@@ -110,7 +110,7 @@ class chatModel extends model
      * @access public
      * @return array
      */
-    public function getUserList($status = '', $idList = array(), $idAsKey= true)
+    public function getUserList($status = '', $idList = array(), $idAsKey = true)
     {
         $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')
             ->from(TABLE_USER)->where('1')
