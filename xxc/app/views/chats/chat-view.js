@@ -64,6 +64,7 @@ class ChatView extends Component {
 
         const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
         const isReadOnly = chat.isReadonly(App.profile.user);
+        const isRobot = chat.isRobot;
 
         let chatView = null;
         if (isReadOnly) {
@@ -78,7 +79,7 @@ class ChatView extends Component {
             chatView = (<div className="column single dock">
                 <ChatHeader chat={chat} className="flex-none" />
                 <ChatMessages chat={chat} className="flex-auto relative" />
-                <div className="flex-none gray text-gray heading"><Avatar icon="lock-outline" /><div className="title">{blockTip}</div></div>
+                {isRobot ? null : <div className="flex-none gray text-gray heading"><Avatar icon="lock-outline" /><div className="title">{blockTip}</div></div>}
             </div>);
         } else {
             chatView = (<SplitPane split="horizontal" primary="second" maxSize={500} minSize={80} defaultSize={100} paneStyle={{userSelect: 'none'}}>
@@ -94,10 +95,10 @@ class ChatView extends Component {
             {...other}
             className={HTML.classes('app-chat dock', className, {hidden})}
         >
-            <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200} paneStyle={{userSelect: 'none'}}>
+            {isRobot ? chatView : <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 {chatView}
                 <ChatSidebar chat={chat} />
-            </SplitPane>
+            </SplitPane>}
             {children}
         </div>);
     }

@@ -1,3 +1,5 @@
+import StringHelper from '../../utils/string-helper';
+
 const TYPES = {
     int: 'int',
     float: 'float',
@@ -8,7 +10,8 @@ const TYPES = {
     array: 'array',
     timestamp: 'timestamp',
     datetime: 'datetime',
-    set: 'set'
+    set: 'set',
+    json: 'json',
 };
 
 
@@ -81,6 +84,15 @@ const defaultValuesConveter = {
             return val;
         }
         return new Date(val);
+    },
+    json: json => {
+        if (typeof val === 'string') {
+            if (StringHelper.isNotEmpty(json)) {
+                return JSON.parse(json);
+            }
+            return null;
+        }
+        return json;
     }
 };
 

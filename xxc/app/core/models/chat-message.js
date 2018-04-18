@@ -12,6 +12,7 @@ const STATUS = new Status({
 const TYPES = {
     broadcast: 'broadcast',
     normal: 'normal',
+    notification: 'notification'
 };
 
 const CONTENT_TYPES = {
@@ -38,6 +39,7 @@ class ChatMessage extends Entity {
         content: {type: 'string', defaultValue: null},
         unread: {type: 'boolean', indexed: true, defaultValue: false},
         status: {type: 'int', indexed: true},
+        data: {type: 'json'},
     });
 
     constructor(data, entityType = ChatMessage.NAME) {
@@ -152,6 +154,21 @@ class ChatMessage extends Entity {
 
     set unread(unread) {
         this.$set('unread', unread);
+    }
+
+    get data() {
+        if (this._data === undefined) {
+            this._data = this.$get('data');
+        }
+        return this._data;
+    }
+
+    set data(data) {
+        if (typeof data !== 'string') {
+            data = JSON.stringify(data);
+            delete this._data;
+        }
+        this.$set('data', data);
     }
 
     get date() {

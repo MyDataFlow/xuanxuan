@@ -263,11 +263,9 @@
       font-weight: bold;
       display: inline-block;
       margin-right: (5*@rem);
-
-      &:hover:before {
-        content: '@';
-      }
     }
+
+    > a.title:hover:before {content: '@';}
 
     > small {
       opacity: .6;
@@ -818,6 +816,43 @@
     > .btn-copy-code {
       visibility: visible;
       opacity: 1;
+    }
+  }
+}
+
+.app-message-notification {
+  display: inline-flex;
+  flex-direction: column;
+  padding: (@space*3/4);
+  margin-top: @space-xs;
+  min-width: (300*@rem);
+  max-width: (800*@rem);
+
+  .markdown-content {
+    color: rgba(0,0,0,.6);
+    > h4 {
+      font-size: (16*@rem);
+      font-weight: normal;
+      margin-bottom: @space-sm;
+      margin-top: 0;
+      color: @color-fore;
+    }
+    > h5 {
+      font-size: (14*@rem);
+      font-weight: normal;
+      opacity: .75;
+    }
+  }
+
+  > .actions {
+    margin-top: @space-sm;
+
+    .btn {
+      &.normal.outline {
+        border-color: rgba(0,0,0,.25);
+        color: rgba(0,0,0,.7);
+      }
+      + .btn {margin-left: @space-sm;}
     }
   }
 }

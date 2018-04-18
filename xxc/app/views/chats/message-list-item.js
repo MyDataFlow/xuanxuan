@@ -12,6 +12,7 @@ import {MessageContentFile} from './message-content-file';
 import {MessageContentImage} from './message-content-image';
 import {MessageContentText} from './message-content-text';
 import {MessageBroadcast} from './message-broadcast';
+import {NotificationMessage} from './notification-message';
 import replaceViews from '../replace-views';
 
 const showTimeLabelInterval = 1000 * 60 * 5;
@@ -184,7 +185,7 @@ export default class MessageListItem extends Component {
 
         const needCheckResend = !ignoreStatus && message.needCheckResend;
         const needResend = !ignoreStatus && needCheckResend && message.needResend;
-
+        const isNotification = message.isNotification;
 
         if (hideHeader === 0) {
             hideHeader = !showDateDivider && lastMessage && lastMessage.senderId === message.senderId && lastMessage.type === message.type;
@@ -206,15 +207,17 @@ export default class MessageListItem extends Component {
                 this.needGetSendInfo = sender.id;
             }
             headerView = (<div className="app-message-item-header">
-                <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu} onClick={MemberProfileDialog.show.bind(null, sender, null)} />
+                <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu} onClick={isNotification ? null : MemberProfileDialog.show.bind(null, sender, null)} />
                 <header style={titleFontStyle}>
-                    <a className="title rounded text-primary" onContextMenu={staticUI ? null : this.handleUserContextMenu} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>
+                    {isNotification ? <span className="title text-primary">{sender.displayName}</span> : <a className="title rounded text-primary" onContextMenu={staticUI ? null : this.handleUserContextMenu} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>}
                     <small className="time">{DateHelper.formatDate(message.date, dateFormater)}</small>
                 </header>
             </div>);
         }
 
-        if (message.isFileContent) {
+        if (isNotification) {
+            contentView = <NotificationMessage message={message} />;
+        } else if (message.isFileContent) {
             contentView = <MessageContentFile message={message} />;
         } else if (message.isImageContent) {
             contentView = <MessageContentImage message={message} />;

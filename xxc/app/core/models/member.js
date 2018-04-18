@@ -149,7 +149,9 @@ class Member extends Entity {
 
     getAvatar(serverUrl) {
         let avatar = this.avatar;
-        if (serverUrl && avatar && !avatar.startsWith('https://') && !avatar.startsWith('http://')) {
+        if (avatar.startsWith('$')) {
+            avatar = avatar.substr(1);
+        } else if (serverUrl && avatar && !avatar.startsWith('https://') && !avatar.startsWith('http://')) {
             if (!(serverUrl instanceof URL)) {
                 serverUrl = new URL(serverUrl);
             }

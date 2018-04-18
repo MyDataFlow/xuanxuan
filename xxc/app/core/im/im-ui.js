@@ -121,6 +121,9 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             ChatsHistoryDialog.show(chat);
         }
     });
+    if (chat.isRobot) {
+        showSidebarIcon = false;
+    }
     if (showSidebarIcon === 'auto') {
         showSidebarIcon = profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
     }

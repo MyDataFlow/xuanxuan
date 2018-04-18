@@ -1,6 +1,7 @@
 import Config from 'Config';
 import Chat from '../models/chat';
 import ChatMessage from '../models/chat-message';
+import NotificationMessage from '../models/notification-message';
 import profile from '../profile';
 import Events from '../events';
 import members from '../members';
@@ -61,6 +62,18 @@ const get = (gid) => {
     return chat;
 };
 
+const createChatMessage = message => {
+    if (message instanceof ChatMessage) {
+        return message;
+    }
+    if (message.type === 'notification') {
+        message = NotificationMessage.create(message);
+    } else {
+        message = ChatMessage.create(message);
+    }
+    return message;
+};
+
 const getOne2OneChatGid = members => {
     if (members instanceof Set) {
         members = Array.from(members);
@@ -106,7 +119,7 @@ const updateChatMessages = (messages, muted = false) => {
     }
     const chatsMessages = {};
     const messagesForUpdate = messages.map(message => {
-        message = ChatMessage.create(message);
+        message = createChatMessage(message);
         if (!chatsMessages[message.cgid]) {
             chatsMessages[message.cgid] = [message];
         } else {
@@ -171,7 +184,7 @@ const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offs
     }
     return collection.toArray(chatMessages => {
         if (chatMessages && chatMessages.length) {
-            const result = rawData ? chatMessages : chatMessages.map(ChatMessage.create);
+            const result = rawData ? chatMessages : chatMessages.map(createChatMessage);
             if (!skipAdd && cgid) {
                 chat.addMessages(result, profile.userId, true, true);
                 Events.emitDataChange({chats: {[cgid]: chat}});
@@ -278,6 +291,12 @@ const init = (chatArr) => {
     publicChats = null;
     chats = {};
     if (chatArr && chatArr.length) {
+        chatArr.push({
+            gid: 'littlexx',
+            name: Lang.string('common.littlexx'),
+            type: 'robot',
+            lastActiveTime: new Date().getTime() - Math.floor(MAX_RECENT_TIME / 2)
+        });
         update(chatArr);
         forEach(chat => {
             if (chat.isOne2One) {

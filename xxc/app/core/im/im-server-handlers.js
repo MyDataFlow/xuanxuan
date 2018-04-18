@@ -7,6 +7,7 @@ import Lang from '../../lang';
 import members from '../members';
 import imServer from './im-server';
 import imUI from './im-ui';
+import NotificationMessage from '../models/notification-message';
 
 const chatChangename = (msg, socket) => {
     if (msg.isSuccess) {
@@ -191,6 +192,24 @@ const chatGetpubliclist = (msg, socket) => {
     chats.updatePublicChats(publicChats);
 };
 
+const chatNotify = (msg, socket) => {
+    if (msg.isSuccess) {
+        let messages = msg.data;
+        if (!Array.isArray(messages)) {
+            if (messages.cgid) {
+                messages = [messages];
+            } else {
+                messages = Object.keys(messages).map(x => messages[x]);
+            }
+        }
+
+        if (messages && messages.length) {
+            messages = messages.forEach(x => {x.type = 'notification';});
+            chats.updateChatMessages(messages);
+        }
+    }
+};
+
 export default {
     'chat/changename': chatChangename,
     'chat/setcommitters': chatSetcomitters,
@@ -206,4 +225,5 @@ export default {
     'chat/dismiss': chatDismiss,
     'chat/changepublic': chatChangepublic,
     'chat/getpubliclist': chatGetpubliclist,
+    'chat/notify': chatNotify
 };

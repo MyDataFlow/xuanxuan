@@ -16,6 +16,7 @@ const TYPES = {
     one2one: 'one2one',
     group: 'group',
     system: 'system',
+    robot: 'robot'
 };
 
 const COMMITTERS_TYPES = {
@@ -126,6 +127,10 @@ class Chat extends Entity {
         return type;
     }
 
+    get isRobot() {
+        return this.type === TYPES.robot;
+    }
+
     set type(type) {
         this.$set('type', type);
     }
@@ -166,6 +171,9 @@ class Chat extends Entity {
 
     getDisplayName(app, includeMemberCount = false) {
         const name = this.name;
+        if (this.isRobot) {
+            includeMemberCount = false;
+        }
         if (this.isOne2One) {
             const otherOne = this.getTheOtherOne(app);
             return otherOne ? otherOne.displayName : Lang.string('chat.tempChat.name');
@@ -311,27 +319,27 @@ class Chat extends Entity {
     }
 
     canRename(user) {
-        return !this.isDismissed && this.isCommitter(user) && !this.isOne2One;
+        return !this.isRobot && !this.isDismissed && this.isCommitter(user) && !this.isOne2One;
     }
 
     canInvite(user) {
-        return !this.isDismissed && (this.isAdmin(user) || this.isCommitter(user)) && (!this.isSystem);
+        return !this.isRobot && !this.isDismissed && (this.isAdmin(user) || this.isCommitter(user)) && (!this.isSystem);
     }
 
     canKickOff(user, kickOfWho) {
-        return this.isGroup && !this.isSystem && (!kickOfWho || kickOfWho.id !== user.id) && this.isAdmin(user);
+        return !this.isRobot && this.isGroup && !this.isSystem && (!kickOfWho || kickOfWho.id !== user.id) && this.isAdmin(user);
     }
 
     canMakePublic(user) {
-        return !this.isDismissed && this.isAdmin(user) && this.isGroup;
+        return !this.isRobot && !this.isDismissed && this.isAdmin(user) && this.isGroup;
     }
 
     canSetCommitters(user) {
-        return !this.isDismissed && this.isAdmin(user) && !this.isOne2One;
+        return !this.isRobot && !this.isDismissed && this.isAdmin(user) && !this.isOne2One;
     }
 
     isReadonly(member) {
-        return this.isDeleteOne2One || this.isDismissed || !this.isCommitter(member);
+        return this.isRobot || this.isDeleteOne2One || this.isDismissed || !this.isCommitter(member);
     }
 
     get visible() {
@@ -528,7 +536,7 @@ class Chat extends Entity {
     }
 
     get isSystem() {
-        return this.type === TYPES.system;
+        return this.type === TYPES.system || this.type === TYPES.robot;
     }
 
     get isGroupOrSystem() {

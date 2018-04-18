@@ -35,6 +35,9 @@
     "common.shareMenu": "共享…",
     "common.required": "必填项",
     "common.requiredField.format": "【{0}】为必填项",
+    "common.littlexx": "小喧喧",
+    "common.littlexxSubname": "通知中心",
+    "common.viewDetail": "查看详情",
 
     "menu.about": "关于",
     "menu.hideCurrentWindow": "隐藏当前窗口",

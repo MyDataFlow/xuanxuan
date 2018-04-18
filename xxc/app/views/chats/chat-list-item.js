@@ -66,7 +66,11 @@ class ChatListItem extends Component {
                 subname = `[${Lang.string('member.status.offline')}]`;
             }
         } else if (chat.isSystem) {
-            subname = `(${Lang.format('chat.membersCount.format', Lang.string('chat.all'))})`;
+            if (chat.isRobot) {
+                subname = `(${Lang.string('common.littlexxSubname')})`;
+            } else {
+                subname = `(${Lang.format('chat.membersCount.format', Lang.string('chat.all'))})`;
+            }
         } else if (chat.isGroup) {
             subname = `(${Lang.format('chat.membersCount.format', chat.membersCount)})`;
         }

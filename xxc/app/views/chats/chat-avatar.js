@@ -7,6 +7,7 @@ import {UserAvatar} from '../common/user-avatar';
 import replaceViews from '../replace-views';
 
 const chatIcons = {
+    robot: {name: 'robot', colorClass: 'text-accent'},
     group: {name: 'comment-multiple-outline', colorClass: 'text-info'},
     'public-group': {name: 'pound-box', colorClass: 'text-green'},
     'system-group': {name: 'comment-text', colorClass: 'text-primary'}
@@ -70,7 +71,7 @@ class ChatAvatar extends Component {
         }
         let icon = null;
         if (chat.isSystem) {
-            icon = chatIcons['system-group'];
+            icon = chat.isRobot ? chatIcons.robot : chatIcons['system-group'];
         } else if (chat.public) {
             icon = chatIcons['public-group'];
         } else {
