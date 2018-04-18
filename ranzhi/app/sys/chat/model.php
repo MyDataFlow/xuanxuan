@@ -143,6 +143,7 @@ class chatModel extends model
     {
         if(empty($user->id)) return null;
         $this->dao->update(TABLE_USER)->data($user)->where('id')->eq($user->id)->exec();
+        $this->loadModel('action')->setItem('user', $user->id, 'update');
         return $this->getUserByUserID($user->id);
     }
 
@@ -710,6 +711,7 @@ class chatModel extends model
         {
             $data = new stdClass();
             $messageData = json_decode($message->data);
+            $data->id          = $message->id;
             $data->gid         = $message->gid;
             $data->content     = $message->content;
             $data->date        = strtotime($message->date);
@@ -918,4 +920,14 @@ EOT;
 	    $id = md5(time(). mt_rand());
         return substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
 	}
+
+    public function checkUserChange()
+    {
+        $data = $this->dao->select('id')->from(TABLE_ACTION)
+            ->where('objectType')->eq('user')
+            ->andWhere('action')->in('create,update,delete')
+            ->andWhere('date')->gt(date(DT_DATETIME1, strtotime('-1 Minute')))
+            ->fetch();
+        return empty($data) ? 'no' : 'yes';
+    }
 }

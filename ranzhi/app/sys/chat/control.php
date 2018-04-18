@@ -165,7 +165,6 @@ class chat extends control
         $user->id = $userID;
         $user  = $this->chat->editUser($user);
         $users = $this->chat->getUserList($status = 'online');
-
         if(dao::isError())
         {
             $this->output->result  = 'fail';
@@ -1234,6 +1233,16 @@ class chat extends control
         $this->output->data   = $todos;
         $this->output->result = 'success';
         $this->output->users  = array($userID);
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
+     * Check user change.
+     */
+    public function checkUserChange()
+    {
+        $this->output->result = 'success';
+        $this->output->data   = $this->chat->checkUserChange();
         die($this->app->encrypt($this->output));
     }
 }
