@@ -367,6 +367,41 @@ func ReportAndGetNotify(server string) (map[int64][]byte, error) {
     return messageList, nil
 }
 
+func CheckUserChange(serverName string) ([]byte, error) {
+    ranzhiServer, ok := RanzhiServer(serverName)
+    if !ok {
+        util.LogError().Println("no ranzhi server name")
+        return nil, util.Errorf("%s\n", "no ranzhi server name")
+    }
+
+    // 固定的json格式
+    request := []byte(`{"module":"chat","method":"checkUserChange","params":[""]`)
+
+    message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil, err
+    }
+
+    // 到http服务器请求user get list数据
+    retMessage, err := hyperttp.RequestInfo(ranzhiServer.RanzhiAddr, message)
+    if err != nil {
+        util.LogError().Println("hyperttp request info error:", err)
+        return nil, err
+    }
+    decodeData, _ := ApiParse(retMessage, ranzhiServer.RanzhiToken)
+    if decodeData.Result() != "success" {
+        util.LogError().Println("request info status:", decodeData.Result())
+        return nil, err
+    }
+
+    if decodeData["data"] == "no" {
+        return nil, nil
+    }
+
+    return UserGetlist(serverName, 0)
+}
+
 // 与客户端间的错误通知
 func RetErrorMsg(errCode, errMsg string) ([]byte, error) {
     errApi := `{"module":"chat","method":"error","code":` + errCode + `,"message":"` + errMsg + `"}`
