@@ -273,7 +273,7 @@ class AppSocket extends Socket {
 
     onPing() {
         this.lastHandTime = new Date().getTime();
-        console.collapse('SOCKET Ping ⬇︎', 'purpleBg', 'OK', 'greenPale');
+        console.color('SOCKET Ping ⬇︎', 'purpleBg', 'OK', 'greenPale');
     }
 
     onPong() {
