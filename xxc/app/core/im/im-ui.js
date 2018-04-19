@@ -320,12 +320,15 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
         }, {type: 'separator'});
     }
 
-    menu.push({
-        label: Lang.string(chat.star ? 'chat.toolbor.unstar' : 'chat.toolbor.star'),
-        click: () => {
-            Server.toggleChatStar(chat);
-        }
-    });
+    if (!chat.isRobot) {
+        menu.push({
+            label: Lang.string(chat.star ? 'chat.toolbor.unstar' : 'chat.toolbor.star'),
+            click: () => {
+                Server.toggleChatStar(chat);
+            }
+        });
+    }
+
 
     if (chat.canRename(profile.user)) {
         menu.push({

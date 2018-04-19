@@ -65,7 +65,7 @@ export default class NotificationMessage extends Component {
         return (<div
             {...other}
             onContextMenu={this.handleContextMenu}
-            className={HTML.classes('app-message-notification box shadow-2 outline rounded', className)}
+            className={HTML.classes('app-message-notification box shadow-2 rounded', className)}
         >
             <div className="markdown-content" dangerouslySetInnerHTML={{__html: contentConverter ? contentConverter(content) : content}} />
             {actionsButtons && actionsButtons.length ? <div className="actions row">{actionsButtons}</div> : null}
