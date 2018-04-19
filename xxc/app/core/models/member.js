@@ -127,6 +127,10 @@ class Member extends Entity {
         return this.$get('realname');
     }
 
+    set realname(realname) {
+        this.$set('realname', realname);
+    }
+
     get account() {
         return this.$get('account');
     }

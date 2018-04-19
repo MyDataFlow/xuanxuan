@@ -826,6 +826,13 @@ profile.onSwapUser(user => {
     init();
 });
 
+members.onMembersChange(newMembers => {
+    forEach(chat => {
+        chat._membersSet = null;
+        chat.renewUpdateId();
+    });
+});
+
 export default {
     init,
     update,

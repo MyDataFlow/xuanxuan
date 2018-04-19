@@ -7,6 +7,10 @@ let members = null;
 let roles = null;
 let depts = null;
 
+const EVENT = {
+    change: 'members.change',
+};
+
 const update = (memberArr) => {
     if (!Array.isArray(memberArr)) {
         memberArr = [memberArr];
@@ -16,12 +20,21 @@ const update = (memberArr) => {
 
     memberArr.forEach(member => {
         member = Member.create(member);
-        member.isMe = profile.user && member.id === profile.user.id;
+        const isMe = profile.user && member.id === profile.user.id;
+        member.isMe = isMe;
         newMembers[member.id] = member;
+        if (isMe) {
+            profile.user.assign({realname: member.realname});
+        }
     });
 
     Object.assign(members, newMembers);
+    Events.emit(EVENT.change, newMembers, members);
     Events.emitDataChange({members: newMembers});
+};
+
+const onMembersChange = listener => {
+    return Events.on(EVENT.change, listener);
 };
 
 const deptsSorter = (d1, d2) => {
@@ -64,7 +77,6 @@ const getDeptsTree = () => {
 };
 
 const init = (memberArr, rolesMap, deptsMap) => {
-    members = {};
     if (memberArr && memberArr.length) {
         update(memberArr);
     }
@@ -178,7 +190,7 @@ const getDept = deptId => {
 };
 
 profile.onSwapUser(user => {
-    init();
+    members = {};
 });
 
 export default {
@@ -194,6 +206,7 @@ export default {
     getDept,
     getDeptsTree,
     deptsSorter,
+    onMembersChange,
     get map() {
         return members;
     },

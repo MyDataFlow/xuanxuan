@@ -164,15 +164,17 @@ class User extends Member {
     }
 
     set server(server) {
-        if (!server.startsWith('https://') && !server.startsWith('http://')) {
-            server = 'https://' + server;
+        if (server) {
+            if (!server.startsWith('https://') && !server.startsWith('http://')) {
+                server = `https://${server}`;
+            }
+            const url = new URL(server);
+            if (!url.port) {
+                url.port = 11443;
+            }
+            this.$set('server', url.toString());
+            this._server = url;
         }
-        const url = new URL(server);
-        if (!url.port) {
-            url.port = 11443;
-        }
-        this.$set('server', url.toString());
-        this._server = url;
     }
 
     get server() {

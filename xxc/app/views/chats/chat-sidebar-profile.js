@@ -58,7 +58,7 @@ class ChatSidebarProfile extends Component {
             {...other}
             className={HTML.classes('app-chat-sidebar-profile has-padding', className)}
         >
-            <MemberProfile compact hideChatBtn className="rounded white" member={member} />
+            <MemberProfile compact hideChatBtn className="rounded white" memberId={member.id} />
             {children}
         </div>);
     }

@@ -81,6 +81,7 @@ export default class MessageListItem extends Component {
             this.props.textContentConverter !== nextProps.textContentConverter ||
             this.props.avatarSize !== nextProps.avatarSize ||
             this.props.children !== nextProps.children ||
+            (this.lastSenderUpdateId !== false && this.lastSenderUpdateId !== nextProps.message.getSender(App.members).updateId) ||
             this.props.staticUI !== nextProps.staticUI);
     }
 
@@ -203,6 +204,7 @@ export default class MessageListItem extends Component {
 
         if (!hideHeader) {
             const sender = message.getSender(App.members);
+            this.lastSenderUpdateId = sender.updateId;
             if (sender.temp) {
                 this.needGetSendInfo = sender.id;
             }
@@ -213,6 +215,8 @@ export default class MessageListItem extends Component {
                     <small className="time">{DateHelper.formatDate(message.date, dateFormater)}</small>
                 </header>
             </div>);
+        } else {
+            this.lastSenderUpdateId = false;
         }
 
         if (isNotification) {

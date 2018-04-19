@@ -16,7 +16,7 @@ class MemberProfile extends Component {
     }
 
     static propTypes = {
-        member: PropTypes.instanceOf(Member).isRequired,
+        memberId: PropTypes.any.isRequired,
         className: PropTypes.string,
         compact: PropTypes.bool,
         hideChatBtn: PropTypes.bool,
@@ -30,13 +30,25 @@ class MemberProfile extends Component {
         hideChatBtn: false,
     };
 
+    componentDidMount() {
+        this.dataChangeEventHandler = App.events.onDataChange(data => {
+            if (data && data.members && data.members[this.props.memberId]) {
+                this.forceUpdate();
+            }
+        });
+    }
+
     shouldComponentUpdate(nextProps) {
-        return nextProps.compact !== this.props.compact || nextProps.className !== this.props.className || nextProps.hideChatBtn !== this.props.hideChatBtn || nextProps.onRequestClose !== this.props.onRequestClose || nextProps.member !== this.props.member || this.lastMemberUpdateId !== nextProps.member.updateId;
+        return nextProps.compact !== this.props.compact || nextProps.className !== this.props.className || nextProps.hideChatBtn !== this.props.hideChatBtn || nextProps.onRequestClose !== this.props.onRequestClose || nextProps.memberId !== this.props.memberId;
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.dataChangeEventHandler);
     }
 
     render() {
         const {
-            member,
+            memberId,
             className,
             onRequestClose,
             hideChatBtn,
@@ -44,9 +56,9 @@ class MemberProfile extends Component {
             ...other
         } = this.props;
 
+        const member = App.members.get(memberId);
         const roleName = member.getRoleName(App);
         const deptName = member.getDeptName(App);
-        this.lastMemberUpdateId = member.updateId;
 
         return (<div
             {...other}
@@ -64,7 +76,7 @@ class MemberProfile extends Component {
                         {deptName ? <div>{(!roleName) ? <Icon name="account-card-details text-gray" /> : null}{deptName}</div> : null}
                     </div>
                 </div>
-                {!hideChatBtn && member.account !== App.profile.userAccount && <a href={`#${ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))}`} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline" /> &nbsp;{Lang.string('member.profile.sendMessage')}</a>}
+                {!hideChatBtn && !member.isDeleted && member.account !== App.profile.userAccount && <a href={`#${ROUTES.chats.contacts.id([member.id, App.profile.user.id].sort().join('&'))}`} onClick={onRequestClose} className="btn btn-lg rounded text-primary primary-pale"><Icon name="comment-text-outline" /> &nbsp;{Lang.string('member.profile.sendMessage')}</a>}
             </header>
             <div className="divider" />
             <div className="heading">

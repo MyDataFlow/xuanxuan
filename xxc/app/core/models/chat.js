@@ -504,18 +504,22 @@ class Chat extends Entity {
     }
 
     getTheOtherOne(app) {
-        const appMembers = app.members;
-        const currentUser = app.user;
-        if (this.isOne2One && !this._theOtherOne) {
-            let member = this.getMembersSet(appMembers).find(member => member.id !== currentUser.id);
-            if (member.temp) {
-                member = appMembers.get(member.id);
-                this._membersSet = null;
+        if (this.isOne2One) {
+            const appMembers = app.members;
+            const currentUserId = app.user.id;
+            if (!this._theOtherOneId) {
+                this._theOtherOneId = Array.from(this.members).find(x => x !== currentUserId);
+            }
+            if (this._theOtherOneId) {
+                const member = appMembers.get(this._theOtherOneId);
+                if (member && member.temp) {
+                    this._membersSet = null;
+                }
                 return member;
             }
-            this._theOtherOne = member;
+            return this._theOtherOne;
         }
-        return this._theOtherOne;
+        return null;
     }
 
     isOnline(app) {

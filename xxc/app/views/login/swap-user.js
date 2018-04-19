@@ -62,6 +62,7 @@ class SwapUser extends Component {
         >
             {
                 userList.map(user => {
+                    console.log('user', user);
                     user = User.create(user);
                     const userIdentify = user.identify;
                     const isHover = this.state.hover === userIdentify;

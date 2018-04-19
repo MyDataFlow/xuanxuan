@@ -25,6 +25,7 @@ class Entity {
 
     assign(...data) {
         Object.assign(this, ...data);
+        return this;
     }
 
     ensureGid() {

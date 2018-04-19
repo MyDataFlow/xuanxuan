@@ -62,10 +62,16 @@ class Navbar extends Component {
         this.noticeUpdateHandler = App.notice.onNoticeUpdate(notice => {
             this.setState({noticeBadge: notice.total});
         });
+
+        this.dataChangeEventHandler = App.events.onDataChange(data => {
+            if (data && data.members && data.members[App.profile.userId]) {
+                this.forceUpdate();
+            }
+        });
     }
 
     componentWillUnmount() {
-        App.events.off(this.noticeUpdateHandler);
+        App.events.off(this.noticeUpdateHandler, this.dataChangeEventHandler);
     }
 
     handleProfileAvatarClick = () => {

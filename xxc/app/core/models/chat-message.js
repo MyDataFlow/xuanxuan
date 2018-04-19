@@ -208,9 +208,7 @@ class ChatMessage extends Entity {
     }
 
     getSender(appMembers) {
-        if (!this._sender) {
-            this._sender = appMembers.get(this.senderId);
-        }
+        this._sender = appMembers.get(this.senderId);
         return this._sender;
     }
 
