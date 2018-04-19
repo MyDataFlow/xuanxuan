@@ -34,6 +34,7 @@ if (global.DEBUG) {
             h4: 'font-size: 16px; font-weight: bold;',
             h5: 'font-size: 14px; font-weight: bold;',
             h6: 'font-size: 12px; font-weight: bold;',
+            muted: 'color: #aaa;',
 
             pink: 'color: #e91e63;',
             pinkLight: 'color: #ff6090;',
