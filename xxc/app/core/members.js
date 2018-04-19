@@ -77,16 +77,17 @@ const getDeptsTree = () => {
 };
 
 const init = (memberArr, rolesMap, deptsMap) => {
+    roles = rolesMap || {};
+
     Object.keys(members).forEach(membersId => {
         const member = members[membersId];
         if (!member.temp && !member.isDeleted) {
-            delete members[membersId];
+            member.$set('deleted', true);
         }
     });
     if (memberArr && memberArr.length) {
         update(memberArr);
     }
-    roles = rolesMap || {};
 
     initDepts(deptsMap);
 };
