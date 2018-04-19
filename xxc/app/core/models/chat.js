@@ -494,6 +494,9 @@ class Chat extends Entity {
     }
 
     getMembersSet(appMembers) {
+        if (this.type === TYPES.system) {
+            return appMembers.all.filter(x => !x.isDeleted);
+        }
         if (!this._membersSet) {
             this.updateMembersSet(appMembers);
         }
