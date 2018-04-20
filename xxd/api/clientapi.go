@@ -344,7 +344,6 @@ func ReportAndGetNotify(server string) (map[int64][]byte, error) {
 
     decodeData, _ := ApiParse(retMessage, ranzhiServer.RanzhiToken)
     if decodeData.Result() != "success" {
-        util.LogError().Println("request info status:", decodeData.Result())
         return nil, err
     }
 
@@ -375,7 +374,7 @@ func CheckUserChange(serverName string) ([]byte, error) {
     }
 
     // 固定的json格式
-    request := []byte(`{"module":"chat","method":"checkUserChange","params":[""]`)
+    request := []byte(`{"module":"chat","method":"checkUserChange","params":[""]}`)
 
     message, err := aesEncrypt(request, ranzhiServer.RanzhiToken)
     if err != nil {
