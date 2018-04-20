@@ -1,8 +1,8 @@
 {
   "name": "xuanxuan",
   "productName": "Xuanxuan",
-  "version": "1.4.0",
-  "buildVersion": "build20180314",
+  "version": "1.5.0",
+  "buildVersion": "build20180419",
   "description": "企业即时通讯平台",
   "main": "main.js",
   "scripts": {
