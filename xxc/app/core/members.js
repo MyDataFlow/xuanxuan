@@ -24,7 +24,7 @@ const update = (memberArr) => {
         member.isMe = isMe;
         newMembers[member.id] = member;
         if (isMe) {
-            profile.user.assign({realname: member.realname});
+            profile.user.assign({realname: member.realname, avatar: member.avatar});
         }
     });
 
