@@ -57,6 +57,9 @@ go get github.com/Unknwon/goconfig
 
 # websocket
 go get github.com/gorilla/websocket
+
+# sqlite3
+go get github.com/mattn/go-sqlite3
 ```
 
 ## 4 服务器配置与运行
@@ -70,3 +73,4 @@ golang支持编译运行和源码运行两种方式。
 
 若对配置有其它要求，可以进入到config目录对xxd.conf进行修改
 
+特别提醒：SQLite3交叉编译的时候可能需要解决一下CGO相关问题，参考方案：1、使用对应的平台安装GoLang环境并编译；2、使用docker编译。
