@@ -191,3 +191,11 @@ body {
 .app-message-content-text.is-content-block {
   background-color: #333;
 }
+
+.app-message-actions:hover + .app-message-content {
+  outline: #444 2px solid;
+}
+.sharing .app-message-actions + .app-message-content {
+  outline: #444 4px solid;
+  background-color: #444;
+}
