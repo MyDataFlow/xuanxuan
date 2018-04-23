@@ -12,5 +12,6 @@ export default {
     writeImage: clipboard.writeImage,
     readHTML: clipboard.readHTML,
     writeHTML: clipboard.writeHTML,
+    write: clipboard.write,
     writeImageFromUrl,
 };
