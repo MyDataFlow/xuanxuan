@@ -604,7 +604,16 @@ const createMessageContextMenu = message => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                const copyHtmlText = message._renderedTextContent;
+                let copyHtmlText = message._renderedTextContent;
+                if (copyHtmlText === undefined) {
+                    const contentElement = document.getElementById(`message-content-${message.gid}`);
+                    if (contentElement) {
+                        copyHtmlText = contentElement.innerHTML;
+                    }
+                }
+                if (copyHtmlText === undefined) {
+                    copyHtmlText = message.renderedTextContent(renderChatMessageContent, linkMembersInText);
+                }
                 if (Platform.clipboard.write) {
                     Platform.clipboard.write({text: HTMLHelper.strip(copyHtmlText), html: copyHtmlText});
                 } else {
