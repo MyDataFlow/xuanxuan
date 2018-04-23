@@ -115,6 +115,14 @@ const onExtensionChange = listener => {
     return Events.on(EVENT.onChange, listener);
 };
 
+const forEach = (callback, includeDisabled = false) => {
+    exts.forEach(x => {
+        if (!x.disabled || includeDisabled) {
+            callback(x);
+        }
+    });
+};
+
 if (DEBUG) {
     console.collapse('Extensions Init', 'greenBg', `Total: ${exts.length}, Apps: ${apps.length}, Plugins: ${plugins.length}, Themes: ${themes.length}`, 'greenPale');
     console.log('exts', exts);
@@ -150,6 +158,7 @@ export default {
     search,
     searchApps,
     onExtensionChange,
+    forEach,
 
     db: DEBUG ? db : null
 };

@@ -10,16 +10,7 @@ const replaceViews = {};
 
 // load exts modules
 const loadModules = () => {
-    Exts.exts.forEach(ext => {
-        if (ext.disabled) {
-            if (DEBUG) {
-                console.collapse('Extension disabled and skip', 'greenBg', ext.name, 'greenPale');
-                console.log('extension', ext);
-                console.groupEnd();
-            }
-            return;
-        }
-
+    Exts.forEach(ext => {
         if (ext.isDev) {
             const reloadExt = manager.reloadDevExtension(ext);
             if (reloadExt) {
@@ -48,38 +39,38 @@ const loadModules = () => {
 // Listen events
 App.server.onUserLogin((user, error) => {
     if (!error) {
-        Exts.exts.forEach(ext => {
+        Exts.forEach(ext => {
             ext.callModuleMethod('onUserLogin', user);
         });
     }
 });
 
 App.server.onUserLoginout((user, code, reason, unexpected) => {
-    Exts.exts.forEach(ext => {
+    Exts.forEach(ext => {
         ext.callModuleMethod('onUserLoginout', user, code, reason, unexpected);
     });
 });
 
 App.profile.onUserStatusChange((status, oldStatus, user) => {
-    Exts.exts.forEach(ext => {
+    Exts.forEach(ext => {
         ext.callModuleMethod('onUserStatusChange', status, oldStatus, user);
     });
 });
 
 App.im.server.onSendChatMessages((messages, chat) => {
-    Exts.exts.forEach(ext => {
+    Exts.forEach(ext => {
         ext.callModuleMethod('onSendChatMessages', messages, chat, App.profile.user);
     });
 });
 
 App.im.server.onReceiveChatMessages((messages) => {
-    Exts.exts.forEach(ext => {
+    Exts.forEach(ext => {
         ext.callModuleMethod('onReceiveChatMessages', messages, App.profile.user);
     });
 });
 
 App.im.ui.onRenderChatMessageContent(content => {
-    Exts.exts.forEach(ext => {
+    Exts.forEach(ext => {
         const result = ext.callModuleMethod('onRenderChatMessageContent', content);
         if (result !== undefined) {
             content = result;
