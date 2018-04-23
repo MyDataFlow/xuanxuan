@@ -64,6 +64,9 @@ const showRemoteOpenDialog = (options, callback) => {
 
 const saveAsImageFromUrl = (url, dataType) => new Promise((resolve, reject) => {
     const isBase64Image = dataType === 'base64';
+    if (!isBase64Image && url.startsWith('file://')) {
+        url = url.substr(7);
+    }
     showSaveDialog({
         filename: isBase64Image ? 'xuanxuan-image.png' : Path.basename(url),
         sourceFilePath: isBase64Image ? null : url
