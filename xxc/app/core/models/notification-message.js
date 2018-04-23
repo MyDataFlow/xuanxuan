@@ -62,6 +62,18 @@ export default class NotificationMessage extends ChatMessage {
             data = data.data;
         }
 
+        if (DEBUG) {
+            if (!data.title) {
+                data.title = '通知标题测试';
+            }
+            if (!data.subtitle) {
+                data.subtitle = '通知副标题测试';
+            }
+            if (!data.content) {
+                data.content = '为了解决这个问题，2014年 Facebook 提出了 Flux 架构的概念，引发了很多的实现。2015年，Redux 出现，将 Flux 与函数式编程结合一起，很短时间内就成为了最热门的前端架构。\nEvery React component is like a small system that operates on its own. It has its own state, input and output. In the following section we will explore these characteristics.';
+            }
+        }
+
         let content = `#### ${data.title}`;
         if (stringHelper.isNotEmpty(data.subtitle)) {
             content += `\n##### ${data.subtitle}`;
