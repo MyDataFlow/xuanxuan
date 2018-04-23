@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
+import App from '../../core';
 
 class MessageList extends Component {
     static propTypes = {
@@ -37,17 +38,35 @@ class MessageList extends Component {
         if (this.props.stayBottom) {
             this.scrollToBottom();
         }
+        this.onChatActiveHandler = App.im.ui.onActiveChat(chat => {
+            if (this.lastMessage && this.waitNewMessage && this.lastMessage.cgid === chat.gid) {
+                this.waitNewMessage = null;
+                setTimeout(() => {
+                    this.scrollToBottom();
+                }, 500);
+            }
+        });
     }
 
     componentDidUpdate() {
         if (this.props.stayBottom) {
             const {messages} = this.props;
-            if (this.checkHasNewMessages(messages)) {
-                this.scrollToBottom();
+            const newMessage = this.checkHasNewMessages(messages);
+            if (newMessage) {
+                if (App.im.ui.isActiveChat(newMessage.cgid)) {
+                    if (newMessage.isSender(App.profile.userId) || this.isScrollBottom) {
+                        this.scrollToBottom();
+                    }
+                } else {
+                    this.waitNewMessage = newMessage;
+                }
             } else {
                 const lastFirstMessage = this.checkHasNewOlderMessages(messages);
                 if (lastFirstMessage) {
-                    document.getElementById(`message-${lastFirstMessage.gid}`).scrollIntoView({block: 'end', behavior: 'instant'});
+                    const lastFirstMessageEle = document.getElementById(`message-${lastFirstMessage.gid}`);
+                    if (lastFirstMessageEle) {
+                        lastFirstMessageEle.scrollIntoView({block: 'end', behavior: 'instant'});
+                    }
                 }
             }
         }
@@ -55,6 +74,7 @@ class MessageList extends Component {
 
     componentWillUnmount() {
         clearInterval(this.stayToBottomInterval);
+        App.events.off(this.onChatActiveHandler);
     }
 
     scrollToBottom = (utilTime = 0) => {
@@ -84,7 +104,10 @@ class MessageList extends Component {
         const lastMessage = this.lastMessage;
         const thisLastMessage = messages && messages.length ? messages[messages.length - 1] : null;
         this.lastMessage = thisLastMessage;
-        return lastMessage !== thisLastMessage && thisLastMessage && ((!lastMessage && thisLastMessage) || thisLastMessage.date > lastMessage.date || thisLastMessage.id > lastMessage.id);
+        if (lastMessage !== thisLastMessage && thisLastMessage && ((!lastMessage && thisLastMessage) || thisLastMessage.date > lastMessage.date || thisLastMessage.id > lastMessage.id)) {
+            return thisLastMessage;
+        }
+        return false;
     }
 
     checkHasNewOlderMessages(messages) {
@@ -112,10 +135,16 @@ class MessageList extends Component {
         } = this.props;
 
         let lastMessage = null;
+        if (this.messageListEle) {
+            this.isScrollBottom = (this.messageListEle.scrollHeight - this.messageListEle.scrollTop) === (this.messageListEle.clientHeight);
+        } else {
+            this.isScrollBottom = true;
+        }
 
         return (<div
             {...other}
             className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
+            ref={e => {this.messageListEle = e;}}
         >
             {header}
             {

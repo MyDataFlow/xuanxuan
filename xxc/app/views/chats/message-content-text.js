@@ -8,11 +8,13 @@ class MessageContentText extends Component {
         className: PropTypes.string,
         message: PropTypes.object.isRequired,
         contentConverter: PropTypes.func,
+        fontSize: PropTypes.any
     };
 
     static defaultProps = {
         className: null,
         contentConverter: null,
+        fontSize: null
     };
 
     static get MessageContentText() {
@@ -20,7 +22,7 @@ class MessageContentText extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.className !== this.props.className || nextProps.contentConverter !== this.props.contentConverter || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
+        return nextProps.className !== this.props.className || nextProps.contentConverter !== this.props.contentConverter || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content || nextProps.fontSize !== this.props.fontSize;
     }
 
     handleContextMenu = e => {
@@ -42,6 +44,7 @@ class MessageContentText extends Component {
             message,
             className,
             contentConverter,
+            fontSize,
             ...other
         } = this.props;
 

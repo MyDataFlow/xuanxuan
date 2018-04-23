@@ -87,7 +87,7 @@ const fetchChatsHistory = (pager, continued = false, startDate = 0) => {
 
 const updateChatHistory = (cgid, messages, pager, socket) => {
     if (messages && messages.length) {
-        chats.updateChatMessages(messages, true);
+        chats.updateChatMessages(messages, true, true);
     }
 
     const isFetchOver = pager.pageID * pager.recPerPage >= pager.recTotal;

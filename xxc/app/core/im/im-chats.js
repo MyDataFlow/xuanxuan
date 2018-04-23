@@ -113,7 +113,10 @@ const saveChatMessages = (messages, chat) => {
     return Promise.resolve(0);
 };
 
-const updateChatMessages = (messages, muted = false) => {
+const updateChatMessages = (messages, muted = false, skipOld = false) => {
+    if (skipOld === true) {
+        skipOld = 60 * 1000 * 60 * 12;
+    }
     if (!Array.isArray(messages)) {
         messages = [messages];
     }
@@ -132,7 +135,7 @@ const updateChatMessages = (messages, muted = false) => {
     Object.keys(chatsMessages).forEach(cgid => {
         const chat = get(cgid);
         if (chat && (chat.id || chat.isRobot) && chat.isMember(profile.userId)) {
-            chat.addMessages(chatsMessages[cgid], profile.userId, true, muted);
+            chat.addMessages(chatsMessages[cgid], profile.userId, muted, skipOld);
             if (muted) {
                 chat.muteNotice();
             }
@@ -186,7 +189,7 @@ const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offs
         if (chatMessages && chatMessages.length) {
             const result = rawData ? chatMessages : chatMessages.map(createChatMessage);
             if (!skipAdd && cgid) {
-                chat.addMessages(result, profile.userId, true, true);
+                chat.addMessages(result, profile.userId, true);
                 Events.emitDataChange({chats: {[cgid]: chat}});
             }
             return Promise.resolve(result);

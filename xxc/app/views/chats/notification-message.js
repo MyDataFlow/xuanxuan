@@ -54,21 +54,21 @@ export default class NotificationMessage extends Component {
 
         let actionsButtons = [];
         if (notification.url) {
-            actionsButtons.push(<Button key='primaryUrl' label={Lang.string('common.viewDetail')} icon="arrow-right-bold-circle" type="a" href={notification.url} className="rounded outline primary" />);
+            actionsButtons.push(<Button btnClass="" key="primaryUrl" label={Lang.string('common.viewDetail')} icon="arrow-right-bold-circle" type="a" href={notification.url} className="text-primary" />);
         }
         if (actions) {
             actions.forEach((action, idx) => {
-                actionsButtons.push(<Button key={idx} label={action.label || action.lable} icon={action.icon} type="a" href={action.url} className={`rounded outline ${action.type}`} />);
+                actionsButtons.push(<Button btnClass="" key={idx} label={action.label || action.lable} icon={action.icon} type="a" href={action.url} className={`text-${action.type}`} />);
             });
         }
 
         return (<div
             {...other}
             onContextMenu={this.handleContextMenu}
-            className={HTML.classes('app-message-notification box shadow-2 rounded', className)}
+            className={HTML.classes('app-message-notification layer rounded shadow-2', className)}
         >
             <div className="markdown-content" dangerouslySetInnerHTML={{__html: contentConverter ? contentConverter(content) : content}} />
-            {actionsButtons && actionsButtons.length ? <div className="actions row">{actionsButtons}</div> : null}
+            {actionsButtons && actionsButtons.length ? <nav className="actions nav gray">{actionsButtons}</nav> : null}
         </div>);
     }
 }

@@ -37,8 +37,18 @@ const getSearchParam = (key, search = null) => {
     return key ? params[key] : params;
 };
 
+const strip = html => {
+    if (typeof document !== 'undefined') {
+        const tmp = document.createElement('DIV');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+    return html.replace(/<(?:.|\n)*?>/gm, '');
+};
+
 export default {
     classes,
     rem,
-    getSearchParam
+    getSearchParam,
+    strip
 };
