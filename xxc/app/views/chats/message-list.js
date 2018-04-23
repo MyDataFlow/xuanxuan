@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
+import App from '../../core';
 
 class MessageList extends Component {
     static propTypes = {
@@ -42,8 +43,11 @@ class MessageList extends Component {
     componentDidUpdate() {
         if (this.props.stayBottom) {
             const {messages} = this.props;
-            if (this.checkHasNewMessages(messages)) {
-                this.scrollToBottom();
+            const newMessage = this.checkHasNewMessages(messages);
+            if (newMessage) {
+                if (newMessage.isSender(App.profile.userId) || (this.messageListEle.scrollHeight - this.messageListEle.scrollTop) < (this.messageListEle.clientHeight * 2)) {
+                    this.scrollToBottom();
+                }
             } else {
                 const lastFirstMessage = this.checkHasNewOlderMessages(messages);
                 if (lastFirstMessage) {
@@ -84,7 +88,10 @@ class MessageList extends Component {
         const lastMessage = this.lastMessage;
         const thisLastMessage = messages && messages.length ? messages[messages.length - 1] : null;
         this.lastMessage = thisLastMessage;
-        return lastMessage !== thisLastMessage && thisLastMessage && ((!lastMessage && thisLastMessage) || thisLastMessage.date > lastMessage.date || thisLastMessage.id > lastMessage.id);
+        if (lastMessage !== thisLastMessage && thisLastMessage && ((!lastMessage && thisLastMessage) || thisLastMessage.date > lastMessage.date || thisLastMessage.id > lastMessage.id)) {
+            return thisLastMessage;
+        }
+        return false;
     }
 
     checkHasNewOlderMessages(messages) {
@@ -116,6 +123,7 @@ class MessageList extends Component {
         return (<div
             {...other}
             className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
+            ref={e => {this.messageListEle = e;}}
         >
             {header}
             {
