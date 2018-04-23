@@ -186,6 +186,17 @@ export default class Extension {
         this.updateTime = time;
     }
 
+    get disabled() {
+        return this._data.disabled === true;
+    }
+
+    set disabled(disabled) {
+        if (this._data.disabled !== disabled) {
+            this._needRestart = true;
+        }
+        this._data.disabled = disabled;
+    }
+
     get updateTime() {
         return this._data.updateTime;
     }
@@ -218,6 +229,12 @@ export default class Extension {
      * 重新载入扩展
      */
     loadModule(api) {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return null;
+        }
         const mainFile = this.mainFile;
         if (mainFile) {
             const start = new Date().getTime();
@@ -248,12 +265,13 @@ export default class Extension {
     }
 
     get needRestart() {
-        return this.mainFile && !this._loaded;
+        return this._needRestart || (!this.disabled && this.mainFile && !this._loaded);
     }
 
     detach() {
         this.callModuleMethod('onDetach', this);
         this._module = null;
+        this._loaded = false;
         if (DEBUG) {
             console.collapse('Extension Detach', 'greenBg', this.name, 'greenPale');
             console.log('extension', this);
@@ -262,10 +280,22 @@ export default class Extension {
     }
 
     get hasReplaceViews() {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return false;
+        }
         return this._module && this._module.replaceViews;
     }
 
     get replaceViews() {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return null;
+        }
         return this.module.replaceViews;
     }
 
@@ -277,10 +307,22 @@ export default class Extension {
     }
 
     get module() {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return false;
+        }
         return this._module || this.loadModule();
     }
 
     callModuleMethod(methodName, ...params) {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return false;
+        }
         const extModule = this._module;
         if (extModule && extModule[methodName]) {
             return extModule[methodName](...params);

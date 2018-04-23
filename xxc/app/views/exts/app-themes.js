@@ -65,7 +65,7 @@ export default class AppThemes extends PureComponent {
         } = this.props;
 
         const {search} = this.state;
-        const themeExts = search ? Exts.themes.search(search) : Exts.themes.all;
+        const themeExts = (search ? Exts.themes.search(search) : Exts.themes.all).filter(x => !x.disabled);
         const showDefaultTheme = !search || 'default'.includes(search) || Lang.string('ext.themes.default').includes(search);
 
         let themesCount = 1;

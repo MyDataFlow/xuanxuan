@@ -57,7 +57,7 @@ export default class AppHome extends PureComponent {
         } = this.props;
 
         const {search} = this.state;
-        const apps = (search ? Exts.all.searchApps(search) : Exts.all.apps).filter(x => (!x.isFixed && !x.hidden));
+        const apps = (search ? Exts.all.searchApps(search) : Exts.all.apps).filter(x => (!x.isFixed && !x.hidden && !x.disabled));
 
         return (<div className={HTML.classes('app-ext-home dock column single', className)}>
             <header className="app-ext-home-header app-ext-common-header has-padding heading divider flex-none">

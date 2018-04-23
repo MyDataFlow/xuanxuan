@@ -164,6 +164,18 @@ const loadReadmeMarkdown = extension => {
     return fse.readFile(filePath, 'utf8');
 };
 
+const setExtensiondisabled = (extension, disabled = true) => {
+    disabled = !!disabled;
+    if (extension.disabled !== disabled) {
+        if (extension.disabled) {
+            extension.detach();
+        }
+        extension.disabled = disabled;
+    }
+    db.saveInstall(extension, true);
+};
+
+
 export default {
     db,
     createSavePath,
@@ -173,5 +185,6 @@ export default {
     loadReadmeMarkdown,
     installFromDevDir,
     reloadDevExtension,
+    setExtensiondisabled
 };
 

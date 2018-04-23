@@ -50,6 +50,7 @@ export default class ExtensionListItem extends Component {
         } = this.props;
 
         const isDev = extension.isDev;
+        const disabled = extension.disabled;
 
         let typeLabelView = null;
         if (showType) {
@@ -69,11 +70,11 @@ export default class ExtensionListItem extends Component {
         }
 
         return (<a className={HTML.classes('app-ext-list-item', className, {'app-ext-list-item-dev': isDev})} {...other}>
-            <Avatar className={'rounded shadow-1 flex-none' + (isDev ? ' align-self-start' : '')} auto={extension.icon} skin={{code: extension.accentColor}} />
+            <Avatar className={HTML.classes('rounded shadow-1 flex-none', {'align-self-start': isDev, grayscale: disabled})} auto={extension.icon} skin={{code: extension.accentColor}} />
             <div className="content">
                 <div className="title"><strong>{extension.displayName}</strong>{extension.buildIn ? <span data-hint={Lang.string('ext.buildIn')} className="hint--top app-ext-list-item-buildIn-label"> <Icon name="star-circle icon-sm text-yellow" /></span> : null} &nbsp;<small className="text-gray">{extension.version ? `v${extension.version}` : ''}</small></div>
                 <div className={'small space-xs' + (isDev ? '' : ' text-ellipsis')}>{extension.description}</div>
-                <div className="small">{extension.needRestart && <span className="hint--top relative" style={{zIndex: 10}} data-hint={Lang.string('ext.extension.needRestartTip')}><small className="label circle warning">{Lang.string('ext.extension.needRestart')}</small> &nbsp;</span>}{isDev ? <span><small className="label primary circle">{Lang.string('ext.extensions.developing')}</small> &nbsp;</span> : null}{typeLabelView}<span className="text-gray">{extension.author ? `@${extension.authorName}` : ''}</span></div>
+                <div className="small row flex-middle">{disabled ? <span><span className="label circle dark">{Lang.string('ext.disabled')}</span>&nbsp; </span> : null}{extension.needRestart && <span className="hint--top relative" style={{zIndex: 10}} data-hint={Lang.string('ext.extension.needRestartTip')}><small className="label circle warning">{Lang.string('ext.extension.needRestart')}</small> &nbsp;</span>}{isDev ? <span><small className="label primary circle">{Lang.string('ext.extensions.developing')}</small> &nbsp;</span> : null}{typeLabelView}<span className="text-gray">{extension.author ? `@${extension.authorName}` : ''}</span></div>
                 {isDev && <div className="has-padding small infos">
                     <ul className="no-margin">
                         <li><strong>{Lang.string('ext.extension.loadPath')}</strong>: <span className="code">{extension.localPath}</span></li>

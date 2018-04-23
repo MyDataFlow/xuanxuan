@@ -29,7 +29,7 @@ const saveInstall = (extension, override = false) => {
 
     if (oldExtensionIndex > -1) {
         const oldExtension = installs[oldExtensionIndex];
-        extension.installTime = oldExtension.installTime;
+        extension._data = oldExtension.data;
         extension.updateTime = new Date().getTime();
         installs.splice(oldExtensionIndex, 1, extension);
     } else {

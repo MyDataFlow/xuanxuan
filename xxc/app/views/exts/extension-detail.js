@@ -10,6 +10,7 @@ import Exts from '../../exts';
 import Markdown from '../../utils/markdown';
 import Emojione from '../../components/emojione';
 import replaceViews from '../replace-views';
+import App from '../../core';
 
 export default class ExtensionDetail extends Component {
     static get ExtensionDetail() {
@@ -42,6 +43,16 @@ export default class ExtensionDetail extends Component {
         }).catch(() => {
             this.setState({loadingReadme: false});
         });
+
+        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
+            if (ext.id === this.props.extension.id) {
+                this.forceUpdate();
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        App.events.off(this.onExtChangeHandler);
     }
 
     requestClose() {
@@ -60,6 +71,14 @@ export default class ExtensionDetail extends Component {
         this.requestClose();
     }
 
+    handleEnableBtnClick(extension) {
+        Exts.manager.setExtensiondisabled(extension, false);
+    }
+
+    handleDisableBtnClick(extension) {
+        Exts.manager.setExtensiondisabled(extension, true);
+    }
+
     render() {
         const {
             extension,
@@ -71,6 +90,13 @@ export default class ExtensionDetail extends Component {
         const buttons = [];
         if (extension.isApp) {
             buttons.push(<Button onClick={this.handleOpenBtnClick.bind(this, extension)} key="open" icon="open-in-app" className="rounded green-pale outline hover-solid" label={Lang.string('ext.openApp')} />);
+        }
+        if (!extension.buildIn) {
+            if (extension.disabled) {
+                buttons.push(<Button onClick={this.handleEnableBtnClick.bind(this, extension)} key="enable" icon="play-protected-content" className="rounded green-pale outline hover-solid" label={Lang.string('ext.enable')} />);
+            } else {
+                buttons.push(<Button onClick={this.handleDisableBtnClick.bind(this, extension)} key="disable" icon="cancel" className="rounded danger-pale outline hover-solid" label={Lang.string('ext.disable')} />);
+            }
         }
         if (!extension.buildIn) {
             buttons.push(<Button onClick={this.handleUninstallBtnClick.bind(this, extension)} key="uninstall" icon="delete" className="rounded danger-pale outline hover-solid" label={Lang.string('ext.uninstall')} />);
@@ -93,7 +119,7 @@ export default class ExtensionDetail extends Component {
         if (this.state.loadingReadme) {
             loadingView = <Spinner className="dock dock-bottom" iconClassName="text-white spin inline-block" />;
         } else if (this.readmeContent) {
-            sectionView = <section className="has-padding-lg gray"><div className="markdown-content" dangerouslySetInnerHTML={{__html: this.readmeContent}} /></section>;
+            sectionView = <section className="has-padding-lg" style={Skin.style({code: extension.accentColor || '#333', textTint: false, pale: true})}><div className="markdown-content" dangerouslySetInnerHTML={{__html: this.readmeContent}} /></section>;
         }
 
         const titleViews = [<span className="text" key="ext-name">{extension.displayName}</span>];

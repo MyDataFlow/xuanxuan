@@ -494,7 +494,7 @@ const createChatMemberContextMenuItems = (member, chat) => {
 };
 
 const linkMembersInText = (text, format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>') => {
-    if (text.indexOf('@') > -1) {
+    if (text && text.indexOf('@') > -1) {
         const langAtAll = Lang.string('chat.message.atAll');
         text = text.replace(new RegExp('@(all|' + langAtAll + ')', 'g'), `<span class="at-all">@${langAtAll}</span>`);
 

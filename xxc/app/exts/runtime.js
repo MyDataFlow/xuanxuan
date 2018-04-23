@@ -11,6 +11,15 @@ const replaceViews = {};
 // load exts modules
 const loadModules = () => {
     Exts.exts.forEach(ext => {
+        if (ext.disabled) {
+            if (DEBUG) {
+                console.collapse('Extension disabled and skip', 'greenBg', ext.name, 'greenPale');
+                console.log('extension', ext);
+                console.groupEnd();
+            }
+            return;
+        }
+
         if (ext.isDev) {
             const reloadExt = manager.reloadDevExtension(ext);
             if (reloadExt) {
@@ -21,7 +30,7 @@ const loadModules = () => {
         if (ext.hasModule) {
             if (ext.lazy) {
                 if (DEBUG) {
-                    console.collapse('Extension Lazy load', 'greenBg', this.name, 'greenPale');
+                    console.collapse('Extension Lazy load', 'greenBg', ext.name, 'greenPale');
                     console.log('extension', ext);
                     console.groupEnd();
                 }

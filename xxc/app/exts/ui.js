@@ -163,11 +163,27 @@ const showExtensionDetailDialog = (extension, callback) => {
 
 const createSettingContextMenu = extension => {
     const items = [];
-    if (extension.isApp) {
-        items.push({
-            label: Lang.string('ext.openApp'),
-            click: openApp.bind(null, extension.name, null, null)
-        });
+
+    if (extension.disabled) {
+        if (!extension.buildIn) {
+            items.push({
+                label: Lang.string('ext.enable'),
+                click: manager.setExtensiondisabled.bind(null, extension, false, null)
+            });
+        }
+    } else {
+        if (extension.isApp) {
+            items.push({
+                label: Lang.string('ext.openApp'),
+                click: openApp.bind(null, extension.name, null, null)
+            });
+        }
+        if (!extension.buildIn) {
+            items.push({
+                label: Lang.string('ext.disable'),
+                click: manager.setExtensiondisabled.bind(null, extension, true, null)
+            });
+        }
     }
     if (extension.buildIn) {
         items.push({
