@@ -44,7 +44,9 @@ module.exports = {
 
         // 在每条文本消息末尾加上个性签名
         messages.forEach(message => {
-            message.content = `${message.content} -- 来自插件示例`;
+            if (message.contentType === 'text') {
+                message.content = `${message.content} -- 来自插件示例`;
+            }
         });
     },
 
