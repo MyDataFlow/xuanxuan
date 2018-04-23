@@ -24,6 +24,7 @@ import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
+import HTMLHelper from '../../utils/html-helper';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -603,7 +604,12 @@ const createMessageContextMenu = message => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(message._renderedTextContent);
+                const copyHtmlText = message._renderedTextContent;
+                if (Platform.clipboard.write) {
+                    Platform.clipboard.write({text: HTMLHelper.strip(copyHtmlText), html: copyHtmlText});
+                } else {
+                    (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(copyHtmlText);
+                }
             }
         }, {
             icon: 'mdi-markdown',
