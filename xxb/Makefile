@@ -58,7 +58,7 @@ xxb:
 	cp -r ./backend/* xxb/
 	cp -r ./VERSION xxb/
 	cp ./zdoo/www/index.php xxb/www/
-	cp -r ./xuanxuan/server/ranzhi/* xxb/
+	cp -r ../ranzhi/* xxb/
 	cp -r ./doc xxb/
 	php build/xxb.php
 	cat xxb/db/xuanxuan.sql >> xxb/db/xxb.sql
