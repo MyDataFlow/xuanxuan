@@ -597,6 +597,12 @@ class chatModel extends model
 
                 $this->dao->insert(TABLE_IM_MESSAGE)->data($message)->exec();
                 $idList[] = $this->dao->lastInsertID();
+
+                $data = new stdClass();
+                $data->user   = $message->user;
+                $data->gid    = $message->gid;
+                $data->status = 'sended';
+                $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
             }
             $chatList[$message->cgid] = $message->cgid;
         }
@@ -625,7 +631,7 @@ class chatModel extends model
                 $data->user   = $user;
                 $data->gid    = $message->gid;
                 $data->status = 'waiting';
-                $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
+                $this->dao->replace(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
             }
         }
         return !dao::isError();
