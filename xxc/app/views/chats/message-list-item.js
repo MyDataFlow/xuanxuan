@@ -75,7 +75,7 @@ export default class MessageListItem extends Component {
             this.props.showDateDivider !== nextProps.showDateDivider ||
             this.props.hideHeader !== nextProps.hideHeader ||
             this.props.ignoreStatus !== nextProps.ignoreStatus ||
-            this.props.font !== nextProps.font || (this.props.font && nextProps.font && this.props.font.size !== nextProps.font.size) ||
+            this.props.font !== nextProps.font || (this.props.font && nextProps.font && this.lastFontSize !== nextProps.font.size) ||
             this.props.className !== nextProps.className ||
             this.props.dateFormater !== nextProps.dateFormater ||
             this.props.textContentConverter !== nextProps.textContentConverter ||
@@ -168,6 +168,7 @@ export default class MessageListItem extends Component {
         } = this.props;
 
         this.lastMessageUpdateId = message.updateId;
+        this.lastFontSize = font && font.size;
 
         const basicFontStyle = font ? {
             fontSize: `${font.size}px`,
@@ -226,7 +227,7 @@ export default class MessageListItem extends Component {
         } else if (message.isImageContent) {
             contentView = <MessageContentImage message={message} />;
         } else {
-            contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} style={basicFontStyle} message={message} />;
+            contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} fontSize={this.lastFontSize} style={basicFontStyle} message={message} />;
         }
 
         if (!headerView) {
