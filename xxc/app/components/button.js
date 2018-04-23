@@ -25,7 +25,8 @@ export default class Button extends PureComponent {
         className: null,
         style: null,
         children: null,
-        type: 'button'
+        type: 'button',
+        btnClass: 'btn'
     }
 
     /**
@@ -42,6 +43,7 @@ export default class Button extends PureComponent {
         className: PropTypes.string,
         style: PropTypes.object,
         children: PropTypes.any,
+        btnClass: PropTypes.string,
         type: PropTypes.string.isRequired
     }
 
@@ -60,6 +62,7 @@ export default class Button extends PureComponent {
             children,
             style,
             type,
+            btnClass,
             ...other
         } = this.props;
 
@@ -82,7 +85,7 @@ export default class Button extends PureComponent {
         const buttonStyle = Object.assign(skin ? Skin.style(skin) : {}, style);
 
         if (type === 'a') {
-            return <a {...other} className={HTML.classes('btn', className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</a>;
+            return <a {...other} className={HTML.classes(btnClass, className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</a>;
         }
         return <button {...other} type={type} className={HTML.classes('btn', className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</button>;
     }
