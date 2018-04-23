@@ -38,6 +38,14 @@ class MessageList extends Component {
         if (this.props.stayBottom) {
             this.scrollToBottom();
         }
+        this.onChatActiveHandler = App.im.ui.onActiveChat(chat => {
+            if (this.lastMessage && this.waitNewMessage && this.lastMessage.cgid === chat.gid) {
+                this.waitNewMessage = null;
+                setTimeout(() => {
+                    this.scrollToBottom();
+                }, 500);
+            }
+        });
     }
 
     componentDidUpdate() {
@@ -45,13 +53,20 @@ class MessageList extends Component {
             const {messages} = this.props;
             const newMessage = this.checkHasNewMessages(messages);
             if (newMessage) {
-                if (newMessage.isSender(App.profile.userId) || (this.messageListEle.scrollHeight - this.messageListEle.scrollTop) < (this.messageListEle.clientHeight * 2)) {
-                    this.scrollToBottom();
+                if (App.im.ui.isActiveChat(newMessage.cgid)) {
+                    if (newMessage.isSender(App.profile.userId) || this.isScrollBottom) {
+                        this.scrollToBottom();
+                    }
+                } else {
+                    this.waitNewMessage = newMessage;
                 }
             } else {
                 const lastFirstMessage = this.checkHasNewOlderMessages(messages);
                 if (lastFirstMessage) {
-                    document.getElementById(`message-${lastFirstMessage.gid}`).scrollIntoView({block: 'end', behavior: 'instant'});
+                    const lastFirstMessageEle = document.getElementById(`message-${lastFirstMessage.gid}`);
+                    if (lastFirstMessageEle) {
+                        lastFirstMessageEle.scrollIntoView({block: 'end', behavior: 'instant'});
+                    }
                 }
             }
         }
@@ -59,6 +74,7 @@ class MessageList extends Component {
 
     componentWillUnmount() {
         clearInterval(this.stayToBottomInterval);
+        App.events.off(this.onChatActiveHandler);
     }
 
     scrollToBottom = (utilTime = 0) => {
@@ -119,6 +135,11 @@ class MessageList extends Component {
         } = this.props;
 
         let lastMessage = null;
+        if (this.messageListEle) {
+            this.isScrollBottom = (this.messageListEle.scrollHeight - this.messageListEle.scrollTop) === (this.messageListEle.clientHeight);
+        } else {
+            this.isScrollBottom = true;
+        }
 
         return (<div
             {...other}

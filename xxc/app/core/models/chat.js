@@ -595,7 +595,7 @@ class Chat extends Entity {
         return !!this._messages;
     }
 
-    addMessages(messages, userId, limitSize = true, localMessage = false) {
+    addMessages(messages, userId, localMessage = false, skipOld = false) {
         if (!Array.isArray(messages)) {
             messages = [messages];
         }
@@ -609,11 +609,14 @@ class Chat extends Entity {
 
         let noticeCount = this.noticeCount;
         let lastActiveTime = this.lastActiveTime;
+        const now = skipOld ? (new Date().getTime()) : 0;
         messages.forEach(message => {
             if (message.date) {
                 const checkMessage = this._messages.find(x => x.gid === message.gid);
                 if (checkMessage) {
                     checkMessage.reset(message);
+                } else if (skipOld && (now - message.date) > skipOld) {
+                    return;
                 } else {
                     this._messages.push(message);
                     if (!localMessage && userId !== message.senderId) {
