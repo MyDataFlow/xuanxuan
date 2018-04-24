@@ -360,7 +360,7 @@ class chatModel extends model
         if(empty($messages)) return array();
 
         $this->dao->update(TABLE_IM_MESSAGESTATUS)
-            ->set('status')->eq('sended')
+            ->set('status')->eq('sent')
             ->where('user')->eq($userID)
             ->andWhere('status')->eq('waiting')
             ->exec();
@@ -601,7 +601,7 @@ class chatModel extends model
                 $data = new stdClass();
                 $data->user   = $message->user;
                 $data->gid    = $message->gid;
-                $data->status = 'sended';
+                $data->status = 'sent';
                 $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
             }
             $chatList[$message->cgid] = $message->cgid;
@@ -656,7 +656,7 @@ class chatModel extends model
         $gids   = array();
         foreach($notify as $message) $gids[] = $message->gid;
 
-        $this->dao->update(TABLE_IM_MESSAGESTATUS)->set('status')->eq('sended')->where('gid')->in($gids)->andWhere('user')->eq($userID)->exec();
+        $this->dao->update(TABLE_IM_MESSAGESTATUS)->set('status')->eq('sent')->where('gid')->in($gids)->andWhere('user')->eq($userID)->exec();
         return $notify;
     }
 
@@ -687,15 +687,18 @@ class chatModel extends model
         {
             foreach($onlineUsers as $userID)
             {
-                if(empty($message->user) || in_array($userID, $message->user)) $gids[$userID][] = $message->gid;
-                $data[$userID][] = $message;
+                if((empty($message->user) && empty($message->target)) || in_array($userID, $message->target))
+                {
+                    $gids[$userID][] = $message->gid;
+                    $data[$userID][] = $message;
+                }
             }
         }
 
         foreach($gids as $userID => $gid)
         {
             $this->dao->update(TABLE_IM_MESSAGESTATUS)
-                ->set('status')->eq('sended')
+                ->set('status')->eq('sent')
                 ->where('gid')->in($gid)
                 ->andWhere('user')->eq($userID)
                 ->exec();

@@ -2,7 +2,7 @@
 CREATE TABLE `im_messagestatus` (
   `user` mediumint(8) NOT NULL DEFAULT 0,
   `gid` char(40) NOT NULL DEFAULT '',
-  `status` enum('waiting','sended','readed','deleted') NOT NULL DEFAULT 'waiting',
+  `status` enum('waiting','sent','readed','deleted') NOT NULL DEFAULT 'waiting',
   UNIQUE KEY `user` (`user`,`gid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
