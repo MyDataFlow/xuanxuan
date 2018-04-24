@@ -930,7 +930,7 @@ EOT;
     {
         $data = $this->dao->select('id')->from(TABLE_ACTION)
             ->where('objectType')->eq('user')
-            ->andWhere('action')->in('create,update,delete')
+            ->andWhere('action')->in('created,edited,deleted')
             ->andWhere('date')->gt(date(DT_DATETIME1, strtotime('-1 Minute')))
             ->fetch();
         return empty($data) ? 'no' : 'yes';
