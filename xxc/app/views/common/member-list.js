@@ -56,7 +56,7 @@ class MemberList extends Component {
         const {onItemClick, eventBindObject} = this.props;
         if (onItemClick) {
             const member = App.members.get(e.currentTarget.attributes['data-id'].value);
-            onItemClick.call(eventBindObject, member);
+            onItemClick.call(eventBindObject, member, e);
         }
     };
 
@@ -64,7 +64,7 @@ class MemberList extends Component {
         const {onItemContextMenu, eventBindObject} = this.props;
         if (onItemContextMenu) {
             const member = App.members.get(e.currentTarget.attributes['data-id'].value);
-            onItemContextMenu.call(eventBindObject, member);
+            onItemContextMenu.call(eventBindObject, member, e);
         }
     };
 
