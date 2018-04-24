@@ -1,10 +1,18 @@
+console.log('DEBUG ENV', {
+    'global.DEBUG': global.DEBUG,
+    DEBUG: typeof DEBUG === 'undefined' ? 'undefined' : DEBUG,
+    'process.env.NODE_ENV': process.env.NODE_ENV
+});
+
 if (typeof DEBUG === 'undefined') {
-    global.DEBUG = process.env.NODE_ENV !== 'production';
+    global.DEBUG = process.env.NODE_ENV === 'debug' || process.env.NODE_ENV === 'development';
 } else {
     global.DEBUG = DEBUG;
 }
 
 if (global.DEBUG) {
+    console.log('DEBUG', global.DEBUG, process.env.NODE_ENV);
+
     // Mute react router warning.
     console._error = console.error;
     console.error = (errMessage, ...args) => {
@@ -167,6 +175,8 @@ if (global.DEBUG) {
     }
 
     global.$ = {};
+} else if (process.env.NODE_ENV !== 'production') {
+    console.log('DEBUG', global.DEBUG, process.env.NODE_ENV);
 }
 
 export default global.DEBUG;
