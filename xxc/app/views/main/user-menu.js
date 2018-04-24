@@ -49,7 +49,7 @@ class UserMenu extends Component {
         App.ui.quit();
     }
 
-    requestClose() {
+    requestClose = () => {
         if (this.props.onRequestClose) {
             this.props.onRequestClose();
         }
@@ -105,6 +105,7 @@ class UserMenu extends Component {
             <div className="divider" />
             <a className="item" onClick={this.handleAboutItemClick}><div className="title">{Lang.string('usermenu.about')}</div></a>
             <a className="item" onClick={this.handleSettingItemClick}><div className="title">{Lang.string('usermenu.setting')}</div></a>
+            <a className="item" href="#/exts/app/themes" onClick={this.requestClose}><div className="title">{Lang.string('exts.themes.label')}</div></a>
             <a className="item" onClick={this.handleLogoutClick}><div className="title">{Lang.string('usermenu.logout')}</div></a>
             {App.ui.canQuit && <a className="item" onClick={this.handleExitClick}><div className="title">{Lang.string('usermenu.exit')}</div></a>}
             {children}
