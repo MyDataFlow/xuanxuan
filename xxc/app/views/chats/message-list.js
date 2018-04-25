@@ -45,7 +45,7 @@ class MessageList extends Component {
                 this.waitNewMessage = null;
                 setTimeout(() => {
                     this.scrollToBottom(500);
-                }, 100);
+                }, 50);
             }
         });
     }
@@ -57,7 +57,7 @@ class MessageList extends Component {
             if (newMessage) {
                 if (App.im.ui.isActiveChat(newMessage.cgid)) {
                     if (newMessage.isSender(App.profile.userId) || this.isScrollBottom) {
-                        this.scrollToBottom();
+                        this.scrollToBottom(100);
                     }
                 } else {
                     this.waitNewMessage = newMessage;
@@ -159,7 +159,6 @@ class MessageList extends Component {
             {...other}
             className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
             onScroll={this.handleScroll}
-            ref={e => {this.messageListEle = e;}}
         >
             {header}
             {
