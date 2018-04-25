@@ -25,10 +25,12 @@ class ChatHeader extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
+        const {chat} = nextProps;
         return (this.props.className !== nextProps.className ||
             this.props.children !== nextProps.children ||
             this.props.chat !== nextProps.chat || this.lastChatUpdateId !== nextProps.chat.updateId ||
-            (nextProps.chat.isOne2One && nextProps.chat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId)
+            (nextProps.chat.isOne2One && nextProps.chat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId) ||
+            this.isSidebarHidden !== App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One)
         );
     }
 
@@ -45,6 +47,7 @@ class ChatHeader extends Component {
         if (chat.isOne2One) {
             this.lastOtherOneUpdateId = chat.getTheOtherOne(App).updateId;
         }
+        this.isSidebarHidden = App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
 
         return (<div
             {...other}
