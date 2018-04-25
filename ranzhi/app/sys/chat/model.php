@@ -687,7 +687,7 @@ class chatModel extends model
         {
             foreach($onlineUsers as $userID)
             {
-                if((empty($message->user) && empty($message->target)) || in_array($userID, $message->target))
+                if((empty($message->user) && empty($message->users)) || in_array($userID, $message->users))
                 {
                     $gids[$userID][] = $message->gid;
                     $data[$userID][] = $message;
