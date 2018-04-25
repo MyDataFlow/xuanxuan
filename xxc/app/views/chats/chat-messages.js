@@ -62,8 +62,8 @@ class ChatMessages extends Component {
         }
     }
 
-    handleScroll = e => {
-        if (e.target.scrollTop === 0) {
+    handleScroll = scrollInfo => {
+        if (scrollInfo.isAtTop) {
             this.loadChatMessages();
         }
     }

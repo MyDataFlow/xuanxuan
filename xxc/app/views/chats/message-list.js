@@ -15,7 +15,8 @@ class MessageList extends Component {
         listItemProps: PropTypes.object,
         children: PropTypes.any,
         listItemCreator: PropTypes.func,
-        header: PropTypes.any
+        header: PropTypes.any,
+        onScroll: PropTypes.func,
     };
 
     static defaultProps = {
@@ -28,6 +29,7 @@ class MessageList extends Component {
         children: null,
         listItemCreator: null,
         header: null,
+        onScroll: null,
     };
 
     static get MessageList() {
@@ -39,11 +41,11 @@ class MessageList extends Component {
             this.scrollToBottom();
         }
         this.onChatActiveHandler = App.im.ui.onActiveChat(chat => {
-            if (this.lastMessage && this.waitNewMessage && this.lastMessage.cgid === chat.gid) {
+            if (this.lastMessage && (this.waitNewMessage || this.isScrollBottom) && this.lastMessage.cgid === chat.gid) {
                 this.waitNewMessage = null;
                 setTimeout(() => {
-                    this.scrollToBottom();
-                }, 500);
+                    this.scrollToBottom(500);
+                }, 100);
             }
         });
     }
@@ -119,6 +121,22 @@ class MessageList extends Component {
         }
     }
 
+    handleScroll = e => {
+        const target = e.target;
+        const scrollInfo = {
+            isAtTop: target.scrollTop === 0,
+            isAtBottom: (target.scrollHeight - target.scrollTop) === target.clientHeight
+        };
+        this.scrollInfo = scrollInfo;
+        if (this.props.onScroll) {
+            this.props.onScroll(scrollInfo, e);
+        }
+    }
+
+    get isScrollBottom() {
+        return this.scrollInfo ? this.scrollInfo.isAtBottom : true;
+    }
+
     render() {
         const {
             messages,
@@ -131,19 +149,16 @@ class MessageList extends Component {
             listItemCreator,
             staticUI,
             header,
+            onScroll,
             ...other
         } = this.props;
 
         let lastMessage = null;
-        if (this.messageListEle) {
-            this.isScrollBottom = (this.messageListEle.scrollHeight - this.messageListEle.scrollTop) === (this.messageListEle.clientHeight);
-        } else {
-            this.isScrollBottom = true;
-        }
 
         return (<div
             {...other}
             className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
+            onScroll={this.handleScroll}
             ref={e => {this.messageListEle = e;}}
         >
             {header}
