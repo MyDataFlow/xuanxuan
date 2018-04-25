@@ -69,6 +69,8 @@ class MessageList extends Component {
                     if (lastFirstMessageEle) {
                         lastFirstMessageEle.scrollIntoView({block: 'end', behavior: 'instant'});
                     }
+                } else if (this.isScrollBottom) {
+                    this.scrollToBottom(100);
                 }
             }
         }
