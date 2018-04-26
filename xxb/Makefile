@@ -58,6 +58,7 @@ xxb:
 	sed -i '/Remove all entries/i\        return true;' xxb/app/sys/install/model.php
 	sed -i 's/x: 40, y: 0/x: 0,y: 0/' xxb/www/js/jquery/ips.js
 	sed -i "s/<ul><li><button class='reload-win'>.*<\/ul><\/div>//" xxb/www/js/jquery/ips.js
+	sed -i "s/fixNavbar/\/\/fixNavbar/" xxb/www/js/my.js
 	sed -i "s/'system'/'setting'/" xxb/app/sys/setting/ext/control/xuanxuan.php
 	# sed -i "/'manageAppPriv'/d" xxb/app/sys/group/view/browse.html.php
 	# combine js and css files.
