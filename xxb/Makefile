@@ -2,16 +2,6 @@ VERSION=$(shell head -n 1 VERSION)
 
 all: xxb
 
-git:
-	rm -rf zdoo
-	rm -rf xuanxuan
-	git clone --depth=1 https://github.com/easysoft/zdoo.git
-	git clone --depth=1 https://github.com/easysoft/xuanxuan.git
-
-update:
-	cd zdoo && git pull
-	cd xuanxuan && git pull
-
 xxb:
 	mkdir -p xxb/db
 	mkdir -p xxb/lib
@@ -73,12 +63,11 @@ xxb:
 	# combine js and css files.
 	cp -rf tools xxb/ && cd xxb/tools/ && php ./minifyfront.php && php ./cn2tw.php
 	rm -rf xxb/tools
-
-zip:
 	chmod -R 777 xxb/config
 	chmod -R 777 xxb/tmp
 	chmod -R 777 xxb/www/data
 	zip -rqm -9 xxb.$(VERSION).zip xxb
+	rm -rf xxb
 
 deb:
 	mkdir ~/buildroot
