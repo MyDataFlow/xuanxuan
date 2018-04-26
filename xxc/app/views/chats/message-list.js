@@ -43,9 +43,7 @@ class MessageList extends Component {
         this.onChatActiveHandler = App.im.ui.onActiveChat(chat => {
             if (this.lastMessage && (this.waitNewMessage || this.isScrollBottom) && this.lastMessage.cgid === chat.gid) {
                 this.waitNewMessage = null;
-                setTimeout(() => {
-                    this.scrollToBottom(500);
-                }, 50);
+                this.scrollToBottom(500);
             }
         });
     }
