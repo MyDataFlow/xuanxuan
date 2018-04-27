@@ -68,7 +68,7 @@ http://xuan.im
 这里有一个公开的测试服务器供使用：
 
 ```
-地址：http://demo.ranzhi.net
+地址：https://demo.ranzhi.net
 用户：demo
 密码：demo
 
