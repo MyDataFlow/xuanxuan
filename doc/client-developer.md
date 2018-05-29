@@ -21,6 +21,7 @@
 
 ```
 $ git clone https://github.com/easysoft/xuanxuan.git
+$ cd xuanxuan/xxc
 $ npm install
 $ npm run dev
 ```
@@ -65,7 +66,11 @@ $ npm -v
 $ git clone https://github.com/easysoft/xuanxuan.git
 ```
 
-下载完成后就会在你的系统创建一个名称为 `xuanxuan` 的目录，该目录内就是喧喧最新的源码。
+下载完成后就会在你的系统创建一个名称为 `xuanxuan` 的目录，该目录内就是喧喧最新的源码，其中客户端源码在 `xxc` 目录，以下所有操作都是在 `xxc` 目录下进行。
+
+```
+$ cd xuanxuan/xxc
+```
 
 如果你还没有安装或使用过 [git](https://git-scm.com/) 也不用担心，你仍然可以访问 [喧喧在 Github 上的页面](https://github.com/easysoft/xuanxuan)，直接点击 [“Download ZIP”](https://github.com/easysoft/xuanxuan/archive/master.zip) 来下载源码。下载完成后将 zip 文件解压到 `xuanxuan` 目录下即可。
 
@@ -313,79 +318,83 @@ $ brew install rpm
   </thead>
   <tbody>
     <tr>
-      <td><code>/app/</code></td>
+      <td><code>/xxc/</code></td>
+      <td>客户端项目</td>
+    </tr>
+    <tr>
+      <td><code>/xxc/app/</code></td>
       <td>客户端源代码</td>
     </tr>
     <tr>
-      <td><code>/app/assets/</code></td>
+      <td><code>/xxc/app/assets/</code></td>
       <td>客户端使用到的第三发静态资源目录</td>
     </tr>
     <tr>
-      <td><code>/app/media/</code></td>
+      <td><code>/xxc/app/media/</code></td>
       <td>客户端上用到的图片、语音及表情资源</td>
     </tr>
     <tr>
-      <td><code>/app/lang/</code></td>
+      <td><code>/xxc/app/lang/</code></td>
       <td>客户端语言配置文件目录，目前只有中文简体文件 `zh-cn.json</td></td>
     </tr>
     <tr>
-      <td><code>/app/style/</code></td>
+      <td><code>/xxc/app/style/</code></td>
       <td>客户端界面样式表文件目录，通常为 Less 文件</td>
     </tr>
     <tr>
-      <td><code>/app/utils/</code></td>
+      <td><code>/xxc/app/utils/</code></td>
       <td>客户端用到的工具组件</td>
     </tr>
     <tr>
-      <td><code>/app/network/</code></td>
+      <td><code>/xxc/app/network/</code></td>
       <td>客户端内部与网络相关的接口模块</td>
     </tr>
     <tr>
-      <td><code>/app/config/</code></td>
+      <td><code>/xxc/app/config/</code></td>
       <td>客户端配置文件</td>
     </tr>
     <tr>
-      <td><code>/app/platform</code></td>
+      <td><code>/xxc/app/platform</code></td>
       <td>客户端与平台相关的模块</td>
     </tr>
     <tr>
-      <td><code>/app/core/</code></td>
+      <td><code>/xxc/app/core/</code></td>
       <td>客户端核心模块</td>
     </tr>
     <tr>
-      <td><code>/app/components/</code></td>
+      <td><code>/xxc/app/components/</code></td>
       <td>客户端界面用到的通用 React 组件</td>
     </tr>
     <tr>
-      <td><code>/app/views/</code></td>
+      <td><code>/xxc/app/views/</code></td>
       <td>客户端界面 React 视图组件</td>
     </tr>
     <tr>
-      <td><code>/app/main.development.js</code></td>
+      <td><code>/xxc/app/main.development.js</code></td>
       <td>Electron 入口文件</td>
     </tr>
     <tr>
-      <td><code>/app/index.html</code></td>
+      <td><code>/xxc/app/index.html</code></td>
       <td>主窗口 HTML 代码文件</td>
     </tr>
     <tr>
-      <td><code>/app/index.js</code></td>
+      <td><code>/xxc/app/index.js</code></td>
       <td>Electron 主窗口入口代码文件</td>
     </tr>
     <tr>
-      <td><code>/resources/</code></td>
+      <td><code>/xxc/resources/</code></td>
       <td>Electron 打包时用到的资源文件目录</td>
     </tr>
     <tr>
-      <td><code>/server/</code></td>
-      <td>服务器端源代码目录</td>
+      <td><code>/xxb/</code></td>
+      <td>后端服务器源代码目录</td>
     </tr>
     <tr>
-      <td><code>/server/xxd/</code></td>
-      <td>XXD 服务器端源代码目录</td>
+      <td><code>/xxd/</code></td>
+      <td>XXD 中间服务器端源代码目录</td>
     </tr>
     <tr>
-      <td><code>/server/ranzhi</code></td>
+      <td><code>/ranzhi</code></td>
       <td>然之协同服务器端扩展源代码目录</td>
     </tr>
   </tbody>

@@ -1,0 +1,163 @@
+//
+// List
+// --------------------------------------------------
+
+
+// Base style
+
+.list-item,
+.list > .item {
+  position: relative;
+  display: flex;
+  padding: @padding-base-vertical @padding-base-horizontal;
+
+  > .icon {
+    display: block;
+    height: (30*@rem);
+    line-height: (30*@rem);
+  }
+
+  > * {
+    margin-left: @space-sm;
+
+    &:first-child {
+      margin-left: 0;
+      min-width: (14*@rem);
+    }
+  }
+
+  > .title {padding: @padding-small-vertical 0;}
+
+  > .title,
+  > .content {flex: 1;}
+
+  > .label {
+    position: relative;
+    top: (5*@rem);
+
+    + .label {margin-left: @space-xs;}
+  }
+
+  > .content {
+    > .subtitle {
+      .small();
+      .muted();
+    }
+  }
+
+  &.multi-lines {
+    > * {margin-top: (5/2*@rem);}
+
+    > .content {margin-top: 0;}
+  }
+
+  &.active {
+    &:after {
+      transform: scale(1);
+      background-color: @state-cover-active-color;
+      opacity: @state-cover-active-opacity;
+    }
+  }
+}
+
+
+// Heading in list
+
+.list > .heading {
+  .title {
+    opacity: @muted-opacity;
+    font-size: @font-size-small;
+    text-transform: uppercase;
+    font-weight: bolder;
+  }
+}
+
+
+// Compact list
+
+.list-item.compact,
+.list.compact > .item {padding: @space-xs @padding-base-horizontal;}
+
+
+// List with divider
+
+.list.with-divider {
+  border: @border-width solid @divider-color;
+  border-width: @border-width 0;
+
+  > .item {
+    &:before {
+      content: ' ';
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: @padding-base-horizontal;
+      right: 0;
+      height: (1*@rem);
+      background-color: @divider-color;
+    }
+
+    &:last-of-type:before {display: none}
+  }
+
+  &.with-avatar > .item,
+  .item.with-avatar {
+    &:before {left: @padding-base-horizontal + @avatar-size + @space-sm}
+  }
+}
+
+.list-item,
+.list > .item {
+   + .divider {margin-left: @padding-base-horizontal;}
+
+   &.with-avatar + .divider {margin-left: @padding-base-horizontal + @avatar-size + @space-sm}
+}
+
+
+// Nested list
+
+.list > .list {
+  margin-left: @list-nested-group-margin;
+}
+
+
+.dropdown-menu {
+  padding: @space-xs 0;
+
+  > .divider {
+    margin: @space-xs 0!important;
+  }
+
+  > .item {
+    padding: 0 @space-sm;
+    font-size: (13*@rem);
+    .flex-middle;
+    .text-nowrap;
+
+    > .title {
+      margin: 0 (@space-sm);
+    }
+  }
+
+  &.has-icon-left {
+    > .item {
+      padding-left: (24*@rem);
+
+      > .title {
+        margin-left: (8*@rem);
+      }
+
+      > .icon:first-child {
+        opacity: .5;
+        width: (24*@rem);
+        height: (20*@rem);
+        line-height: (20*@rem);
+        text-align: center;
+        display: block;
+        position: absolute;
+        top: (4*@rem);
+        left: (6*@rem);
+      }
+    }
+  }
+}

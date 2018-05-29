@@ -5,7 +5,7 @@
 
 ## 数据库设计参考
 
-MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/ranzhi/db/xuanxuan.sql
+MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/ranzhi/db/xuanxuan.sql
 
 ### Chat 表
 
@@ -45,6 +45,17 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/ra
 | contentType | string |  必须   | 消息内容的类型,为'text'(默认), 'emoticon', 'image', 'file' |
 
 
+### UserMessageStatus
+
+记录消息状态。
+
+| 名称      | 类型     | 必须/可选 | 说明                                       |
+| ------- | ------ | ----- | ---------------------------------------- |
+| user    | number | 必须    | 离线消息的目标用户id,对应用户表的id                     |
+| gid     | string | 必须    | 当客户端向系统提交新的消息时,会创建全局唯一的id                |
+| status  | string | 必须    | 消息状态 |
+
+
 ### ChatsOfUser 表
 
 存储参与会话的成员数据。
@@ -62,18 +73,6 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/ra
 | join  | datetime |  必须   | 用户加入会话时服务器的时间戳 |
 
 
-### UserMessage
-
-存储用户离线时收到的消息。
-
-| 名称      | 类型     | 必须/可选 | 说明                                       |
-| ------- | ------ | ----- | ---------------------------------------- |
-| id      | number | 必须    | 存储在远程数据库的id,离线消息的标识符,服务器根据客户端返回的此id删除已发送过的离线消息。 |
-| level   | number | 必须    | 离线消息级别,默认为3。数字越低级别越高,优先发送级别高的离线消息,用户登录时会生成级别为0和1的消息各一条。 |
-| user    | number | 必须    | 离线消息的目标用户id,对应用户表的id                     |
-| message | text   | 必须    | 离线消息的内容,经过json编码的数据                      |
-
-
 
 ## API说明
 
@@ -81,13 +80,13 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/ra
 
 client：喧喧客户端
 xxd：GO 聊天服务器
-rzs：后台然之服务器
+xxb：后台然之服务器
 
 ### API数据格式
 常见的请求对象格式
 ```js
 {
-    userID, // 用户id，xxd -> rzs 非登录时必须
+    userID, // 用户id，xxd -> xxb 非登录时必须
     module, // 模块名称,必须
     method, // 方法名称,必须
     test,   // 可选参数，bool,默认为false。
@@ -110,10 +109,10 @@ rzs：后台然之服务器
 ```
 
 ### xxd启动
->xxd启动时会向rzs发送一条请求，rzs收到请求将所有用户状态重置为offline。
+>xxd启动时会向xxb发送一条请求，xxb收到请求将所有用户状态重置为offline。
 
 #### 请求
-##### 方向：xxd --> rzs
+##### 方向：xxd --> xxb
 ```js
 {
     module: 'chat',
@@ -122,7 +121,7 @@ rzs：后台然之服务器
 ```
 
 #### 响应
-##### 方向：rzs ---> xxd
+##### 方向：xxb ---> xxd
 ```js
 HTTP Status Code
 ```
@@ -143,11 +142,11 @@ HTTP Status Code
     ]
  }
 ```
-##### 方向：xxd --> rzs
-xxd服务器根据module、method和serverName把请求发送给指定的rzs
+##### 方向：xxd --> xxb
+xxd服务器根据module、method和serverName把请求发送给指定的xxb
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -173,7 +172,7 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
     }
 }
 ```
-登录成功以后xxd主动从rzs服务器获取用户列表、用户所参与的会话信息和用户的离线消息发送给当前客户端。最后把rzs服务器响应给xxd服务器的登录信息去掉users字段后，发送给此会话包含的所有在线用户。
+登录成功以后xxd主动从xxb服务器获取用户列表、用户所参与的会话信息和用户的离线消息发送给当前客户端。最后把xxb服务器响应给xxd服务器的登录信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 登出
 #### 请求
@@ -186,11 +185,11 @@ xxd服务器根据module、method和serverName把请求发送给指定的rzs
 }
 ```
 
-##### 方向：xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向：xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向 rzs --> xxd
+##### 方向 xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -216,7 +215,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的登出信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的登出信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 重复登录
 >当同一用户重复登录时,系统会向前一个登录的用户推送一条特殊的消息,客户端接收到该消息后应该将用户登出，并关闭相关的网络连接。该消息不需要响应或返回结果。
@@ -245,11 +244,11 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -288,7 +287,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 获取当前登录用户所有会话数据
 #### 请求
@@ -300,11 +299,11 @@ xxd把client发送的数据转发给rzs。
     method: 'getList',
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -341,11 +340,11 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 获取当前登录用户所有离线消息
 #### 请求
-##### 方向： xxd --> rzs
+##### 方向： xxd --> xxb
 ```js
 {
     userID,
@@ -355,7 +354,7 @@ xxd把client发送的数据转发给rzs。
 ```
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -379,7 +378,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
 ### 更改当前登录用户的信息
 #### 请求
@@ -410,11 +409,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -440,7 +439,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 创建聊天会话
 #### 请求
@@ -461,13 +460,13 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
 >服务器在创建会话时应该先检查gid是否已经存在，如果存在则直接为当前登录用户返回已存在的会话信息。
 
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -493,7 +492,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 加入或退出聊天会话
 >用户可以加入类型为group并且公共的会话；用户可以退出类型为group的会话。
@@ -512,11 +511,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -542,7 +541,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户（包括退出会话的当前用户）。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户（包括退出会话的当前用户）。
 
 ### 更改会话名称
 >用户可以更改类型为group的会话的名称。
@@ -561,11 +560,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -591,7 +590,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 收藏或取消收藏会话
 >每个用户都可以单独决定收藏或取消收藏会话（加星标记）。
@@ -610,11 +609,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -629,7 +628,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
 
 ### 邀请新的用户到会话或者将用户踢出会话
 #### 请求
@@ -649,13 +648,13 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
 >当新用户被添加到会话之后或者用户被踢出会话后,服务器应该主动推送此会话的信息给此会话的所有在线成员；此响应与chat/create/响应的结果一致。
 
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -681,7 +680,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 向会话发送消息
 #### 请求
@@ -708,13 +707,13 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
 >当有新的消息收到时,服务器会所有消息,并发送给对应会话的所有在线成员
 
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -738,7 +737,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 获取会话的所有消息记录
 #### 请求
@@ -759,11 +758,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -794,7 +793,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 获取会话的所有成员信息
 #### 请求
@@ -810,11 +809,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -837,7 +836,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 隐藏或显示会话
 >每个用户都可以单独决定隐藏或显示已参与的会话。
@@ -856,11 +855,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -875,7 +874,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给当前用户。
 
 ### 将会话设置为公共会话或者取消设置公共会话
 >用户可以将一个非主题会话设置为公共会话或者取消设置公共会话。
@@ -894,11 +893,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: ' chat';
@@ -924,7 +923,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 获取所有公共会话列表
 #### 请求
@@ -936,11 +935,11 @@ xxd把client发送的数据转发给rzs。
     method: 'getPublicList'
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -968,7 +967,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 设置会话管理员
 #### 请求
@@ -986,11 +985,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -1015,7 +1014,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 设置会话允许发言的人
 >通过此功能可以设置会话白名单。
@@ -1034,11 +1033,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -1063,7 +1062,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给此会话包含的所有在线用户。
 
 ### 上传下载用户在客户端的配置信息
 #### 请求
@@ -1080,11 +1079,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -1095,7 +1094,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
 ### 为会话设置分组（1.3新增）
 #### 请求
@@ -1112,11 +1111,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -1130,7 +1129,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
 
 ### 管理员请求解散一个讨论组（1.3新增）
 #### 请求
@@ -1146,11 +1145,11 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-##### 方向： xxd --> rzs
-xxd把client发送的数据转发给rzs。
+##### 方向： xxd --> xxb
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -1161,7 +1160,165 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 ##### 方向：xxd --> client
-把rzs服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+把xxb服务器响应给xxd服务器的信息去掉users字段后，发送给当前登录用户。
+
+### 通知接口
+#### 请求
+##### 方向：xxd --> xxb
+```js
+{
+    module: 'chat',
+    method: 'notify',
+    params:
+    [
+        offline:'', //离线用户
+        sendfail:'',//失败消息
+    ] 
+}
+```
+
+##### 响应：xxb --> xxd
+```js
+{
+    module: 'chat',
+    method: 'notify',
+    data:
+    [
+      {
+        id:
+        [
+            {
+                gid:                //全局唯一ID
+                title:              //通知标题
+                subtitle:           //通知副标题
+                content:            //通知内容
+                date:               //通知时间戳
+                contentType:        //内容格式
+                url:                //连接
+                read:false          //是否已读
+                actions:[
+                    {
+                        label:      //操作标题
+                        url:        //操作指向
+                        type:       //操作类型
+                    }
+                ]
+                sender:{
+                    id:             //发送方唯一标识
+                    name:           //应用名称
+                    avatar:         //发送方头像
+                }
+            }
+            ...
+        ]
+      }
+      ....
+    ] 
+}
+```
+
+##### 方向：xxd --> client
+如果有通知从xxd返回，则xxd会将消息分发给对应的用户
+```js
+{
+    module: 'chat',
+    method: 'notify',
+    data:
+    [
+        {
+            gid:                //全局唯一ID
+            title:              //通知标题
+            subtitle:           //通知副标题
+            content:            //通知内容
+            date:               //通知时间戳
+            contentType:        //内容格式
+            url:                //连接
+            read:false          //是否已读
+            actions:[
+                {
+                    label:      //操作标题
+                    url:        //操作指向
+                    type:       //操作类型
+                }
+            ]
+            sender:{
+                id:             //发送方唯一标识
+                name:           //应用名称
+                avatar:         //发送方头像
+            }
+        }
+        ...
+    ] 
+}
+```
+
+### 离线通知
+#### 请求
+##### 方向：xxd --> xxb
+用户登录的时候会请求未读的离线消息
+```js
+{
+    module: 'chat',
+    method: 'getOfflineNotify',
+    userID: //用户ID
+}
+```
+
+##### 响应：xxb --> xxd
+```js
+{
+    module: 'chat',
+    method: 'notify',
+    data:
+    [
+        {
+            gid:                //全局唯一ID
+            title:              //通知标题
+            subtitle:           //通知副标题
+            content:            //通知内容
+            date:               //通知时间戳
+            contentType:        //内容格式
+            url:                //连接
+            read:false          //是否已读
+            actions:[
+                {
+                    label:      //操作标题
+                    url:        //操作指向
+                    type:       //操作类型
+                }
+            ]
+            sender:{
+                id:             //发送方唯一标识
+                name:           //应用名称
+                avatar:         //发送方头像
+            }
+        }
+        ...
+    ] 
+}
+```
+
+### 检测用户变更
+#### 请求
+##### 方向：xxd --> xxb
+用户登录的时候会请求未读的离线消息
+```js
+{
+    module: 'chat',
+    method: 'checkUserChange',
+    params: ''
+}
+```
+
+##### 响应：xxb --> xxd
+```js
+{
+    module: 'chat',
+    method: 'checkUserChange',
+    data:   'yes' //是否有变更 yes或者no
+}
+```
+如果返回为yes,则会请求``userGetlist``API
 
 ### 上传文件
 #### 请求
@@ -1199,7 +1356,7 @@ xxd把client发送的数据转发给rzs。
 }
 ```
 
-##### 方向： xxd --> rzs
+##### 方向： xxd --> xxb
 ```js
 {
     userID,
@@ -1215,10 +1372,10 @@ xxd把client发送的数据转发给rzs。
     ]
 }
 ```
-xxd把client发送的数据转发给rzs。
+xxd把client发送的数据转发给xxb。
 
 #### 响应
-##### 方向：rzs --> xxd
+##### 方向：xxb --> xxd
 ```js
 {
     module: 'chat',
@@ -1244,3 +1401,5 @@ xxd 服务器在客户端发起的 POST 请求中以 JSON 文本格式返回文�
     }
 }
 ```
+
+

@@ -1,0 +1,143 @@
+//
+// Navs
+// --------------------------------------------------
+
+
+// Base style
+
+.nav {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  > a {
+    flex: 0 0 auto;
+    display: flex;
+    min-width: (40*@rem);
+    opacity: .8;
+    padding: 0 @padding-base-horizontal;
+    align-items: center;
+    justify-content: center;
+    height: (40*@rem);
+
+    &.active {
+      opacity: 1;
+      font-weight: bold;
+    }
+
+    > .icon + .text {
+      display: inline-block;
+      margin-left: @space-xs;
+    }
+  }
+}
+
+
+// Secondary nav
+
+.nav-secondary {
+  box-shadow: inset 0 (-1*@rem) 0 rgba(0,0,0,.1);
+
+  > .active {box-shadow: inset 0 (-2*@rem) 0 @color-white;}
+
+  &.primary-pale > .active   {box-shadow: inset 0 (-2*@rem) 0 @color-primary;}
+  &.success-pale > .active   {box-shadow: inset 0 (-2*@rem) 0 @color-success;}
+  &.danger-pale > .active    {box-shadow: inset 0 (-2*@rem) 0 @color-danger;}
+  &.warning-pale > .active   {box-shadow: inset 0 (-2*@rem) 0 @color-warning;}
+  &.important-pale > .active {box-shadow: inset 0 (-2*@rem) 0 @color-important;}
+  &.special-pale > .active   {box-shadow: inset 0 (-2*@rem) 0 @color-special;}
+}
+
+
+// Skin options
+
+.nav.circle {border-radius: (20*@rem)}
+
+.nav.outline {
+  > a {
+    border-right: @border-width solid transparent;
+    border-right-color: inherit;
+
+    &:last-child {border-right: none}
+
+    &.active {
+      color: @color-fore;
+      background-color: @color-back;
+    }
+  }
+}
+
+
+// Large navs
+
+.nav-lg {> a {height: (48*@rem);}}
+
+.nav-sm {
+  > a {
+    height: (30*@rem);
+    min-width: (30*@rem);
+    padding: 0 @padding-small-horizontal;
+  }
+}
+
+
+// Affix navs
+
+.nav.affix {
+  background-color: @color-back;
+  &:extend(.nav-lg all);
+}
+
+.with-nav-top                   {padding-top: (48*@rem);}
+.with-nav-bottom                {padding-bottom: (48*@rem);}
+.with-heading-top.with-nav-top  {
+  padding-top: (48*@rem)*2;
+
+  > .nav.affix.dock-top {top: (48*@rem)}
+}
+
+.in-scroll.scroll-down {
+  &.with-heading-top, .with-heading-top {
+    > .nav.dock-top {
+      // Yes, not 100%! The magic 99% to prevent bug in safari
+      transform: translate(0, -100%);
+      &.dock-auto {
+        // Yes, not 200%! The magic 199% to prevent bug in safari
+        transform: translate(0, -199%);
+      }
+    }
+  }
+}
+
+.in-scroll > .dock-top .nav-secondary {.shadow-0()}
+
+// Nav tabs
+.nav-tabs {
+  > .active {
+    background-color: @color-white;
+    // height: (36*@rem);
+    // margin-top: (4*@rem);
+    border: @color-primary solid (1*@rem);
+    border-bottom-color: @color-white;
+    // margin-bottom: (-1*@rem);
+    position: relative;
+    z-index: 1;
+
+    &:after {
+      bottom: (-1*@rem);
+    }
+  }
+
+  &.nav-sm {
+    > a {
+      padding-top: (2*@rem);
+
+      &.active {
+        padding-top: 0;
+        height: (28*@rem);
+        margin-top: (2*@rem);
+      }
+    }
+  }
+}

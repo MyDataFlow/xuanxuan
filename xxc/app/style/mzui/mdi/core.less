@@ -1,0 +1,62 @@
+@mdi-font-src: url("./fonts/materialdesignicons-webfont.woff2?v=2.0.46") format("woff2");
+
+@font-face {
+  font-family: "Material Design Icons";
+  src: @mdi-font-src;
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+// Core style
+
+.mdi,
+[class^="mdi-"],
+[class*=" mdi-"] {
+  font-family: "Material Design Icons";
+  speak: none;
+  font-size: (18*@rem);
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+
+  // Better Font Rendering
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon:before {
+  display: inline-block;
+  min-width: (18*@rem);
+  text-align: center;
+}
+
+
+// EXTRAS
+
+// Prevent stack and spinners from being taken inline when inside a link
+a .icon.spin {
+  display: inline-block;
+  text-decoration: none;
+}
+
+// ensure rotation occurs
+.icon.rotate-90,
+.icon.rotate-180,
+.icon.rotate-270,
+.icon.flip-h,
+.icon.flip-v {
+  &:before { display: inline-block; }
+}
+
+
+// Sizes
+
+.icon-sm {font-size: (12*@rem);}
+.icon-2x {font-size: (24*@rem);}
+.icon-3x {font-size: (36*@rem);}
+.icon-4x {font-size: (48*@rem);}
+.icon-5x {font-size: (60*@rem);}
+.icon-6x {font-size: (72*@rem);}
+.icon-7x {font-size: (84*@rem);}

@@ -1,0 +1,76 @@
+.primary {
+  background-color: #a050d7!important;
+  border-color: #a050d7!important;
+}
+.gray,
+.primary-pale {
+  background-color: #ffebf8!important;
+  border-color: #ffebf8!important;
+}
+.text-primary,
+.primary-pale.text-tint,
+.primary-pale .active {
+  color: #a050d7!important;
+}
+.primary.outline {
+  border-color: #a050d7!important;
+  color: #a050d7!important;
+}
+.primary.outline.hover-solid:hover,
+.primary.outline .active {
+  background-color: #a050d7!important;
+  color: #fff!important;
+}
+.text-secondary {
+  color: #f7889c;
+}
+.markdown-content a {
+  color: #a050d7;
+}
+.input:focus,
+.textarea:focus,
+.select > select:focus {
+  border-color: #f7889c;
+  box-shadow: 0 0 0 0.1rem #ffebf8;
+}
+.radio > input:focus + label:before,
+.checkbox > input:focus + label:before {
+  border-color: #f7889c;
+  box-shadow: inset 0 0 0 0.05rem #ffebf8, 0 0 0 0.1rem #ffebf8;
+}
+.checkbox > input:checked + label:before,
+.checkbox > input:checked + label:after {
+  background-color: #a050d7;
+}
+.iconbutton {
+  color: #a050d7;
+}
+.iconbutton:hover {
+  color: #f7889c;
+}
+.iconbutton:focus {
+  background-color: #ffebf8;
+}
+.app-chat-sidebar .tabs > .nav > a.active {
+  color: #a050d7;
+  box-shadow: inset 0 -0.1rem 0 0 #f7889c;
+}
+
+.app-login {
+  background-image: linear-gradient(135deg, #f7889c 0%, #a050d7 100%);
+}
+.app-chat-group-list .app-group-list .heading > .title {
+  color: #a050d7;
+}
+.app-chat-group-list .app-group-list .heading > .icon {
+  color: #a050d7;
+}
+.app-exts-nav {
+  background-color: #ffebf8;
+}
+.app-ext-common-header > .nav > a.active {
+  color: #f7889c;
+}
+.app-message-content-text.is-content-block {
+  background-color: #ffebf8;
+}

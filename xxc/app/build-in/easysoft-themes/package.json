@@ -1,0 +1,60 @@
+{
+    "name": "easysoft-themes",
+    "displayName": "官方主题",
+    "version": "1.0.0",
+    "description": "提供了 6 款主题外观。",
+    "type": "theme",
+    "icon": "mdi-lightbulb",
+    "accentColor": "#333",
+    "themes": [
+        {
+            "name": "dark",
+            "displayName": "暗黑",
+            "color": "#333",
+            "style": "themes/dark.css",
+            "inject": "append"
+        }, {
+            "name": "zentao",
+            "displayName": "禅道蓝",
+            "color": "#006af1",
+            "style": "themes/zentao.css",
+            "inject": "append"
+        }, {
+            "name": "red",
+            "displayName": "赤诚红",
+            "color": "#e62340",
+            "style": "themes/red.css",
+            "inject": "append"
+        }, {
+            "name": "green",
+            "displayName": "叶兰绿",
+            "color": "#00b791",
+            "style": "themes/green.css",
+            "inject": "append"
+        }, {
+            "name": "purple",
+            "displayName": "玉烟紫",
+            "color": "#3123ae",
+            "style": "themes/purple.css",
+            "inject": "append"
+        }, {
+            "name": "pink",
+            "displayName": "芙蕖(qú)粉",
+            "color": "#a050d7",
+            "style": "themes/pink.css",
+            "inject": "append"
+        }
+    ],
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/app/extensions/easysoft-themes",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan/",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}

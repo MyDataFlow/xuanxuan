@@ -1,6 +1,6 @@
 # Logs
 logs
-*.log
+*.log*
 
 # Runtime data
 pids
@@ -26,35 +26,39 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
-app/node_modules
+xxc/node_modules
 
 # OSX
 .DS_Store
 
 # App packaged
-release
-app/main.js
-app/main.js.map
-app/bundle.js
-app/bundle.js.map
-app/style.css
-app/style.css.map
-app/dist
-app/web-dist
+xxc/release
+xxc/app/main.js
+xxc/app/main.js.map
+xxc/app/bundle.js
+xxc/app/bundle.js.map
+xxc/app/style.css
+xxc/app/style.css.map
+xxc/app/dist
+xxc/app/web-dist
+xxc/app/package-lock.json
+package-lock.json
 
 # User custom files
 *.custom
 
 .idea
-.vscode/settings.json
+xxc/.vscode/settings.json
 
 # backyard settings
-server/db/upgradebackyard.sql
-server/xxd/certificate
+ranzhi/db/upgradebackyard.sql
+xxd/certificate
+xxd/log
 
 # documentation
-docs
+xxc/docs
 issues.md
 
 # xxd tmp files
-server/xxd/tmpfile
+xxd/tmpfile
+

@@ -1,0 +1,65 @@
+{
+    "productName": "xuanxuan",
+    "appId": "com.cnezsoft.xuanxuan",
+    "compression": "maximum",
+    "artifactName": "${productName}.${version}.${os}.${arch}.${ext}",
+    "electronDownload": {
+        "mirror": "https://npm.taobao.org/mirrors/electron/"
+    },
+    "extraResources": [
+        {
+            "from": "app/build-in/",
+            "to": "build-in"
+        }
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        }, {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "title": "喧喧 ${version}"
+    },
+    "files": [
+      "dist/",
+      "assets/",
+      "media/",
+      "index.html",
+      "main.js",
+      "main.js.map",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "tar.gz"
+      ],
+      "icon": "./resources/icons/"
+    },
+    "mac": {
+      "icon": "./resources/icon.icns",
+      "artifactName": "${productName}.${version}.${os}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName}.${version}.${os}${env.PKG_ARCH}.setup.${ext}",
+      "deleteAppDataOnUninstall": false
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
+  }

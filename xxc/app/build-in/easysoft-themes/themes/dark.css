@@ -1,0 +1,201 @@
+@import './highlightjs.css';
+
+.page,
+select,
+option,
+body {
+  color: #f1f1f1;
+  background-color: #333;
+}
+
+.Resizer {
+  background-color: #666;
+}
+
+.emoji-dialog .emoji-dialog-header li.active,
+.emoji-dialog {
+  background-color: #333;
+}
+.emoji-dialog .emoji-dialog-header {
+  background-color: #252526;
+}
+.emoji-dialog .emoji-row .emoji:hover {
+  background-color: #222;
+}
+
+.arrow-top:before {
+  border-color: transparent transparent #252526 transparent;
+}
+.arrow-bottom:before {
+  border-color: #252526 transparent transparent transparent;
+}
+
+.divider {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+
+.primary {
+  background-color: #252526!important;
+}
+.gray,
+.primary-pale {
+  background-color: #333!important;
+  border-color: #333!important;
+}
+.text-primary,
+.primary-pale.text-tint,
+.primary-pale .active {
+  color: #8c9eff!important;
+}
+.primary.outline {
+  border-color: #888!important;
+  color: #888!important;
+}
+.primary.outline:hover {
+  background-color: #888;
+  color: #222;
+}
+.layer,
+.layer.display {
+  background-color: #252526;
+  border-color: #252526;
+  color: #f1f1f1;
+}
+.box,
+.white {
+  background-color: #252526!important;
+  border-color: #252526!important;
+  color: #f1f1f1!important;
+}
+.shadow-divider {
+  box-shadow: inset 0 -0.05rem 0 rgba(255, 255, 255, 0.15);
+}
+.layer {
+  border: 1px solid rgba(255,255,255,.15)!important;
+}
+.markdown-content a {
+  color: #8c9eff;
+}
+.markdown-content h1 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.display-backdrop {
+  background-color: rgba(255,255,255,.3);
+}
+
+.input,
+.textarea,
+.select > select {
+  background-color: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.2);
+}
+.iconbutton {
+  color: #999;
+}
+.iconbutton:hover {
+  color: #8c9eff;
+}
+.iconbutton:focus {
+  background-color: #222;
+}
+
+.app-login {
+  background-color: #252526;
+  background-image: linear-gradient(135deg, #333 0%, #252526 100%);
+}
+.app-chats-menu-list .item.active {
+  background-color: rgba(255,255,255,.1);
+}
+.app-chat-group-list .app-group-list .heading > .title {
+  color: #8c9eff;
+}
+
+.app-chat-header,
+.app-chat-header > .toolbar {
+  background-color: #2d2d2d;
+}
+
+.app-message-divider > .content {
+  background-color: #252526;
+  color: rgba(255,255,255,.5);
+}
+.app-message-divider:before {
+  border-bottom-color: rgba(255,255,255,.15);
+}
+.app-message-item-time-label.as-dot {
+  background-color: #444;
+}
+.app-message-item-time-label.as-dot:hover {
+  color: #f1f1f1;
+}
+
+.app-chat-sendbox-toolbar {
+  background-color: #2d2d2d;
+}
+.app-chats-cache {
+  background-color: #444;
+}
+.app-chat-sidebar .tabs > .nav {
+  background-color: #2d2d2d;
+}
+.app-chat-sidebar .tabs > .nav > a.active {
+  color: #8c9eff!important;
+  box-shadow: inset 0 -0.1rem 0 0 #8c9eff;
+}
+.app-chat-sidebar {
+  background-color: #252526;
+}
+.app-chats-history-header > .search-control > .search > .select > select {
+  background-color: #222;
+  color: #8c9eff;
+}
+.app-chat-search-result {
+  background-color: #252526;
+  border-left: 1px solid #444;
+  border-right: 1px solid #444;
+}
+
+.app-exts-nav {
+  background-color: #444;
+}
+.app-exts-nav > a.active {
+  background-color: #222;
+}
+.app-exts-nav > a > .avatar {
+  color: #666;
+  filter: brightness(1.5);
+}
+.app-exts-app {
+  background-color: #252526;
+  color: #f1f1f1;
+}
+.app-web-app webview {
+  background-color: #fff;
+}
+
+.app-exts-list > .app-ext-list-item-dev {
+  background-color: #222;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+}
+.app-ext-list-item-type-label {
+  filter: brightness(1.5);
+}
+.app-exts-list > .app-ext-list-item-dev .errors,
+.app-exts-list > .app-ext-list-item-dev .infos {
+  background-color: #333;
+}
+.app-ext-common-header > .nav > a.active {
+  color: #8c9eff;
+}
+.app-message-content-text.is-content-block {
+  background-color: #333;
+}
+
+.app-message-actions:hover + .app-message-content {
+  outline: #444 2px solid;
+}
+.sharing .app-message-actions + .app-message-content {
+  outline: #444 4px solid;
+  background-color: #444;
+}
