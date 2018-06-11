@@ -8,7 +8,7 @@ class MessageDivider extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
         children: PropTypes.any,
-        date: PropTypes.number,
+        date: PropTypes.any,
     };
 
     static defaultProps = {
