@@ -36,6 +36,12 @@ const loadModules = () => {
     });
 };
 
+App.ui.onReady(() => {
+    Exts.forEach(ext => {
+        ext.callModuleMethod('onReady', ext);
+    });
+});
+
 // Listen events
 App.server.onUserLogin((user, error) => {
     if (!error) {

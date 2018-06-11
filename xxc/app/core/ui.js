@@ -15,6 +15,7 @@ const EVENT = {
     app_link: 'app.link',
     net_online: 'app.net.online',
     net_offline: 'app.net.offline',
+    ready: 'app.ready'
 };
 
 const createImageContextMenuItems = (url, dataType) => {
@@ -190,7 +191,6 @@ document.addEventListener('click', e => {
     }
 });
 
-
 window.addEventListener('online', () => {
     // Events.emit(EVENT.net_online);
     if (profile.user) {
@@ -318,6 +318,14 @@ const reloadWindow = () => {
 // Decode url params
 const entryParams = HTML.getSearchParam();
 
+export const triggerReady = () => {
+    Events.emit(EVENT.ready);
+};
+
+export const onReady = listener => {
+    return Events.on(EVENT.ready, listener);
+};
+
 export default {
     entryParams,
     get canQuit() {
@@ -332,4 +340,6 @@ export default {
     createImageContextMenuItems,
     createLinkContextMenu,
     reloadWindow,
+    triggerReady,
+    onReady
 };
