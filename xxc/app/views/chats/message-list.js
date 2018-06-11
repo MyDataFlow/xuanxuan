@@ -65,7 +65,11 @@ class MessageList extends Component {
                 if (lastFirstMessage) {
                     const lastFirstMessageEle = document.getElementById(`message-${lastFirstMessage.gid}`);
                     if (lastFirstMessageEle) {
-                        lastFirstMessageEle.scrollIntoView({block: 'end', behavior: 'instant'});
+                        if (this.scrollInfo) {
+                            this.scrollInfo.target.scrollTop = lastFirstMessageEle.offsetTop - 96;
+                        } else {
+                            lastFirstMessageEle.scrollIntoView({block: 'end', behavior: 'instant'});
+                        }
                     }
                 } else if (this.isScrollBottom) {
                     this.scrollToBottom(100);
@@ -124,6 +128,7 @@ class MessageList extends Component {
     handleScroll = e => {
         const target = e.target;
         const scrollInfo = {
+            target,
             isAtTop: target.scrollTop === 0,
             isAtBottom: (target.scrollHeight - target.scrollTop) === target.clientHeight
         };
