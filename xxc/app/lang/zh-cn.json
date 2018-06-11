@@ -292,6 +292,7 @@
     "chat.message.copy": "复制消息内容",
     "chat.message.copyMarkdown": "复制 Markdown",
     "chat.noMoreMessage": "没有更多消息",
+    "chat.loadMoreMessage": "加载更多历史消息",
 
     "chat.sidebar.tab.profile.label": "资料",
     "chat.sidebar.tab.peoples.label": "成员",
