@@ -325,7 +325,7 @@ export default class Extension {
         }
         const extModule = this._module;
         if (extModule && extModule[methodName]) {
-            return extModule[methodName](...params);
+            return extModule[methodName].apply(this, params);
         }
     }
 
