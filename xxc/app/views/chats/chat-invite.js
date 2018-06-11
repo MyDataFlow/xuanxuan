@@ -108,7 +108,7 @@ class ChatInvite extends Component {
                     items.push(member);
                 }
             }
-        });
+        }, true);
 
         return (<div
             {...other}

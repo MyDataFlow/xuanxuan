@@ -97,10 +97,12 @@ const init = (memberArr, rolesMap, deptsMap) => {
  */
 const getAll = () => (members ? Object.keys(members).map(x => members[x]) : []);
 
-const forEach = (callback) => {
+const forEach = (callback, ignoreDeleteUser = false) => {
     if (members) {
         Object.keys(members).forEach(memberId => {
-            callback(members[memberId]);
+            if (!ignoreDeleteUser || !members[memberId].isDeleted) {
+                callback(members[memberId]);
+            }
         });
     }
 };
