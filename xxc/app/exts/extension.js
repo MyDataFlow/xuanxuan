@@ -3,7 +3,7 @@ import AppExtension from './app-extension';
 import PluginExtension from './plugin-extension';
 import ThemeExtension from './theme-extension';
 
-const createExtension = (pkg, data = null, buildIn = false) => {
+export const createExtension = (pkg, data = null, buildIn = false) => {
     if (pkg.pkg && !data) {
         data = pkg.data;
         pkg = pkg.pkg;
@@ -36,5 +36,9 @@ const createExtension = (pkg, data = null, buildIn = false) => {
     }
 };
 
-export {AppExtension, PluginExtension, ThemeExtension, createExtension};
+export const setExtensionUser = user => {
+    Extension.user = user;
+};
+
+export {AppExtension, PluginExtension, ThemeExtension};
 export default Extension;

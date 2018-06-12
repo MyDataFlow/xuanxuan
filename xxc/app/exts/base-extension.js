@@ -4,6 +4,7 @@ import ExtensionConfig from './extension-config';
 import timeSequence from '../utils/time-sequence';
 import SearchScore from '../utils/search-score';
 import PinYin from '../utils/pinyin';
+import Store from '../utils/store';
 
 export const TYPES = {
     app: 'app',
@@ -223,6 +224,44 @@ export default class Extension {
 
     get hasModule() {
         return this.mainFile;
+    }
+
+    getConfigStoreKey(forUser = false) {
+        return forUser ? `EXTENSION::${this.id}::USER::${Extension.user.identify}::config` : `EXTENSION::${this.id}::config`;
+    }
+
+    getConfig(key, forUser = false) {
+        if (!this._config) {
+            this._config = Store.get(this.getConfigStoreKey(forUser), {});
+        }
+        return key === undefined ? this._config : this._config[key];
+    }
+
+    setConfig(key, value, forUser = false) {
+        const config = this.getConfig();
+        if (typeof key === 'object') {
+            Object.assign(config, key);
+        } else {
+            config[key] = value;
+        }
+        this._config = config;
+        Store.set(this.getConfigStoreKey(forUser), this._config);
+    }
+
+    getUserConfig(key) {
+        if (Extension.user) {
+            return this.getConfig(key, true);
+        } else if (DEBUG) {
+            console.warn('Cannot set user config for the exteions, because current user is not logined.', this);
+        }
+    }
+
+    setUserConfig(key, value) {
+        if (Extension.user) {
+            return this.setUserConfig(key, value, true);
+        } else if (DEBUG) {
+            console.warn('Cannot set user config for the exteions, because current user is not logined.', this);
+        }
     }
 
     /**

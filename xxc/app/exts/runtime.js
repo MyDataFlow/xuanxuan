@@ -3,6 +3,7 @@ import Exts from './exts';
 import manager from './manager';
 import App from '../core';
 import {Index as View} from '../views/exts';
+import {setExtensionUser} from './extension';
 
 global.Xext = Xext;
 
@@ -45,6 +46,7 @@ App.ui.onReady(() => {
 // Listen events
 App.server.onUserLogin((user, error) => {
     if (!error) {
+        setExtensionUser(user);
         Exts.forEach(ext => {
             ext.callModuleMethod('onUserLogin', user);
         });
@@ -52,6 +54,7 @@ App.server.onUserLogin((user, error) => {
 });
 
 App.server.onUserLoginout((user, code, reason, unexpected) => {
+    setExtensionUser(null);
     Exts.forEach(ext => {
         ext.callModuleMethod('onUserLoginout', user, code, reason, unexpected);
     });
