@@ -107,33 +107,33 @@ const show = (position, menus, props = {}, callback = null) => {
 
         if (position.direction) {
             switch (position.direction) {
-                case 'top':
-                    newX -= eleWidth / 2;
-                    newY -= eleHeight;
-                    break;
-                case 'top-left':
-                    newX -= eleWidth;
-                    newY -= eleHeight;
-                    break;
-                case 'top-right':
-                    newY -= eleHeight;
-                    break;
-                case 'left':
-                    newX -= eleWidth / 2;
-                    newY -= eleHeight / 2;
-                    break;
-                case 'right':
-                    newY -= eleHeight / 2;
-                    break;
-                case 'bottom':
-                    newX -= eleWidth / 2;
-                    break;
-                case 'bottom-left':
-                    newX -= eleWidth;
-                    break;
-                // case 'bottom-right':
-                // default:
-                //     break;
+            case 'top':
+                newX -= eleWidth / 2;
+                newY -= eleHeight;
+                break;
+            case 'top-left':
+                newX -= eleWidth;
+                newY -= eleHeight;
+                break;
+            case 'top-right':
+                newY -= eleHeight;
+                break;
+            case 'left':
+                newX -= eleWidth / 2;
+                newY -= eleHeight / 2;
+                break;
+            case 'right':
+                newY -= eleHeight / 2;
+                break;
+            case 'bottom':
+                newX -= eleWidth / 2;
+                break;
+            case 'bottom-left':
+                newX -= eleWidth;
+                break;
+            // case 'bottom-right':
+            // default:
+            //     break;
             }
         }
         if (position.offsetX) {
