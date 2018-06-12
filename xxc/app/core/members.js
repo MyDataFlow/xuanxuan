@@ -191,7 +191,7 @@ const remove = member => {
 };
 
 const getRoleName = role => {
-    return role ? (roles[role] || Lang.string(`member.role.${role}`, role)) : '';
+    return (role && roles) ? (roles[role] || Lang.string(`member.role.${role}`, role)) : '';
 };
 
 const getDept = deptId => {
