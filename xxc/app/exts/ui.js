@@ -168,7 +168,7 @@ const createSettingContextMenu = extension => {
         if (!extension.buildIn) {
             items.push({
                 label: Lang.string('ext.enable'),
-                click: manager.setExtensiondisabled.bind(null, extension, false, null)
+                click: manager.setExtensionDisabled.bind(null, extension, false, null)
             });
         }
     } else {
@@ -184,7 +184,7 @@ const createSettingContextMenu = extension => {
         if (!extension.buildIn) {
             items.push({
                 label: Lang.string('ext.disable'),
-                click: manager.setExtensiondisabled.bind(null, extension, true, null)
+                click: manager.setExtensionDisabled.bind(null, extension, true, null)
             });
         }
     }

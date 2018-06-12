@@ -72,11 +72,11 @@ export default class ExtensionDetail extends Component {
     }
 
     handleEnableBtnClick(extension) {
-        Exts.manager.setExtensiondisabled(extension, false);
+        Exts.manager.setExtensionDisabled(extension, false);
     }
 
     handleDisableBtnClick(extension) {
-        Exts.manager.setExtensiondisabled(extension, true);
+        Exts.manager.setExtensionDisabled(extension, true);
     }
 
     render() {
