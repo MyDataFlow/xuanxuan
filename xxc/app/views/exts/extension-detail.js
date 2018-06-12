@@ -88,7 +88,7 @@ export default class ExtensionDetail extends Component {
         } = this.props;
 
         const buttons = [];
-        if (extension.isApp) {
+        if (extension.isApp && extension.avaliable) {
             buttons.push(<Button onClick={this.handleOpenBtnClick.bind(this, extension)} key="open" icon="open-in-app" className="rounded green-pale outline hover-solid" label={Lang.string('ext.openApp')} />);
         }
         if (!extension.buildIn) {
@@ -125,6 +125,9 @@ export default class ExtensionDetail extends Component {
         const titleViews = [<span className="text" key="ext-name">{extension.displayName}</span>];
         if (extension.buildIn) {
             titleViews.push(<span key="ext-buildIn-label" data-hint={Lang.string('ext.buildIn')} className="hint--top"><Icon name="star-circle text-yellow" /></span>);
+        }
+        if (extension.needRestart) {
+            titleViews.push(<span key="ext-needRestart" className="circle label warning">{Lang.string('ext.extension.needRestart')}</span>);
         }
         titleViews.push(<span key="ext-type" className="muted circle label darken-3 code">#{Lang.string(`ext.type.${extension.type}`)} ∗ {extension.name}</span>);
 

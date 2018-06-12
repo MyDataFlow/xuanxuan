@@ -173,9 +173,12 @@ const createSettingContextMenu = extension => {
         }
     } else {
         if (extension.isApp) {
-            items.push({
+            items.push(extension.avaliable ? {
                 label: Lang.string('ext.openApp'),
                 click: openApp.bind(null, extension.name, null, null)
+            } : {
+                disabled: true,
+                label: `${Lang.string('ext.openApp')} (${Lang.string('ext.extension.needRestart')})`,
             });
         }
         if (!extension.buildIn) {
