@@ -21,14 +21,14 @@ const getInstallIndex = name => {
     return installs.findIndex(x => x.name === name);
 };
 
-const saveInstall = (extension, override = false) => {
+const saveInstall = (extension, override = false, beforeSave = null) => {
     const oldExtensionIndex = getInstallIndex(extension.name);
-    if (!override && oldExtensionIndex > -1) {
-        return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
-    }
-
     if (oldExtensionIndex > -1) {
+        if (!override) {
+            return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
+        }
         const oldExtension = installs[oldExtensionIndex];
+        oldExtension.detach();
         extension._data = oldExtension.data;
         extension.updateTime = new Date().getTime();
         installs.splice(oldExtensionIndex, 1, extension);
@@ -37,6 +37,9 @@ const saveInstall = (extension, override = false) => {
             extension.installTime = new Date().getTime();
         }
         installs.push(extension);
+    }
+    if (beforeSave) {
+        beforeSave(extension);
     }
     saveToStore();
     if (onChangeListener) {

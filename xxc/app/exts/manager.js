@@ -37,6 +37,12 @@ const extractInstallFile = filePath => {
     });
 };
 
+const saveAndAttach = (extension, override = true) => {
+    return db.saveInstall(extension, override, ext => {
+        ext.hotAttach();
+    });
+};
+
 const reloadDevExtension = extension => {
     const path = extension.localPath;
     if (path) {
@@ -44,7 +50,7 @@ const reloadDevExtension = extension => {
         const pkg = fse.readJSONSync(pkgFilePath, {throws: false});
         if (pkg) {
             extension = createExtension(pkg, extension.data);
-            db.saveInstall(extension, true);
+            saveAndAttach(extension);
             if (DEBUG) {
                 console.collapse('Extension Reload for Dev', 'greenBg', extension.name, 'greenPale');
                 console.log('extension', extension);
@@ -55,6 +61,7 @@ const reloadDevExtension = extension => {
     }
     return false;
 };
+
 
 const installFromDir = (dir, deleteDir = false, devMode = false) => {
     const pkgFilePath = Path.join(dir, 'package.json');
@@ -82,19 +89,19 @@ const installFromDir = (dir, deleteDir = false, devMode = false) => {
             if (dbExt.version && extension.version && compareVersions(dbExt.version, extension.version) < 0) {
                 return Modal.confirm(Lang.format('ext.updateInstall.format', dbExt.displayName, dbExt.version, extension.version)).then(confirmed => {
                     if (confirmed) {
-                        return db.saveInstall(extension, true);
+                        return saveAndAttach(extension);
                     }
                     return Promise.reject();
                 });
             }
             return Modal.confirm(Lang.format('ext.overrideInstall.format', dbExt.displayName, dbExt.version || '*', extension.displayName, extension.version || '*')).then(confirmed => {
                 if (confirmed) {
-                    return db.saveInstall(extension, true);
+                    return saveAndAttach(extension);
                 }
                 return Promise.reject();
             });
         }
-        return db.saveInstall(extension);
+        return saveAndAttach(extension, false);
     }).then(() => {
         if (!devMode) {
             return fse.emptyDir(extension.localPath).then(() => {
@@ -123,8 +130,11 @@ const installFromDevDir = (dir) => {
     return installFromDir(dir, false, true);
 };
 
-const installFromXextFile = filePath => {
+const installFromXextFile = (filePath, deleteXextfile = false) => {
     return extractInstallFile(filePath).then(tmpPath => {
+        if (deleteXextfile) {
+            fse.removeSync();
+        }
         return installFromDir(tmpPath, true);
     });
 };
@@ -136,15 +146,23 @@ const openInstallDialog = (callback, devMode = false) => {
             const extName = Path.extname(filePath).toLowerCase();
             if (extName === '.json' && Path.basename(filePath) === 'package.json') {
                 installFromDir(Path.dirname(filePath), false, devMode).then(extension => {
-                    if (callback) callback(extension);
+                    if (callback) {
+                        callback(extension);
+                    }
                 }).catch(error => {
-                    if (callback) callback(false, error);
+                    if (callback) {
+                        callback(false, error);
+                    }
                 });
             } else if (extName === '.xext' || extName === '.zip') {
                 installFromXextFile(filePath).then(extension => {
-                    if (callback) callback(extension);
+                    if (callback) {
+                        callback(extension);
+                    }
                 }).catch(error => {
-                    if (callback) callback(false, error);
+                    if (callback) {
+                        callback(false, error);
+                    }
                 });
             } else {
                 if (callback) {
@@ -164,15 +182,34 @@ const loadReadmeMarkdown = extension => {
     return fse.readFile(filePath, 'utf8');
 };
 
-const setExtensiondisabled = (extension, disabled = true) => {
+/**
+ * 启用或禁用扩展
+ * @param {Extension} extension 要设置的扩展对象
+ * @param {boolean} [disabled=true] 如果为 true，则启用扩展，否则禁用扩展
+ * @return {void}
+ */
+const setExtensionDisabled = (extension, disabled = true) => {
     disabled = !!disabled;
     if (extension.disabled !== disabled) {
-        if (extension.disabled) {
+        if (disabled) {
             extension.detach();
+            extension.disabled = true;
+        } else {
+            extension.disabled = false;
+            extension.hotAttach();
         }
-        extension.disabled = disabled;
     }
     db.saveInstall(extension, true);
+};
+
+/**
+ * 启用扩展
+ *
+ * @param {Extension} extension 要启用的扩展对象
+ * @return {void}
+ */
+const setExtensionEnabled = extension => {
+    return setExtensionDisabled(extension, false);
 };
 
 
@@ -185,6 +222,7 @@ export default {
     loadReadmeMarkdown,
     installFromDevDir,
     reloadDevExtension,
-    setExtensiondisabled
+    setExtensionDisabled,
+    setExtensionEnabled
 };
 

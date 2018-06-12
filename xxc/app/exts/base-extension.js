@@ -132,7 +132,7 @@ export default class Extension {
     get engines() {return this._pkg.engines;}
     get repository() {return this._pkg.repository;}
     get bugs() {return this._pkg.bugs;}
-    get lazy() {return this._pkg.lazy;}
+    get hot() {return !!this._pkg.hot;}
 
     get accentColor() {
         return this._pkg.accentColor || '#f50057';
@@ -192,10 +192,14 @@ export default class Extension {
     }
 
     set disabled(disabled) {
-        if (this._data.disabled !== disabled) {
+        if (this._data.disabled !== disabled && !this.hot) {
             this._needRestart = true;
         }
         this._data.disabled = disabled;
+    }
+
+    get avaliable() {
+        return !this.disabled && !this.needRestart;
     }
 
     get updateTime() {
@@ -267,7 +271,7 @@ export default class Extension {
     /**
      * 重新载入扩展
      */
-    loadModule(api) {
+    loadModule() {
         if (this.disabled) {
             if (DEBUG) {
                 console.warn('The extension has been disbaled.', this);
@@ -281,17 +285,26 @@ export default class Extension {
             if (mainFile === 'BUILD-IN') {
                 this._module = this.buildIn.module;
             } else {
-                this._module = __non_webpack_require__(this.mainFile); // eslint-disable-line
+                try {
+                    this._module = __non_webpack_require__(this.mainFile); // eslint-disable-line
+                } catch (err) {
+                    if (DEBUG) {
+                        console.collapse('Extension Attach', 'greenBg', this.name, 'redPale', 'load module error', 'red');
+                        console.error('error', err);
+                        console.log('extension', this);
+                        console.groupEnd();
+                    }
+                }
             }
 
-            this.callModuleMethod('onAttach', this, api);
+            this.callModuleMethod('onAttach', this);
 
             this._loadTime = new Date().getTime() - start;
             this._loaded = true;
 
             if (DEBUG) {
                 console.collapse('Extension Attach', 'greenBg', this.name, 'greenPale', `spend time: ${this._loadTime}ms`, 'orange');
-                console.log('extension', this);
+                console.trace('extension', this);
                 console.log('module', this._module);
                 console.groupEnd();
             }
@@ -304,7 +317,22 @@ export default class Extension {
     }
 
     get needRestart() {
-        return this._needRestart || (!this.disabled && this.mainFile && !this._loaded);
+        return this._needRestart || (!this.disabled && this.hasModule && !this._loaded);
+    }
+
+    attach() {
+        if (!this.disabled && !this._loaded && this.hasModule) {
+            this.loadModule();
+            return true;
+        }
+    }
+
+    hotAttach() {
+        if (this.hot && this.attach()) {
+            this.callModuleMethod('onReady', this);
+            return true;
+        }
+        return false;
     }
 
     detach() {
@@ -317,7 +345,7 @@ export default class Extension {
         this._loaded = false;
         if (DEBUG) {
             console.collapse('Extension Detach', 'greenBg', this.name, 'greenPale');
-            console.log('extension', this);
+            console.trace('extension', this);
             console.groupEnd();
         }
     }
@@ -366,9 +394,20 @@ export default class Extension {
             }
             return false;
         }
-        const extModule = this._module;
+        const extModule = this.module;
         if (extModule && extModule[methodName]) {
-            return extModule[methodName].apply(this, params);
+            try {
+                return extModule[methodName].apply(this, params);
+            } catch (err) {
+                if (DEBUG) {
+                    console.collapse('Extension Attach', 'greenBg', this.name, 'redPale', `call module method '${methodName}' error`, 'red');
+                    console.log('methodName', methodName);
+                    console.log('params', params);
+                    console.log('error', err);
+                    console.log('extension', this);
+                    console.groupEnd();
+                }
+            }
         }
     }
 

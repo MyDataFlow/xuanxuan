@@ -17,22 +17,11 @@ const loadModules = () => {
             if (reloadExt) {
                 ext = reloadExt;
             }
+        } else {
+            ext.attach();
         }
-
-        if (ext.hasModule) {
-            if (ext.lazy) {
-                if (DEBUG) {
-                    console.collapse('Extension Lazy load', 'greenBg', ext.name, 'greenPale');
-                    console.log('extension', ext);
-                    console.groupEnd();
-                }
-            } else {
-                ext.loadModule(Xext);
-            }
-
-            if (ext.hasReplaceViews) {
-                Object.assign(replaceViews, ext.replaceViews);
-            }
+        if (ext.hasReplaceViews) {
+            Object.assign(replaceViews, ext.replaceViews);
         }
     });
 };
