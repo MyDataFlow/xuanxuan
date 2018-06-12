@@ -71,7 +71,7 @@ const applyTheme = theme => {
             }
         }
     }
-    document.body.setAttribute('data-theme', theme.id);
+    document.body.setAttribute('data-theme', theme ? theme.id : null);
 
     changingThemeTimer = setTimeout(() => {
         document.body.classList.remove('theme-changing');
