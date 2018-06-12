@@ -170,8 +170,8 @@
             }
         ],
 
-        // // 针对扩展类型 plugin 或 app - 是否在使用的时候才加载主模块，默认值为 false
-        "lazy": true
+        // 是否允许热加载扩展，默认值为 false，如果设置为 true，则安装扩展后无需重启才能使用，但 onUserLogin 和 replaceViews 将不会立即生效（仍然需要在下次重启时生效）
+        "hot": false
     },
 
     // 扩展的版本
