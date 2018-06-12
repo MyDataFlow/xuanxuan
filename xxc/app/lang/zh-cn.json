@@ -154,6 +154,8 @@
     "login.nonSecurity.confirm": "即将通过 http 协议非安全模式连接到服务器 {0}，这样可能泄露你的关键信息。是否继续？",
     "login.nonSecurity.detail": "喧喧与服务器的通信支持全程加密，如果要启用安全加密功能，请联系管理员开启 https 支持。非安全模式仅适合测试时使用。",
     "login.nonSecurity.btn": "继续使用非安全模式连接",
+    "login.openAtLogin": "开机启动",
+    "login.moreLoginSettings": "更多登录设置",
 
     "chats.create.label": "新建聊天…",
     "chats.drapNDropFileMessage": "拖放文件或图片到此处来发送",

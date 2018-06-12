@@ -16,6 +16,7 @@ if (DEBUG) {
 const userDataPath = Remote.app.getPath('userData');
 const browserWindow = Remote.getCurrentWindow();
 
+
 let onRequestQuitListener = null;
 
 const makeFileUrl = url => {
@@ -135,6 +136,18 @@ const reloadWindow = () => {
     browserWindow.reload();
 };
 
+const isOpenAtLogin = () => {
+    return Remote.app.getLoginItemSettings().openAtLogin;
+};
+
+const setOpenAtLogin = openAtLogin => {
+    Remote.app.setLoginItemSettings({openAtLogin});
+    // Fix disable openAtLogin not work in mac os, see https://github.com/electron/electron/issues/10880#issuecomment-356067655
+    if (!openAtLogin && env.isOSX) {
+        __non_webpack_require__('child_process').exec(`osascript -e 'tell application "System Events" to delete login item "${Remote.app.getName()}"'`);
+    }
+};
+
 browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
@@ -165,6 +178,8 @@ export default {
     showQuitConfirmDialog,
     quit,
     reloadWindow,
+    isOpenAtLogin,
+    setOpenAtLogin,
 
     get isWindowFocus() {
         return browserWindow.isFocused();
