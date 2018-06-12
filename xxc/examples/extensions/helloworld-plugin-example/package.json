@@ -6,6 +6,7 @@
     "type": "plugin",
     "icon": "mdi-cards-playing-outline",
     "accentColor": "#afb42b",
+    "hot": true,
     "main": "lib/index.js",
     "author": {
         "name": "Catouse"
