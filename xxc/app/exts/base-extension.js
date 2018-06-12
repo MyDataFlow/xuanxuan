@@ -270,6 +270,10 @@ export default class Extension {
 
     detach() {
         this.callModuleMethod('onDetach', this);
+        const mainFile = this.mainFile;
+        if (mainFile && mainFile !== 'BUILD-IN') {
+            delete __non_webpack_require__.cache[mainFile]; // eslint-disable-line
+        }
         this._module = null;
         this._loaded = false;
         if (DEBUG) {
