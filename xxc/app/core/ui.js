@@ -10,6 +10,7 @@ import Events from './events';
 import profile from './profile';
 import Notice from './notice';
 import ImageViewer from '../components/image-viewer';
+import Store from "../utils/store";
 
 const EVENT = {
     app_link: 'app.link',
@@ -302,17 +303,28 @@ if (Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
 }
 
 const reloadWindow = () => {
-    if (Platform.ui.reloadWindow) {
-        return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
-            if (confirmed) {
-                Server.logout();
-                setTimeout(() => {
+    return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
+        if (confirmed) {
+            Server.logout();
+            setTimeout(() => {
+                Store.set('autoLoginNextTime', true);
+                if (Platform.ui.reloadWindow) {
                     Platform.ui.reloadWindow();
-                }, 1000);
-            }
-            return Promise.resolve(confirm);
-        });
+                } else {
+                    window.location.reload();
+                }
+            }, 1000);
+        }
+        return Promise.resolve(confirm);
+    });
+};
+
+export const isAutoLoginNextTime = () => {
+    const autoLoginNextTime = Store.get('autoLoginNextTime');
+    if (autoLoginNextTime) {
+        Store.remove('autoLoginNextTime');
     }
+    return autoLoginNextTime;
 };
 
 // Decode url params
@@ -341,5 +353,6 @@ export default {
     createLinkContextMenu,
     reloadWindow,
     triggerReady,
-    onReady
+    onReady,
+    isAutoLoginNextTime
 };
