@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import env from './env';
 import Lang from '../../lang';
 import ui from './ui';
-import openFileButton from '../common/open-file-button';
+// import openFileButton from '../common/open-file-button';
 
 let lastFileSavePath = '';
 
@@ -54,6 +54,15 @@ const showSaveDialog = (options, callback) => {
  * Show open dialog
  */
 const showRemoteOpenDialog = (options, callback) => {
+    if (typeof options === 'string') {
+        const extensions = options.split(',');
+        extensions.forEach((filter, index) => {
+            extensions[index] = filter.trim().replace('.', '');
+        });
+        options = {
+            filters: [{name: 'file', extensions}]
+        };
+    }
     options = Object.assign({
         title: Lang.string('dialog.openFile'),
         defaultPath: env.desktopPath,
@@ -86,6 +95,6 @@ const saveAsImageFromUrl = (url, dataType) => new Promise((resolve, reject) => {
 export default {
     showRemoteOpenDialog,
     showSaveDialog,
-    showOpenDialog: openFileButton.showOpenDialog,
+    showOpenDialog: showRemoteOpenDialog,
     saveAsImageFromUrl
 };

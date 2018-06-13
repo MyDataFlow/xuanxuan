@@ -359,7 +359,7 @@
     "ext.extensions.themes": "主题",
     "ext.extensions.installExtension": "安装扩展",
     "ext.extensions.installLocalExtension": "安装本地扩展",
-    "ext.extensions.installLocalExtTip": "选择一个 .xext 扩展文件进行安装",
+    "ext.extensions.installLocalExtTip": "选择一个 .zip 扩展文件进行安装",
     "ext.extensions.installDevExtension": "从本地目录加载开发中的扩展",
     "ext.extensions.installConfirm": "从本地目录加载开发中的扩展",
     "ext.extensions.installed": "已安装",
@@ -412,7 +412,7 @@
     "error.EXT_NAME_ALREADY_INSTALLED": "已安装有相同名称的扩展。",
     "error.EXT_NOT_FOUND": "此扩展没有安装。",
     "error.EXT_UNZIP_ERROR": "读取扩展文件时出错。",
-    "error.EXT_NOT_EXT_SOURCE": "所选目标是有效的 xext 文件或者 package.json 文件。",
+    "error.EXT_NOT_EXT_SOURCE": "所选目标不是有效的 zip 文件、xext 文件或者 package.json 文件。",
     "error.THEME_HAS_NO_CSS_FILE": "所选的主题没有找到可用的 CSS 样式文件。",
 
     "usermenu.openProfile": "个人资料",

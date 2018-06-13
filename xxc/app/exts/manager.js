@@ -140,7 +140,7 @@ const installFromXextFile = (filePath, deleteXextfile = false) => {
 };
 
 const openInstallDialog = (callback, devMode = false) => {
-    dialog.showOpenDialog(devMode ? '.json' : '.xext,.json,.zip', files => {
+    dialog.showOpenDialog(devMode ? '.json' : '.xext,.zip', files => {
         if (files.length) {
             const filePath = files[0].path;
             const extName = Path.extname(filePath).toLowerCase();

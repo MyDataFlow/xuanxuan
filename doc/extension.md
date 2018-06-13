@@ -16,7 +16,7 @@
 
 ### 扩展包目录结构
 
-扩展包为一个使用 zip 压缩的文件，扩展名为 `.xext`。当把一个打包后的扩展解压后通常会包含如下的文件结构：
+扩展包为一个使用 zip 压缩的文件，扩展名为 `.zip` 或 `.xext`。当把一个打包后的扩展解压后通常会包含如下的文件结构：
 
 ```
 [+] extension-dir/
@@ -392,7 +392,7 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 }
 ```
 
-将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，并修改扩展名为 `.xext` 即可在喧喧中安装此应用扩展。
+将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，即可在喧喧中安装此应用扩展。喧喧也支持扩展名为 `.xext` 的扩展包。
 
 ![喧喧火狐传送应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-firefox-send.png)
 
@@ -691,6 +691,6 @@ module.exports = UserAvatar;
 
 ## 开发模式
 
-当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录加载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
+当进行扩展开发时，无需将扩展打包为 `.zip` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录加载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
 
 ![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-develop.png)
