@@ -41,13 +41,24 @@ export default class AppExtension extends Extension {
         if (webViewUrl && !this._webViewUrl) {
             if (!webViewUrl.startsWith('http://') && !webViewUrl.startsWith('https://')) {
                 this._isLocalWebView = true;
-                this._webViewUrl = Path.join(this.localPath, webViewUrl);
+                this._webViewUrl = `file://${Path.join(this.localPath, webViewUrl)}`;
             } else {
                 this._isLocalWebView = false;
                 this._webViewUrl = webViewUrl;
             }
         }
         return this._webViewUrl;
+    }
+
+    get webViewPreloadScript() {
+        if (this._appType !== APP_TYPES.webView) {
+            return null;
+        }
+        const webViewPreloadScript = this._pkg.webViewPreloadScript;
+        if (webViewPreloadScript && !this._webViewPreloadScript) {
+            this._webViewPreloadScript = `file://${Path.join(this.localPath, webViewPreloadScript)}`;
+        }
+        return this._webViewPreloadScript;
     }
 
     get isLocalWebView() {
