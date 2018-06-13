@@ -76,6 +76,9 @@ export default class AppFiles extends PureComponent {
             state.type = type;
         }
         const searchId = `${this.state.search} :${this.state.type}`;
+        if (!App.profile.isUserVertified) {
+            return this.setState({files: [], loading: false});
+        }
         if (this.searchId !== searchId) {
             state.loading = true;
             state.files = [];
@@ -120,7 +123,7 @@ export default class AppFiles extends PureComponent {
                     }
                 </nav>
                 <div className="search-box flex-none">
-                    <SearchControl onSearchChange={this.handleSearchChange} />
+                    <SearchControl onSearchChange={this.handleSearchChange} changeDelay={1000} />
                 </div>
             </header>
             <div className="flex-auto content-start scroll-y">

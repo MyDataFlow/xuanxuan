@@ -77,7 +77,7 @@ export default class AppHome extends PureComponent {
                         if (!app.avatarUIConfig) {
                             app.avatarUIConfig = {auto: app.appIcon, skin: app.appAccentColor, className: 'rounded shadow-1'};
                         }
-                        return <AppAvatar onContextMenu={this.handleAppContextMenu} data-name={app.name} key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={app.avatarUIConfig} label={app.displayName} />;
+                        return <AppAvatar onContextMenu={this.handleAppContextMenu} data-name={app.name} key={app.name} title={`【${app.displayName}】${app.description}`} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={app.avatarUIConfig} label={app.displayName} />;
                     })
                 }
             </div>

@@ -167,6 +167,9 @@ const countChatMessages = (cgid, filter) => {
 };
 
 const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = true, rawData = false, returnCount = false) => {
+    if (!db.database || !db.database.isExists) {
+        return Promise.resolve([]);
+    }
     const cgid = chat ? chat.gid : null;
     let collection = db.database.chatMessages.orderBy('id').and(x => {
         return (!cgid || x.cgid === cgid) && (!queryCondition || queryCondition(x));
