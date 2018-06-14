@@ -36,7 +36,6 @@ class ChatHistory extends Component {
     constructor(props) {
         super(props);
 
-        const chat = props.chat;
         this.state = {
             pager: {
                 page: 1,

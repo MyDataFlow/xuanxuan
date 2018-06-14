@@ -16,17 +16,16 @@ export const getCommandContext = () => {
     return Object.assign({}, context);
 };
 
-export const execute = (commandName, target, ...params) => {
+export const execute = (commandName, ...params) => {
     const command = commands[commandName];
     if (command) {
         const commandContext = getCommandContext();
-        const result = command.func(commandContext, target, ...params);
+        const result = command.func(commandContext, ...params);
 
         if (DEBUG) {
             console.collapse('Command.execute', 'redBg', commandName, 'redPale');
             console.log('context', commandContext);
             console.log('command', command);
-            console.log('target', target);
             console.log('params', params);
             console.log('result', result);
             console.groupEnd();
@@ -42,9 +41,9 @@ export const execute = (commandName, target, ...params) => {
     return Promise.reject(`Unknown command '${command.name}'.`);
 };
 
-export const executeCommand = (commandText, context) => {
+export const executeCommand = (commandText, commandContext) => {
     console.log('executeCommand', commandText);
-    setCommandContext(context);
+    setCommandContext(commandContext);
     return execute(...commandText.split('/'));
 };
 
