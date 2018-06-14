@@ -1,13 +1,26 @@
+import {pkg} from 'Config';
 import ZhcnLang from './zh-cn.json';
 import StringHelper from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
 let langData = Object.assign({}, ZhcnLang);
+langData['app.title'] = pkg.productName;
+langData['app.company'] = pkg.company;
 const currentLangName = DEFAULT_LANG;
+
+const initLangData = data => {
+    const appTitle = langData['app.title'];
+    Object.keys(data).forEach(key => {
+        data[key] = data[key].replace(/\$\{title\}/g, appTitle);
+    });
+};
+
+initLangData(langData);
 
 const update = (newLangData) => {
     langData = Object.assign(langData, newLangData);
+    initLangData(langData);
 };
 
 /**
