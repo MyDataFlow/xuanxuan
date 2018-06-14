@@ -952,18 +952,41 @@ EOT;
     public function getExtensionList($userID)
     {
         $entries = array();
-        $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        $fileIDs = array();
+        $files   = array();
+
+        // $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
+            ->where('status')->eq('online')
+            ->orderBy('`order`, id')
+            ->fetchAll();
+        foreach($entriesList as $index => $entry)
+        {
+            if(strpos(',' . $entry->target . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
+            if($entry->package) $fileIDs[] = $entry->package;
+        }
         if(empty($entriesList)) return $entries;
-        $downloads = array(); //TODO
+
+        /* Get files info by package ids.*/
+        if($fileIDs)
+        {
+            $files = $this->dao->select('*')
+                ->from(TABLE_FILE)
+                ->where('objectType')->eq('entry')
+                ->andWhere('id')->in($fileIDs)
+                ->fetchAll('objectID');
+            $files = $this->loadModel('file')->batchProcessFile($files);
+        }
+
         foreach($entriesList as $entry)
         {
             $data = new stdClass();
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
-            $data->download    = $downloads[$entry->id]['package'];
-            $data->md5         = $downloads[$entry->id]['md5'];
-            $data->logo        = $entry->logo;
+            $data->download    = isset($files[$entry->id]->fullURL) ? commonModel::getSysURL() . $files[$entry->id]->fullURL : '';
+            $data->md5         = isset($files[$entry->id]->fullURL) ? md5($files[$entry->id]->fullURL) : '';
+            $data->logo        = empty($entry->logo) ? '' : commonModel::getSysURL() . $entry->logo;
 
             $entries[] = $data;
         }
