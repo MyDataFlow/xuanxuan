@@ -929,6 +929,11 @@ EOT;
         return substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
 	}
 
+    /**
+     * Check for user data changes.
+     *
+     * @return string
+     */
     public function checkUserChange()
     {
         $data = $this->dao->select('id')->from(TABLE_ACTION)
@@ -937,5 +942,31 @@ EOT;
             ->andWhere('date')->gt(date(DT_DATETIME1, strtotime('-1 Minute')))
             ->fetch();
         return empty($data) ? 'no' : 'yes';
+    }
+
+    /**
+     * Get extension list.
+     * @param $userID
+     * @return array
+     */
+    public function getExtensionList($userID)
+    {
+        $entries = array();
+        $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        if(empty($entriesList)) return $entries;
+        $downloads = array(); //TODO
+        foreach($entriesList as $entry)
+        {
+            $data = new stdClass();
+            $data->name        = $entry->code;
+            $data->displayName = $entry->name;
+            $data->abbrName    = $entry->abbr;
+            $data->download    = $downloads[$entry->id]['package'];
+            $data->md5         = $downloads[$entry->id]['md5'];
+            $data->logo        = $entry->logo;
+
+            $entries[] = $data;
+        }
+        return $entries;
     }
 }
