@@ -952,23 +952,31 @@ EOT;
     public function getExtensionList($userID)
     {
         $entries = array();
-        $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
-        if(empty($entriesList)) return $entries;
-
-        /* Get entry package ids. */
         $fileIDs = array();
-        foreach($entriesList as $entry)
+        $files   = array();
+
+        //  $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
+            ->where('status')->eq('online')
+            ->orderBy('`order`, id')
+            ->fetchAll();
+        foreach($entriesList as $index => $entry)
         {
+            if(strpos(',' . $entry->target . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
             if($entry->package) $fileIDs[] = $entry->package;
         }
+        if(empty($entriesList)) return $entries;
 
         /* Get files info by package ids.*/
-        $files = $this->dao->select('*')
-            ->from(TABLE_FILE)
-            ->where('objectType')->eq('entry')
-            ->andWhere('id')->in($fileIDs)
-            ->fetchAll('objectID');
-        $files = $this->loadModel('file')->batchProcessFile($files);
+        if($fileIDs)
+        {
+            $files = $this->dao->select('*')
+                ->from(TABLE_FILE)
+                ->where('objectType')->eq('entry')
+                ->andWhere('id')->in($fileIDs)
+                ->fetchAll('objectID');
+            $files = $this->loadModel('file')->batchProcessFile($files);
+        }
 
         foreach($entriesList as $entry)
         {
