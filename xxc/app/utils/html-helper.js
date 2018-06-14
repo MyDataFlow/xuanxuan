@@ -1,4 +1,4 @@
-const classes = (...args) => (
+export const classes = (...args) => (
     args.map(arg => {
         if (Array.isArray(arg)) {
             return classes(arg);
@@ -15,9 +15,9 @@ const classes = (...args) => (
     }).filter(x => (typeof x === 'string') && x.length).join(' ')
 );
 
-const rem = (value, rootValue = 20) => (`${value / rootValue}rem`);
+export const rem = (value, rootValue = 20) => (`${value / rootValue}rem`);
 
-const getSearchParam = (key, search = null) => {
+export const getSearchParam = (key, search = null) => {
     const params = {};
     search = search === null ? window.location.search : search;
     if (search.length > 1) {
@@ -37,7 +37,7 @@ const getSearchParam = (key, search = null) => {
     return key ? params[key] : params;
 };
 
-const strip = html => {
+export const strip = html => {
     if (typeof document !== 'undefined') {
         const tmp = document.createElement('DIV');
         tmp.innerHTML = html;
