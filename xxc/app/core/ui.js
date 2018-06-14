@@ -1,4 +1,5 @@
 import Platform from 'Platform';
+import Config from 'Config';
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
@@ -346,6 +347,12 @@ export const triggerReady = () => {
 export const onReady = listener => {
     return Events.on(EVENT.ready, listener);
 };
+
+const setTitle = title => {
+    document.title = title;
+};
+
+setTitle(Config.pkg.productName);
 
 export default {
     entryParams,
