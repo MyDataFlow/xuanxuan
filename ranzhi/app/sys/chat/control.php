@@ -927,7 +927,7 @@ class chat extends control
      * @param  int    $pageID
      * @param  int    $recTotal
      * @param  bool   $continued
-     * @param  int    userID
+     * @param  int    $userID
      * @access public
      * @return void
      */
@@ -1245,6 +1245,17 @@ class chat extends control
     {
         $this->output->result = 'success';
         $this->output->data   = $this->chat->checkUserChange();
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
+     * Extension list.
+     * @param int $userID
+     */
+    public function extensions($userID = 0)
+    {
+        $this->output->result = 'success';
+        $this->output->data   = $this->chat->getExtensionList($userID);
         die($this->app->encrypt($this->output));
     }
 }
