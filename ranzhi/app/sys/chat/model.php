@@ -954,16 +954,31 @@ EOT;
         $entries = array();
         $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
         if(empty($entriesList)) return $entries;
-        $downloads = array(); //TODO
+
+        /* Get entry package ids. */
+        $fileIDs = array();
+        foreach($entriesList as $entry)
+        {
+            if($entry->package) $fileIDs[] = $entry->package;
+        }
+
+        /* Get files info by package ids.*/
+        $files = $this->dao->select('*')
+            ->from(TABLE_FILE)
+            ->where('objectType')->eq('entry')
+            ->andWhere('id')->in($fileIDs)
+            ->fetchAll('objectID');
+        $files = $this->loadModel('file')->batchProcessFile($files);
+
         foreach($entriesList as $entry)
         {
             $data = new stdClass();
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
-            $data->download    = $downloads[$entry->id]['package'];
-            $data->md5         = $downloads[$entry->id]['md5'];
-            $data->logo        = $entry->logo;
+            $data->download    = isset($files[$entry->id]->fullURL) ? commonModel::getSysURL() . $files[$entry->id]->fullURL : '';
+            $data->md5         = isset($files[$entry->id]->fullURL) ? md5($files[$entry->id]->fullURL) : '';
+            $data->logo        = empty($entry->logo) ? '' : commonModel::getSysURL() . $entry->logo;
 
             $entries[] = $data;
         }
