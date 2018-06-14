@@ -97,10 +97,12 @@ const init = (memberArr, rolesMap, deptsMap) => {
  */
 const getAll = () => (members ? Object.keys(members).map(x => members[x]) : []);
 
-const forEach = (callback) => {
+const forEach = (callback, ignoreDeleteUser = false) => {
     if (members) {
         Object.keys(members).forEach(memberId => {
-            callback(members[memberId]);
+            if (!ignoreDeleteUser || !members[memberId].isDeleted) {
+                callback(members[memberId]);
+            }
         });
     }
 };
@@ -189,7 +191,7 @@ const remove = member => {
 };
 
 const getRoleName = role => {
-    return role ? (roles[role] || Lang.string(`member.role.${role}`, role)) : '';
+    return (role && roles) ? (roles[role] || Lang.string(`member.role.${role}`, role)) : '';
 };
 
 const getDept = deptId => {

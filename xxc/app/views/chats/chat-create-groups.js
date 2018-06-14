@@ -36,7 +36,7 @@ class ChatCreateGroups extends Component {
             choosed: {[user.id]: user},
             search: '',
         };
-        this.members = App.members.query(null, true);
+        this.members = App.members.query(x => (!x.isDeleted), true);
     }
 
     handleSearchChange = search => {

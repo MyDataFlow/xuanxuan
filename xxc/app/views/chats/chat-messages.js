@@ -80,9 +80,11 @@ class ChatMessages extends Component {
 
         let headerView = null;
         if (this.state.loading) {
-            headerView = <Spinner className="box" />;
+            headerView = <Spinner className="has-padding" />;
         } else if (chat.messages && chat.messages.length && chat.isLoadingOver) {
-            headerView = <div className="has-padding small muted text-center">― {Lang.string('chat.noMoreMessage')} ―</div>;
+            headerView = <div className="has-padding small muted text-center space-sm">― {Lang.string('chat.noMoreMessage')} ―</div>;
+        } else {
+            headerView = <a className="has-padding small muted text-center block space-sm" onClick={this.loadChatMessages.bind(this, 0)}>― {Lang.string('chat.loadMoreMessage')} ―</a>;
         }
 
         return (<div

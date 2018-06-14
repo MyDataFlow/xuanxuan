@@ -427,6 +427,13 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
       </td>
     </tr>
     <tr>
+      <td><code>onReady(ext)</code></td>
+      <td>当界面加载完毕时调用，此时扩展可以处理与界面相关操作。</td>
+      <td>
+        <ul><li><code>ext</code> 为当前被载入的扩展对象</li></ul>
+      </td>
+    </tr>
+    <tr>
       <td><code>onDetach(ext)</code></td>
       <td>当扩展被卸载时调用，此时应该将扩展使用的资源进行释放，例如销毁定时器等</td>
       <td>

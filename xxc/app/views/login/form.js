@@ -1,4 +1,5 @@
 import Config from 'Config';
+import Platform from 'Platform';
 import React, {PureComponent, PropTypes} from 'react';
 import InputControl from '../../components/input-control';
 import Checkbox from '../../components/checkbox';
@@ -11,6 +12,7 @@ import App from '../../core';
 import User from '../../core/profile/user';
 import SwapUserDialog from './swap-user-dialog';
 import replaceViews from '../replace-views';
+import Button from '../../components/button';
 
 const simpleServerUrl = serverUrl => {
     if (serverUrl) {
@@ -201,6 +203,17 @@ class FormView extends PureComponent {
         this.handleInputFieldChange('password', val);
     };
 
+    handleSettingBtnClick = e => {
+        const isOpenAtLogin = Platform.ui.isOpenAtLogin();
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY}, [{
+            label: Lang.string('login.openAtLogin'),
+            checked: isOpenAtLogin,
+            click: () => {
+                Platform.ui.setOpenAtLogin(!isOpenAtLogin);
+            }
+        }]);
+    };
+
     render() {
         const {
             className,
@@ -250,6 +263,7 @@ class FormView extends PureComponent {
             <div className="row">
                 <Checkbox disabled={this.state.logining} checked={this.state.rememberPassword} onChange={this.handleRememberPasswordChanged} className="cell" label={Lang.string('login.rememberPassword')} />
                 <Checkbox disabled={this.state.logining} checked={this.state.autoLogin} onChange={this.handleAutoLoginChanged} className="cell" label={Lang.string('login.autoLogin')} />
+                <div data-hint={Lang.string('login.moreLoginSettings')} className="hint--top"><Button className="iconbutton rounded" icon="settings-box" onClick={this.handleSettingBtnClick} /></div>
             </div>
         </div>);
     }
