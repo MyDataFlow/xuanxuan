@@ -16,7 +16,7 @@
 
 ### 扩展包目录结构
 
-扩展包为一个使用 zip 压缩的文件，扩展名为 `.xext`。当把一个打包后的扩展解压后通常会包含如下的文件结构：
+扩展包为一个使用 zip 压缩的文件，扩展名为 `.zip` 或 `.xext`。当把一个打包后的扩展解压后通常会包含如下的文件结构：
 
 ```
 [+] extension-dir/
@@ -79,6 +79,9 @@
         //   * 使用相对扩展包目录的相对地址，通常指向一个 html 文件，例如 lib/page/index.html
         "webViewUrl": "http://zui.sexy/m",
 
+        // 当 appType 为 webView 时，指定一个脚本在 webview 页面中其他脚本执行之前先加载，此脚本必须为扩展包内的 JavaScript 文件。
+        "webViewPreloadScript": "lib/preload.js",
+
         // 针对扩展类型 app - 应用图标，可以使用如下值
         //   * 使用 Material Design Icons (https://materialdesignicons.com/)，使用 mdi- 前缀，例如 mdi-star
         //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/img/icon.png
@@ -100,6 +103,9 @@
             // pageName 为对应的子界面名称，名称只能包含字母、数字、短横线及下划线
             "pageName": {
 
+                // 子界面显示名称
+                "displayName": "新建项目",
+
                 // 子界面图标，图标可取值与 appIcon 相同
                 "icon": "mdi-flag",
 
@@ -117,6 +123,9 @@
         //   * 使用相对扩展包目录的相对地址，例如 lib/index.js
         // 当扩展类型为 plugin 时会自动从扩展包目录下寻找 index.js 文件作为模块主入口文件
         "main": "lib/index.js",
+
+        // 是否允许热加载扩展，默认值为 false，如果设置为 true，则安装扩展后无需重启才能使用，但 onUserLogin（用户已经登录后，如果是重新登录仍然会生效） 和 replaceViews 将不会立即生效（仍然需要在下次重启时生效）
+        "hot": false,
 
         // 针对扩展类型 theme - 主题列表
         // 通过一个对象数组，声明多个主题配置
@@ -168,10 +177,7 @@
                 // 用于验证配置值是否合法的正则表达式
                 "matchReg": "[a-zA-Z0-9]+", 
             }
-        ],
-
-        // 是否允许热加载扩展，默认值为 false，如果设置为 true，则安装扩展后无需重启才能使用，但 onUserLogin 和 replaceViews 将不会立即生效（仍然需要在下次重启时生效）
-        "hot": false
+        ]
     },
 
     // 扩展的版本
@@ -392,7 +398,7 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
 }
 ```
 
-将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，并修改扩展名为 `.xext` 即可在喧喧中安装此应用扩展。
+将写入以上内容的 `package.json` 文件打包为一个 zip 压缩文件，即可在喧喧中安装此应用扩展。喧喧也支持扩展名为 `.xext` 的扩展包。
 
 ![喧喧火狐传送应用扩展](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-firefox-send.png)
 
@@ -691,6 +697,6 @@ module.exports = UserAvatar;
 
 ## 开发模式
 
-当进行扩展开发时，无需将扩展打包为 `xext` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录加载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
+当进行扩展开发时，无需将扩展打包为 `.zip` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录加载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
 
 ![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-develop.png)

@@ -16,13 +16,13 @@ export default class WebApp extends Component {
         app: PropTypes.instanceOf(OpenedApp).isRequired,
         className: PropTypes.string,
         onLoadingChange: PropTypes.func,
-        onPageTitleChange: PropTypes.func,
+        onPageTitleUpdated: PropTypes.func,
     };
 
     static defaultProps = {
         className: null,
         onLoadingChange: null,
-        onPageTitleChange: null,
+        onPageTitleUpdated: null,
     };
 
     constructor(props) {
@@ -64,9 +64,9 @@ export default class WebApp extends Component {
     };
 
     handlePageTitleChange = e => {
-        const {onPageTitleChange} = this.props;
-        if (onPageTitleChange) {
-            onPageTitleChange(e.title, e.explicitSet);
+        const {onPageTitleUpdated, app} = this.props;
+        if (onPageTitleUpdated) {
+            onPageTitleUpdated(e.explicitSet ? `${app.app.displayName} (${e.title})` : '');
         }
     };
 
@@ -104,10 +104,10 @@ export default class WebApp extends Component {
             className,
             app,
             onLoadingChange,
-            onPageTitleChange,
+            onPageTitleUpdated,
         } = this.props;
 
-        const webviewHtml = isNWJS ? `<iframe id="${this.webviewId}" src="${app.app.webViewUrl}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />` : `<webview id="${this.webviewId}" src="${app.app.webViewUrl}" class="dock fluid-v fluid" ${app.app.isLocalWebView ? 'nodeintegration' : ''} />`;
+        const webviewHtml = isNWJS ? `<iframe id="${this.webviewId}" src="${app.app.webViewUrl}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />` : `<webview id="${this.webviewId}" src="${app.app.webViewUrl}" class="dock fluid-v fluid" ${app.app.isLocalWebView ? 'nodeintegration' : ''} ${app.app.webViewPreloadScript ? (' preload="' + app.app.webViewPreloadScript + '"') : ''} />`;
 
         return (<div className={HTML.classes('app-web-app', className)}>
             <div className="dock scroll-none" dangerouslySetInnerHTML={{__html: webviewHtml}} />

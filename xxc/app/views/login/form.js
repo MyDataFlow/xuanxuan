@@ -90,7 +90,7 @@ class FormView extends PureComponent {
     }
 
     componentDidMount() {
-        if (this.state.autoLogin && this.state.submitable) {
+        if (this.state.submitable && (this.state.autoLogin || App.ui.isAutoLoginNextTime())) {
             this.login();
         }
     }
@@ -146,10 +146,10 @@ class FormView extends PureComponent {
         }, () => {
             const {serverUrl} = this.state;
             if (serverUrl.toLowerCase().startsWith('http://')) {
-                Modal.confirm(<div>
+                Modal.confirm((<div>
                     <h4>{Lang.format('login.nonSecurity.confirm', serverUrl)}</h4>
                     <div className="text-gray">{Lang.string('login.nonSecurity.detail')}</div>
-                </div>, {
+                </div>), {
                     actions: [
                         {type: 'cancel'},
                         {type: 'submit', label: Lang.string('login.nonSecurity.btn'), className: 'danger-pale text-danger'},

@@ -10,6 +10,8 @@ import Events from './events';
 import profile from './profile';
 import Notice from './notice';
 import ImageViewer from '../components/image-viewer';
+import Store from '../utils/store';
+import {executeCommand, registerCommand} from './commander';
 
 const EVENT = {
     app_link: 'app.link',
@@ -106,8 +108,8 @@ const onAppLinkClick = (type, listener) => {
     return Events.on(`${EVENT.app_link}.${type}`, listener);
 };
 
-const emitAppLinkClick = (type, target, element) => {
-    return Events.emit(`${EVENT.app_link}.${type}`, target, element);
+const emitAppLinkClick = (element, type, target, ...params) => {
+    return Events.emit(`${EVENT.app_link}.${type}`, target, element, ...params);
 };
 
 onAppLinkClick('Member', target => {
@@ -116,20 +118,25 @@ onAppLinkClick('Member', target => {
 
 let clearCopyCodeTip = null;
 if (Platform.clipboard && Platform.clipboard.writeText) {
-    onAppLinkClick('copyCode', (codeLang, element) => {
-        if (clearCopyCodeTip) {
-            clearTimeout(clearCopyCodeTip);
-            clearCopyCodeTip = null;
+    registerCommand('copyCode', context => {
+        const element = context.targetElement;
+        if (element) {
+            if (clearCopyCodeTip) {
+                clearTimeout(clearCopyCodeTip);
+                clearCopyCodeTip = null;
+            }
+            const code = element.nextElementSibling.innerText;
+            Platform.clipboard.writeText(code);
+            element.setAttribute('data-hint', Lang.string('common.copied'));
+            element.classList.add('hint--success');
+            clearCopyCodeTip = setTimeout(() => {
+                clearCopyCodeTip = null;
+                element.setAttribute('data-hint', Lang.string('common.copyCode'));
+                element.classList.remove('hint--success');
+            }, 2000);
+            return true;
         }
-        const code = element.nextElementSibling.innerText;
-        Platform.clipboard.writeText(code);
-        element.setAttribute('data-hint', Lang.string('common.copied'));
-        element.classList.add('hint--success');
-        clearCopyCodeTip = setTimeout(() => {
-            clearCopyCodeTip = null;
-            element.setAttribute('data-hint', Lang.string('common.copyCode'));
-            element.classList.remove('hint--success');
-        }, 2000);
+        return false;
     });
 }
 
@@ -183,9 +190,12 @@ document.addEventListener('click', e => {
         if (link.startsWith('http://') || link.startsWith('https://')) {
             Platform.ui.openExternal(link);
             e.preventDefault();
-        } else if (link.startsWith('@')) {
+        } else if (link[0] === '@') {
             const params = link.substr(1).split('/');
-            emitAppLinkClick(params[0], params[1], target);
+            emitAppLinkClick(target, ...params);
+            e.preventDefault();
+        } else if (link[0] === '!') {
+            executeCommand(link.substr(1), {targetElement: target});
             e.preventDefault();
         }
     }
@@ -302,17 +312,28 @@ if (Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
 }
 
 const reloadWindow = () => {
-    if (Platform.ui.reloadWindow) {
-        return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
-            if (confirmed) {
-                Server.logout();
-                setTimeout(() => {
+    return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
+        if (confirmed) {
+            Server.logout();
+            setTimeout(() => {
+                Store.set('autoLoginNextTime', true);
+                if (Platform.ui.reloadWindow) {
                     Platform.ui.reloadWindow();
-                }, 1000);
-            }
-            return Promise.resolve(confirm);
-        });
+                } else {
+                    window.location.reload();
+                }
+            }, 1000);
+        }
+        return Promise.resolve(confirm);
+    });
+};
+
+export const isAutoLoginNextTime = () => {
+    const autoLoginNextTime = Store.get('autoLoginNextTime');
+    if (autoLoginNextTime) {
+        Store.remove('autoLoginNextTime');
     }
+    return autoLoginNextTime;
 };
 
 // Decode url params
@@ -341,5 +362,6 @@ export default {
     createLinkContextMenu,
     reloadWindow,
     triggerReady,
-    onReady
+    onReady,
+    isAutoLoginNextTime
 };
