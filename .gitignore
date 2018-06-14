@@ -46,6 +46,9 @@ package-lock.json
 
 # User custom files
 *.custom
+*-backup
+build-config.*.json
+xxc/build/electron-config.json
 
 .idea
 xxc/.vscode/settings.json
