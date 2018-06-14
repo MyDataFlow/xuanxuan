@@ -3,7 +3,6 @@ import buildIns from './build-in/';
 import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';
-import Lang from '../lang';
 
 const EVENT = {
     onChange: 'Extension.onChange'
@@ -15,10 +14,10 @@ const PKG = Config.pkg;
 
 buildIns.forEach((buildIn, idx) => {
     if (!buildIn.publisher) {
-        buildIn.publisher = Config.exts.buildInPublisher || Lang.string('app.company');
+        buildIn.publisher = Config.exts.buildInPublisher || Config.pkg.company;
     }
     if (!buildIn.author) {
-        buildIn.author = Config.exts.buildInAuthor || Lang.string('app.company');
+        buildIn.author = Config.exts.buildInAuthor || Config.pkg.company;
     }
     ['version', 'license', 'homepage', 'bugs', 'repository'].forEach(key => {
         buildIn[key] = PKG[key];
