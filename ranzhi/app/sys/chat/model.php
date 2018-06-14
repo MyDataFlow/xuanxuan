@@ -955,7 +955,7 @@ EOT;
         $fileIDs = array();
         $files   = array();
 
-        //  $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        // $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
         $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
             ->where('status')->eq('online')
             ->orderBy('`order`, id')
