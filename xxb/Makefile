@@ -68,7 +68,6 @@ xxb:
 	chmod -R 777 xxb/tmp
 	chmod -R 777 xxb/www/data
 	zip -rqm -9 xxb.$(VERSION).zip xxb
-	rm -rf xxb
 
 deb:
 	mkdir ~/buildroot
