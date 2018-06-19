@@ -6,7 +6,6 @@ $config->xuanxuan->key     = '88888888888888888888888888888888'; //Set a 32 byte
 if(!defined('TABLE_IM_CHAT'))          define('TABLE_IM_CHAT',          '`' . $config->db->prefix . 'im_chat`');
 if(!defined('TABLE_IM_MESSAGE'))       define('TABLE_IM_MESSAGE',       '`' . $config->db->prefix . 'im_message`');
 if(!defined('TABLE_IM_CHATUSER'))      define('TABLE_IM_CHATUSER',      '`' . $config->db->prefix . 'im_chatuser`');
-if(!defined('TABLE_IM_USERMESSAGE'))   define('TABLE_IM_USERMESSAGE',   '`' . $config->db->prefix . 'im_usermessage`');
 if(!defined('TABLE_IM_MESSAGESTATUS')) define('TABLE_IM_MESSAGESTATUS', '`' . $config->db->prefix . 'im_messagestatus`');
 
 $config->xuanxuan->enabledMethods['chat']['serverstart']        = 'serverStart';
