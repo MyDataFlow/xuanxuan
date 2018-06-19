@@ -84,7 +84,7 @@
 
         // 针对扩展类型 app - 应用图标，可以使用如下值
         //   * 使用 Material Design Icons (https://materialdesignicons.com/)，使用 mdi- 前缀，例如 mdi-star
-        //   * 使用 http:// 或 https:// 协议开头页面地址，例如 http://zui.sexy/img/icon.png
+        //   * 使用 http:// 或 https:// 协议开头图片地址，例如 http://zui.sexy/img/icon.png
         //   * 使用相对扩展包目录的相对地址，例如 img/icon.png
         // 需要注意：
         //   * 如果不指定则会使用扩展图标（icon）作为应用图标
@@ -96,28 +96,6 @@
 
         // 针对扩展类型 app - 界面背景色，可以设置为透明（transparent），默认为白色 #fff
         "appBackColor": "#fff",
-
-        // 针对扩展类型 app - 应用子界面，允许在独立的窗口或标签页中打开（1.3 中尚未实现）
-        "appPages": {
-
-            // pageName 为对应的子界面名称，名称只能包含字母、数字、短横线及下划线
-            "pageName": {
-
-                // 子界面显示名称
-                "displayName": "新建项目",
-
-                // 子界面图标，图标可取值与 appIcon 相同
-                "icon": "mdi-flag",
-
-                // 子界面配色
-                "accentColor": "#aa00ff",
-
-                // 子界面背景色
-                "backColor": "#fff",
-            },
-
-            // ... 更多子界面配置
-        },
 
         // 针对扩展类型 plugin 或 app - 模块主要入口脚本文件位置，可以包含以下格式的地址：
         //   * 使用相对扩展包目录的相对地址，例如 lib/index.js
@@ -154,6 +132,15 @@
                 // 主题的预览图片地址
                 "preview": "lib/themes/preview-dark.png"
             }
+        ],
+
+        // 为消息定义右键菜单项目
+        "chatMessageMenu": [
+            {
+                "label": "保存消息文本到文件",
+                "url": "!${EXTENSION}/saveText/?messageId=${messageId}"
+            }
+            // 更多右键菜单
         ],
 
         // 扩展配置（1.3 中尚未实现）
@@ -528,6 +515,20 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
       <td>用于配置替换系统内置界面组件</td>
       <td>
         <p><code>replaceViews</code> 为一个对象，对象的键名为要替换的组件路径，键值为要用来替换的 React 组件类或组件函数。</p>
+      </td>
+    </tr>
+    <tr>
+      <td><code>commands</code></td>
+      <td>扩展支持的命令</td>
+      <td>
+        <p><code>commands</code> 为一个对象，对象的键名为响应的命令名称，键值为命令回调函数或者命令定义对象。</p>
+      </td>
+    </tr>
+    <tr>
+      <td><code>chatMessageMenu</code></td>
+      <td>为消息增加操作菜单</td>
+      <td>
+        <p><code>chatMessageMenu</code> 为一个对象数组或函数，对象数组为每个菜单项配置，如果为函数，返回值为对象数组。菜单项对象包括 `label` 属性用于定义菜单项名称，`url` 属性用于定义菜单项操作地址。</p>
       </td>
     </tr>
   </tbody>

@@ -1,10 +1,11 @@
 import Platform from 'Platform';
 import Path from 'path';
-import {defaultApp, getApp} from './exts';
+import {defaultApp, getApp, forEach as forEachExt} from './exts';
 import OpenedApp from './opened-app';
 import Lang from '../lang';
 import manager from './manager';
-import App from '../core';
+import Modal from '../components/modal';
+import Messager from '../components/messager';
 import ExtensionDetailDialog from '../views/exts/extension-detail-dialog';
 
 const defaultOpenedApp = new OpenedApp(defaultApp);
@@ -124,7 +125,7 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
         confirm = true;
     }
     if (confirm) {
-        return App.ui.modal.confirm(Lang.format('ext.uninstallConfirm.format', extension.displayName)).then(confirmed => {
+        return Modal.confirm(Lang.format('ext.uninstallConfirm.format', extension.displayName)).then(confirmed => {
             if (confirmed) {
                 return uninstallExtension(extension, false, callback);
             }
@@ -132,13 +133,13 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
         });
     }
     return manager.uninstall(extension).then(x => {
-        App.ui.showMessger(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'success'});
+        Messager.show(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'success'});
         if (callback) {
             callback();
         }
     }).catch(error => {
         if (error) {
-            App.ui.showMessger(Lang.error(error), {type: 'danger'});
+            Messager.show(Lang.error(error), {type: 'danger'});
         }
     });
 };
@@ -146,13 +147,13 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
 const installExtension = (devMode = false) => {
     manager.openInstallDialog((extension, error) => {
         if (extension) {
-            App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
+            Messager.show(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
         } else if (error) {
             let msg = Lang.string('ext.installFail');
             if (error) {
                 msg += Lang.error(error);
             }
-            App.ui.showMessger(msg, {type: 'danger'});
+            Messager.show(msg, {type: 'danger'});
         }
     }, devMode);
 };
@@ -323,6 +324,24 @@ const createOpenedAppContextMenu = (theOpenedApp, refreshUI) => {
     return items;
 };
 
+const createChatMessageMenu = (chatMessage) => {
+    const menu = [];
+    const urlFormatsMessage = {
+        messageId: chatMessage.id,
+        messageSender: chatMessage.senderId
+    }
+    forEachExt(ext => {
+        const extMenu = ext.getChatMessageMenu(urlFormatsMessage);
+        if (extMenu && extMenu.length) {
+            if (menu.length) {
+                menu.push('-');
+            }
+            menu.push(...extMenu);
+        }
+    });
+    return menu;
+};
+
 export default {
     get openedApps() {
         return openedApps;
@@ -359,4 +378,5 @@ export default {
     createAppContextMenu,
     showExtensionDetailDialog,
     createOpenedAppContextMenu,
+    createChatMessageMenu
 };

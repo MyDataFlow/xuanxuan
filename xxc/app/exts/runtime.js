@@ -1,9 +1,10 @@
 import Xext from './external-api';
 import Exts from './exts';
+import ui from './ui';
 import manager from './manager';
 import App from '../core';
-import {Index as View} from '../views/exts';
 import {setExtensionUser} from './extension';
+import {registerCommand, execute, createCommandObject} from '../core/commander';
 
 global.Xext = Xext;
 
@@ -77,9 +78,31 @@ App.im.ui.onRenderChatMessageContent(content => {
     return content;
 });
 
+registerCommand('extension', (context, extName, commandName, ...params) => {
+    const ext = Exts.getExt(extName);
+    if (ext) {
+        const command = ext.getCommand(commandName);
+        if (command) {
+            return execute(createCommandObject(command, null, {extension: ext}), ...params);
+        } else if (DEBUG) {
+            console.collapse('Command.execute.extension', 'redBg', commandName, 'redPale', 'command not found', 'redBg');
+            console.log('ext', ext);
+            console.log('params', params);
+            console.log('context', context);
+            console.groupEnd();
+        }
+    } else if (DEBUG) {
+        console.collapse('Command.execute.extension', 'redBg', commandName, 'redPale', 'extension not found', 'redBg');
+        console.log('extName', extName);
+        console.log('params', params);
+        console.log('context', context);
+        console.groupEnd();
+    }
+});
+
 global.replaceViews = replaceViews;
 
 export default {
     loadModules,
-    View,
+    ui
 };

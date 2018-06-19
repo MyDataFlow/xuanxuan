@@ -25,6 +25,7 @@ if (ExtsRuntime) {
         ExtsRuntime.loadModules();
         sayReady();
     }, 0);
+    global.ExtsRuntime = ExtsRuntime;
 } else {
     sayReady();
 }

@@ -357,7 +357,8 @@ export default class Extension {
             }
             return false;
         }
-        return this._module && this._module.replaceViews;
+        const extModule = this.module;
+        return extModule && extModule.replaceViews;
     }
 
     get replaceViews() {
@@ -367,7 +368,8 @@ export default class Extension {
             }
             return null;
         }
-        return this.module.replaceViews;
+        const extModule = this.module;
+        return extModule && extModule.replaceViews;
     }
 
     /**
@@ -409,6 +411,64 @@ export default class Extension {
                 }
             }
         }
+    }
+
+    get commands() {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return null;
+        }
+        const extModule = this.module;
+        return extModule && extModule.commands;
+    }
+
+    getCommand(commandName) {
+        const commands = this.commands;
+        let command = commands && commands[commandName];
+        if (command) {
+            if (typeof command === 'function') {
+                command = {func: command, name: commandName};
+            }
+        }
+        command.name = `extension/${commandName}`;
+        return command;
+    }
+
+    getChatMessageMenu(urlFormatObject) {
+        let menu = [];
+        const pkgMenu = this._pkg.chatMessageMenu;
+        if (pkgMenu) {
+            menu.push(...pkgMenu);
+        }
+
+        const extModule = this.module;
+        let moduleMenu = extModule && extModule.chatMessageMenu;
+        if (moduleMenu) {
+            if (typeof moduleMenu === 'function') {
+                moduleMenu = moduleMenu(this);
+            }
+            if (moduleMenu) {
+                menu.push(...moduleMenu);
+            }
+        }
+
+        if (menu && menu.length) {
+            urlFormatObject = Object.assign({}, urlFormatObject, {EXTENSION: `extension/${this.name}`});
+            menu = menu.map(menuItem => {
+                menuItem = Object.assign({}, menuItem);
+                if (menuItem.url) {
+                    menuItem.url = StringHelper.format(menuItem.url, urlFormatObject);
+                }
+                menuItem.label = `${this.displayName}: ${menuItem.label || menuItem.url}`;
+                if (!menuItem.icon) {
+                    menuItem.icon = this.icon;
+                }
+                return menuItem;
+            });
+        }
+        return menu;
     }
 
     getMatchScore(keys) {
