@@ -798,7 +798,7 @@ EOT;
         case '1.3.0': $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
         case '1.4.0':
             $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
-            $messagesList = $this->dao->select('*')->from(TABLE_IM_USERMESSAGE)->fetchAll();
+            $messagesList = $this->dao->select('*')->from($this->config->db->prefix . 'im_usermessage')->fetchAll();
             if(!empty($messagesList)) foreach($messagesList as $messages)
             {
                 $messages = json_decode($messages->message);
