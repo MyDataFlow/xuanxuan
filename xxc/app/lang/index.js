@@ -1,4 +1,4 @@
-import {pkg} from 'Config';
+import pkg from '../package.json';
 import ZhcnLang from './zh-cn.json';
 import StringHelper from '../utils/string-helper';
 
