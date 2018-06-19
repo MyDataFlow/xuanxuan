@@ -49,16 +49,32 @@ export const getCommandContext = (newContext) => {
  * 执行命令
  * (Execute command)
  *
- * @param {string} commandName 命令名称 (Command name)
+ * @param {string|object} command 命令名称或命令对象 (Command name or command object)
  * @param {...string} params 命令参数 (Command params)
  * @return {Promise<any, Error>} 通过 Promise 返回命令执行结果 (Return result with Promise)
  */
-export const execute = (commandName, ...params) => {
-    const command = commands[commandName];
+export const execute = (command, ...params) => {
+    let commandName = null;
+    if (typeof command !== 'object') {
+        commandName = command;
+        command = commands[commandName];
+    } else {
+        commandName = command && command.name;
+    }
     if (command) {
+        if (!command.func) {
+            if (DEBUG) {
+                console.collapse('Command.execute', 'redBg', commandName, 'redPale', 'command func not found', 'redBg');
+                console.log('command', command);
+                console.log('params', params);
+                console.groupEnd();
+            }
+            return;
+        }
+
         let searchOptions = null;
         if (params && params.length && params[params.length - 1][0] === '?') {
-            searchOptions = getSearchParam(params[params.length - 1]);
+            searchOptions = getSearchParam(null, params[params.length - 1]);
         }
         const commandContext = getCommandContext(searchOptions ? {options: searchOptions} : null);
         if (command.context) {
@@ -80,6 +96,7 @@ export const execute = (commandName, ...params) => {
             console.log('command', command);
             console.log('params', params);
             console.log('result', result);
+            console.log('searchOptions', searchOptions);
             console.groupEnd();
         }
 
@@ -90,7 +107,7 @@ export const execute = (commandName, ...params) => {
         }
         return Promise.resolve(result);
     }
-    return Promise.reject(new Error(`Unknown command '${command.name}'.`));
+    return Promise.reject(new Error(`Unknown command '${commandName}'.`));
 };
 
 /**
@@ -102,9 +119,28 @@ export const execute = (commandName, ...params) => {
  * @return {Promise<any, Error>} 通过 Promise 返回命令执行结果 (Return result with Promise)
  */
 export const executeCommand = (commandText, commandContext = null) => {
-    console.log('executeCommand', commandText);
     setCommandContext(commandContext);
     return execute(...commandText.split('/'));
+};
+
+/**
+ * 创建命令对象
+ * (Register a command)
+ *
+ * @param {string|object} name 命令名称或者命令配置对象 (Command name or command config object)
+ * @param {?function(context: object, params: ...string)} [func=null] 命令操作函数 (Command function)
+ * @param {?object|?function(context: object, params: ...string} [commandContext=null] 命令上下文参数 (Command context data)
+ * @return {{name: string, func: function, context: ?object}} 返回创建的命令对象
+ */
+export const createCommandObject = (name, func = null, commandContext = null) => {
+    const command = typeof name === 'object' ? Object.assign({}, name) : {name};
+    if (typeof func === 'function') {
+        command.func = func;
+    }
+    if (commandContext) {
+        command.context = commandContext;
+    }
+    return command;
 };
 
 /**
@@ -117,13 +153,7 @@ export const executeCommand = (commandText, commandContext = null) => {
  * @return {boolean} 如果为 true，则命令注册成功；否则注册失败，通常失败的原因是已有相同名称的命令注册过 (If return true, then register success, else fail)
  */
 export const registerCommand = (name, func = null, commandContext = null) => {
-    const command = typeof name === 'object' ? Object.assign({}, name) : {name};
-    if (typeof func === 'function') {
-        command.func = func;
-    }
-    if (commandContext) {
-        command.context = commandContext;
-    }
+    const command = createCommandObject(name, func, commandContext);
     if (commands[command.name]) {
         if (DEBUG) {
             console.wran(`Command register failed, because the command '${command.name}' is already registered.`);
