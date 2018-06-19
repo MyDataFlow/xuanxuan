@@ -77,7 +77,7 @@ const show = (position, menus, props = {}, callback = null) => {
         if (iconView) {
             hasIconLeft = true;
         }
-        return (<a href={url} onClick={url ? null : handleItemClick.bind(null, item, idx)} key={id || idx} className={HTML.classes('item', itemClassName, className, {disabled})} {...other}>
+        return (<a href={url} onClick={handleItemClick.bind(null, item, idx)} key={id || idx} className={HTML.classes('item', itemClassName, className, {disabled})} {...other}>
             {iconView}
             {item.label && <span className="title">{item.label}</span>}
             {item.checked && <Icon name="check" />}
