@@ -955,7 +955,7 @@ EOT;
         $fileIDs = array();
         $files   = array();
 
-        // $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        // $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $platform = 'xuanxuan');
         $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
             ->where('status')->eq('online')
             ->orderBy('`order`, id')
@@ -963,7 +963,7 @@ EOT;
 
         foreach($entriesList as $index => $entry)
         {
-            if(strpos(',' . $entry->target . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
+            if(strpos(',' . $entry->platform . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
             if($entry->package) $fileIDs[] = $entry->package;
         }
         if(empty($entriesList)) return $entries;
