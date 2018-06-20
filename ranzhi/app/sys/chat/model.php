@@ -114,6 +114,7 @@ class chatModel extends model
     {
         $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')
             ->from(TABLE_USER)->where('1')
+            ->beginIF(isset($this->config->global->version) && strpos($this->config->global->version, 'pro') !== false)->andWhere('unofficial')->eq('0')->fi()
             ->beginIF(!$idList)->andWhere('deleted')->eq('0')->fi()
             ->beginIF($status && $status == 'online')->andWhere('status')->ne('offline')->fi()
             ->beginIF($status && $status != 'online')->andWhere('status')->eq($status)->fi()
