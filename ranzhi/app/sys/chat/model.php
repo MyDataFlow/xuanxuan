@@ -955,11 +955,12 @@ EOT;
         $fileIDs = array();
         $files   = array();
 
-        // $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $target = 'xuanxuan');
+        // $entriesList = $this->loadModel('entry')->getEntries($type = 'custom', $category = 0, $platform = 'xuanxuan');
         $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
             ->where('status')->eq('online')
             ->orderBy('`order`, id')
             ->fetchAll();
+
         foreach($entriesList as $index => $entry)
         {
             if(strpos(',' . $entry->platform . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
@@ -967,26 +968,31 @@ EOT;
         }
         if(empty($entriesList)) return $entries;
 
-        /* Get files info by package ids.*/
         if($fileIDs)
         {
-            $files = $this->dao->select('*')
+            $files = $this->dao->select('id,pathname,objectID')
                 ->from(TABLE_FILE)
                 ->where('objectType')->eq('entry')
                 ->andWhere('id')->in($fileIDs)
                 ->fetchAll('objectID');
-            $files = $this->loadModel('file')->batchProcessFile($files);
         }
 
+        $_SERVER['SCRIPT_NAME'] = 'index.php';
         foreach($entriesList as $entry)
         {
+            $token = '';
+            if(isset($files[$entry->id]->pathname))
+            {
+                $time  = time();
+                $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
+            }
             $data = new stdClass();
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
-            $data->download    = isset($files[$entry->id]->fullURL) ? commonModel::getSysURL() . $files[$entry->id]->fullURL : '';
-            $data->md5         = isset($files[$entry->id]->fullURL) ? md5($files[$entry->id]->fullURL) : '';
-            $data->logo        = empty($entry->logo) ? '' : commonModel::getSysURL() . $entry->logo;
+            $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
+            $data->md5         = empty($entry->package) ? '' : md5($entry->package);
+            $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
 
             $entries[] = $data;
         }
