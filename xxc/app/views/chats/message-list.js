@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import {classes, isWebUrl} from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
 import App from '../../core';
@@ -142,6 +142,20 @@ class MessageList extends Component {
         return this.scrollInfo ? this.scrollInfo.isAtBottom : true;
     }
 
+    handleContextMenu = e => {
+        if (e.target.tagName === 'A') {
+            const link = e.target.href;
+            if (isWebUrl(link)) {
+                let linkText = document.getSelection().toString().trim();
+                if (linkText === '') {
+                    linkText = e.target.innerText;
+                }
+                App.ui.showContextMenu({x: e.pageX, y: e.pageY}, App.ui.createLinkContextMenu(link, linkText));
+                e.preventDefault();
+            }
+        }
+    };
+
     render() {
         const {
             messages,
@@ -162,8 +176,9 @@ class MessageList extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
+            className={classes('app-message-list', className, {'app-message-list-static': staticUI})}
             onScroll={this.handleScroll}
+            onContextMenu={this.handleContextMenu}
         >
             {header}
             {

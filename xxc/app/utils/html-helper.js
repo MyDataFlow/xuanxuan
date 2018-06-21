@@ -46,9 +46,17 @@ export const strip = html => {
     return html.replace(/<(?:.|\n)*?>/gm, '');
 };
 
+export const isWebUrl = url => {
+    if (typeof url !== 'string') {
+        return false;
+    }
+    return (/^(https?):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/ig).test(url);
+};
+
 export default {
     classes,
     rem,
     getSearchParam,
-    strip
+    strip,
+    isWebUrl
 };

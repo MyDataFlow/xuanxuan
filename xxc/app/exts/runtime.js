@@ -78,6 +78,7 @@ App.im.ui.onRenderChatMessageContent(content => {
     return content;
 });
 
+// Register 'extension' command
 registerCommand('extension', (context, extName, commandName, ...params) => {
     const ext = Exts.getExt(extName);
     if (ext) {
@@ -100,6 +101,7 @@ registerCommand('extension', (context, extName, commandName, ...params) => {
     }
 });
 
+// Set replaceViews to global
 global.replaceViews = replaceViews;
 
 export default {

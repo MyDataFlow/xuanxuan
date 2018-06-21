@@ -11,7 +11,7 @@ class BuildInfo extends PureComponent {
         return replaceViews('common/build-info', BuildInfo);
     }
 
-    handleLogoClick = () => {
+    handleClick = () => {
         const now = new Date().getTime();
         if (!this.lastClickTime) {
             this.lastClickTime = now;
@@ -34,7 +34,7 @@ class BuildInfo extends PureComponent {
     }
 
     render() {
-        return <div onClick={this.handleLogoClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (` (${DateHelper.format(PKG.distributeTime, 'YYYYMMDDHHmm')})`) : null}{PKG.buildVersion ? `.${PKG.buildVersion}` : null} {Config.system.specialVersion ? (` for ${Config.system.specialVersion}`) : ''} {DEBUG ? '[debug]' : ''}</div>;
+        return <div onClick={this.handleClick} {...this.props}>v{PKG.version}{PKG.distributeTime ? (` (${DateHelper.format(PKG.distributeTime, 'YYYYMMDDHHmm')})`) : null}{PKG.buildVersion ? `.${PKG.buildVersion}` : null} {Config.system.specialVersion ? (` for ${Config.system.specialVersion}`) : ''} {DEBUG ? '[debug]' : ''}</div>;
     }
 }
 

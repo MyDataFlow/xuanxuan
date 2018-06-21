@@ -93,7 +93,7 @@ const createLinkContextMenu = (link, text) => {
             }
         });
 
-        if (text) {
+        if (text && text !== link && `${text}/` !== link) {
             items.push({
                 label: Lang.format('common.copyFormat', text.length > 25 ? `${text.substr(0, 25)}…` : text),
                 click: () => {
