@@ -68,7 +68,16 @@ const showRemoteOpenDialog = (options, callback) => {
         defaultPath: env.desktopPath,
         properties: ['openFile']
     }, options);
-    Remote.dialog.showOpenDialog(ui.browserWindow, options, callback);
+    Remote.dialog.showOpenDialog(ui.browserWindow, options, files => {
+        if (callback) {
+            if (files && files.length) {
+                return callback(files.map(f => {
+                    return {path: f, name: Path.basename(f)};
+                }));
+            }
+            return callback(files);
+        }
+    });
 };
 
 const saveAsImageFromUrl = (url, dataType) => new Promise((resolve, reject) => {
