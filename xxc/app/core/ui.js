@@ -5,7 +5,7 @@ import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
 import ContextMenu from '../components/context-menu';
 import modal from '../components/modal';
-import HTML from '../utils/html-helper';
+import {isWebUrl, getSearchParam} from '../utils/html-helper';
 import Lang from '../lang';
 import Events from './events';
 import profile from './profile';
@@ -180,6 +180,20 @@ Server.onUserLoginout((user, code, reason, unexpected) => {
 
 document.body.classList.add(`os-${Platform.env.os}`);
 
+export const openUrl = (url, targetElement) => {
+    if (isWebUrl(url)) {
+        Platform.ui.openExternal(url);
+        return true;
+    } else if (url[0] === '@') {
+        const params = url.substr(1).split('/');
+        emitAppLinkClick(targetElement, ...params);
+        return true;
+    } else if (url[0] === '!') {
+        executeCommand(url.substr(1), {targetElement});
+        return true;
+    }
+};
+
 document.addEventListener('click', e => {
     let target = e.target;
     while (target && !((target.classList && target.classList.contains('app-link')) || (target.tagName === 'A' && target.attributes.href))) {
@@ -188,15 +202,7 @@ document.addEventListener('click', e => {
 
     if (target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes.href || target.attributes['data-url'])) {
         const link = (target.attributes['data-url'] || target.attributes.href).value;
-        if (link.startsWith('http://') || link.startsWith('https://')) {
-            Platform.ui.openExternal(link);
-            e.preventDefault();
-        } else if (link[0] === '@') {
-            const params = link.substr(1).split('/');
-            emitAppLinkClick(target, ...params);
-            e.preventDefault();
-        } else if (link[0] === '!') {
-            executeCommand(link.substr(1), {targetElement: target});
+        if (openUrl(link)) {
             e.preventDefault();
         }
     }
@@ -338,7 +344,7 @@ export const isAutoLoginNextTime = () => {
 };
 
 // Decode url params
-const entryParams = HTML.getSearchParam();
+const entryParams = getSearchParam();
 
 export const triggerReady = () => {
     Events.emit(EVENT.ready);
@@ -370,5 +376,6 @@ export default {
     reloadWindow,
     triggerReady,
     onReady,
-    isAutoLoginNextTime
+    isAutoLoginNextTime,
+    openUrl
 };
