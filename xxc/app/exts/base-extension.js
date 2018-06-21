@@ -436,6 +436,27 @@ export default class Extension {
         return command;
     }
 
+    getUrlInspector(url) {
+        if (this.disabled) {
+            if (DEBUG) {
+                console.warn('The extension has been disbaled.', this);
+            }
+            return null;
+        }
+        const extModule = this.module;
+        const urlInspector = extModule && extModule.urlInspector;
+        if (urlInspector) {
+            if (typeof urlInspector.test === 'string') {
+                urlInspector.test = new RegExp(urlInspector.test, 'gi');
+            }
+            if (url) {
+                return urlInspector.test.test(url) ? urlInspector.inspector : null;
+            }
+            return urlInspector;
+        }
+        return null;
+    }
+
     getChatMessageMenu(urlFormatObject) {
         let menu = [];
         const pkgMenu = this._pkg.chatMessageMenu;

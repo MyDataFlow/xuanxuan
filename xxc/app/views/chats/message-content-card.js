@@ -32,7 +32,7 @@ export default class MessageContentCard extends Component {
     }
 
     render() {
-        let {
+        const {
             card,
             className,
             baseClassName,
@@ -40,8 +40,21 @@ export default class MessageContentCard extends Component {
             ...other
         } = this.props;
 
-        const {image, title, subtitle, content, icon, actions, url, htmlContent} = card;
-        const imageView = image ? (React.isValidElement(image) ? image : <div className="img" style={{backgroundImage: `url(${image})`}} />) : null;
+        const {image, title, subtitle, content, icon, actions, url, htmlContent, contentType, contentUrl, originContentType} = card;
+        let topView = null;
+        if (contentUrl) {
+            if (contentType === 'image') {
+                topView = <img src={contentUrl} alt={contentUrl} />;
+            } else if (contentType === 'video') {
+                topView = (<video controls>
+                    <source src={contentUrl} type={originContentType} />
+                </video>);
+            }
+        }
+        if (!topView && image) {
+            topView = React.isValidElement(image) ? image : <div className="img" style={{backgroundImage: `url(${image})`}} />;
+        }
+
         const titleView = title ? (React.isValidElement(title) ? title : <h4>{title}</h4>) : null;
         const subTitleView = subtitle ? (React.isValidElement(subtitle) ? subtitle : <h5>{subtitle}</h5>) : null;
         const avatarView = icon ? Avatar.render(icon) : null;
@@ -73,7 +86,7 @@ export default class MessageContentCard extends Component {
             data-url={url}
             {...other}
         >
-            {imageView}
+            {topView}
             <header>
                 {avatarView}
                 <hgroup>

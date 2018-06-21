@@ -363,16 +363,41 @@ setTitle(Config.pkg.productName);
 export const getUrlMeta = (url) => {
     if (Platform.ui.getUrlMeta) {
         return Platform.ui.getUrlMeta(url).then(meta => {
-            console.log('meta', meta);
             const favicons = meta.favicons;
-            return Promise.resolve({
+            let cardMeta = {
                 url,
                 title: meta.title,
-                subtitle: url,
+                subtitle: meta.title ? url : null,
                 image: meta.image,
-                desc: meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
+                content: meta.description && meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
                 icon: favicons && favicons.length ? favicons[0].href : null
-            });
+            };
+            if (global.ExtsRuntime) {
+                const extInspector = global.ExtsRuntime.getUrlInspector();
+                if (extInspector) {
+                    cardMeta = extInspector(meta, cardMeta);
+                    if (cardMeta instanceof Promise) {
+                        return cardMeta;
+                    } else if (cardMeta) {
+                        return Promise.resolve(cardMeta);
+                    }
+                }
+            }
+            if (!cardMeta.title) {
+                const contentType = meta.response.headers['content-type'];
+                cardMeta.originContenttype = contentType;
+                if (contentType.startsWith('image')) {
+                    cardMeta.contentUrl = url;
+                    cardMeta.contentType = 'image';
+                    cardMeta.icon = 'mdi-image text-green icon-2x';
+                } else if (contentType.startsWith('video')) {
+                    cardMeta.contentUrl = url;
+                    cardMeta.contentType = 'video';
+                    cardMeta.icon = 'mdi-video text-red icon-2x';
+                }
+                cardMeta.title = url;
+            }
+            return Promise.resolve(cardMeta);
         });
     }
     return Promise.resolve({url, title: url});

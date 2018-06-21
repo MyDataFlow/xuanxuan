@@ -39,7 +39,7 @@ export default class MessageContentUrl extends PureComponent {
     componentDidUpdate() {
         this.getUrlMeta();
     }
-
+    
     getUrlMeta() {
         if (this.state.meta) {
             return;
@@ -61,15 +61,12 @@ export default class MessageContentUrl extends PureComponent {
         } = this.props;
 
         const {meta} = this.state;
-
-        const card = {
-            url,
-            title: meta ? meta.title : url,
-            subtitle: meta ? meta.subtitle : null,
-            content: meta ? meta.desc : null,
-            image: meta ? meta.image : null,
-            icon: meta ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin'
-        };
+        const card = Object.assign({
+            title: url,
+        }, meta, {
+            icon: meta ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin',
+            url: null
+        });
 
         return <MessageContentCard card={card} className={classes('app-message-content-url relative')} {...other}><a  className="dock" href={url} title={card.title} /></MessageContentCard>;
     }

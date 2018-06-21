@@ -101,10 +101,28 @@ registerCommand('extension', (context, extName, commandName, ...params) => {
     }
 });
 
+const getUrlInspector = url => {
+    let urlInspector = null;
+    if (Exts.exts.some(x => {
+        if (!x.disabled) {
+            const xInspector = x.getUrlInspector(url);
+            if (xInspector) {
+                urlInspector = xInspector;
+                return true;
+            }
+        }
+        return false;
+    })) {
+        return urlInspector;
+    }
+
+};
+
 // Set replaceViews to global
 global.replaceViews = replaceViews;
 
 export default {
     loadModules,
-    ui
+    ui,
+    getUrlInspector,
 };
