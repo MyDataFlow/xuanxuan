@@ -360,6 +360,24 @@ const setTitle = title => {
 
 setTitle(Config.pkg.productName);
 
+export const getUrlMeta = (url) => {
+    if (Platform.ui.getUrlMeta) {
+        return Platform.ui.getUrlMeta(url).then(meta => {
+            
+            const favicons = meta.favicons;
+            return Promise.resolve({
+                url,
+                title: meta.title,
+                subtitle: url,
+                image: meta.image,
+                desc: meta.description.length > 200 ? `${meta.description.substring(0, 200)}...` : meta.description,
+                icon: favicons && favicons.length ? favicons[0].href : null
+            });
+        });
+    }
+    return Promise.resolve({url, title: url});
+};
+
 export default {
     entryParams,
     get canQuit() {
@@ -377,5 +395,6 @@ export default {
     triggerReady,
     onReady,
     isAutoLoginNextTime,
-    openUrl
+    openUrl,
+    getUrlMeta
 };

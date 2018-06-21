@@ -13,7 +13,9 @@ import {MessageContentImage} from './message-content-image';
 import {MessageContentText} from './message-content-text';
 import {MessageBroadcast} from './message-broadcast';
 import {NotificationMessage} from './notification-message';
+import {MessageContentUrl} from './message-content-url';
 import replaceViews from '../replace-views';
+import ChatMessage from '../../core/models/chat-message';
 
 const showTimeLabelInterval = 1000 * 60 * 5;
 
@@ -235,6 +237,13 @@ export default class MessageListItem extends Component {
             contentView = <MessageContentFile message={message} />;
         } else if (message.isImageContent) {
             contentView = <MessageContentImage message={message} />;
+        } else if (message.isObjectContent) {
+            const objectContent = message.objectContent;
+            if (objectContent && objectContent.type === ChatMessage.OBJECT_TYPES.url && objectContent.url) {
+                contentView = <MessageContentUrl url={objectContent.url} data={objectContent} />;
+            } else {
+                contentView = <div className="box red-pale">[Unknown Object]</div>;
+            }
         } else {
             contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} fontSize={this.lastFontSize} style={basicFontStyle} message={message} />;
         }

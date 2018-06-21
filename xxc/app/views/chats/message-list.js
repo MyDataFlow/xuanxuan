@@ -148,7 +148,7 @@ class MessageList extends Component {
             if (isWebUrl(link)) {
                 let linkText = document.getSelection().toString().trim();
                 if (linkText === '') {
-                    linkText = e.target.innerText;
+                    linkText = e.target.innerText || (e.target.attributes.title ? e.target.attributes.title.value : '');
                 }
                 App.ui.showContextMenu({x: e.pageX, y: e.pageY}, App.ui.createLinkContextMenu(link, linkText));
                 e.preventDefault();

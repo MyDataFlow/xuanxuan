@@ -3,16 +3,18 @@ import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import replaceViews from '../replace-views';
 import Button from '../../components/button';
-import Icon from '../../components/icon';
+import Avatar from '../../components/avatar';
 
 export default class MessageContentCard extends Component {
     static propTypes = {
+        baseClassName: PropTypes.string,
         className: PropTypes.string,
         card: PropTypes.object.isRequired,
     };
 
     static defaultProps = {
-        className: 'layer rounded shadow-2',
+        baseClassName: 'layer rounded shadow-2',
+        className: '',
     };
 
     static get MessageContentCard() {
@@ -32,37 +34,44 @@ export default class MessageContentCard extends Component {
         let {
             card,
             className,
+            baseClassName,
+            children,
             ...other
         } = this.props;
 
         const {image, title, subtitle, content, icon, actions, url} = card;
-        const imageView = React.isValidElement(image) ? image : <img alt="" src={image} />;
-        const titleView = React.isValidElement(title) ? title : <h4>{title}</h4>;
-        const subTitleView = React.isValidElement(subtitle) ? subtitle : <h5>{subtitle}</h5>;
-        const iconView = Icon.render(icon);
-        const contentView = content ? <div className="card-content">{content}</div> : null;
+        const imageView = image ? (React.isValidElement(image) ? image : <div className="img" style={{backgroundImage: `url(${image})`}} />) : null;
+        const titleView = title ? (React.isValidElement(title) ? title : <h4>{title}</h4>) : null;
+        const subTitleView = subtitle ? (React.isValidElement(subtitle) ? subtitle : <h5>{subtitle}</h5>) : null;
+        const avatarView = icon ? Avatar.render(icon) : null;
+        const contentView = content ? <div className="content">{content}</div> : null;
         const actionsButtons = [];
         if (actions) {
             actions.forEach((action, idx) => {
-                actionsButtons.push(<Button btnClass={action.btnClass || ''} key={idx} label={action.label} icon={action.icon} onClick={this.handleActionButtonClick.bind(this, action)} />);
+                actionsButtons.push(<Button className={action.btnClass || 'rounded primary outline'} key={idx} label={action.label} icon={action.icon} onClick={this.handleActionButtonClick.bind(this, action)} />);
             });
         }
 
         return (<div
-            className={classes('app-message-card', className, {'app-link state': !!url})}
+            className={classes('app-message-card', baseClassName, className, {
+                'app-link state': !!url,
+                'with-avatar': !!avatarView,
+                'only-title': !contentView && !subTitleView && !actionsButtons.length
+            })}
             data-url={url}
             {...other}
         >
+            {imageView}
             <header>
-                {imageView}
-                {iconView}
+                {avatarView}
                 <hgroup>
                     {titleView}
                     {subTitleView}
                 </hgroup>
             </header>
             {contentView}
-            {actionsButtons && actionsButtons.length ? <nav className="actions nav gray">{actionsButtons}</nav> : null}
+            {actionsButtons && actionsButtons.length ? <nav className="actions gray">{actionsButtons}</nav> : null}
+            {children}
         </div>);
     }
 }

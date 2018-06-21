@@ -8,6 +8,7 @@ import remote from './remote';
 import shortcut from './shortcut';
 import Lang from '../../lang';
 import env from './env';
+import getUrlMeta from './get-url-meta';
 
 if (DEBUG) {
     global.$.Remote = Remote;
@@ -180,6 +181,7 @@ export default {
     reloadWindow,
     isOpenAtLogin,
     setOpenAtLogin,
+    getUrlMeta,
 
     get isWindowFocus() {
         return browserWindow.isFocused();

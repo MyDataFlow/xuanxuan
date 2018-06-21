@@ -15,6 +15,7 @@ import Lang from '../../lang';
 import ImageHelper from '../../utils/image';
 import FileData from '../models/file-data';
 import IMFiles from './im-files';
+import {isWebUrl} from '../../utils/html-helper';
 
 const MAX_BASE64_IMAGE_SIZE = 1024 * 10;
 
@@ -282,13 +283,22 @@ const createTextChatMessage = (message, chat) => {
     });
 };
 
+const createUrlObjectMessage = (message, chat) => {
+    return new ChatMessage({
+        content: JSON.stringify({type: ChatMessage.OBJECT_TYPES.url, url: message}),
+        user: profile.userId,
+        cgid: chat.gid,
+        contentType: ChatMessage.CONTENT_TYPES.object
+    });
+};
+
 const sendTextMessage = (message, chat) => {
-    return sendChatMessage(createTextChatMessage(message, chat), chat);
+    return sendChatMessage(isWebUrl(message) ? createUrlObjectMessage(message, chat) : createTextChatMessage(message, chat), chat);
 };
 
 const createEmojiChatMessage = (emojicon, chat) => {
     return new ChatMessage({
-        contentType: 'image',
+        contentType: ChatMessage.CONTENT_TYPES.image,
         content: JSON.stringify({type: 'emoji', content: emojicon}),
         user: profile.userId,
         cgid: chat.gid,
