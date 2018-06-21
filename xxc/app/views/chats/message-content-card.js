@@ -4,6 +4,7 @@ import App from '../../core';
 import replaceViews from '../replace-views';
 import Button from '../../components/button';
 import Avatar from '../../components/avatar';
+import StringHelper from '../../utils/string-helper';
 
 export default class MessageContentCard extends Component {
     static propTypes = {
@@ -39,12 +40,23 @@ export default class MessageContentCard extends Component {
             ...other
         } = this.props;
 
-        const {image, title, subtitle, content, icon, actions, url} = card;
+        const {image, title, subtitle, content, icon, actions, url, htmlContent} = card;
         const imageView = image ? (React.isValidElement(image) ? image : <div className="img" style={{backgroundImage: `url(${image})`}} />) : null;
         const titleView = title ? (React.isValidElement(title) ? title : <h4>{title}</h4>) : null;
         const subTitleView = subtitle ? (React.isValidElement(subtitle) ? subtitle : <h5>{subtitle}</h5>) : null;
         const avatarView = icon ? Avatar.render(icon) : null;
-        const contentView = content ? <div className="content">{content}</div> : null;
+
+        let contentView = null;
+        if (StringHelper.isNotEmpty(content)) {
+            if (React.isValidElement(content)) {
+                contentView = content;
+            } else if (htmlContent) {
+                contentView = <div className="content" dangerouslySetInnerHTML={{__html: content}} />;
+            } else {
+                contentView = <div className="content">{content}</div>;
+            }
+        }
+
         const actionsButtons = [];
         if (actions) {
             actions.forEach((action, idx) => {

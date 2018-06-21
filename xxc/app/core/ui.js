@@ -363,14 +363,14 @@ setTitle(Config.pkg.productName);
 export const getUrlMeta = (url) => {
     if (Platform.ui.getUrlMeta) {
         return Platform.ui.getUrlMeta(url).then(meta => {
-            
+            console.log('meta', meta);
             const favicons = meta.favicons;
             return Promise.resolve({
                 url,
                 title: meta.title,
                 subtitle: url,
                 image: meta.image,
-                desc: meta.description.length > 200 ? `${meta.description.substring(0, 200)}...` : meta.description,
+                desc: meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
                 icon: favicons && favicons.length ? favicons[0].href : null
             });
         });

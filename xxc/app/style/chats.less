@@ -903,7 +903,7 @@
   }
 
   &.only-title {
-    > hgroup > h4 {font-weight: normal;}
+    header > hgroup > h4 {font-weight: normal;}
   }
 
   > .content {
@@ -939,5 +939,9 @@
     white-space: nowrap;
     font-size: (12*@rem);
     display: block;
+  }
+
+  &.only-title {
+    header > hgroup > h4 {font-size: (14*@rem);}
   }
 }

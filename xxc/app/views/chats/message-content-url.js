@@ -46,7 +46,6 @@ export default class MessageContentUrl extends PureComponent {
         }
         const {url} = this.props;
         getUrlMeta(url).then(meta => {
-            console.log('meta', meta);
             return this.setState({meta});
         }).catch(_ => {
             return this.setState({meta: {url, title: url}});
