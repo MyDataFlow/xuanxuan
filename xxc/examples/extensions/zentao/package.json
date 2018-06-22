@@ -1,0 +1,23 @@
+{
+    "name": "zentao",
+    "displayName": "禅道集成",
+    "version": "1.0.0",
+    "description": "与 http://xuan.5upm.com/ 进行集成。",
+    "type": "plugin",
+    "icon": "assets/icon.png",
+    "accentColor": "#006af1",
+    "hot": true,
+    "main": "index.js",
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/zentao",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/zentao",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}
