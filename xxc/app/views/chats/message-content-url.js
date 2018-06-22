@@ -48,6 +48,9 @@ export default class MessageContentUrl extends PureComponent {
         getUrlMeta(url).then(meta => {
             return this.setState({meta});
         }).catch(_ => {
+            if (DEBUG) {
+                console.error('Get url meta error', _);
+            }
             return this.setState({meta: {url, title: url}});
         });
     }
