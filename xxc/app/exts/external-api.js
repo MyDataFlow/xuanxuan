@@ -12,6 +12,7 @@ import hotkeys from 'hotkeys-js';
 import pinyin from 'pinyin';
 import uuid from 'uuid';
 import platform from 'Platform';
+import jquery from 'jquery';
 import components from '../components';
 import lang from '../lang';
 import utils from '../utils';
@@ -33,6 +34,7 @@ const nodeModules = {
     hotkeys,
     pinyin,
     uuid,
+    jquery
 };
 
 export default {
@@ -42,5 +44,5 @@ export default {
     platform,
     app,
     views,
-    nodeModules
+    nodeModules,
 };
