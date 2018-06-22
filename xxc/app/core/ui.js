@@ -373,9 +373,9 @@ export const getUrlMeta = (url) => {
                 icon: favicons && favicons.length ? favicons[0].href : null
             };
             if (global.ExtsRuntime) {
-                const extInspector = global.ExtsRuntime.getUrlInspector();
+                const extInspector = global.ExtsRuntime.getUrlInspector(url);
                 if (extInspector) {
-                    cardMeta = extInspector(meta, cardMeta);
+                    cardMeta = extInspector(meta, cardMeta, url);
                     if (cardMeta instanceof Promise) {
                         return cardMeta;
                     } else if (cardMeta) {

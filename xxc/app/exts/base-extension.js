@@ -294,10 +294,13 @@ export default class Extension {
                         console.log('extension', this);
                         console.groupEnd();
                     }
+                    this._module = {};
                 }
             }
 
-            this.callModuleMethod('onAttach', this);
+            if (this._module) {
+                this.callModuleMethod('onAttach', this);
+            }
 
             this._loadTime = new Date().getTime() - start;
             this._loaded = true;
@@ -444,15 +447,20 @@ export default class Extension {
             return null;
         }
         const extModule = this.module;
-        const urlInspector = extModule && extModule.urlInspector;
-        if (urlInspector) {
-            if (typeof urlInspector.test === 'string') {
-                urlInspector.test = new RegExp(urlInspector.test, 'gi');
+        let urlInspectors = extModule && extModule.urlInspectors;
+        if (urlInspectors) {
+            if (!Array.isArray(urlInspectors)) {
+                urlInspectors = [urlInspectors];
             }
-            if (url) {
-                return urlInspector.test.test(url) ? urlInspector.inspector : null;
+            const urlInspector = urlInspectors.find(x => {
+                if (typeof x.test === 'string') {
+                    x.test = new RegExp(x.test, 'i');
+                }
+                return x.test.test(url);
+            });
+            if (urlInspector) {
+                return urlInspector.inspect;
             }
-            return urlInspector;
         }
         return null;
     }
