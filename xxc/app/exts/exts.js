@@ -43,33 +43,47 @@ const sortExts = () => {
 sortExts();
 
 // Grouped extensions
-let apps = exts.filter(x => x.type === 'app');
-let themes = exts.filter(x => x.type === 'theme');
-let plugins = exts.filter(x => x.type === 'plugin');
+let apps;
+let themes;
+let plugins;
 
-db.setOnChangeListener((ext, changeAction) => {
-    if (changeAction === 'add') {
-        exts.splice(0, 0, ext);
-        sortExts();
-    } else if (changeAction === 'remove') {
-        const index = exts.findIndex(x => x.name === ext.name);
-        if (index > -1) {
-            exts.splice(index, 1);
-        }
-    } else if (changeAction === 'update') {
-        const index = exts.findIndex(x => x.name === ext.name);
-        if (index > -1) {
-            exts.splice(index, 1, ext);
-        } else {
-            exts.splice(0, 0, ext);
-        }
-    }
-
+const groupExts = () => {
     apps = exts.filter(x => x.type === 'app');
     themes = exts.filter(x => x.type === 'theme');
     plugins = exts.filter(x => x.type === 'plugin');
-    Events.emit(EVENT.onChange, ext, changeAction);
-});
+};
+
+groupExts();
+
+const onChangeListener = (changedExts, changeAction) => {
+    if (!Array.isArray(changedExts)) {
+        changedExts = [changedExts];
+    }
+    if (changeAction === 'add') {
+        exts.push(...changedExts);
+        sortExts();
+    } else if (changeAction === 'remove') {
+        changedExts.forEach(ext => {
+            const findIndex = exts.findIndex(x => x.name === ext.name);
+            if (findIndex > -1) {
+                exts.splice(findIndex, 1);
+            }
+        });
+    } else if (changeAction === 'update') {
+        changedExts.forEach(ext => {
+            const findIndex = exts.findIndex(x => x.name === ext.name);
+            if (findIndex > -1) {
+                exts.splice(findIndex, 1, ext);
+            } else {
+                exts.splice(0, 0, ext);
+            }
+        });
+    }
+    groupExts();
+    Events.emit(EVENT.onChange, changedExts, changeAction);
+};
+
+db.setOnChangeListener(onChangeListener);
 
 const getTypeList = type => {
     switch (type) {

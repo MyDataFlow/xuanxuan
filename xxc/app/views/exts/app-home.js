@@ -30,8 +30,8 @@ export default class AppHome extends PureComponent {
     }
 
     componentDidMount() {
-        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
-            if (ext.isApp) {
+        this.onExtChangeHandler = Exts.all.onExtensionChange((changedExtensions) => {
+            if (changedExtensions.some(x => x.isApp)) {
                 this.forceUpdate();
             }
         });

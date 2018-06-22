@@ -44,8 +44,8 @@ export default class ExtensionDetail extends Component {
             this.setState({loadingReadme: false});
         });
 
-        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
-            if (ext.id === this.props.extension.id) {
+        this.onExtChangeHandler = Exts.all.onExtensionChange(changedExtensions => {
+            if (changedExtensions.some(x=> x.name === this.props.extension.name)) {
                 this.forceUpdate();
             }
         });

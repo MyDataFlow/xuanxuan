@@ -35,8 +35,8 @@ export default class AppThemes extends PureComponent {
     }
 
     componentDidMount() {
-        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
-            if (ext.isTheme) {
+        this.onExtChangeHandler = Exts.all.onExtensionChange((changedExtensions) => {
+            if (changedExtensions.some(x => x.isTheme)) {
                 this.forceUpdate();
             }
         });

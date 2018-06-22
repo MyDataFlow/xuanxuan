@@ -39,7 +39,7 @@ export default class Extension {
             this.addError('type', `Unknown extension type (${pkg.type}), set to ‘${this._type}’ temporarily.`);
         }
         this._name = pkg.name;
-        if (StringHelper.isEmpty(pkg.name) || !(/[A-Za-z0-9\_-]+/.test(pkg.name))) {
+        if (StringHelper.isEmpty(pkg.name) || !(/[A-Za-z0-9_-]+/.test(pkg.name))) {
             this._safeName = `extension-${timeSequence()}`;
             this.addError('name', `Extension name(${pkg.name}) is not valid, use random name '${this._safeName}'.`);
         }
