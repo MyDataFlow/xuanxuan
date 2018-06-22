@@ -127,6 +127,9 @@ class MessageList extends Component {
 
     handleScroll = e => {
         const target = e.target;
+        if (!target.classList.contains('app-message-list')) {
+            return;
+        }
         const scrollInfo = {
             target,
             isAtTop: target.scrollTop === 0,
