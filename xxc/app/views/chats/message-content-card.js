@@ -9,13 +9,15 @@ import StringHelper from '../../utils/string-helper';
 export default class MessageContentCard extends Component {
     static propTypes = {
         baseClassName: PropTypes.string,
-        className: PropTypes.string,
         card: PropTypes.object.isRequired,
+        className: PropTypes.string,
+        header: PropTypes.any,
     };
 
     static defaultProps = {
         baseClassName: 'layer rounded shadow-2',
         className: '',
+        header: null
     };
 
     static get MessageContentCard() {
@@ -36,11 +38,12 @@ export default class MessageContentCard extends Component {
             card,
             className,
             baseClassName,
+            header,
             children,
             ...other
         } = this.props;
 
-        const {image, title, subtitle, content, icon, actions, url, htmlContent, contentType, contentUrl, originContentType} = card;
+        const {image, title, subtitle, content, icon, actions, url, htmlContent, contentType, contentUrl, originContentType, objectType} = card;
         let topView = null;
         if (contentUrl) {
             if (contentType === 'image') {
@@ -93,6 +96,7 @@ export default class MessageContentCard extends Component {
                     {titleView}
                     {subTitleView}
                 </hgroup>
+                {header}
             </header>
             {contentView}
             {actionsButtons && actionsButtons.length ? <nav className="actions gray">{actionsButtons}</nav> : null}

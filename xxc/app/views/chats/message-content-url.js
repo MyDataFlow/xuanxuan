@@ -39,7 +39,7 @@ export default class MessageContentUrl extends PureComponent {
     componentDidUpdate() {
         this.getUrlMeta();
     }
-    
+
     getUrlMeta() {
         if (this.state.meta) {
             return;
@@ -68,6 +68,9 @@ export default class MessageContentUrl extends PureComponent {
             url: null
         });
 
-        return <MessageContentCard card={card} className={classes('app-message-content-url relative')} {...other}><a  className="dock" href={url} title={card.title} /></MessageContentCard>;
+        const footerView = (meta && !meta.url) ? null : <a  className="dock" href={url} title={card.title} />;
+        const headerView = (meta && !meta.url) ? <a  className="dock" href={url} title={card.title} /> : null;
+
+        return <MessageContentCard card={card} header={headerView} className={classes('app-message-content-url relative')} {...other}>{footerView}</MessageContentCard>;
     }
 }

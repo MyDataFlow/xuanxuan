@@ -856,7 +856,7 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: (200*@rem);
+    height: (250*@rem);
   }
 
   > video {
@@ -864,16 +864,19 @@
     height: auto;
     width: 100%;
     object-fit: cover;
+    z-index: 1;
     + header {
       border-top: @rem solid @border-color;
-      + a.dock {top: (300*@rem);}
     }
   }
+
+  > a.dock {z-index: 0;}
 
   > header {
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
     > .avatar {
       flex: none;
       margin: @space-xs;
@@ -919,7 +922,7 @@
 
   > .content {
     padding: @space-sm;
-    opacity: .8;
+    opacity: .9;
     font-size: (13*@rem);
   }
 
@@ -929,6 +932,10 @@
 
   > .actions {
     padding: @space-sm;
+    position: relative;
+    z-index: 1;
+
+    .btn + .btn {margin-left: @space-sm;}
   }
 
   &.with-avatar {
@@ -941,10 +948,75 @@
       padding-left: (45*@rem);
     }
   }
+
+  .object-content {
+    margin: -@space-sm;
+    padding: @space-sm;
+    overflow: auto;
+    max-height: (400*@rem);
+  }
+
+  .attrs {
+    border-bottom: 1px solid @border-color;
+    padding-bottom: @space-sm;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    > li {
+      min-width: 50%;
+      padding: 2px @space-xs 2px 0;
+
+      > .attr-name {
+        display: inline-block;
+        font-weight: bold;
+        min-width: 60px;
+      }
+    }
+  }
+
+  details {
+    padding-bottom: @space-sm;
+    + details {
+      padding-top: @space-sm;
+      border-top: 1px solid @border-color;
+    }
+
+    > summary {
+      position: relative;
+      font-weight: bold;
+      margin-bottom: @space-xs;
+      cursor: pointer;
+      padding-left: (24*@rem);
+
+      &:active,
+      &:focus {
+        outline: none;
+      }
+
+      &:after {
+        content: @mdi-plus-box-outline;
+        .mdi;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: .4;
+      }
+    }
+
+    > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    &[open] > summary:after {
+      content: @mdi-minus-box-outline;
+    }
+  }
 }
 
 .app-message-content-url {
-  max-width: (480*@rem);
+  max-width: (560*@rem);
 
   > header > hgroup > h5 {
     white-space: nowrap;
