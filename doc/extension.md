@@ -531,6 +531,13 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
         <p><code>chatMessageMenu</code> 为一个对象数组或函数，对象数组为每个菜单项配置，如果为函数，返回值为对象数组。菜单项对象包括 `label` 属性用于定义菜单项名称，`url` 属性用于定义菜单项操作地址。</p>
       </td>
     </tr>
+    <tr>
+      <td><code>urlInspectors</code></td>
+      <td>网址解释器，可以将消息中的网址渲染成卡片形式</td>
+      <td>
+        <p><code>urlInspectors</code> 为一个对象数组，每个对象包含有 `test` 属性为正则表达式用于匹配要解释的 url 地址，`inspector` 为回调函数（`function(url: string)`）用于生成 URL 对应的卡片参数。</p>
+      </td>
+    </tr>
   </tbody>
 </table>
 
