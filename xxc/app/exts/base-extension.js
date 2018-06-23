@@ -28,6 +28,14 @@ export default class Extension {
     static TYPES = TYPES;
 
     constructor(pkgData, data) {
+        this.initPkg(pkgData);
+
+        this._config = new ExtensionConfig(this.name, this.configurations);
+
+        this._data = Object.assign({}, data);
+    }
+
+    initPkg(pkgData) {
         const pkg = Object.assign({}, pkgData, pkgData.xext);
         if (pkg.xext) {
             delete pkg.xext;
@@ -49,10 +57,6 @@ export default class Extension {
         }
 
         this._pkg = pkg;
-
-        this._config = new ExtensionConfig(this.name, this.configurations);
-
-        this._data = Object.assign({}, data);
     }
 
     addError(name, error) {
@@ -134,6 +138,36 @@ export default class Extension {
     get bugs() {return this._pkg.bugs;}
     get hot() {return !!this._pkg.hot;}
 
+    get download() {return this._pkg.download;}
+    get isRemote() {return this.download;}
+    get isRemoteLoaded() {return this._data.remoteLoaded;}
+    get md5() {return this._pkg.md5;}
+    get user() {return this._data.user;}
+    get remoteCachePath() {return this._data.remoteCachePath;}
+    get loadRemoteFailed() {return this._data.loadRemoteFailed;}
+    get downloadProgress() {
+        if (this.isRemoteLoaded) {
+            return 1;
+        }
+        if (!this._data.downloadProgress) {
+            return 0;
+        }
+        return this._data.downloadProgress;
+    }
+    set downloadProgress(progress) {
+        this._data.downloadProgress = progress;
+    }
+
+    setLoadRemoteResult(result, error) {
+        this._data.loadRemoteFailed = !result;
+        this._data.remoteLoaded = result;
+        if (result) {
+            this.initPkg(result);
+        } else if (error) {
+            this.addError(error);
+        }
+    }
+
     get accentColor() {
         return this._pkg.accentColor || '#f50057';
     }
@@ -199,7 +233,7 @@ export default class Extension {
     }
 
     get avaliable() {
-        return !this.disabled && !this.needRestart;
+        return !this.disabled && !this.needRestart && (!this.isRemote || this.isRemoteLoaded);
     }
 
     get updateTime() {

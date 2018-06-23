@@ -133,7 +133,7 @@ const installFromDevDir = (dir) => {
 const installFromXextFile = (filePath, deleteXextfile = false) => {
     return extractInstallFile(filePath).then(tmpPath => {
         if (deleteXextfile) {
-            fse.removeSync();
+            fse.removeSync(filePath);
         }
         return installFromDir(tmpPath, true);
     });

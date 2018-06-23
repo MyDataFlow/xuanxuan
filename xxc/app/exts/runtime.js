@@ -5,6 +5,7 @@ import manager from './manager';
 import App from '../core';
 import {setExtensionUser} from './extension';
 import {registerCommand, execute, createCommandObject} from '../core/commander';
+import {fetchServerExtensions, detachServerExtensions} from './server';
 
 global.Xext = Xext;
 
@@ -41,6 +42,7 @@ App.server.onUserLogin((user, error) => {
             ext.callModuleMethod('onUserLogin', user);
         });
     }
+    fetchServerExtensions(user);
 });
 
 App.server.onUserLoginout((user, code, reason, unexpected) => {
@@ -48,6 +50,7 @@ App.server.onUserLoginout((user, code, reason, unexpected) => {
     Exts.forEach(ext => {
         ext.callModuleMethod('onUserLoginout', user, code, reason, unexpected);
     });
+    detachServerExtensions(user);
 });
 
 App.profile.onUserStatusChange((status, oldStatus, user) => {

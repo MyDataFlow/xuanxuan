@@ -3,6 +3,7 @@ import buildIns from './build-in/';
 import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';
+import {setServerOnChangeListener} from './server';
 
 const EVENT = {
     onChange: 'Extension.onChange'
@@ -59,17 +60,14 @@ const onChangeListener = (changedExts, changeAction) => {
     if (!Array.isArray(changedExts)) {
         changedExts = [changedExts];
     }
-    if (changeAction === 'add') {
-        exts.push(...changedExts);
-        sortExts();
-    } else if (changeAction === 'remove') {
+    if (changeAction === 'remove') {
         changedExts.forEach(ext => {
             const findIndex = exts.findIndex(x => x.name === ext.name);
             if (findIndex > -1) {
                 exts.splice(findIndex, 1);
             }
         });
-    } else if (changeAction === 'update') {
+    } else if (changeAction === 'update' || changeAction === 'add' || changeAction === 'upsert') {
         changedExts.forEach(ext => {
             const findIndex = exts.findIndex(x => x.name === ext.name);
             if (findIndex > -1) {
@@ -84,6 +82,7 @@ const onChangeListener = (changedExts, changeAction) => {
 };
 
 db.setOnChangeListener(onChangeListener);
+setServerOnChangeListener(onChangeListener);
 
 const getTypeList = type => {
     switch (type) {

@@ -58,7 +58,8 @@ const checkVersionSupport = user => {
         wss: compareVersionValue > 0,
         fileServer: uploadFileSize !== 0,
         todo: compareVersionValue2 > 0,
-        socketPing: compareVersionValue2 > 0
+        socketPing: compareVersionValue2 > 0,
+        remoteExtension: compareVersions(serverVersion, '1.5.0') > 0
     };
 };
 
