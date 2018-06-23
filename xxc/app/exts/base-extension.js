@@ -354,7 +354,7 @@ export default class Extension {
     }
 
     get needRestart() {
-        return this._needRestart || (!this.disabled && this.hasModule && !this._loaded);
+        return this._needRestart || (!this.disabled && this.hasModule && !this._loaded && !this.hot);
     }
 
     attach() {
@@ -373,7 +373,9 @@ export default class Extension {
     }
 
     detach() {
-        this.callModuleMethod('onDetach', this);
+        if (this._module && this._loaded) {
+            this.callModuleMethod('onDetach', this);
+        }
         const mainFile = this.mainFile;
         if (mainFile && mainFile !== 'BUILD-IN') {
             delete __non_webpack_require__.cache[mainFile]; // eslint-disable-line
@@ -433,7 +435,7 @@ export default class Extension {
             }
             return false;
         }
-        const extModule = this.module;
+        const extModule = this._module;
         if (extModule && extModule[methodName]) {
             try {
                 return extModule[methodName].apply(this, params);

@@ -68,14 +68,19 @@ const onChangeListener = (changedExts, changeAction) => {
             }
         });
     } else if (changeAction === 'update' || changeAction === 'add' || changeAction === 'upsert') {
+        let hasExtAdd = false;
         changedExts.forEach(ext => {
             const findIndex = exts.findIndex(x => x.name === ext.name);
             if (findIndex > -1) {
                 exts.splice(findIndex, 1, ext);
             } else {
                 exts.splice(0, 0, ext);
+                hasExtAdd = true;
             }
         });
+        if (hasExtAdd) {
+            sortExts();
+        }
     }
     groupExts();
     Events.emit(EVENT.onChange, changedExts, changeAction);

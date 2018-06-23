@@ -28,8 +28,7 @@ const saveInstall = (extension, override = false, beforeSave = null) => {
             return Promise.reject('EXT_NAME_ALREADY_INSTALLED');
         }
         const oldExtension = installs[oldExtensionIndex];
-        oldExtension.detach();
-        extension._data = oldExtension.data;
+        extension._data = Object.assign(oldExtension.data, extension._data);
         extension.updateTime = new Date().getTime();
         installs.splice(oldExtensionIndex, 1, extension);
     } else {
