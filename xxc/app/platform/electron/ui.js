@@ -20,6 +20,10 @@ const browserWindow = Remote.getCurrentWindow();
 
 let onRequestQuitListener = null;
 
+const createUserDataPath = (user, fileName, dirName = 'images') => {
+    return Path.join(userDataPath, 'users', user.identify, dirName, fileName);
+};
+
 const makeFileUrl = url => {
     return url;
 };
@@ -182,6 +186,7 @@ export default {
     isOpenAtLogin,
     setOpenAtLogin,
     getUrlMeta,
+    createUserDataPath,
 
     get isWindowFocus() {
         return browserWindow.isFocused();
