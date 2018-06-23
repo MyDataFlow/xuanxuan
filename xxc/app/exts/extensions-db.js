@@ -22,6 +22,12 @@ const getInstallIndex = name => {
 };
 
 const saveInstall = (extension, override = false, beforeSave = null) => {
+    if (extension.isRemote) {
+        if (onChangeListener) {
+            onChangeListener(extension, 'update');
+        }
+        return Promise.resolve(extension);
+    }
     const oldExtensionIndex = getInstallIndex(extension.name);
     if (oldExtensionIndex > -1) {
         if (!override) {

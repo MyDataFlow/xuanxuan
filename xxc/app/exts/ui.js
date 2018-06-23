@@ -166,7 +166,7 @@ const createSettingContextMenu = extension => {
     const items = [];
 
     if (extension.disabled) {
-        if (!extension.buildIn) {
+        if (!extension.buildIn && !extension.isRemote) {
             items.push({
                 label: Lang.string('ext.enable'),
                 click: manager.setExtensionDisabled.bind(null, extension, false, null)
@@ -182,7 +182,7 @@ const createSettingContextMenu = extension => {
                 label: `${Lang.string('ext.openApp')} (${Lang.string('ext.extension.needRestart')})`,
             });
         }
-        if (!extension.buildIn) {
+        if (!extension.buildIn && !extension.isRemote) {
             items.push({
                 label: Lang.string('ext.disable'),
                 click: manager.setExtensionDisabled.bind(null, extension, true, null)
@@ -192,6 +192,11 @@ const createSettingContextMenu = extension => {
     if (extension.buildIn) {
         items.push({
             label: Lang.string('ext.cannotUninstallBuidIn'),
+            disabled: true,
+        });
+    } else if (extension.isRemote) {
+        items.push({
+            label: Lang.string('ext.cannotUninstallRemote'),
             disabled: true,
         });
     } else {

@@ -160,10 +160,8 @@ export default class Extension {
 
     setLoadRemoteResult(result, error) {
         this._data.loadRemoteFailed = !result;
-        this._data.remoteLoaded = result;
-        if (result) {
-            this.initPkg(result);
-        } else if (error) {
+        this._data.remoteLoaded = !!result;
+        if (error) {
             this.addError(error);
         }
     }
