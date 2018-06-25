@@ -3,7 +3,7 @@ import {classes} from '../../utils/html-helper';
 import replaceViews from '../replace-views';
 import MessageContentCard from './message-content-card';
 import {getUrlMeta} from '../../core/ui';
-
+import Lang from '../../lang';
 export default class MessageContentUrl extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
@@ -41,17 +41,23 @@ export default class MessageContentUrl extends PureComponent {
     }
 
     getUrlMeta() {
-        if (this.state.meta) {
+        if (this.state.meta && !this.state.loading) {
             return;
         }
         const {url} = this.props;
         getUrlMeta(url).then(meta => {
-            return this.setState({meta});
+            return this.setState({meta, loading: false});
         }).catch(_ => {
             if (DEBUG) {
                 console.error('Get url meta error', _);
             }
-            return this.setState({meta: {url, title: url}});
+            return this.setState({meta: {url, title: url}, loading: false});
+        });
+    }
+
+    tryGetUrlMeta() {
+        this.setState({loading: true}, () => {
+            this.getUrlMeta();
         });
     }
 
@@ -63,16 +69,29 @@ export default class MessageContentUrl extends PureComponent {
             ...other
         } = this.props;
 
-        const {meta} = this.state;
+        const {meta, loading} = this.state;
         const card = Object.assign({
             title: url,
         }, meta, {
-            icon: meta ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin',
+            icon: (meta && !loading) ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin',
             url: null
         });
 
-        const footerView = (meta && !meta.url) ? null : <a  className="dock" href={url} title={card.title} />;
-        const headerView = (meta && !meta.url) ? <a  className="dock" href={url} title={card.title} /> : null;
+        if (meta && !loading) {
+            if (!card.menu) {
+                card.menu = [];
+            }
+            card.menu.push({
+                label: Lang.string('chat.message.refreshCard'),
+                click: () => {
+                    this.tryGetUrlMeta();
+                },
+                icon: 'mdi-refresh'
+            });
+        }
+
+        const footerView = (meta && !meta.url) ? null : <a className="dock" href={url} title={card.title} />;
+        const headerView = (meta && !meta.url) ? <a className="dock" href={url} title={card.title} /> : null;
 
         return <MessageContentCard card={card} header={headerView} className={classes('app-message-content-url relative')} {...other}>{footerView}</MessageContentCard>;
     }

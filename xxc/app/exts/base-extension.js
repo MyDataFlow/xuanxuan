@@ -493,7 +493,12 @@ export default class Extension {
                 return x.test.test(url);
             });
             if (urlInspector) {
-                return urlInspector.inspect;
+                urlInspector.provider = {
+                    icon: this.icon,
+                    name: this.name,
+                    label: this.displayName
+                };
+                return urlInspector;
             }
         }
         return null;

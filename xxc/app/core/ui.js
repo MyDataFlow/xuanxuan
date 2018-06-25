@@ -374,11 +374,15 @@ export const getUrlMeta = (url) => {
             };
             if (global.ExtsRuntime) {
                 const extInspector = global.ExtsRuntime.getUrlInspector(url);
-                if (extInspector) {
-                    cardMeta = extInspector(meta, cardMeta, url);
+                if (extInspector && extInspector) {
+                    cardMeta = extInspector.inspect(meta, cardMeta, url);
                     if (cardMeta instanceof Promise) {
-                        return cardMeta;
+                        return cardMeta.then(cardMeta => {
+                            cardMeta.provider = extInspector.provider;
+                            return Promise.resolve(cardMeta);
+                        });
                     } else if (cardMeta) {
+                        cardMeta.provider = extInspector.provider;
                         return Promise.resolve(cardMeta);
                     }
                 }

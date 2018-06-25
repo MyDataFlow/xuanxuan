@@ -289,6 +289,8 @@
     "chat.fontSize.resetDefault": "恢复默认",
     "chat.message.atAll": "所有人",
     "chat.message.copy": "复制消息内容",
+    "chat.message.refreshCard": "重新载入卡片",
+    "chat.message.provider.format": "由【{0}】提供",
     "chat.message.copyMarkdown": "复制 Markdown",
     "chat.noMoreMessage": "没有更多消息",
     "chat.loadMoreMessage": "加载更多历史消息",

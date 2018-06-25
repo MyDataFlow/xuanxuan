@@ -846,12 +846,14 @@
   margin-top: @space-xs;
   min-width: (300*@rem);
   max-width: (800*@rem);
+  margin-right: (60*@rem);
 
   > .img {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     height: (250*@rem);
+    margin: 0;
   }
 
   > video {
@@ -863,6 +865,10 @@
     + header {
       border-top: @rem solid @border-color;
     }
+  }
+
+  > img {
+    margin: 0;
   }
 
   > a.dock {z-index: 0;}
@@ -1007,6 +1013,20 @@
     &[open] > summary:after {
       content: @mdi-minus-box-outline;
     }
+  }
+}
+.app-menu-card-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  position: absolute;
+  left: 100%;
+  flex-wrap: nowrap;
+  opacity: 0;
+  height: 100%;
+
+  .app-message-card:hover & {
+    opacity: 1;
   }
 }
 
