@@ -147,14 +147,7 @@ class chat extends control
     /**
      * Change a user.
      *
-     * @param  string $name
-     * @param  string $name
-     * @param  string $account
-     * @param  string $realname
-     * @param  string $avatar
-     * @param  string $role
-     * @param  string $dept
-     * @param  string $status
+     * @param  array  $user 
      * @param  int    $userID
      * @access public
      * @return void
