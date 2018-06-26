@@ -265,8 +265,8 @@ export default class MessageListItem extends Component {
 
         let actionsView = null;
         if (this.hasContextMenu) {
-            actionsView = (<div className="app-message-actions">
-                <div className="hint--top-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
+            actionsView = (<div className="actions">
+                <div className="hint--top-left"><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
             </div>);
         }
 
@@ -284,8 +284,7 @@ export default class MessageListItem extends Component {
             {showDateDivider && <MessageDivider date={message.date} />}
             {headerView}
             {timeLabelView}
-            {actionsView}
-            {contentView && <div className="app-message-content">{contentView}</div>}
+            {contentView && <div className={`app-message-content content-type-${message.contentType}`}>{contentView}{actionsView}</div>}
             {resendButtonsView}
         </div>);
     }
