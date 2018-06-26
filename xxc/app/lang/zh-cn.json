@@ -51,6 +51,7 @@
     "menu.redo": "重做",
     "menu.cut": "剪切",
     "menu.copy": "复制",
+    "menu.copy.format": "复制 “{0}”",
     "menu.copyImage": "复制图片",
     "menu.paste": "粘贴",
     "menu.selectAll": "选择所有",

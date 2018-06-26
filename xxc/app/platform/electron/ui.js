@@ -153,6 +153,14 @@ const setOpenAtLogin = openAtLogin => {
     }
 };
 
+const copySelectText = () => {
+    browserWindow.webContents.copy();
+};
+
+const selectAllText = () => {
+    browserWindow.webContents.selectAll();
+};
+
 browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
@@ -187,6 +195,8 @@ export default {
     setOpenAtLogin,
     getUrlMeta,
     createUserDataPath,
+    copySelectText,
+    selectAllText,
 
     get isWindowFocus() {
         return browserWindow.isFocused();

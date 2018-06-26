@@ -539,6 +539,10 @@ export default class Extension {
         return menu;
     }
 
+    get contextMenuCreators() {
+        return this._pkg.contextMenuCreators;
+    }
+
     getMatchScore(keys) {
         return SearchScore.matchScore(MATCH_SCORE_MAP, this, keys);
     }

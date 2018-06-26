@@ -16,6 +16,7 @@ import {NotificationMessage} from './notification-message';
 import {MessageContentUrl} from './message-content-url';
 import replaceViews from '../replace-views';
 import ChatMessage from '../../core/models/chat-message';
+import {showContextMenu} from "../../core/context-menu";
 
 const showTimeLabelInterval = 1000 * 60 * 5;
 
@@ -159,7 +160,11 @@ export default class MessageListItem extends Component {
                 });
             }
         }
-    }
+    };
+
+    handleContentContextMenu = event => {
+        showContextMenu('message.text', {event, message: this.props.message, options: {copy: true, selectAll: true}});
+    };
 
     render() {
         let {
@@ -208,6 +213,7 @@ export default class MessageListItem extends Component {
         let timeLabelView = null;
         let contentView = null;
         let resendButtonsView = null;
+        let isTextContent = false;
 
         const titleFontStyle = font ? {
             fontSize: `${font.title}px`,
@@ -246,6 +252,7 @@ export default class MessageListItem extends Component {
             }
         } else {
             contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} fontSize={this.lastFontSize} style={basicFontStyle} message={message} />;
+            isTextContent = true;
         }
 
         if (!headerView) {
@@ -284,7 +291,7 @@ export default class MessageListItem extends Component {
             {showDateDivider && <MessageDivider date={message.date} />}
             {headerView}
             {timeLabelView}
-            {contentView && <div className={`app-message-content content-type-${message.contentType}`}>{contentView}{actionsView}</div>}
+            {contentView && <div className={`app-message-content content-type-${message.contentType}`} onContextMenu={isTextContent ? this.handleContentContextMenu : null}>{contentView}{actionsView}</div>}
             {resendButtonsView}
         </div>);
     }
