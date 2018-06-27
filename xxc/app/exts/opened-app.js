@@ -23,7 +23,7 @@ export default class OpenedApp {
     constructor(app, pageName = null, params = null) {
         this._app = app;
         this._pageName = pageName;
-        this._params = params;
+        this.params = params;
 
         const now = new Date().getTime();
         this._createTime = now;
@@ -139,15 +139,17 @@ export default class OpenedApp {
      * 获取路由地址
      */
     get routePath() {
-        if (!this._hashRoute) {
-            let route = `/exts/app/${this.id}`;
-            if (this.params) {
-                const params = Object.keys(this.params).map(x => `${x}=${this.params[x]}`).join('&');
-                route += `/${params}`;
-            }
-            this._hashRoute = route;
+        let route = `/exts/app/${this.id}`;
+        if (this.params) {
+            const params = Object.keys(this.params).map(x => `${x}=${encodeURIComponent(this.params[x])}`).join('&');
+            route += `/${params}`;
         }
-        return this._hashRoute;
+        return route;
+    }
+
+    get directUrl() {
+        const direct = this.params && this.params.DIRECT;
+        return direct || this.app.webViewUrl;
     }
 
     /**

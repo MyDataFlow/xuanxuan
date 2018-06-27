@@ -57,12 +57,15 @@ const openApp = (name, pageName = null, params = null) => {
             }
             return false;
         }
+    } else {
+        if (params !== null) {
+            theOpenedApp.params = params;
+        }
     }
     theOpenedApp.updateOpenTime();
-    if (params !== null) theOpenedApp.params = params;
-    const appRoutePaht = theOpenedApp.hashRoute;
-    if (!window.location.hash.startsWith(appRoutePaht)) {
-        window.location.hash = appRoutePaht;
+    const appHashRoute = theOpenedApp.hashRoute;
+    if (window.location.hash !== appHashRoute) {
+        window.location.hash = appHashRoute;
     }
     currentOpenedApp = theOpenedApp;
     if (DEBUG) {
