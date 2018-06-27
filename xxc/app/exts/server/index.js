@@ -122,7 +122,6 @@ const handleChatExtensions = (msg, socket) => {
                 remoteCachePath: Path.join(baseUserExtsDir, `${item.name}.zip`),
                 localPath: Path.join(baseUserExtsDir, item.name)
             });
-            console.log('>> handleChatExtensions', Object.assign({}, ext), item);
             const findIndex = exts.findIndex(x => x.name === ext.name);
             if (findIndex > -1) {
                 exts.splice(findIndex, 1, ext);
