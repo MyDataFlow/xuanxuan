@@ -143,7 +143,7 @@ export default class MessageListItem extends Component {
     };
 
     handleContentContextMenu = event => {
-        showContextMenu(this.isUrlContent ? 'link' : 'message.text', {event, message: this.props.message, options: {copy: true, selectAll: true, linkTarget: true}});
+        showContextMenu(this.isUrlContent ? 'link' : 'message.text', {event, message: this.props.message, options: {copy: !this.isUrlContent, selectAll: true, linkTarget: true}});
     };
 
     render() {
