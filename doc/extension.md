@@ -525,10 +525,10 @@ app 模块为一个对象，包含了喧喧应用核心功能子模块。
       </td>
     </tr>
     <tr>
-      <td><code>chatMessageMenu</code></td>
+      <td><code>contextMenuCreators</code></td>
       <td>为消息增加操作菜单</td>
       <td>
-        <p><code>chatMessageMenu</code> 为一个对象数组或函数，对象数组为每个菜单项配置，如果为函数，返回值为对象数组。菜单项对象包括 `label` 属性用于定义菜单项名称，`url` 属性用于定义菜单项操作地址。</p>
+        <p><code>contextMenuCreators</code> 为一个菜单生成对象数组，对象数组为每个菜单生成对象。菜单生成对象包括 `match` 属性用于定义匹配的菜单类型，`creator` 属性用于生成菜单项目的函数。</p>
       </td>
     </tr>
     <tr>
