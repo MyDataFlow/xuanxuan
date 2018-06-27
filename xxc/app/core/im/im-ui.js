@@ -630,6 +630,9 @@ const createMessageContextMenu = message => {
         });
     }
     if (profile.user.isVersionSupport('todo')) {
+        if (items.length) {
+            items.push('divider');
+        }
         items.push({
             label: Lang.string('todo.create'),
             icon: 'mdi-calendar-check',

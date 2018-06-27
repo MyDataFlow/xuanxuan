@@ -504,42 +504,20 @@ export default class Extension {
         return null;
     }
 
-    getChatMessageMenu(urlFormatObject) {
-        let menu = [];
-        const pkgMenu = this._pkg.chatMessageMenu;
-        if (pkgMenu) {
-            menu.push(...pkgMenu);
+    formatContextMenuItem(menuItem, urlFormatObject) {
+        urlFormatObject = Object.assign({}, urlFormatObject, {EXTENSION: `extension/${this.name}`});
+        menuItem = Object.assign({}, menuItem);
+        if (menuItem.url) {
+            menuItem.url = StringHelper.format(menuItem.url, urlFormatObject);
         }
-
-        const extModule = this.module;
-        let moduleMenu = extModule && extModule.chatMessageMenu;
-        if (moduleMenu) {
-            if (typeof moduleMenu === 'function') {
-                moduleMenu = moduleMenu(this);
-            }
-            if (moduleMenu) {
-                menu.push(...moduleMenu);
-            }
+        menuItem.label = `${this.displayName}: ${menuItem.label || menuItem.url}`;
+        if (!menuItem.icon) {
+            menuItem.icon = this.icon;
         }
+        return menuItem;
+    };
 
-        if (menu && menu.length) {
-            urlFormatObject = Object.assign({}, urlFormatObject, {EXTENSION: `extension/${this.name}`});
-            menu = menu.map(menuItem => {
-                menuItem = Object.assign({}, menuItem);
-                if (menuItem.url) {
-                    menuItem.url = StringHelper.format(menuItem.url, urlFormatObject);
-                }
-                menuItem.label = `${this.displayName}: ${menuItem.label || menuItem.url}`;
-                if (!menuItem.icon) {
-                    menuItem.icon = this.icon;
-                }
-                return menuItem;
-            });
-        }
-        return menu;
-    }
-
-    get contextMenuCreators() {
+    getContextMenuCreators() {
         return this._pkg.contextMenuCreators;
     }
 

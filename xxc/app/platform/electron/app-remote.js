@@ -299,8 +299,6 @@ class AppRemote {
                 const {selectionText, isEditable} = props;
                 if (isEditable) {
                     INPUT_MENU.popup(mainWindow);
-                } else if (selectionText && selectionText.trim() !== '') {
-                    SELECT_MENU.popup(mainWindow);
                 }
             });
         }
