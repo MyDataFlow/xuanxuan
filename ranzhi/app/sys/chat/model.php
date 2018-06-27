@@ -991,6 +991,7 @@ EOT;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
             $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
+            $data->auth        = $this->loadModel('sso')->createToken($userID, $entry->id);
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
             $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
 

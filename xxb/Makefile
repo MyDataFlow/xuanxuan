@@ -45,6 +45,7 @@ xxb:
 	cp -r ./zdoo/app/sys/file xxb/app/sys/
 	cp -r ./zdoo/app/sys/misc xxb/app/sys/
 	cp -r ./zdoo/app/sys/package xxb/app/sys/
+	cp -r ./zdoo/app/sys/sso xxb/app/sys/
 	cp -r ./backend/* xxb/
 	cp -r ./VERSION xxb/
 	cp ./zdoo/www/index.php xxb/www/
