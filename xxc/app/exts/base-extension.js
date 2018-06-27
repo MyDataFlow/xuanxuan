@@ -473,7 +473,7 @@ export default class Extension {
         return command;
     }
 
-    getUrlInspector(url) {
+    getUrlInspector(url, type = 'inspect') {
         if (this.disabled) {
             if (DEBUG) {
                 console.warn('The extension has been disbaled.', this);
@@ -487,12 +487,15 @@ export default class Extension {
                 urlInspectors = [urlInspectors];
             }
             const urlInspector = urlInspectors.find(x => {
+                if (!x[type]) {
+                    return false;
+                }
                 if (typeof x.test === 'string') {
                     x.test = new RegExp(x.test, 'i');
                 }
                 return x.test.test(url);
             });
-            if (urlInspector) {
+            if (urlInspector && !urlInspector.provider) {
                 urlInspector.provider = {
                     icon: this.icon,
                     name: this.name,
@@ -502,6 +505,10 @@ export default class Extension {
             }
         }
         return null;
+    }
+
+    getUrlOpener(url) {
+        return this.getUrlInspector(url, 'open');
     }
 
     formatContextMenuItem(menuItem, urlFormatObject) {
