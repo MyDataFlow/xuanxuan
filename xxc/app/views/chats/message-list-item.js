@@ -16,6 +16,7 @@ import {NotificationMessage} from './notification-message';
 import {MessageContentUrl} from './message-content-url';
 import replaceViews from '../replace-views';
 import ChatMessage from '../../core/models/chat-message';
+import {showContextMenu} from "../../core/context-menu";
 
 const showTimeLabelInterval = 1000 * 60 * 5;
 
@@ -56,7 +57,6 @@ export default class MessageListItem extends Component {
     constructor(props) {
         super(props);
         this.state = {sharing: false};
-        this.hasContextMenu = App.im.ui.hasMessageContextMenu(props.message);
     }
 
     componentDidMount() {
@@ -138,28 +138,13 @@ export default class MessageListItem extends Component {
         }
     };
 
-    handleShareBtnClick = e => {
-        if (this.hasContextMenu) {
-            const pos = {x: e.pageX, y: e.pageY, direction: 'bottom-left'};
-            const {message} = this.props;
-            const items = App.im.ui.createMessageContextMenu(message);
+    handleShareBtnClick = event => {
+        showContextMenu('message.text', {event, message: this.props.message});
+    };
 
-            if (global.ExtsRuntime) {
-                const extMenu = global.ExtsRuntime.ui.createChatMessageMenu(message);
-                if (extMenu && extMenu.length) {
-                    items.push('-', ...extMenu);
-                }
-            }
-
-            if (items.length) {
-                this.setState({sharing: true}, () => {
-                    App.ui.showContextMenu(pos, items, {onHidden: () => {
-                        this.setState({sharing: false});
-                    }});
-                });
-            }
-        }
-    }
+    handleContentContextMenu = event => {
+        showContextMenu(this.isUrlContent ? 'link' : 'message.text', {event, message: this.props.message, options: {copy: !this.isUrlContent, selectAll: true, linkTarget: true}});
+    };
 
     render() {
         let {
@@ -208,6 +193,8 @@ export default class MessageListItem extends Component {
         let timeLabelView = null;
         let contentView = null;
         let resendButtonsView = null;
+        this.isTextContent = false;
+        this.isUrlContent = false;
 
         const titleFontStyle = font ? {
             fontSize: `${font.title}px`,
@@ -241,11 +228,13 @@ export default class MessageListItem extends Component {
             const objectContent = message.objectContent;
             if (objectContent && objectContent.type === ChatMessage.OBJECT_TYPES.url && objectContent.url) {
                 contentView = <MessageContentUrl url={objectContent.url} data={objectContent} />;
+                this.isUrlContent = true;
             } else {
                 contentView = <div className="box red-pale">[Unknown Object]</div>;
             }
         } else {
             contentView = <MessageContentText id={`message-content-${message.gid}`} contentConverter={textContentConverter} fontSize={this.lastFontSize} style={basicFontStyle} message={message} />;
+            this.isTextContent = true;
         }
 
         if (!headerView) {
@@ -264,15 +253,13 @@ export default class MessageListItem extends Component {
         }
 
         let actionsView = null;
-        if (this.hasContextMenu) {
-            actionsView = (<div className="app-message-actions">
-                <div className="hint--top-left" data-hint={Lang.string('common.shareMenu')}><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
+        if (this.isTextContent) {
+            actionsView = (<div className="actions">
+                <div className="hint--top-left"><button className="btn btn-sm iconbutton rounded" type="button" onClick={this.handleShareBtnClick}><Icon name="share" /></button></div>
             </div>);
         }
 
         return (<div
-            onMouseEnter={this.hasContextMenu ? this.handleMouseEnter : null}
-            onMouseLeave={this.hasContextMenu ? this.handleMouseLeave : null}
             {...other}
             className={HTML.classes('app-message-item', className, {
                 'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
@@ -284,8 +271,7 @@ export default class MessageListItem extends Component {
             {showDateDivider && <MessageDivider date={message.date} />}
             {headerView}
             {timeLabelView}
-            {actionsView}
-            {contentView && <div className="app-message-content">{contentView}</div>}
+            {contentView && <div className={`app-message-content content-type-${message.contentType}`} onContextMenu={this.isTextContent || this.isUrlContent ? this.handleContentContextMenu : null}>{contentView}{actionsView}</div>}
             {resendButtonsView}
         </div>);
     }

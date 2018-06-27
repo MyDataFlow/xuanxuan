@@ -28,7 +28,14 @@ export const getSearchParam = (key, search = null) => {
         for (const pair of searchArr) {
             const pairValues = pair.split('=', 2);
             if (pairValues.length > 1) {
-                params[pairValues[0]] = decodeURIComponent(pairValues[1]);
+                try {
+                    params[pairValues[0]] = decodeURIComponent(pairValues[1]);
+                } catch(_) {
+                    if (DEBUG) {
+                        console.error(_, {key, search});
+                    }
+                    params[pairValues[0]] = '';
+                }
             } else {
                 params[pairValues[0]] = '';
             }

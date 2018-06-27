@@ -132,46 +132,7 @@
 .app-message-item {
   position: relative;
 }
-.app-message-content {
-  margin-right: (22*@rem);
-  outline: transparent 0 solid;
-  transition: @animation-speed-normal;
-  transition-property: outline, background;
-}
-.app-message-actions {
-  position: absolute;
-  right: (2*@rem);
-  top: 0;
-  display: none;
 
-  &:hover {
-    + .app-message-content {
-      outline: @color-pale (2*@rem) solid;
-      outline-offset: (1*@rem);
-
-    }
-  }
-
-  .sharing & {
-    + .app-message-content {
-      outline: @color-pale (4*@rem) solid;
-      background-color: @color-pale;
-      outline-offset: (-1*@rem);
-    }
-  }
-
-  .with-avatar & {
-    top: (31*@rem);
-  }
-
-  .with-avatar .app-message-divider + .app-message-item-header + & {
-    top: (61*@rem);
-  }
-
-  .app-message-item:hover & {
-    display: block;
-  }
-}
 .app-message-list-simple {
   .app-message-item {
     padding: (10*@rem);
@@ -280,11 +241,46 @@
 .app-message-content {
   margin-left: (40*@rem);
   line-height: (20*@rem);
-  transition: background-color @animation-type @animation-speed-fast, padding @animation-type @animation-speed-fast;
+  outline: transparent 0 solid;
+  transition: @animation-speed-normal;
+  transition-timing-function: @animation-type;
+  transition-property: outline, background, padding;
 
   .app-file-list-item {
     margin-bottom: @space-sm;
   }
+
+  &.content-type-text {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+
+    > .app-message-content-text {
+      margin-right: @space-xs;
+      min-width: (50*@rem);
+    }
+    > .actions {
+      flex: none;
+      position: relative;
+      top: (-2*@rem);
+      opacity: 0;
+    }
+    &:hover {
+      > .app-message-content-text {
+        outline-offset: @rem;
+        outline: fade(@color-primary, 20%) (1*@rem) solid;
+      }
+      > .actions {opacity: 1;}
+    }
+  }
+
+  .sharing &.content-type-text > .app-message-content-text {
+    outline: @color-pale (4*@rem) solid;
+    background-color: @color-pale;
+    outline-offset: (-1*@rem);
+  }
+  .sharing &.content-type-text > .actions {opacity: 1;}
 }
 
 .app-message-item-time-label {
@@ -843,15 +839,17 @@
 .app-message-card {
   display: inline-flex;
   flex-direction: column;
-  margin-top: @space-xs;
+  margin: @space-xs 0;
   min-width: (300*@rem);
   max-width: (800*@rem);
+  margin-right: (50*@rem);
 
   > .img {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     height: (250*@rem);
+    margin: 0;
   }
 
   > video {
@@ -863,6 +861,10 @@
     + header {
       border-top: @rem solid @border-color;
     }
+  }
+
+  > img {
+    margin: 0;
   }
 
   > a.dock {z-index: 0;}
@@ -1007,6 +1009,20 @@
     &[open] > summary:after {
       content: @mdi-minus-box-outline;
     }
+  }
+}
+.app-menu-card-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  position: absolute;
+  left: 100%;
+  flex-wrap: nowrap;
+  opacity: 0;
+  height: 100%;
+
+  .app-message-card:hover & {
+    opacity: 1;
   }
 }
 

@@ -138,11 +138,14 @@ export default class Index extends Component {
 
         let redirectView = null;
         if (match.url.startsWith(ROUTES.exts._)) {
-            if (!match.params.filterType || !match.params.id) {
+            const openedAppName = match.params.id;
+            if (openedAppName) {
+                if (!Exts.ui.openAppById(match.params.id, match.params.params)) {
+                    this.appNotFound = match.params.id;
+                    redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.defaultApp.name)} />;
+                }
+            } else if (!match.params.filterType) {
                 redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.currentOpenedApp.name)} />;
-            } else if (match.params.id && !Exts.ui.openAppById(match.params.id, match.params.params)) {
-                this.appNotFound = match.params.id;
-                redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.defaultApp.name)} />;
             }
         }
 
@@ -186,8 +189,8 @@ export default class Index extends Component {
                             const TheAppView = buildInView[openedApp.id];
                             appView = TheAppView && <TheAppView app={openedApp} onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} onPageTitleUpdated={this.handleAppPageTitleUpadted.bind(this, openedApp)} />;
                         } else {
-                            const webViewUrl = openedApp.app.webViewUrl;
-                            if (webViewUrl) {
+                            const directUrl = openedApp.directUrl;
+                            if (directUrl) {
                                 appView = <WebApp onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} onPageTitleUpdated={this.handleAppPageTitleUpadted.bind(this, openedApp)} app={openedApp} />;
                             }
                         }

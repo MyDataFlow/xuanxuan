@@ -118,7 +118,6 @@ const getUrlInspector = url => {
     })) {
         return urlInspector;
     }
-
 };
 
 // Set replaceViews to global
@@ -128,4 +127,5 @@ export default {
     loadModules,
     ui,
     getUrlInspector,
+    exts: Exts
 };

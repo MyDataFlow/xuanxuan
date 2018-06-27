@@ -124,7 +124,7 @@ class SearchControl extends PureComponent {
                 normal: !this.state.focus
             })}
             value={this.state.value}
-            label={<Icon name="search" />}
+            label={<Icon name="magnify" />}
             onFocus={this.handleOnInputFocus}
             onBlur={this.handleOnInputBlur}
             onChange={this.handleOnInputChange}

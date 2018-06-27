@@ -25,6 +25,7 @@ import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
 import HTMLHelper from '../../utils/html-helper';
+import {addContextMenuCreator} from '../context-menu';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -629,6 +630,9 @@ const createMessageContextMenu = message => {
         });
     }
     if (profile.user.isVersionSupport('todo')) {
+        if (items.length) {
+            items.push('divider');
+        }
         items.push({
             label: Lang.string('todo.create'),
             icon: 'mdi-calendar-check',
@@ -640,6 +644,11 @@ const createMessageContextMenu = message => {
     }
     return items;
 };
+
+addContextMenuCreator('message.text', context => {
+    const {message} = context;
+    return createMessageContextMenu(message);
+});
 
 profile.onSwapUser(user => {
     activedChatId = null;

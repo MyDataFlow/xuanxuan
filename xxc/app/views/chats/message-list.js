@@ -110,20 +110,6 @@ class MessageList extends Component {
         return this.scrollInfo ? this.scrollInfo.isAtBottom : true;
     }
 
-    handleContextMenu = e => {
-        if (e.target.tagName === 'A') {
-            const link = e.target.href;
-            if (isWebUrl(link)) {
-                let linkText = document.getSelection().toString().trim();
-                if (linkText === '') {
-                    linkText = e.target.innerText || (e.target.attributes.title ? e.target.attributes.title.value : '');
-                }
-                App.ui.showContextMenu({x: e.pageX, y: e.pageY}, App.ui.createLinkContextMenu(link, linkText));
-                e.preventDefault();
-            }
-        }
-    };
-
     render() {
         const {
             messages,
@@ -154,7 +140,6 @@ class MessageList extends Component {
             {...other}
             className={classes('app-message-list flex column-reverse', className, {'app-message-list-static': staticUI})}
             onScroll={this.handleScroll}
-            onContextMenu={this.handleContextMenu}
             ref={e => {this.element = e;}}
         >
             {messagesView}

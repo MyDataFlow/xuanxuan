@@ -5,6 +5,7 @@ import replaceViews from '../replace-views';
 import Button from '../../components/button';
 import Avatar from '../../components/avatar';
 import StringHelper from '../../utils/string-helper';
+import Lang from '../../lang';
 
 export default class MessageContentCard extends Component {
     static propTypes = {
@@ -43,7 +44,7 @@ export default class MessageContentCard extends Component {
             ...other
         } = this.props;
 
-        const {image, title, subtitle, content, icon, actions, url, htmlContent, contentType, contentUrl, originContentType, objectType} = card;
+        const {image, title, subtitle, content, icon, actions, url, htmlContent, contentType, contentUrl, originContentType, menu, provider} = card;
         let topView = null;
         if (contentUrl) {
             if (contentType === 'image') {
@@ -80,6 +81,16 @@ export default class MessageContentCard extends Component {
             });
         }
 
+        const cardsMenu = [];
+        if (provider) {
+            cardsMenu.push(<div key="provider" className="hint--top" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
+        }
+        if (menu && menu.length) {
+            menu.forEach((menuItem, menuItemIndex) => {
+                cardsMenu.push(<div key={menuItemIndex} className="hint--top" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
+            });
+        }
+
         return (<div
             className={classes('app-message-card', baseClassName, className, {
                 'app-link state': !!url,
@@ -101,6 +112,7 @@ export default class MessageContentCard extends Component {
             {contentView}
             {actionsButtons && actionsButtons.length ? <nav className="actions gray">{actionsButtons}</nav> : null}
             {children}
+            {cardsMenu && cardsMenu.length ? <div className="app-menu-card-menu">{cardsMenu}</div> : null}
         </div>);
     }
 }

@@ -473,7 +473,7 @@ export default class Extension {
         return command;
     }
 
-    getUrlInspector(url) {
+    getUrlInspector(url, type = 'inspect') {
         if (this.disabled) {
             if (DEBUG) {
                 console.warn('The extension has been disbaled.', this);
@@ -487,51 +487,45 @@ export default class Extension {
                 urlInspectors = [urlInspectors];
             }
             const urlInspector = urlInspectors.find(x => {
+                if (!x[type]) {
+                    return false;
+                }
                 if (typeof x.test === 'string') {
                     x.test = new RegExp(x.test, 'i');
                 }
                 return x.test.test(url);
             });
-            if (urlInspector) {
-                return urlInspector.inspect;
+            if (urlInspector && !urlInspector.provider) {
+                urlInspector.provider = {
+                    icon: this.icon,
+                    name: this.name,
+                    label: this.displayName
+                };
+                return urlInspector;
             }
         }
         return null;
     }
 
-    getChatMessageMenu(urlFormatObject) {
-        let menu = [];
-        const pkgMenu = this._pkg.chatMessageMenu;
-        if (pkgMenu) {
-            menu.push(...pkgMenu);
-        }
+    getUrlOpener(url) {
+        return this.getUrlInspector(url, 'open');
+    }
 
-        const extModule = this.module;
-        let moduleMenu = extModule && extModule.chatMessageMenu;
-        if (moduleMenu) {
-            if (typeof moduleMenu === 'function') {
-                moduleMenu = moduleMenu(this);
-            }
-            if (moduleMenu) {
-                menu.push(...moduleMenu);
-            }
+    formatContextMenuItem(menuItem, urlFormatObject) {
+        urlFormatObject = Object.assign({}, urlFormatObject, {EXTENSION: `extension/${this.name}`});
+        menuItem = Object.assign({}, menuItem);
+        if (menuItem.url) {
+            menuItem.url = StringHelper.format(menuItem.url, urlFormatObject);
         }
+        menuItem.label = `${this.displayName}: ${menuItem.label || menuItem.url}`;
+        if (!menuItem.icon) {
+            menuItem.icon = this.icon;
+        }
+        return menuItem;
+    };
 
-        if (menu && menu.length) {
-            urlFormatObject = Object.assign({}, urlFormatObject, {EXTENSION: `extension/${this.name}`});
-            menu = menu.map(menuItem => {
-                menuItem = Object.assign({}, menuItem);
-                if (menuItem.url) {
-                    menuItem.url = StringHelper.format(menuItem.url, urlFormatObject);
-                }
-                menuItem.label = `${this.displayName}: ${menuItem.label || menuItem.url}`;
-                if (!menuItem.icon) {
-                    menuItem.icon = this.icon;
-                }
-                return menuItem;
-            });
-        }
-        return menu;
+    getContextMenuCreators() {
+        return this._pkg.contextMenuCreators;
     }
 
     getMatchScore(keys) {
