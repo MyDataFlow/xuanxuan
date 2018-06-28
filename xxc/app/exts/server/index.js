@@ -86,7 +86,8 @@ const processExtensions = async () => {
                         icon: theExt.icon,
                     }, pkgJson, {
                         download: theExt.download,
-                        md5: theExt.md5
+                        md5: theExt.md5,
+                        auth: theExt.auth
                     }), theExt.data);
                     newExt.hotAttach();
                     exts.splice(findIndex, 1, newExt);
@@ -116,12 +117,22 @@ const handleChatExtensions = (msg, socket) => {
     if (currentUser && msg.isSuccess && msg.data.length) {
         const baseUserExtsDir = Platform.ui.createUserDataPath(currentUser, '', 'extensions');
         msg.data.forEach(item => {
-            const ext = createExtension(Object.assign(item, {
+            const extPkg = Object.assign(Object.assign(item, {
                 icon: item.logo,
-            }), {
-                remoteCachePath: Path.join(baseUserExtsDir, `${item.name}.zip`),
-                localPath: Path.join(baseUserExtsDir, item.name)
-            });
+            }));
+            if (!item.download && item.auth) {
+                extPkg.type = 'app';
+                extPkg.appType = 'webView';
+                extPkg.webViewUrl = item.auth;
+            }
+            const extData = {remote: true};
+            if (item.download) {
+                extData.remoteCachePath = Path.join(baseUserExtsDir, `${item.name}.zip`);
+                extData.localPath = Path.join(baseUserExtsDir, item.name);
+            } else if (item.auth) {
+                extData.remoteLoaded = true;
+            }
+            const ext = createExtension(extPkg, extData);
             const findIndex = exts.findIndex(x => x.name === ext.name);
             if (findIndex > -1) {
                 exts.splice(findIndex, 1, ext);

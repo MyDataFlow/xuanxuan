@@ -138,8 +138,20 @@ export default class Extension {
     get bugs() {return this._pkg.bugs;}
     get hot() {return !!this._pkg.hot;}
 
+    get auth() {return this._pkg.auth;}
+    getAuthUrl(url) {
+        const auth = this.auth;
+        if (auth) {
+            if (url) {
+                return auth.includes('?') ? `${auth}refer=${url}` : `${auth}?refer=${url}`;
+            }
+            return auth;
+        }
+        return null;
+    }
+
     get download() {return this._pkg.download;}
-    get isRemote() {return this.download;}
+    get isRemote() {return this._data.remote;}
     get isRemoteLoaded() {return this._data.remoteLoaded;}
     get md5() {return this._pkg.md5;}
     get user() {return this._data.user;}
