@@ -13,10 +13,8 @@ class entry extends control
             {
                 $user = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($sso->sid)->fetch();
                 $this->session->set('random', '');
-                if($user && $this->user->identify($user->account, $user->password))
+                if($user && $this->user->login($user->account, $user->password))
                 {
-                    $this->user->keepLogin($user);
-                    $this->session->set('user', $user);
                     $verification = true;
                 }
             }

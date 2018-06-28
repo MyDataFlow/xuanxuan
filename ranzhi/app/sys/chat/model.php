@@ -986,12 +986,13 @@ EOT;
                 $time  = time();
                 $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
             }
+            $auth = $this->loadModel('sso')->createToken($userID, $entry->id);
             $data = new stdClass();
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
             $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
-            $data->auth        = $this->loadModel('sso')->createToken($userID, $entry->id);
+            $data->auth        = empty($userID) ? '' : commonModel::getSysURL() . helper::createLink('entry', 'auth', "code={$entry->code}&token=" . $auth);
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
             $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
 
