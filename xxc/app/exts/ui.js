@@ -186,7 +186,7 @@ const createSettingContextMenu = extension => {
                 click: openApp.bind(null, extension.name, null, null)
             } : {
                 disabled: true,
-                label: `${Lang.string('ext.openApp')} (${Lang.string('ext.extension.needRestart')})`,
+                label: `${Lang.string('ext.openApp')} (${Lang.string(extension.needRestart ? 'ext.extension.needRestart' : 'ext.unavailable')})`,
             });
         }
         if (!extension.buildIn && !extension.isRemote) {
@@ -336,24 +336,6 @@ const createOpenedAppContextMenu = (theOpenedApp, refreshUI) => {
     return items;
 };
 
-const createChatMessageMenu = (chatMessage) => {
-    const menu = [];
-    const urlFormatsMessage = {
-        messageId: chatMessage.id,
-        messageSender: chatMessage.senderId
-    }
-    forEachExt(ext => {
-        const extMenu = ext.getChatMessageMenu(urlFormatsMessage);
-        if (extMenu && extMenu.length) {
-            if (menu.length) {
-                menu.push('-');
-            }
-            menu.push(...extMenu);
-        }
-    });
-    return menu;
-};
-
 export default {
     get openedApps() {
         return openedApps;
@@ -391,5 +373,4 @@ export default {
     createAppContextMenu,
     showExtensionDetailDialog,
     createOpenedAppContextMenu,
-    createChatMessageMenu
 };

@@ -20,7 +20,8 @@ export default class WebView extends Component {
         executeJavaScript: PropTypes.string,
         onExeCuteJavaScript: PropTypes.func,
         onDomReady: PropTypes.func,
-        injectForm: PropTypes.any
+        injectForm: PropTypes.any,
+        useMobileAgent: PropTypes.bool
     };
 
     static defaultProps = {
@@ -32,6 +33,7 @@ export default class WebView extends Component {
         onExeCuteJavaScript: null,
         injectForm: null,
         onDomReady: null,
+        useMobileAgent: false,
     };
 
     constructor(props) {
@@ -183,6 +185,7 @@ export default class WebView extends Component {
             onPageTitleUpdated,
             src,
             style,
+            useMobileAgent,
             ...options
         } = this.props;
 
