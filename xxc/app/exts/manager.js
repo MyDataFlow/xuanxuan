@@ -37,10 +37,14 @@ const extractInstallFile = filePath => {
     });
 };
 
-const saveAndAttach = (extension, override = true) => {
-    return db.saveInstall(extension, override, ext => {
+const saveAndAttach = (extension, override = true, tryHotAttach = true) => {
+    return db.saveInstall(extension, override, tryHotAttach ? ext => {
         ext.hotAttach();
-    });
+    } : null);
+};
+
+const saveExtension = (extension, override = true) => {
+    return saveAndAttach(extension, override, false);
 };
 
 const reloadDevExtension = extension => {
@@ -64,7 +68,6 @@ const reloadDevExtension = extension => {
     }
     return false;
 };
-
 
 const installFromDir = (dir, deleteDir = false, devMode = false) => {
     const pkgFilePath = Path.join(dir, 'package.json');
@@ -92,19 +95,19 @@ const installFromDir = (dir, deleteDir = false, devMode = false) => {
             if (dbExt.version && extension.version && compareVersions(dbExt.version, extension.version) < 0) {
                 return Modal.confirm(Lang.format('ext.updateInstall.format', dbExt.displayName, dbExt.version, extension.version)).then(confirmed => {
                     if (confirmed) {
-                        return saveAndAttach(extension);
+                        return saveExtension(extension);
                     }
                     return Promise.reject();
                 });
             }
             return Modal.confirm(Lang.format('ext.overrideInstall.format', dbExt.displayName, dbExt.version || '*', extension.displayName, extension.version || '*')).then(confirmed => {
                 if (confirmed) {
-                    return saveAndAttach(extension);
+                    return saveExtension(extension);
                 }
                 return Promise.reject();
             });
         }
-        return saveAndAttach(extension, false);
+        return saveExtension(extension, false);
     }).then(() => {
         if (!devMode) {
             return fse.emptyDir(extension.localPath).then(() => {
@@ -118,6 +121,7 @@ const installFromDir = (dir, deleteDir = false, devMode = false) => {
                 return Promise.resolve(extension);
             });
         }
+        saveExtension(extension, true);
         return Promise.resolve(extension);
     }).catch(error => {
         if (deleteDir) {
