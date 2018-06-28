@@ -21,7 +21,8 @@ export default class WebView extends Component {
         onExeCuteJavaScript: PropTypes.func,
         onDomReady: PropTypes.func,
         injectForm: PropTypes.any,
-        useMobileAgent: PropTypes.bool
+        useMobileAgent: PropTypes.bool,
+        hideBeforeDOMReady: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -34,13 +35,15 @@ export default class WebView extends Component {
         injectForm: null,
         onDomReady: null,
         useMobileAgent: false,
+        hideBeforeDOMReady: true
     };
 
     constructor(props) {
         super(props);
         this.state = {
             errorCode: null,
-            errorDescription: null
+            errorDescription: null,
+            domReady: false
         };
         this.webviewId = `webview-${timeSequence()}`;
     }
@@ -176,6 +179,7 @@ export default class WebView extends Component {
         if (onDomReady) {
             onDomReady();
         }
+        this.setState({domReady: true});
     };
 
     render() {
@@ -186,6 +190,7 @@ export default class WebView extends Component {
             src,
             style,
             useMobileAgent,
+            hideBeforeDOMReady,
             ...options
         } = this.props;
 
@@ -198,6 +203,8 @@ export default class WebView extends Component {
             webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
         }
 
-        return (<div className={classes('webview', className)} dangerouslySetInnerHTML={{__html: webviewHtml}} style={style} />);
+        return (<div className={classes('webview fade', className, {
+            in: !hideBeforeDOMReady || this.state.domReady
+        })} dangerouslySetInnerHTML={{__html: webviewHtml}} style={style} />);
     }
 }
