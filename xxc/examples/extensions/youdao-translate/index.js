@@ -20,7 +20,6 @@ module.exports = {
     contextMenuCreators: [{
         match: 'message.text',
         create: context => {
-            console.log('context', context);
             const {message} = context;
             const contentElement = document.getElementById(`message-content-${message.gid}`);
             const messageContent = contentElement ? contentElement.innerText : message.content;
