@@ -4,7 +4,7 @@ import WebViewFrame from './webview-frame';
 import timeSequence from '../../utils/time-sequence';
 
 const show = (sourceUrl, options, callback) => {
-    const width = (options && options.width) || 860;
+    let width = (options && options.width) || 860;
     let height = (options && options.height) || 640;
     if (typeof height === 'number') {
         height = `${height}px`;
