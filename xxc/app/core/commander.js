@@ -120,7 +120,7 @@ export const execute = (command, ...params) => {
  */
 export const executeCommand = (commandText, commandContext = null) => {
     setCommandContext(commandContext);
-    return execute(...commandText.split('/'));
+    return execute(...commandText.split('/').map(decodeURIComponent));
 };
 
 /**

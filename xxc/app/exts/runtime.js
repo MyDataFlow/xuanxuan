@@ -104,6 +104,10 @@ registerCommand('extension', (context, extName, commandName, ...params) => {
     }
 });
 
+registerCommand('openInApp', (context, appName, url) => {
+    ui.openAppWithUrl(appName, url);
+});
+
 const getUrlInspector = url => {
     let urlInspector = null;
     if (Exts.exts.some(x => {

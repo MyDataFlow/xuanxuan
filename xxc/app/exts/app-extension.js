@@ -1,5 +1,6 @@
 import Path from 'path';
 import Extension from './base-extension';
+import {isWebUrl} from '../utils/html-helper';
 
 export const APP_TYPES = {
     insideView: 'insideView',
@@ -39,7 +40,7 @@ export default class AppExtension extends Extension {
         }
         const webViewUrl = this._pkg.webViewUrl;
         if (webViewUrl && !this._webViewUrl) {
-            if (!webViewUrl.startsWith('http://') && !webViewUrl.startsWith('https://')) {
+            if (!isWebUrl(webViewUrl)) {
                 this._isLocalWebView = true;
                 this._webViewUrl = `file://${Path.join(this.localPath, webViewUrl)}`;
             } else {

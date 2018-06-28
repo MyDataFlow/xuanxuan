@@ -76,6 +76,10 @@ const openApp = (name, pageName = null, params = null) => {
     return true;
 };
 
+const openAppWithUrl = (name, url, pageName = null) => {
+    openApp(name, pageName, `DIRECT=${url}`);
+};
+
 const openAppById = (id, params = null) => {
     let name = id;
     let pageName = null;
@@ -370,6 +374,7 @@ export default {
     openAppById,
     closeApp,
     closeAllApp,
+    openAppWithUrl,
 
     createSettingContextMenu,
 

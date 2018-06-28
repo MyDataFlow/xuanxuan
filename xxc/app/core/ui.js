@@ -12,7 +12,8 @@ import profile from './profile';
 import Notice from './notice';
 import ImageViewer from '../components/image-viewer';
 import Store from '../utils/store';
-import {executeCommand, registerCommand} from './commander';
+import commander, {executeCommand, registerCommand} from './commander';
+import WebViewDialog from '../views/common/webview-dialog';
 
 const EVENT = {
     app_link: 'app.link',
@@ -180,12 +181,47 @@ Server.onUserLoginout((user, code, reason, unexpected) => {
 
 document.body.classList.add(`os-${Platform.env.os}`);
 
+export const openUrlInApp = (url, appName) => {
+    commander.executeCommand(`openInApp/${appName}/${decodeURIComponent(appName)}`, {appName, url});
+};
+
+export const openUrlInDialog = (url, options, callback) => {
+    options = Object.assign({url}, options);
+    WebViewDialog.show(url, options, callback);
+};
+
+registerCommand('openUrlInDialog', (context, url) => {
+    if (!url && context.options && context.options.url) {
+        url = context.options.url;
+    }
+    const options = context.options;
+    if (url) {
+        openUrlInDialog(url, options);
+        return true;
+    }
+    return false;
+});
+
 export const openUrl = (url, targetElement) => {
     if (isWebUrl(url)) {
+        if (global.ExtsRuntime) {
+            const extInspector = global.ExtsRuntime.getUrlInspector(url);
+            if (extInspector && extInspector) {
+                openResult = extInspector.open(url);
+                if (openResult === true || openResult === false) {
+                    return openResult;
+                } else if (typeof openResult === 'string') {
+                    if (isWebUrl(openResult)) {
+                        return Platform.ui.openExternal(openResult);
+                    }
+                    return openUrl(openResult, targetElement);
+                }
+            }
+        }
         Platform.ui.openExternal(url);
         return true;
     } else if (url[0] === '@') {
-        const params = url.substr(1).split('/');
+        const params = url.substr(1).split('/').map(decodeURIComponent);
         emitAppLinkClick(targetElement, ...params);
         return true;
     } else if (url[0] === '!') {
@@ -209,7 +245,6 @@ document.addEventListener('click', e => {
 });
 
 window.addEventListener('online', () => {
-    // Events.emit(EVENT.net_online);
     if (profile.user) {
         if (!Server.socket.isLogging) {
             Server.login(profile.user);
@@ -217,7 +252,6 @@ window.addEventListener('online', () => {
     }
 });
 window.addEventListener('offline', () => {
-    // Events.emit(EVENT.net_offline);
     if (profile.isUserOnline) {
         profile.user.markDisconnect();
         Server.socket.close(null, 'net_offline');
@@ -374,7 +408,7 @@ export const getUrlMeta = (url) => {
             };
             if (global.ExtsRuntime) {
                 const extInspector = global.ExtsRuntime.getUrlInspector(url);
-                if (extInspector && extInspector) {
+                if (extInspector && extInspector.inspect) {
                     cardMeta = extInspector.inspect(meta, cardMeta, url);
                     if (cardMeta instanceof Promise) {
                         return cardMeta.then(cardMeta => {
@@ -425,5 +459,6 @@ export default {
     onReady,
     isAutoLoginNextTime,
     openUrl,
-    getUrlMeta
+    getUrlMeta,
+    openUrlInDialog
 };
