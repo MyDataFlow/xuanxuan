@@ -183,7 +183,7 @@ module.exports = {
                 });
 
                 object.actions = [{
-                    url,
+                    url: `!openUrlInDialog/${encodeURIComponent(url)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
                     label: `查看${RENDER_RULES[object.type].name}`,
                     icon: 'mdi-open-in-app'
                 }];
@@ -192,8 +192,9 @@ module.exports = {
                     const actionUrl = $a.attr('href');
                     const label = $a.text().trim();
                     if (actionUrl && actionUrl.startsWith('/')) {
+                        const fullActionUrl = meta.rootUrl + actionUrl;
                         object.actions.push({
-                            url: meta.rootUrl + actionUrl,
+                            url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
                             label,
                             icon: ACTION_ICONS[label]
                         });
@@ -228,7 +229,7 @@ module.exports = {
             return cardMeta;
         },
         open: (url) => {
-            return `!openUrlInDialog/${encodeURIComponent(url)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('body{background: red!important}')}`;
+            // return `!openUrlInDialog/${encodeURIComponent(url)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`;
         }
     }]
 };
