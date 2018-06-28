@@ -1,7 +1,13 @@
 <?php
 class entry extends control
 {
-    public function auth($code = '', $token = '')
+    /**
+     * Use token to authenticate user login.
+     * @param string $code      entry code.
+     * @param string $token     user login token.
+     * @param string $referer
+     */
+    public function auth($code = '', $token = '', $referer = '')
     {
         $this->loadModel('sso');
         $this->loadModel('user');
@@ -20,6 +26,7 @@ class entry extends control
             }
         }
         if($verification == false) $this->locate($this->createLink('user', 'login'));
-        $this->locate($this->createLink('entry', 'visit', 'entryID=' . $sso->entry));
+        $referer = empty($referer) ? $this->createLink('entry', 'visit', 'entryID=' . $sso->entry) : $referer;
+        $this->locate($referer);
     }
 }
