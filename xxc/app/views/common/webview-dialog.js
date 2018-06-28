@@ -18,7 +18,7 @@ const show = (sourceUrl, options, callback) => {
         style: {width, height},
         headingClassName: 'dock dock-right dock-top',
         actions: false,
-        animation: 'enter-from-bottom',
+        animation: 'enter-from-bottom fade',
         contentClassName: 'no-padding flex stretch',
         content: <WebViewFrame displayId={displayId} src={sourceUrl} options={options} />
     }, callback);
