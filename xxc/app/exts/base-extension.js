@@ -522,10 +522,15 @@ export default class Extension {
             menuItem.icon = this.icon;
         }
         return menuItem;
-    };
+    }
 
     getContextMenuCreators() {
-        return this._pkg.contextMenuCreators;
+        const creators = this._pkg.contextMenuCreators || [];
+        const extModule = this.module;
+        if (extModule && extModule.contextMenuCreators) {
+            creators.push(...extModule.contextMenuCreators);
+        }
+        return creators;
     }
 
     getMatchScore(keys) {

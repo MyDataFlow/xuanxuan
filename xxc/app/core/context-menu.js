@@ -14,6 +14,16 @@ const tryAddDividerItem  = items => {
     return items;
 };
 
+export const isCreatorMatch = (creator, contextName) => {
+    if (typeof creator.match === 'string') {
+        creator.match = creator.match.split(',');
+    }
+    if (Array.isArray(creator.match)) {
+        creator.match = new Set(creator.match);
+    }
+    return creator.match && creator.match.has(contextName);
+};
+
 const getMenuItemsFromCreator = (creator, context) => {
     const menuItems = creator.items || [];
     if (creator.create) {
@@ -70,16 +80,6 @@ export const removeContextMenuCreator = creatorId => {
         return true;
     }
     return false;
-};
-
-export const isCreatorMatch = (creator, contextName) => {
-    if (typeof creator.match === 'string') {
-        creator.match = creator.match.split(',');
-    }
-    if (Array.isArray(creator.match)) {
-        creator.match = new Set(creator.match);
-    }
-    return creator.match && creator.match.has(contextName);
 };
 
 export const showContextMenu = (contextName, context) => {
@@ -163,6 +163,10 @@ export const showContextMenu = (contextName, context) => {
     }
     if (textSelectItems.length) {
         tryAddDividerItem(items).push(...textSelectItems);
+    }
+
+    if (DEBUG) {
+        console.log('Show ContextMenu for context', contextName, items);
     }
 
     if (items.length) {
