@@ -55,4 +55,26 @@ module.exports = {
     onReceiveChatMessages: (messages, user) => {
         console.log('>> 扩展【helloworld-plugin-example】：用户收到了消息', {messages, user});
     },
+
+    commands: {
+        saveText: (context, ...params) => {
+            console.log('保存文本成功');
+            return 'ok';
+        }
+    },
+
+    contextMenuCreators: [{
+        match: 'message.text',
+        items: [{
+            icon: 'mdi-emoticon-cool',
+            label: 'say hello',
+            click: () => {
+                alert('hello');
+            }
+        }, {
+            icon: 'mdi-earth',
+            label: '访问禅道',
+            url: 'http://zentao.net'
+        }]
+    }]
 };

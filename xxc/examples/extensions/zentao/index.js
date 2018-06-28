@@ -185,7 +185,7 @@ module.exports = {
                 object.actions = [{
                     url,
                     label: `查看${RENDER_RULES[object.type].name}`,
-                    icon: 'mdi-open-in-new'
+                    icon: 'mdi-open-in-app'
                 }];
                 $doc.find('.col-main>.main>.actions>.btn-group').first().find('a').each((idx, btnEle) => {
                     const $a = $(btnEle);
@@ -201,7 +201,7 @@ module.exports = {
                 });
 
                 cardMeta.icon = {
-                    className: RENDER_RULES[object.type].color,
+                    className: `rounded ${RENDER_RULES[object.type].color}`,
                     icon: RENDER_RULES[object.type].icon + ' icon-2x'
                 };
                 cardMeta.title = object.title;
@@ -218,9 +218,17 @@ module.exports = {
                 cardMeta.objectType = object.type;
 
                 cardMeta.actions = object.actions;
+            } else {
+                cardMeta.title = meta.title;
+                if (cardMeta.title.endsWith(' - 禅道')) {
+                    cardMeta.title = cardMeta.title.substring(0, cardMeta.title.length - 5);
+                }
             }
             cardMeta.object = object;
             return cardMeta;
+        },
+        open: (url) => {
+            return `!openUrlInDialog/${encodeURIComponent(url)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('body{background: red!important}')}`;
         }
     }]
 };

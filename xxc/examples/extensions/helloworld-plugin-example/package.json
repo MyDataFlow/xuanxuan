@@ -19,5 +19,11 @@
     },
     "bugs": {
         "url": "https://github.com/easysoft/xuanxuan/issues"
-    }
+    },
+    "chatMessageMenu": [
+        {
+            "label": "保存消息文本到文件",
+            "url": "!{EXTENSION}/saveText/?messageId={messageId}"
+        }
+    ]
 }
