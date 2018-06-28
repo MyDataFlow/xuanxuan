@@ -43,9 +43,11 @@ export default class WebApp extends Component {
 
         const nodeintegration = app.app.isLocalWebView;
         const preload = app.app.webViewPreloadScript;
+        const injectScript = app.app.injectScript;
+        const injectCSS = app.app.injectCSS;
 
         return (<div className={HTML.classes('app-web-app', className)}>
-            <WebView ref={e => this.webview = e} className="dock scroll-none" src={app.directUrl || app.app.webViewUrl} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} />
+            <WebView ref={e => this.webview = e} className="dock scroll-none" src={app.directUrl || app.app.webViewUrl} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} insertCss={injectCSS} executeJavaScript={injectScript} />
         </div>);
     }
 }
