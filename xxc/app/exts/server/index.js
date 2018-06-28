@@ -8,6 +8,8 @@ let onChangeListener = null;
 let currentUser = null;
 let exts = null;
 let isProcessing = false;
+let nextFetchTask = null;
+const fetchTaskInterval = 1000 * 60 * 60 * 1.5;
 
 const checkLocalCache = ext => {
     return new Promise(resolve => {
@@ -165,13 +167,31 @@ export const detachServerExtensions = user => {
 };
 
 export const fetchServerExtensions = (user) => {
+    if (nextFetchTask) {
+        clearTimeout(nextFetchTask);
+        nextFetchTask = null;
+    }
+
+    if (!user && currentUser) {
+        user = currentUser;
+    }
     detachServerExtensions();
+
+    if (!user) {
+        return;
+    }
 
     if (user.isVersionSupport('remoteExtension')) {
         currentUser = user;
         exts = [];
-        return socket.send('extensions');
+        socket.send('extensions');
     }
+
+    nextFetchTask = setTimeout(() => {
+        if (currentUser) {
+            fetchServerExtensions(currentUser);
+        }
+    }, fetchTaskInterval);
 };
 
 export const setServerOnChangeListener = listener => {
