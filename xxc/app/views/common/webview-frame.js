@@ -3,6 +3,7 @@ import {classes} from '../../utils/html-helper';
 import WebView from './webview';
 import Avatar from '../../components/avatar';
 import Icon from '../../components/icon';
+import {openUrlInBrowser} from '../../core/ui';
 
 export default class WebViewFrame extends Component {
     static get WebViewFrame() {
@@ -15,12 +16,15 @@ export default class WebViewFrame extends Component {
         onPageTitleUpdated: PropTypes.func,
         options: PropTypes.object,
         src: PropTypes.string.isRequired,
+        displayId: PropTypes.any
     };
 
     static defaultProps = {
         className: null,
         onLoadingChange: null,
         onPageTitleUpdated: null,
+        options: null,
+        displayId: null
     };
 
     constructor(props) {
@@ -28,13 +32,16 @@ export default class WebViewFrame extends Component {
         this.state = {
             title: this.props.src,
             favicon: 'mdi-web',
-            loading: false
+            loading: false,
+            maximize: false
         };
     }
 
     componentDidMount() {
         const webview = this.webview.webview;
-        webview.addEventListener('page-favicon-updated', this.handleFaviconUpdated);
+        if (webview) {
+            webview.addEventListener('page-favicon-updated', this.handleFaviconUpdated);
+        }
     }
 
     reloadWebview() {
@@ -88,7 +95,32 @@ export default class WebViewFrame extends Component {
 
     handleGoForwardBtnClick = () => {
         if (this.webview && this.webview.webview) {
-            this.webview.webview.goForward();
+            openUrlInBrowser(this.webview.webview.goForward());
+        } else {
+            openUrlInBrowser(this.props.src);
+        }
+    };
+
+    handleOpenBtnClick = () => {
+        if (this.webview && this.webview.webview) {
+            this.webview.webview.getURL();
+        }
+    };
+
+    handleMaximizeBtnClick = () => {
+        const {displayId} = this.props;
+        if (displayId) {
+            const displayEle = document.getElementById(displayId);
+            if (displayEle) {
+                displayEle.classList.toggle('fullscreen');
+                this.setState({maximize: displayEle.classList.contains('fullscreen')});
+            }
+        }
+    };
+
+    handleDevBtnClick = () => {
+        if (this.webview && this.webview.webview) {
+            this.webview.webview.openDevTools();
         }
     };
 
@@ -99,24 +131,27 @@ export default class WebViewFrame extends Component {
             onPageTitleUpdated,
             src,
             options,
+            displayId,
             ...other
         } = this.props;
-        const width = (options && options.width) || 860;
-        const height = (options && options.height) || 640;
 
+        const isMaximize = this.state.maximize;
         const webview = this.webview && this.webview.webview;
 
         return (<div className={classes('webview-frame column', className)} {...other}>
-            <div className="heading flex-none">
+            <div className="heading flex-none shadow-2" style={{zIndex: 1031}}>
                 {Avatar.render(this.state.loading ? 'mdi-loading spin muted' : this.state.favicon)}
-                <div className="title">{this.state.title}</div>
+                <div title={this.state.title} className="title text-ellipsis strong">{displayId}:{this.state.title}</div>
                 <nav className="nav" style={{marginRight: 40}}>
+                    {DEBUG ? <a onClick={this.handleDevBtnClick}>{Icon.render('auto-fix')}</a> : null}
+                    <a onClick={this.handleOpenBtnClick}>{Icon.render('open-in-new')}</a>
                     <a className={webview && webview.canGoBack() ? '' : 'disabled'} onClick={this.handleGoBackBtnClick}>{Icon.render('arrow-left')}</a>
                     <a className={webview && webview.canGoForward() ? '' : 'disabled'} onClick={this.handleGoForwardBtnClick}>{Icon.render('arrow-right')}</a>
                     {this.state.loading ? <a onClick={this.handleStopBtnClick}>{Icon.render('close-circle-outline')}</a> : <a onClick={this.handleReloadBtnClick}>{Icon.render('reload')}</a>}
+                    {displayId ? <a onClick={this.handleMaximizeBtnClick}>{Icon.render(isMaximize ? 'window-restore' : 'window-maximize')}</a> : null}
                 </nav>
             </div>
-            <WebView ref={e => this.webview = e} className="flex-auto relative" src={src} {...options} style={{width, height}} onLoadingChange={this.handleLoadingChange} onPageTitleUpdated={this.handlePageTitleChange} />
-        </div>)
+            <WebView ref={e => this.webview = e} className="flex-auto relative" src={src} {...options} onLoadingChange={this.handleLoadingChange} onPageTitleUpdated={this.handlePageTitleChange} />
+        </div>);
     }
 }

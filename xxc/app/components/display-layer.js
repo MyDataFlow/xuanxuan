@@ -106,7 +106,7 @@ export default class DisplayLayer extends PureComponent {
             this.state.content = props.content;
             this.state.loading = false;
         }
-        this.id = `display-${this.props.id || timeSequence()}`;
+        this.id = this.props.id || `display-${timeSequence()}`;
     }
 
     /**
@@ -361,6 +361,7 @@ export default class DisplayLayer extends PureComponent {
             contentLoadFail,
             children,
             style,
+            id,
             ...other
         } = this.props;
 
@@ -378,7 +379,7 @@ export default class DisplayLayer extends PureComponent {
 
         return (<div onKeyUp={this.handeWindowKeyup.bind(this)} className={rootClassName} style={{zIndex: this.state.zIndex}}>
             {backdrop && <div onClick={this.handleBackdropClick} className={HTML.classes('display-backdrop', backdropClassName)} />}
-            <div className={HTML.classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => {this.displayElement = e;}}>
+            <div id={this.id} className={HTML.classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => {this.displayElement = e;}}>
                 {header}
                 <div className={HTML.classes('content', contentClassName)}>{this.state.loading ? loadingContent : this.state.content}</div>
                 {children}

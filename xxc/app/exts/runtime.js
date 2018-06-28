@@ -108,11 +108,11 @@ registerCommand('openInApp', (context, appName, url) => {
     ui.openAppWithUrl(appName, url);
 });
 
-const getUrlInspector = url => {
+const getUrlInspector = (url, type = 'inspect') => {
     let urlInspector = null;
     if (Exts.exts.some(x => {
         if (!x.disabled) {
-            const xInspector = x.getUrlInspector(url);
+            const xInspector = x.getUrlInspector(url, type);
             if (xInspector) {
                 urlInspector = xInspector;
                 return true;
@@ -124,6 +124,10 @@ const getUrlInspector = url => {
     }
 };
 
+const getUrlOpener = url => {
+    return getUrlInspector(url, 'open');
+};
+
 // Set replaceViews to global
 global.replaceViews = replaceViews;
 
@@ -131,5 +135,6 @@ export default {
     loadModules,
     ui,
     getUrlInspector,
+    getUrlOpener,
     exts: Exts
 };

@@ -202,23 +202,38 @@ registerCommand('openUrlInDialog', (context, url) => {
     return false;
 });
 
+export const openUrlInBrowser = url => {
+    return Platform.ui.openExternal(url);
+};
+
+registerCommand('openUrlInBrowser', (context, url) => {
+    if (!url && context.options && context.options.url) {
+        url = context.options.url;
+    }
+    if (url) {
+        openUrlInBrowser(url);
+        return true;
+    }
+    return false;
+});
+
 export const openUrl = (url, targetElement) => {
     if (isWebUrl(url)) {
         if (global.ExtsRuntime) {
-            const extInspector = global.ExtsRuntime.getUrlInspector(url);
+            const extInspector = global.ExtsRuntime.getUrlOpener(url, targetElement);
             if (extInspector && extInspector) {
-                openResult = extInspector.open(url);
+                const openResult = extInspector.open(url);
                 if (openResult === true || openResult === false) {
                     return openResult;
                 } else if (typeof openResult === 'string') {
                     if (isWebUrl(openResult)) {
-                        return Platform.ui.openExternal(openResult);
+                        return openUrlInBrowser(openResult);
                     }
                     return openUrl(openResult, targetElement);
                 }
             }
         }
-        Platform.ui.openExternal(url);
+        openUrlInBrowser(url);
         return true;
     } else if (url[0] === '@') {
         const params = url.substr(1).split('/').map(decodeURIComponent);
@@ -460,5 +475,7 @@ export default {
     isAutoLoginNextTime,
     openUrl,
     getUrlMeta,
-    openUrlInDialog
+    openUrlInDialog,
+    openUrlInBrowser,
+    openUrlInApp
 };

@@ -16,12 +16,20 @@ export default class WebView extends Component {
         onLoadingChange: PropTypes.func,
         onPageTitleUpdated: PropTypes.func,
         src: PropTypes.string.isRequired,
+        insertCss: PropTypes.string,
+        executeJavaScript: PropTypes.string,
+        onExeCuteJavaScript: PropTypes.func,
+        onDomReady: PropTypes.func,
     };
 
     static defaultProps = {
         className: null,
         onLoadingChange: null,
         onPageTitleUpdated: null,
+        insertCss: null,
+        executeJavaScript: null,
+        onExeCuteJavaScript: null,
+        onDomReady: null,
     };
 
     constructor(props) {
@@ -40,6 +48,15 @@ export default class WebView extends Component {
         webview.addEventListener('page-title-updated', this.handlePageTitleChange);
         webview.addEventListener('did-fail-load', this.handleLoadFail);
         webview.addEventListener('new-window', this.handleNewWindow);
+        webview.addEventListener('dom-ready', this.handleDomReady);
+
+        const {insertCss, executeJavaScript, onExeCuteJavaScript} = this.props;
+        if (insertCss) {
+            webview.insertCSS(insertCss);
+        }
+        if (executeJavaScript) {
+            webview.executeJavaScript(executeJavaScript, false, onExeCuteJavaScript);
+        }
     }
 
     componentWillUnmount() {
@@ -107,6 +124,13 @@ export default class WebView extends Component {
         }
     };
 
+    handleDomReady = () => {
+        const {onDomReady} = this.props;
+        if (onDomReady) {
+            onDomReady();
+        }
+    };
+
     render() {
         const {
             className,
@@ -126,6 +150,6 @@ export default class WebView extends Component {
             webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
         }
 
-        return (<div className={classes('webview', className)} dangerouslySetInnerHTML={{__html: webviewHtml}} style={style}/>);
+        return (<div className={classes('webview', className)} dangerouslySetInnerHTML={{__html: webviewHtml}} style={style} />);
     }
 }
