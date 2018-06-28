@@ -95,15 +95,15 @@ export default class WebViewFrame extends Component {
 
     handleGoForwardBtnClick = () => {
         if (this.webview && this.webview.webview) {
-            openUrlInBrowser(this.webview.webview.goForward());
-        } else {
-            openUrlInBrowser(this.props.src);
+            this.webview.webview.goForward();
         }
     };
 
     handleOpenBtnClick = () => {
         if (this.webview && this.webview.webview) {
-            this.webview.webview.getURL();
+            openUrlInBrowser(this.webview.webview.getURL());
+        } else {
+            openUrlInBrowser(this.props.src);
         }
     };
 
@@ -141,7 +141,7 @@ export default class WebViewFrame extends Component {
         return (<div className={classes('webview-frame column', className)} {...other}>
             <div className="heading flex-none shadow-2" style={{zIndex: 1031}}>
                 {Avatar.render(this.state.loading ? 'mdi-loading spin muted' : this.state.favicon)}
-                <div title={this.state.title} className="title text-ellipsis strong">{displayId}:{this.state.title}</div>
+                <div title={this.state.title} className="title text-ellipsis strong">{this.state.title}</div>
                 <nav className="nav" style={{marginRight: 40}}>
                     {DEBUG ? <a onClick={this.handleDevBtnClick}>{Icon.render('auto-fix')}</a> : null}
                     <a onClick={this.handleOpenBtnClick}>{Icon.render('open-in-new')}</a>

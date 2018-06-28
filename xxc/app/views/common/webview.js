@@ -20,6 +20,7 @@ export default class WebView extends Component {
         executeJavaScript: PropTypes.string,
         onExeCuteJavaScript: PropTypes.func,
         onDomReady: PropTypes.func,
+        injectForm: PropTypes.any
     };
 
     static defaultProps = {
@@ -29,6 +30,7 @@ export default class WebView extends Component {
         insertCss: null,
         executeJavaScript: null,
         onExeCuteJavaScript: null,
+        injectForm: null,
         onDomReady: null,
     };
 
@@ -49,14 +51,6 @@ export default class WebView extends Component {
         webview.addEventListener('did-fail-load', this.handleLoadFail);
         webview.addEventListener('new-window', this.handleNewWindow);
         webview.addEventListener('dom-ready', this.handleDomReady);
-
-        const {insertCss, executeJavaScript, onExeCuteJavaScript} = this.props;
-        if (insertCss) {
-            webview.insertCSS(insertCss);
-        }
-        if (executeJavaScript) {
-            webview.executeJavaScript(executeJavaScript, false, onExeCuteJavaScript);
-        }
     }
 
     componentWillUnmount() {
@@ -125,7 +119,58 @@ export default class WebView extends Component {
     };
 
     handleDomReady = () => {
+        const webview = this.webview;
         const {onDomReady} = this.props;
+        const {insertCss, executeJavaScript, onExeCuteJavaScript} = this.props;
+        if (insertCss) {
+            webview.insertCSS(insertCss);
+            if (DEBUG) {
+                console.log('Webview.insertCSS', insertCss);
+            }
+        }
+        if (executeJavaScript) {
+            webview.executeJavaScript(executeJavaScript, false, onExeCuteJavaScript);
+            if (DEBUG) {
+                console.log('Webview.executeJavaScript', executeJavaScript);
+            }
+        }
+        let {injectForm} = this.props;
+        if (injectForm) {
+            if (typeof injectForm === 'string') {
+                injectForm = JSON.parse(injectForm);
+            }
+            const injectScriptLines = ['(function(){'];
+            Object.keys(injectForm).forEach((key, index) => {
+                if (key && key[0] !== '$') {
+                    let keyValue = injectForm[key];
+                    if (keyValue) {
+                        keyValue = keyValue.replace(/`/g, '\\`');
+                    }
+                    injectScriptLines.push(
+                        `document.querySelectorAll('${key}').forEach(ele => {if(ele.tagName === 'INPUT' || ele.tagName === 'SELECT' || ele.tagName === 'TEXTAREA') {ele.value = \`${keyValue}\`;}});`
+                    );
+                }
+            });
+            ['click', 'submit', 'focus', 'input', 'paste'].forEach(key => {
+                const eventSelector = injectForm[`$${key}`];
+                if (eventSelector) {
+                    injectScriptLines.push(
+                        `document.querySelectorAll('${eventSelector}').forEach(ele => {ele.dispatchEvent(new Event('${key}'));});`
+                    );
+                }
+            });
+
+            injectScriptLines.push('}());');
+            const injectScriptCode = injectScriptLines.join('\n');
+            if (DEBUG) {
+                console.log('Webview.injectForm', {injectForm, injectScriptCode});
+            }
+            webview.executeJavaScript(injectScriptCode, false, () => {
+                if (DEBUG) {
+                    console.log('Webview.injectForm.finish', injectForm);
+                }
+            });
+        }
         if (onDomReady) {
             onDomReady();
         }
@@ -143,7 +188,7 @@ export default class WebView extends Component {
 
         let webviewHtml;
         if (this.state.errorCode) {
-            webviewHtml = `<div class="dock box danger"><h1>${this.state.errorCode}</h1><div>${this.state.errorDescription}</div></div>`
+            webviewHtml = `<div class="dock box danger"><h1>${this.state.errorCode}</h1><div>${this.state.errorDescription}</div></div>`;
         } else if (isElectron) {
             webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (' preload="' + options.preload + '"') : ''} />`;
         } else {
