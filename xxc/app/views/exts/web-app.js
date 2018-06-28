@@ -29,6 +29,10 @@ export default class WebApp extends Component {
         }
     };
 
+    componentDidMount() {
+        this.props.app.webview = this.webview.webview;
+    }
+
     render() {
         const {
             className,
@@ -41,7 +45,7 @@ export default class WebApp extends Component {
         const preload = app.app.webViewPreloadScript;
 
         return (<div className={HTML.classes('app-web-app', className)}>
-            <WebView className="dock scroll-none" src={app.directUrl || app.app.webViewUrl} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} />
+            <WebView ref={e => this.webview = e} className="dock scroll-none" src={app.directUrl || app.app.webViewUrl} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} />
         </div>);
     }
 }
