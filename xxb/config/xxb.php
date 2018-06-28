@@ -40,6 +40,7 @@ $tables[] = 'sys_user';
 $tables[] = 'sys_group';
 $tables[] = 'sys_usergroup';
 $tables[] = 'sys_grouppriv';
+$tables[] = 'sys_sso';
 $tables[] = 'oa_attend';
 $tables[] = 'oa_holiday';
 $tables[] = 'oa_leave';
