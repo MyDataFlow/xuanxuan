@@ -501,8 +501,8 @@ export default class Extension {
                     name: this.name,
                     label: this.displayName
                 };
-                return urlInspector;
             }
+            return urlInspector;
         }
         return null;
     }
