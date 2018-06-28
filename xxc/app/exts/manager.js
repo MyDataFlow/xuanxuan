@@ -45,14 +45,14 @@ const saveAndAttach = (extension, override = true) => {
 
 const reloadDevExtension = extension => {
     const path = extension.localPath;
+    if (extension.isModuleLoaded) {
+        extension.detach();
+    }
     if (path) {
         const pkgFilePath = Path.join(path, 'package.json');
         const pkg = fse.readJSONSync(pkgFilePath, {throws: false});
         if (pkg) {
             extension = createExtension(pkg, extension.data);
-            if (extension.isModuleLoaded) {
-                extension.detach();
-            }
             saveAndAttach(extension);
             if (DEBUG) {
                 console.collapse('Extension Reload for Dev', 'greenBg', extension.name, 'greenPale');
