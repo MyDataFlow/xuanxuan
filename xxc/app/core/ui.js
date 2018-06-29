@@ -408,10 +408,13 @@ const setTitle = title => {
 };
 
 setTitle(Config.pkg.productName);
-
 export const getUrlMeta = (url) => {
     if (Platform.ui.getUrlMeta) {
-        return Platform.ui.getUrlMeta(url).then(meta => {
+        let extInspector = null;
+        if (global.ExtsRuntime) {
+            extInspector = global.ExtsRuntime.getUrlInspector(url);
+        }
+        return Platform.ui.getUrlMeta((extInspector && extInspector.getUrl) ? extInspector.getUrl(url) : url).then(meta => {
             const favicons = meta.favicons;
             let cardMeta = {
                 url,
@@ -421,25 +424,22 @@ export const getUrlMeta = (url) => {
                 content: meta.description && meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
                 icon: favicons && favicons.length ? favicons[0].href : null
             };
-            if (global.ExtsRuntime) {
-                const extInspector = global.ExtsRuntime.getUrlInspector(url);
-                if (extInspector && extInspector.inspect) {
-                    try {
-                        cardMeta = extInspector.inspect(meta, cardMeta, url);
-                    } catch (err) {
-                        if (DEBUG) {
-                            console.error('Inspect url error', {err, meta, cardMeta, extInspector});
-                        }
+            if (extInspector && extInspector.inspect) {
+                try {
+                    cardMeta = extInspector.inspect(meta, cardMeta, url);
+                } catch (err) {
+                    if (DEBUG) {
+                        console.error('Inspect url error', {err, meta, cardMeta, extInspector});
                     }
-                    if (cardMeta instanceof Promise) {
-                        return cardMeta.then(cardMeta => {
-                            cardMeta.provider = extInspector.provider;
-                            return Promise.resolve(cardMeta);
-                        });
-                    } else if (cardMeta) {
+                }
+                if (cardMeta instanceof Promise) {
+                    return cardMeta.then(cardMeta => {
                         cardMeta.provider = extInspector.provider;
                         return Promise.resolve(cardMeta);
-                    }
+                    });
+                } else if (cardMeta) {
+                    cardMeta.provider = extInspector.provider;
+                    return Promise.resolve(cardMeta);
                 }
             }
             if (!cardMeta.title) {

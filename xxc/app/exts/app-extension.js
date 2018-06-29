@@ -38,6 +38,9 @@ export default class AppExtension extends Extension {
         if (this._appType !== APP_TYPES.webView) {
             return null;
         }
+        if (this.auth) {
+            return this.auth;
+        }
         const webViewUrl = this._pkg.webViewUrl;
         if (webViewUrl && !this._webViewUrl) {
             if (!isWebUrl(webViewUrl)) {

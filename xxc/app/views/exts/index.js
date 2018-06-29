@@ -101,7 +101,6 @@ export default class Index extends Component {
     }
 
     handleAppLoadingChange(openApp, isLoading) {
-        console.log('handleAppLoadingChange', isLoading, openApp);
         const {loading} = this.state;
         loading[openApp.id] = isLoading;
         this.setState({loading});

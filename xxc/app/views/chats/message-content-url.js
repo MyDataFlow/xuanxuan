@@ -36,10 +36,6 @@ export default class MessageContentUrl extends PureComponent {
         }
     }
 
-    componentDidUpdate() {
-        this.getUrlMeta();
-    }
-
     getUrlMeta() {
         if (this.state.meta && !this.state.loading) {
             return;
