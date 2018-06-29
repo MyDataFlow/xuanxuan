@@ -21,7 +21,6 @@ const Version = "v1.6.0"
 var Run bool = true
 var IsTest bool = false
 var Token []byte
-var TempToken string
 var DBConn *sql.DB
 
 func init() {
