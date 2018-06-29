@@ -495,6 +495,7 @@ export default class Extension {
         const extModule = this.module;
         let urlInspectors = extModule && extModule.urlInspectors;
         if (urlInspectors) {
+            const urlObj = new URL(url);
             if (!Array.isArray(urlInspectors)) {
                 urlInspectors = [urlInspectors];
             }
@@ -502,8 +503,15 @@ export default class Extension {
                 if (!x[type]) {
                     return false;
                 }
-                if (typeof x.test === 'string') {
+                if (typeof x.test === 'function') {
+                    return x.test(url);
+                } else if (Array.isArray(x.test)) {
+                    x.test = new Set(x.test);
+                } else if (typeof x.test === 'string') {
                     x.test = new RegExp(x.test, 'i');
+                }
+                if (x.test instanceof Set) {
+                    return x.test.has(urlObj.host);
                 }
                 return x.test.test(url);
             });
