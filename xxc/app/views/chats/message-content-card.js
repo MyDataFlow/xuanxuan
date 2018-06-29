@@ -13,12 +13,14 @@ export default class MessageContentCard extends Component {
         card: PropTypes.object.isRequired,
         className: PropTypes.string,
         header: PropTypes.any,
+        style: PropTypes.object,
     };
 
     static defaultProps = {
         baseClassName: 'layer rounded shadow-2',
         className: '',
-        header: null
+        header: null,
+        style: null,
     };
 
     static get MessageContentCard() {
@@ -35,12 +37,13 @@ export default class MessageContentCard extends Component {
     }
 
     render() {
-        const {
+        let {
             card,
             className,
             baseClassName,
             header,
             children,
+            style,
             ...other
         } = this.props;
 
@@ -83,11 +86,11 @@ export default class MessageContentCard extends Component {
 
         const cardsMenu = [];
         if (provider) {
-            cardsMenu.push(<div key="provider" className="hint--top" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
+            cardsMenu.push(<div key="provider" className="hint--top-left" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
         }
         if (menu && menu.length) {
             menu.forEach((menuItem, menuItemIndex) => {
-                cardsMenu.push(<div key={menuItemIndex} className="hint--top" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
+                cardsMenu.push(<div key={menuItemIndex} className="hint--top-left" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
             });
         }
 
@@ -98,6 +101,7 @@ export default class MessageContentCard extends Component {
                 'only-title': !contentView && !subTitleView && !actionsButtons.length
             })}
             data-url={url}
+            style={Object.assign({}, style, card.style)}
             {...other}
         >
             {topView}

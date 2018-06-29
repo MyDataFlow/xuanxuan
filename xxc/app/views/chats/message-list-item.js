@@ -139,11 +139,32 @@ export default class MessageListItem extends Component {
     };
 
     handleShareBtnClick = event => {
-        showContextMenu('message.text', {event, message: this.props.message});
+        if (showContextMenu('message.text', {
+            event,
+            message: this.props.message,
+            options: {onHidden: () => {
+                this.setState({sharing: false});
+            }}
+        })) {
+            this.setState({sharing: true});
+        }
     };
 
     handleContentContextMenu = event => {
-        showContextMenu(this.isUrlContent ? 'link' : 'message.text', {event, message: this.props.message, options: {copy: !this.isUrlContent, selectAll: true, linkTarget: true}});
+        if (showContextMenu(this.isUrlContent ? 'link' : 'message.text', {
+            event,
+            message: this.props.message,
+            options: {
+                copy: !this.isUrlContent,
+                selectAll: true,
+                linkTarget: true,
+                onHidden: () => {
+                    this.setState({sharing: false});
+                }
+            }
+        })) {
+            this.setState({sharing: true});
+        }
     };
 
     render() {
