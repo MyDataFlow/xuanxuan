@@ -37,8 +37,7 @@ if (!pkgArch || pkgArch === '-') {
 }
 
 const isDebug = process.argv[5] === 'debug';
-// const buildVersion = null;
-const buildVersion = '20180629.beta';
+const buildVersion = null;
 
 console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'argv', process.argv);
 
@@ -55,7 +54,8 @@ const config = Object.assign({
     repository: pkg.repository,
     resourcePath: 'resources',
     mediaPath: 'media/',
-    copyOriginMedia: true
+    copyOriginMedia: true,
+    buildVersion
 }, (configName && configName !== '-') ? require(configName.includes('/') ? configName : `./build-config.${configName}.json`) : null);
 
 console.log('\nBuildConfig > config', config);
@@ -73,7 +73,7 @@ const appPkg = {
     bugs: config.bugs,
     repository: config.repository,
     buildTime: new Date(),
-    buildVersion
+    buildVersion: config.buildVersion
 };
 
 const electronBuilder = {
