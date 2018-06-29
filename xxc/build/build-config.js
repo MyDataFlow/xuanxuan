@@ -36,9 +36,11 @@ if (!pkgArch || pkgArch === '-') {
     pkgArch = 'all';
 }
 
-const isDebug = process.argv[5] === '-debug';
+const isDebug = process.argv[5] === 'debug';
+// const buildVersion = null;
+const buildVersion = '20180629.beta';
 
-console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug);
+console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'argv', process.argv);
 
 const config = Object.assign({
     name: pkg.name,
@@ -70,7 +72,8 @@ const appPkg = {
     license: config.license,
     bugs: config.bugs,
     repository: config.repository,
-    buildTime: new Date()
+    buildTime: new Date(),
+    buildVersion
 };
 
 const electronBuilder = {
