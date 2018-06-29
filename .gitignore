@@ -49,6 +49,7 @@ package-lock.json
 *-backup
 build-config.*.json
 xxc/build/electron-config.json
+xxc/build/electron-builder.json
 
 .idea
 xxc/.vscode/settings.json
