@@ -143,7 +143,7 @@ export default class Extension {
         const auth = this.auth;
         if (auth) {
             if (url) {
-                return auth.includes('?') ? `${auth}refer=${url}` : `${auth}?refer=${url}`;
+                return auth.includes('?') ? `${auth}refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
             }
             return auth;
         }

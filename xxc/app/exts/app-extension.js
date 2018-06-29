@@ -62,6 +62,14 @@ export default class AppExtension extends Extension {
         return this._webViewPreloadScript;
     }
 
+    get injectCSS() {
+        return this._pkg.injectCSS;
+    }
+
+    get injectScript() {
+        return this._pkg.injectScript;
+    }
+
     get isLocalWebView() {
         const webViewUrl = this.webViewUrl; // this line can ensure _isLocalWebView be set value
         return this._isLocalWebView;

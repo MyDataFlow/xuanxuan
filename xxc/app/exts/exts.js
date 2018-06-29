@@ -36,6 +36,9 @@ const sortExts = () => {
             result = (y.disabled ? 0 : 1) - (x.disabled ? 0 : 1);
         }
         if (result === 0) {
+            result = (y.isRemote ? 1 : 0) - (x.isRemote ? 1 : 0);
+        }
+        if (result === 0) {
             result = y.installTime - x.installTime;
         }
         return result;
