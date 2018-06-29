@@ -302,8 +302,8 @@ const createOpenedAppContextMenu = (theOpenedApp, refreshUI) => {
         items.push({
             label: Lang.string('ext.app.close'),
             click: () => {
-                closeApp(theOpenedApp.name);
-                if (refreshUI) {
+                const closeAppResult = closeApp(theOpenedApp.name);
+                if (closeAppResult && closeAppResult !== true && refreshUI) {
                     refreshUI();
                 }
             }
