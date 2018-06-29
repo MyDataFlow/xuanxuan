@@ -14,8 +14,10 @@ const ACTION_ICONS = {
     '指派': 'mdi-hand-pointing-right',
     '执行': 'mdi-play-box-outline',
     '结果': 'mdi-playlist-play',
-    '开始': 'mdi-play-box-outline'
+    '开始': 'mdi-play-box-outline',
+    '暂停': 'mdi-pause',
 };
+const injectCss = '#header,#footer,#titlebar,#mainMenu>.btn-toolbar>a:first-child,#mainMenu>.btn-toolbar>a:first-child+.divider{display: none!important}body,#wrap{padding: 0!important}#header,#header+#main{min-width: 400px!important}';
 
 const RENDER_RULES = {
     task: {
@@ -177,7 +179,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
         });
 
         object.actions = [{
-            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
             label: `查看${RENDER_RULES[object.type].name}`,
             icon: 'mdi-open-in-app'
         }];
@@ -188,7 +190,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
             if (label && actionUrl && actionUrl.startsWith('/') && label !== '返回') {
                 const fullActionUrl = getAuthUrl(meta.rootUrl + actionUrl);
                 object.actions.push({
-                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
                     label,
                     icon: ACTION_ICONS[label]
                 });
@@ -293,7 +295,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
         });
 
         object.actions = [{
-            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
             label: `查看${RENDER_RULES[object.type].name}`,
             icon: 'mdi-open-in-app'
         }];
@@ -304,7 +306,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
             if (actionUrl && actionUrl.startsWith('/')) {
                 const fullActionUrl = getAuthUrl(meta.rootUrl + actionUrl);
                 object.actions.push({
-                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
                     label,
                     icon: ACTION_ICONS[label]
                 });
