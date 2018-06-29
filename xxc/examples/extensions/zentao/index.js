@@ -14,6 +14,7 @@ const ACTION_ICONS = {
     '指派': 'mdi-hand-pointing-right',
     '执行': 'mdi-play-box-outline',
     '结果': 'mdi-playlist-play',
+    '开始': 'mdi-play-box-outline'
 };
 
 const RENDER_RULES = {
@@ -74,7 +75,7 @@ const renderObject = object => {
     if (object.files && object.files.length) {
         const $files = $('<ul class="files" style="padding: 0; margin: 0; list-style: none"></ul>');
         object.files.forEach(file => {
-            $files.append('<li><i class="icon mdi mdi-file-document muted"></i> <a href="' + file.url + '">' + file.name + ' <small class="muted">' + file.size + '</small></a></li>');
+            $files.append('<li><i class="icon mdi mdi-file-document muted"></i> <a href="' + file.url + '">' + file.name + ' <small class="muted">' + (file.size || '') + '</small></a></li>');
         });
         const $detail = $('<details open><summary>附件（共 ' + object.files.length + ' 个）</summary><div class="detail-content"></div></details>');
         $detail.find('.detail-content').append($files);
@@ -96,16 +97,259 @@ const renderObject = object => {
     return `<div class="object-content markdown-content">${$content.html()}</div>`;
 };
 
+let extension = null;
+
+const getAuthUrl = (url) => {
+    const auth = extension.auth;
+    if (auth) {
+        if (url) {
+            return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
+        }
+        return auth;
+    }
+    return url;
+};
+
+const inspectX = ($doc, meta, cardMeta, url) => {
+    const object = {};
+    if (meta.title.startsWith('TASK#') || meta.title.startsWith('TASK #')) {
+        object.type = 'task';
+    } else if (meta.title.startsWith('STORY #')) {
+        object.type = 'story';
+    } else if (meta.title.startsWith('BUG #')) {
+        object.type = 'bug';
+    } else if (meta.title.startsWith('CASE #')) {
+        object.type = 'case';
+    } else if (meta.title.startsWith('DOC #')) {
+        object.type = 'doc';
+    }
+    if (object.type) {
+        object.title = $doc.find('#mainMenu .page-title>.text').text().trim();
+        object.id = $doc.find('#mainMenu .page-title>.label-id').text().trim();
+        object.attrs = {};
+        object.rootUrl = meta.rootUrl;
+
+        if (object.type === 'doc') {
+            const $content = $doc.find('#mainContent>.main-col>.cell>.detail');
+            const $fileList = $content.find('.files-list');
+            if ($fileList.length) {
+                object.files = [];
+                $fileList.children('li').each((liIdx, liEle) => {
+                    const $file = $(liEle);
+                    object.files.push({
+                        name: $file.children('a').text().trim(),
+                    });
+                });
+            }
+            $content.find('.files-list,.file-content').remove();
+            object.attrs['正文'] = $content.html();
+        } else {
+            $doc.find('#mainContent>.main-col>.cell>.detail').not('.histories').each((idx, element) => {
+                const $filedSet = $(element);
+                const attrName = $filedSet.children('.detail-title').text();
+                const $fileList = $filedSet.find('.files-list');
+                if (attrName === '附件' || attrName === 'File' || $fileList.length) {
+                    object.files = [];
+                    $fileList.children('li').each((liIdx, liEle) => {
+                        const $file = $(liEle);
+                        const $fileLink = $file.children('a');
+                        object.files.push({
+                            url: $fileLink.attr('href'),
+                            name: $fileLink.text().trim(),
+                        });
+                    });
+                } else {
+                    object.attrs[attrName] = $filedSet.children('.detail-content').html();
+                }
+            });
+        }
+
+        $doc.find('#mainContent>.side-col>.cell>.detail').each((idx, element) => {
+            const $filedSet = $(element);
+            const groupName = $filedSet.children('.detail-title').text();
+            const $table = $filedSet.find('table');
+            if ($table.length) {
+                $table.find('tr').each((trIdx, trElement) => {
+                    const $tr = $(trElement);
+                    object.attrs[$tr.find('th').text().trim()] = $tr.find('td:first').html();
+                });
+            }
+        });
+
+        object.actions = [{
+            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+            label: `查看${RENDER_RULES[object.type].name}`,
+            icon: 'mdi-open-in-app'
+        }];
+        $doc.find('#mainActions>.btn-toolbar').first().find('a').each((idx, btnEle) => {
+            const $a = $(btnEle);
+            const actionUrl = $a.attr('href');
+            const label = $a.text().trim();
+            if (label && actionUrl && actionUrl.startsWith('/') && label !== '返回') {
+                const fullActionUrl = getAuthUrl(meta.rootUrl + actionUrl);
+                object.actions.push({
+                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+                    label,
+                    icon: ACTION_ICONS[label]
+                });
+            }
+        });
+
+        cardMeta.icon = {
+            className: `rounded ${RENDER_RULES[object.type].color}`,
+            icon: RENDER_RULES[object.type].icon + ' icon-2x'
+        };
+        cardMeta.title = object.title;
+        if (object.files && object.files.length) {
+            cardMeta.title += ` (${object.files.length} 个附件)`;
+        }
+        cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
+        cardMeta.url = null;
+
+        cardMeta.desc = JSON.stringify(object);
+
+        cardMeta.content = renderObject(object);
+        cardMeta.htmlContent = true;
+        cardMeta.objectType = object.type;
+
+        cardMeta.actions = object.actions;
+        cardMeta.style = {maxWidth: '700px'};
+    } else {
+        cardMeta.title = meta.title;
+        if (cardMeta.title.endsWith(' - 禅道')) {
+            cardMeta.title = cardMeta.title.substring(0, cardMeta.title.length - 5);
+        }
+    }
+    cardMeta.object = object;
+    return cardMeta;
+};
+
+const inspectClassic = ($doc, meta, cardMeta, url) => {
+    const object = {};
+    if (meta.title.startsWith('TASK#') || meta.title.startsWith('TASK #')) {
+        object.type = 'task';
+    } else if (meta.title.startsWith('STORY #')) {
+        object.type = 'story';
+    } else if (meta.title.startsWith('BUG #')) {
+        object.type = 'bug';
+    } else if (meta.title.startsWith('CASE #')) {
+        object.type = 'case';
+    } else if (meta.title.startsWith('DOC #')) {
+        object.type = 'doc';
+    }
+    if (object.type) {
+        object.title = $doc.find('#titlebar>.heading>strong').text().trim();
+        object.id = $doc.find('#titlebar>.heading>.prefix>strong').text().trim();
+        object.attrs = {};
+        object.rootUrl = meta.rootUrl;
+
+        if (object.type === 'doc') {
+            const $content = $doc.find('.col-main>.main>.content');
+            const $fileList = $content.find('.file-content>.files-list');
+            if ($fileList.length) {
+                object.files = [];
+                $fileList.children('li').each((liIdx, liEle) => {
+                    const $file = $(liEle);
+                    object.files.push({
+                        name: $file.children('a').text().trim(),
+                        size: $file.children('span:first').text().trim()
+                    });
+                });
+            }
+            $content.find('.files-list,.file-content').remove();
+            object.attrs['正文'] = $content.html();
+        } else {
+            $doc.find('.col-main>.main>fieldset').not('#actionbox,#commentBox').each((idx, element) => {
+                const $filedSet = $(element);
+                const attrName = $filedSet.children('legend').text();
+                const $fileList = $filedSet.children('.files-list');
+                if (attrName === '附件' || attrName === 'File' || $fileList.length) {
+                    object.files = [];
+                    $fileList.children('li').each((liIdx, liEle) => {
+                        const $file = $(liEle);
+                        const $fileLink = $file.children('a');
+                        object.files.push({
+                            url: $fileLink.attr('href'),
+                            name: $fileLink.text().trim(),
+                            size: $file.children('span:first').text().trim()
+                        });
+                    });
+                } else {
+                    object.attrs[attrName] = $filedSet.children('.article-content,.content').html();
+                }
+            });
+        }
+
+        $doc.find('.col-side>.main>fieldset,.col-side>.main>.tabs').each((idx, element) => {
+            const $filedSet = $(element);
+            const groupName = $filedSet.children('legend').text();
+            const $table = $filedSet.find('table');
+            if ($table.length) {
+                $table.find('tr').each((trIdx, trElement) => {
+                    const $tr = $(trElement);
+                    object.attrs[$tr.find('th').text().trim()] = $tr.find('td:first').html();
+                });
+            }
+        });
+
+        object.actions = [{
+            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+            label: `查看${RENDER_RULES[object.type].name}`,
+            icon: 'mdi-open-in-app'
+        }];
+        $doc.find('.col-main>.main>.actions>.btn-group').first().find('a').each((idx, btnEle) => {
+            const $a = $(btnEle);
+            const actionUrl = $a.attr('href');
+            const label = $a.text().trim();
+            if (actionUrl && actionUrl.startsWith('/')) {
+                const fullActionUrl = getAuthUrl(meta.rootUrl + actionUrl);
+                object.actions.push({
+                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
+                    label,
+                    icon: ACTION_ICONS[label]
+                });
+            }
+        });
+
+        cardMeta.icon = {
+            className: `rounded ${RENDER_RULES[object.type].color}`,
+            icon: RENDER_RULES[object.type].icon + ' icon-2x'
+        };
+        cardMeta.title = object.title;
+        if (object.files && object.files.length) {
+            cardMeta.title += ` (${object.files.length} 个附件)`;
+        }
+        cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
+        cardMeta.url = null;
+
+        cardMeta.desc = JSON.stringify(object);
+
+        cardMeta.content = renderObject(object);
+        cardMeta.htmlContent = true;
+        cardMeta.objectType = object.type;
+        cardMeta.style = {maxWidth: '700px'};
+
+        cardMeta.actions = object.actions;
+    } else {
+        cardMeta.title = meta.title;
+        if (cardMeta.title.endsWith(' - 禅道')) {
+            cardMeta.title = cardMeta.title.substring(0, cardMeta.title.length - 5);
+        }
+    }
+    cardMeta.object = object;
+    return cardMeta;
+};
+
 module.exports = {
     onAttach: ext => {
+        extension = ext;
     },
     onDetach: ext => {
     },
     urlInspectors: [{
-        test: (/^https?:\/\/(\w+\.5upm\.com|pms\.zentao\.net)\/\w+/i),
+        test: (/^https?:\/\/(\w+\.5upm\.com|pms\.zentao\.net|backyard\.cnezsoft\.com\/pms|demo\.zentao\.net|pro\.demo\.zentao\.net|zt\.io)\/\w+/i),
         inspect: (meta, cardMeta, url) => {
-            const object = {};
-            if (meta.document.length < 300 && meta.document.includes('deny')) {
+            if (meta.document.length < 300 && (meta.document.includes('deny') || meta.document.includes('?m=user&f=login') || meta.document.includes('user-login'))) {
                 cardMeta.title = url;
                 cardMeta.subtitle = '无法获取内容，需要进行登录验证';
                 cardMeta.actions = [{
@@ -115,121 +359,11 @@ module.exports = {
                 }];
                 return cardMeta;
             }
-            if (meta.title.startsWith('TASK#') || meta.title.startsWith('TASK #')) {
-                object.type = 'task';
-            } else if (meta.title.startsWith('STORY #')) {
-                object.type = 'story';
-            } else if (meta.title.startsWith('BUG #')) {
-                object.type = 'bug';
-            } else if (meta.title.startsWith('CASE #')) {
-                object.type = 'case';
-            } else if (meta.title.startsWith('DOC #')) {
-                object.type = 'doc';
+            const $doc = $(meta.document);
+            if ($doc.find('body>#wrap').length) {
+                return inspectClassic($doc, meta, cardMeta, url);
             }
-            if (object.type) {
-                const $doc = $(meta.document);
-                object.title = $doc.find('#titlebar>.heading>strong').text().trim();
-                object.id = $doc.find('#titlebar>.heading>.prefix>strong').text().trim();
-                object.attrs = {};
-                object.rootUrl = meta.rootUrl;
-
-                if (object.type === 'doc') {
-                    const $content = $doc.find('.col-main>.main>.content');
-                    const $fileList = $content.find('.file-content>.files-list');
-                    if ($fileList.length) {
-                        object.files = [];
-                        $fileList.children('li').each((liIdx, liEle) => {
-                            const $file = $(liEle);
-                            object.files.push({
-                                name: $file.children('a').text().trim(),
-                                size: $file.children('span:first').text().trim()
-                            });
-                        });
-                    }
-                    $content.find('.files-list,.file-content').remove();
-                    object.attrs['正文'] = $content.html();
-                } else {
-                    $doc.find('.col-main>.main>fieldset').not('#actionbox,#commentBox').each((idx, element) => {
-                        const $filedSet = $(element);
-                        const attrName = $filedSet.children('legend').text();
-                        const $fileList = $filedSet.children('.files-list');
-                        if (attrName === '附件' || attrName === 'File' || $fileList.length) {
-                            object.files = [];
-                            $fileList.children('li').each((liIdx, liEle) => {
-                                const $file = $(liEle);
-                                const $fileLink = $file.children('a');
-                                object.files.push({
-                                    url: $fileLink.attr('href'),
-                                    name: $fileLink.text().trim(),
-                                    size: $file.children('span:first').text().trim()
-                                });
-                            });
-                        } else {
-                            object.attrs[attrName] = $filedSet.children('.article-content,.content').html();
-                        }
-                    });
-                }
-
-                $doc.find('.col-side>.main>fieldset,.col-side>.main>.tabs').each((idx, element) => {
-                    const $filedSet = $(element);
-                    const groupName = $filedSet.children('legend').text();
-                    const $table = $filedSet.find('table');
-                    if ($table.length) {
-                        $table.find('tr').each((trIdx, trElement) => {
-                            const $tr = $(trElement);
-                            object.attrs[$tr.find('th').text().trim()] = $tr.find('td:first').html();
-                        });
-                    }
-                });
-
-                object.actions = [{
-                    url: `!openUrlInDialog/${encodeURIComponent(url)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
-                    label: `查看${RENDER_RULES[object.type].name}`,
-                    icon: 'mdi-open-in-app'
-                }];
-                $doc.find('.col-main>.main>.actions>.btn-group').first().find('a').each((idx, btnEle) => {
-                    const $a = $(btnEle);
-                    const actionUrl = $a.attr('href');
-                    const label = $a.text().trim();
-                    if (actionUrl && actionUrl.startsWith('/')) {
-                        const fullActionUrl = meta.rootUrl + actionUrl;
-                        object.actions.push({
-                            url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`,
-                            label,
-                            icon: ACTION_ICONS[label]
-                        });
-                    }
-                });
-
-                cardMeta.icon = {
-                    className: `rounded ${RENDER_RULES[object.type].color}`,
-                    icon: RENDER_RULES[object.type].icon + ' icon-2x'
-                };
-                cardMeta.title = object.title;
-                if (object.files && object.files.length) {
-                    cardMeta.title += ` (${object.files.length} 个附件)`;
-                }
-                cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
-                cardMeta.url = null;
-
-                cardMeta.desc = JSON.stringify(object);
-
-                cardMeta.content = renderObject(object);
-                cardMeta.htmlContent = true;
-                cardMeta.objectType = object.type;
-
-                cardMeta.actions = object.actions;
-            } else {
-                cardMeta.title = meta.title;
-                if (cardMeta.title.endsWith(' - 禅道')) {
-                    cardMeta.title = cardMeta.title.substring(0, cardMeta.title.length - 5);
-                }
-            }
-            cardMeta.object = object;
-            return cardMeta;
-        },
-        open: (url) => {
-            // return `!openUrlInDialog/${encodeURIComponent(url)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent('#header,#footer,#titlebar{display: none!important}body,#wrap{padding: 0!important}')}`;
+            return inspectX($doc, meta, cardMeta, url);
         }
     }]
 };
