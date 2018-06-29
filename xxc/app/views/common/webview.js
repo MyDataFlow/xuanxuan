@@ -52,6 +52,7 @@ export default class WebView extends Component {
         const webview = this.webview;
         webview.addEventListener('did-start-loading', this.handleLoadingStart);
         webview.addEventListener('did-finish-load', this.handleLoadingStop);
+        webview.addEventListener('did-stop-loading', this.handleLoadingStop);
         webview.addEventListener('page-title-updated', this.handlePageTitleChange);
         webview.addEventListener('did-fail-load', this.handleLoadFail);
         webview.addEventListener('new-window', this.handleNewWindow);
