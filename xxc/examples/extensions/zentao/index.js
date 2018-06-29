@@ -350,6 +350,9 @@ module.exports = {
     },
     urlInspectors: [{
         test: (/^https?:\/\/(\w+\.5upm\.com|pms\.zentao\.net|backyard\.cnezsoft\.com\/pms|demo\.zentao\.net|pro\.demo\.zentao\.net|zt\.io)\/\w+/i),
+        getUrl: url => {
+            return getAuthUrl(url);
+        },
         inspect: (meta, cardMeta, url) => {
             if (meta.document.length < 300 && (meta.document.includes('deny') || meta.document.includes('?m=user&f=login') || meta.document.includes('user-login'))) {
                 cardMeta.title = url;
