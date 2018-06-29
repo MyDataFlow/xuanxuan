@@ -81,7 +81,7 @@ export default class ExtensionListItem extends Component {
                     {extension.isRemote ? <span data-hint={Lang.string('ext.remote.hint')} className="hint--top hint--md app-ext-list-item-remote-label"> <Icon name="verified icon-sm text-green" /></span> : null}
                      &nbsp; <small className="text-gray">{extension.version ? `v${extension.version}` : ''}</small>
                 </div>
-                <div className={classes('small space-xs', {'text-ellipsis': isDev})} title={extension.description}>
+                <div className={classes('small space-xs', {'text-ellipsis': isDev})} title={extension.description || ''}>
                     {isRemote && downloadProgress && !extension.isRemoteLoaded ? <span><Icon name="loading muted spin icon-sm" /> <span className="text-info">{Lang.format('ext.downloading', Math.floor(downloadProgress * 100))}%</span>&nbsp; </span> : null}
                     {extension.description}
                 </div>
