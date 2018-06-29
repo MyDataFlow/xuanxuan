@@ -114,7 +114,7 @@ export default class MessageContentCard extends Component {
                 {header}
             </header>
             {contentView}
-            {actionsButtons && actionsButtons.length ? <nav className="actions gray">{actionsButtons}</nav> : null}
+            {actionsButtons && actionsButtons.length ? <nav className="nav actions gray">{actionsButtons}</nav> : null}
             {children}
             {cardsMenu && cardsMenu.length ? <div className="app-menu-card-menu">{cardsMenu}</div> : null}
         </div>);
