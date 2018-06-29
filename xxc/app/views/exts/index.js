@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {NavLink, Redirect} from 'react-router-dom';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import Lang from '../../lang';
 import ROUTES from '../common/routes';
 import Icon from '../../components/icon';
@@ -101,6 +101,7 @@ export default class Index extends Component {
     }
 
     handleAppLoadingChange(openApp, isLoading) {
+        console.log('handleAppLoadingChange', isLoading, openApp);
         const {loading} = this.state;
         loading[openApp.id] = isLoading;
         this.setState({loading});
@@ -142,16 +143,17 @@ export default class Index extends Component {
             if (openedAppName) {
                 if (!Exts.ui.openAppById(match.params.id, match.params.params)) {
                     this.appNotFound = match.params.id;
-                    redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.defaultApp.name)} />;
+                    const defaultAppName = Exts.ui && Exts.ui.defaultApp ? Exts.ui.defaultApp.name : 'home';
+                    redirectView = <Redirect to={ROUTES.exts.app.id(defaultAppName)} />;
                 }
             } else if (!match.params.filterType) {
                 redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.currentOpenedApp.name)} />;
             }
         }
 
-        return (<div className={HTML.classes('app-exts dock column single', /* 'app-exts-dark', */ `app-exts-current-${Exts.ui.currentOpenedApp.name}`, className, {hidden})}>
+        return (<div className={classes('app-exts dock column single', /* 'app-exts-dark', */ `app-exts-current-${Exts.ui.currentOpenedApp.name}`, className, {hidden})}>
             <nav
-                className={HTML.classes('app-exts-nav nav flex-none', {'app-exts-nav-compact': openedApps.length > 7, 'app-exts-nav-scrolled': this.state.navScrolled})}
+                className={classes('app-exts-nav nav flex-none', {'app-exts-nav-compact': openedApps.length > 7, 'app-exts-nav-scrolled': this.state.navScrolled})}
                 onWheel={this.handleWheelEvent}
                 ref={e => {this.appsNav = e;}}
             >
@@ -199,7 +201,7 @@ export default class Index extends Component {
                         }
                         return (<div
                             key={openedApp.id}
-                            className={HTML.classes(`app-exts-app app-exts-app-${openedApp.id} dock scroll-y`, {hidden: !Exts.ui.isCurrentOpenedApp(openedApp.id)})}
+                            className={classes(`app-exts-app app-exts-app-${openedApp.id} dock scroll-y`, {hidden: !Exts.ui.isCurrentOpenedApp(openedApp.id)})}
                             style={{backgroundColor: openedApp.app.appBackColor}}
                         >{appView}</div>);
                     })
