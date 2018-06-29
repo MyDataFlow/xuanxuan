@@ -147,7 +147,7 @@ class chat extends control
     /**
      * Change a user.
      *
-     * @param  array  $user 
+     * @param  array  $user
      * @param  int    $userID
      * @access public
      * @return void
@@ -1249,6 +1249,7 @@ class chat extends control
     {
         $this->output->result = 'success';
         $this->output->data   = $this->chat->getExtensionList($userID);
+        $this->output->users  = array($userID);
         die($this->app->encrypt($this->output));
     }
 }
