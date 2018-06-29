@@ -424,7 +424,13 @@ export const getUrlMeta = (url) => {
             if (global.ExtsRuntime) {
                 const extInspector = global.ExtsRuntime.getUrlInspector(url);
                 if (extInspector && extInspector.inspect) {
-                    cardMeta = extInspector.inspect(meta, cardMeta, url);
+                    try {
+                        cardMeta = extInspector.inspect(meta, cardMeta, url);
+                    } catch (err) {
+                        if (DEBUG) {
+                            console.error('Inspect url error', {err, meta, cardMeta, extInspector});
+                        }
+                    }
                     if (cardMeta instanceof Promise) {
                         return cardMeta.then(cardMeta => {
                             cardMeta.provider = extInspector.provider;
