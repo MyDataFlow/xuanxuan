@@ -1,5 +1,63 @@
 # 更新记录
 
+## v 1.6.0
+
+[2018-06-29]
+
+本次更新大幅提升扩展机制功能，增加对服务器扩展应用的支持。
+
+### 更新明细
+
+* 新增 开机（操作系统启动后）自动启动功能；
+* 新增 链接消息以卡片形式显示功能，自动预获取链接页面内容，如果链接内容是图片或视频则自动显示图片或视频内容，并且可以通过扩展进行定制卡片；
+* 新增 在临时对话框中打开外部链接功能；
+* 新增 对服务器扩展应用的支持，如果所登录的服务器配置了扩展应用，则登录后自动下载并加载服务器端的扩展，当用户注销后，这些扩展也会被卸载，服务器端扩展应用还支持免登录（例如可以直接打开禅道，而不需要再进行登录）；
+* 优化消息右键菜单，右键点击文本消息显示该消息相关菜单项，现在选中复制相关菜单项和消息菜单项进行了合并，右侧消息菜单按钮会尽量靠近消息左侧；
+* 优化 消息列表滚动条行为，防止了一些高度可变内容导致消息列表没有滚动到底部的问题；
+* 优化 向上滚动自动加载更多消息交互，防止加载内容后界面抖动；
+* 优化 扩展管理界面，扩展条目宽度参差不齐的问题；
+* 优化 邀请用户加入聊天会话和创建新聊天会话界面，从待添加联系人列表中移除了系统中已被删除的用户；
+* 优化 安装扩展体验，当需要重启并进行重启后会自动登录重启前登录的账号；
+* 优化 扩展应用标签页界面，现在会显示应用真实的标题；
+* 修复 极端情况下提示组织成员角色没有定义的错误；
+* 修复 浏览器客户端个人菜单显示“主题”菜单项；
+* 修复 用户加入讨论组后提示消息不正确的问题，其他人看到的内容都是 “我加入了讨论组”；
+* 开发相关：
+  * 客户端：
+    * 切换主题后会在 `<body>` 元素上添加 `data-theme` 属性，属性值为主题名称，方便扩展识别当前所使用的主题；
+    * 增加命令机制，可以通过 `URL` 格式让用户启动命令操作，拷贝代码功能已通过命令机制重构；
+    * 数据库管理模块 `dexie` 升级到 `2.0.4`；
+    * 图标库 [Material Design Icons](https://materialdesignicons.com/) 升级到 `2.4.85`；
+    * 重构打包机制，现在通过 `build-config.js` 来执行打包操作，并且可以通过参数使用不同的配置文件。
+  * 客户端扩展机制：
+    * 增加热加载选项，通过 `hot` 属性，如果设置为 `true`，扩展可以随时加载和卸载，无需重启程序；
+    * 增加 `setConfig`、`getConfig`，方便扩展读写个性化配置，并也提供了 `setUserConfig` 和 `getUserConfig` 来读写当前登录用户配置；
+    * 增加 `onReady` 接口，用于在界面加载完毕后执行相关任务；
+    * 增加 `urlInspectors` 接口定义链接解释器，用于定制链接卡片和打开链接行为；
+    * 扩展包扩展名修改为 `.zip`，当前仍然支持 `.xext` 扩展名；
+    * 增加 `commands` 接口，用于扩展定义命令操作；
+    * 增加 `preloadScript` 属性，用于为 Web 应用注入 JavaScript 代码；
+    * 增加 `contextMenuCreators` 接口，用于自定义界面上的右键菜单，目前支持文本消息右键菜单；
+    * `Xext.nodeModules` 增加 `jQuery 3` 模块。
+  * 然之相关：
+    * 修复 从低版本升级出错的问题。
+  * XXB：
+    * 增加 应用（包括扩展）管理功能（然之版本应用增加客户端扩展应用相关管理），应用支持免登录机制；
+    * 优化 `chat/usergetlist` 接口，过滤编外人员；
+    * 增加 `chat/extensions` 接口，用于向客户端发送服务器上已安装的扩展应用。
+
+### 下载地址
+
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.win64.debug.setup.exe)；
+* MacOS：[xuanxuan.1.6.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.mac.dmg)；
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.linux.x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.linux.ia32.rpm)；
+* 浏览器端：[xuanxuan.1.6.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.1.6.0.browser.zip)；
+* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xxd.1.6.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xxd.1.6.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xxd.1.6.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xxd.1.6.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/1.6/xxd.1.6.0.linux.ia32.tar.gz)；
+* 服务器端：
+  * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.6/xxb.1.2.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/1.6/xxb.1.2.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.6/xxb.1.2.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/1.6/xxb.1.2.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/1.6/xxb-1.2-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/1.6/xxb-1.2.deb)；
+  * 然之：[4.7.0 稳定版](http://www.ranzhi.org/download/4.7.stable-127.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/1.6/xuanxuan.ranzhi.1.6.0.zip)。
+
+
 ## v 1.5.0
 
 [2018-04-26]
