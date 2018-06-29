@@ -511,7 +511,8 @@ export default class Extension {
                 urlInspector.provider = {
                     icon: this.icon,
                     name: this.name,
-                    label: this.displayName
+                    label: this.displayName,
+                    url: `!showExtensionDialog/${this.name}`
                 };
             }
             return urlInspector;

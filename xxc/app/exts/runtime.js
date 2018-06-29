@@ -104,6 +104,13 @@ registerCommand('extension', (context, extName, commandName, ...params) => {
     }
 });
 
+registerCommand('showExtensionDialog', (context, extName) => {
+    const ext = Exts.getExt(extName);
+    if (ext) {
+        return ui.showExtensionDetailDialog(ext);
+    }
+});
+
 registerCommand('openInApp', (context, appName, url) => {
     ui.openAppWithUrl(appName, url);
 });

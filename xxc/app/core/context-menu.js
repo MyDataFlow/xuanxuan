@@ -185,7 +185,8 @@ export const showContextMenu = (contextName, context) => {
             delete options.stopPropagation;
             delete options.linkTarget;
         }
-        return ContextMenu.show({x: event.clientX, y: event.clientY}, items, options, callback);
+        ContextMenu.show({x: event.clientX, y: event.clientY}, items, options, callback);
+        return true;
     }
     return false;
 };
