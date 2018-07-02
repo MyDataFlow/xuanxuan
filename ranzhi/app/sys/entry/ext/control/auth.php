@@ -19,14 +19,11 @@ class entry extends control
             {
                 $user = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($sso->sid)->fetch();
                 $this->session->set('random', '');
-                if($user && $this->user->login($user->account, $user->password))
-                {
-                    $verification = true;
-                }
+                if($user && $this->user->login($user->account, $user->password)) $verification = true;
             }
         }
         if($verification == false) $this->locate($this->createLink('user', 'login'));
-        $refer = empty($refer) ? $this->createLink('entry', 'visit', 'entryID=' . $sso->entry) : $refer;
-        $this->locate($refer);
+        $referer = $this->createLink('entry', 'visit', 'entryID=' . $sso->entry . '&referer=' . $refer);
+        $this->locate($referer);
     }
 }
