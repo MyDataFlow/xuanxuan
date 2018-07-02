@@ -150,6 +150,7 @@ export default class Extension {
         return url;
     }
 
+    get serverEntry() {return this._pkg.serverEntry;}
     get download() {return this._pkg.download;}
     get isRemote() {return this._data.remote;}
     get isRemoteLoaded() {return this._data.remoteLoaded;}

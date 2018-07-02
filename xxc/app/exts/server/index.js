@@ -76,28 +76,30 @@ const processExtensions = async () => {
             }
             // load package json
             const pkgJson = await loadRemoteExtension(theExt);
-            if (pkgJson) {
+            if (pkgJson && pkgJson.name) {
                 if (pkgJson.name === theExt.name) {
-                    if (onChangeListener) {
-                        onChangeListener(theExt, 'remove');
+                    if (DEBUG) {
+                        console.warn(`The package name(${pkgJson.name}) is not match the server name(${theExt.name})`);
                     }
-                    const findIndex = exts.findIndex(x => x.name === theExt.name);
-                    theExt.setLoadRemoteResult(pkgJson);
-                    theExt.delete = true;
-                    const newExt = createExtension(Object.assign({
-                        icon: theExt.icon,
-                    }, pkgJson, {
-                        download: theExt.download,
-                        md5: theExt.md5,
-                        auth: theExt.auth
-                    }), theExt.data);
-                    newExt.hotAttach();
-                    exts.splice(findIndex, 1, newExt);
-                    if (onChangeListener) {
-                        onChangeListener(newExt, 'add');
-                    }
-                } else {
-                    theExt.setLoadRemoteResult(false, new Error(`The package name(${pkgJson.name}) is not match the server name(${theExt.name})`));
+                }
+                if (onChangeListener) {
+                    onChangeListener(theExt, 'remove');
+                }
+                const findIndex = exts.findIndex(x => x.name === theExt.name);
+                theExt.setLoadRemoteResult(pkgJson);
+                theExt.delete = true;
+                const newExt = createExtension(Object.assign({
+                    icon: theExt.icon,
+                    serverEntry: theExt.serverEntry
+                }, pkgJson, {
+                    download: theExt.download,
+                    md5: theExt.md5,
+                    auth: theExt.auth
+                }), theExt.data);
+                newExt.hotAttach();
+                exts.splice(findIndex, 1, newExt);
+                if (onChangeListener) {
+                    onChangeListener(newExt, 'add');
                 }
             } else {
                 theExt.setLoadRemoteResult(false, new Error('Cannot read package.json from ' + theExt.localPath));
@@ -126,6 +128,9 @@ const handleChatExtensions = (msg, socket) => {
                 extPkg.type = 'app';
                 extPkg.appType = 'webView';
                 extPkg.webViewUrl = item.auth;
+            }
+            if (item.webViewUrl) {
+                extPkg.serverEntry = item.webViewUrl;
             }
             const extData = {remote: true};
             if (item.download) {
