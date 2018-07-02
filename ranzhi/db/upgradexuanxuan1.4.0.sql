@@ -7,4 +7,4 @@ CREATE TABLE `im_messagestatus` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `im_message` CHANGE `type` `type` ENUM('normal','broadcast','notify') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'normal';
-
+ALTER TABLE `im_message` CHANGE `contentType` `contentType` ENUM('text','emotion','image','file','object')  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT 'text';

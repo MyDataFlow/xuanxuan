@@ -5,9 +5,9 @@ class entry extends control
      * Use token to authenticate user login.
      * @param string $code      entry code.
      * @param string $token     user login token.
-     * @param string $referer
+     * @param string $refer
      */
-    public function auth($code = '', $token = '', $referer = '')
+    public function auth($code = '', $token = '', $refer = '')
     {
         $this->loadModel('sso');
         $this->loadModel('user');
@@ -19,14 +19,11 @@ class entry extends control
             {
                 $user = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($sso->sid)->fetch();
                 $this->session->set('random', '');
-                if($user && $this->user->login($user->account, $user->password))
-                {
-                    $verification = true;
-                }
+                if($user && $this->user->login($user->account, $user->password)) $verification = true;
             }
         }
         if($verification == false) $this->locate($this->createLink('user', 'login'));
-        $referer = empty($referer) ? $this->createLink('entry', 'visit', 'entryID=' . $sso->entry) : $referer;
+        $referer = $this->createLink('entry', 'visit', 'entryID=' . $sso->entry . '&referer=' . $refer);
         $this->locate($referer);
     }
 }
