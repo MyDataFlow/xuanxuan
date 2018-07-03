@@ -1,6 +1,6 @@
 console.log('DEBUG ENV', {
     'global.DEBUG': global.DEBUG,
-    DEBUG: typeof DEBUG === 'undefined' ? 'undefined' : DEBUG,
+    DEBUG: typeof DEBUG === 'undefined' ? undefined : DEBUG,
     'process.env.NODE_ENV': process.env.NODE_ENV
 });
 

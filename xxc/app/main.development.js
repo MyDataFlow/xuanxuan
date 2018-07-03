@@ -26,9 +26,9 @@ ElectronApp.on('window-all-closed', () => {
 });
 
 const installExtensions = async () => {
+    console.log('>> Install electron extensions.');
     if (process.env.NODE_ENV === 'development') {
         const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
-
         const extensions = [
             'REACT_DEVELOPER_TOOLS',
             'REDUX_DEVTOOLS'
