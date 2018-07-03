@@ -34,6 +34,7 @@
     "react/jsx-no-bind": "off",
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": "off",
+    "react/no-array-index-key": "warn",
 
     "object-curly-spacing": ["error", "never"],
     "indent": ["error", 4],

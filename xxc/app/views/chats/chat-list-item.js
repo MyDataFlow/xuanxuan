@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router-dom';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import ROUTES from '../common/routes';
@@ -87,7 +87,7 @@ class ChatListItem extends Component {
         if (notUserLink) {
             return (<a
                 href={notUserLink === 'disabled' ? null : `#${ROUTES.chats.chat.id(chat.gid, filterType)}`}
-                className={HTML.classes('app-chat-item flex-middle', className, {active: notUserLink !== 'disabled' && this.lastChatIsActive})}
+                className={classes('app-chat-item flex-middle', className, {active: notUserLink !== 'disabled' && this.lastChatIsActive})}
                 {...other}
             >
                 <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={24} grayOffline className="flex-none" />
@@ -101,7 +101,7 @@ class ChatListItem extends Component {
         }
         return (<Link
             to={ROUTES.chats.chat.id(chat.gid, filterType)}
-            className={HTML.classes('app-chat-item flex-middle', className, {active: this.lastChatIsActive})}
+            className={classes('app-chat-item flex-middle', className, {active: this.lastChatIsActive})}
             {...other}
         >
             <ChatAvatar chat={chat} avatarClassName="avatar-sm" avatarSize={24} grayOffline className="flex-none" />
