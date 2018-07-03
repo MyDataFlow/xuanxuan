@@ -59,6 +59,9 @@ ranzhi/db/upgradebackyard.sql
 xxd/certificate
 xxd/log
 
+# test files
+xxc/test
+
 # documentation
 xxc/docs
 issues.md
