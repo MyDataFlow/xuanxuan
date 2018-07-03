@@ -151,7 +151,7 @@ export default class WebViewFrame extends Component {
                     {displayId ? <a onClick={this.handleMaximizeBtnClick}>{Icon.render(isMaximize ? 'window-restore' : 'window-maximize')}</a> : null}
                 </nav>
             </div>
-            <WebView ref={e => this.webview = e} className="flex-auto relative" src={src} {...options} onLoadingChange={this.handleLoadingChange} onPageTitleUpdated={this.handlePageTitleChange} />
+            <WebView ref={e => {this.webview = e;}} className="flex-auto relative" src={src} {...options} onLoadingChange={this.handleLoadingChange} onPageTitleUpdated={this.handlePageTitleChange} />
         </div>);
     }
 }
