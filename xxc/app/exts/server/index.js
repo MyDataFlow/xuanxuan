@@ -53,7 +53,7 @@ const downloadRemoteExtension = ext => {
                 });
             });
         }
-        return Promise.reject('Cannot download extension package form remote server ' + ext.download);
+        return Promise.reject(`Cannot download extension package form remote server ${ext.download}.`);
     });
 };
 

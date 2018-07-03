@@ -408,6 +408,7 @@ const setTitle = title => {
 };
 
 setTitle(Config.pkg.productName);
+
 export const getUrlMeta = (url) => {
     if (Platform.ui.getUrlMeta) {
         let extInspector = null;
