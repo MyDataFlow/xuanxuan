@@ -835,12 +835,9 @@
     }
   }
 }
-.app-message-content.content-type-object {
-  .clearfix;
-}
 .app-message-card {
-  float: left;
-  display: block;
+  display: inline-flex;
+  flex-direction: column;
   margin: @space-xs 0;
   min-width: (300*@rem);
   max-width: (800*@rem);
@@ -869,7 +866,9 @@
     margin: 0;
   }
 
-  > a.dock {z-index: 0;}
+  > a.dock {
+    z-index: 1;
+  }
 
   > header {
     display: flex;
