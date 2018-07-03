@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import env from './env';
 import Lang from '../../lang';
 import ui from './ui';
-// import openFileButton from '../common/open-file-button';
+import openFileButton from '../common/open-file-button';
 
 let lastFileSavePath = '';
 
@@ -54,31 +54,12 @@ const showSaveDialog = (options, callback) => {
  * Show open dialog
  */
 const showRemoteOpenDialog = (options, callback) => {
-    if (typeof options === 'string') {
-        const extensions = options.split(',');
-        extensions.forEach((filter, index) => {
-            extensions[index] = filter.trim().replace('.', '');
-        });
-        options = {
-            filters: [{name: 'file', extensions}]
-        };
-    }
     options = Object.assign({
         title: Lang.string('dialog.openFile'),
         defaultPath: env.desktopPath,
         properties: ['openFile']
     }, options);
-    Remote.dialog.showOpenDialog(ui.browserWindow, options, files => {
-        if (callback) {
-            if (files && files.length) {
-                return callback(files.map(f => {
-                    const stats = fs.statSync(f);
-                    return {path: f, name: Path.basename(f), size: stats && stats.size};
-                }));
-            }
-            return callback(files);
-        }
-    });
+    Remote.dialog.showOpenDialog(ui.browserWindow, options, callback);
 };
 
 const saveAsImageFromUrl = (url, dataType) => new Promise((resolve, reject) => {
@@ -105,6 +86,6 @@ const saveAsImageFromUrl = (url, dataType) => new Promise((resolve, reject) => {
 export default {
     showRemoteOpenDialog,
     showSaveDialog,
-    showOpenDialog: showRemoteOpenDialog,
+    showOpenDialog: openFileButton.showOpenDialog,
     saveAsImageFromUrl
 };
