@@ -17,7 +17,7 @@ const ACTION_ICONS = {
     '开始': 'mdi-play-box-outline',
     '暂停': 'mdi-pause',
 };
-const injectCss = '#header,#footer,#titlebar,#mainMenu>.btn-toolbar>a:first-child,#mainMenu>.btn-toolbar>a:first-child+.divider{display: none!important}body,#wrap{padding: 0!important}#header,#header+#main{min-width: 400px!important}';
+const injectCss = '#header,#footer,#titlebar,#mainMenu>.btn-toolbar>a:first-child,#mainMenu>.btn-toolbar>a:first-child+.divider{display: none!important}body,#wrap{padding: 0!important}#header,#header+#main{min-width: 400px!important}#mainActions .btn-toolbar{top:-50px}';
 
 const RENDER_RULES = {
     task: {
@@ -216,7 +216,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
         cardMeta.objectType = object.type;
 
         cardMeta.actions = object.actions;
-        cardMeta.style = {maxWidth: '700px'};
+        cardMeta.style = {maxWidth: '700px', minWidth: '500px'};
     } else {
         cardMeta.title = meta.title;
         if (cardMeta.title.endsWith(' - 禅道')) {
@@ -330,7 +330,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
         cardMeta.objectType = object.type;
-        cardMeta.style = {maxWidth: '700px'};
+        cardMeta.style = {maxWidth: '700px', minWidth: '500px'};
 
         cardMeta.actions = object.actions;
     } else {
@@ -364,8 +364,8 @@ module.exports = {
                 cardMeta.title = url;
                 cardMeta.subtitle = '无法获取内容，需要进行登录验证';
                 cardMeta.actions = [{
-                    url,
-                    label: '打开浏览器并登录查看',
+                    url: `!openUrlInDialog/${encodeURIComponent(url)}/?size=lg&insertCss=${encodeURIComponent(injectCss)}`,
+                    label: '登录查看',
                     icon: 'mdi-open-in-new'
                 }];
                 console.log('Get zentao meta error', meta);
