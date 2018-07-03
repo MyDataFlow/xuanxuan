@@ -253,7 +253,7 @@ document.addEventListener('click', e => {
 
     if (target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes.href || target.attributes['data-url'])) {
         const link = (target.attributes['data-url'] || target.attributes.href).value;
-        if (openUrl(link)) {
+        if (openUrl(link, target)) {
             e.preventDefault();
         }
     }
