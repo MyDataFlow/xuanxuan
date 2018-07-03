@@ -11,7 +11,7 @@ export default {
     'ui.chat.sendbox.height': 125,
     'ui.chat.sidebar.width': 300,
     'ui.chat.fontSize': {
-        name: '1em',
+        name: 13,
         time: '0.9230769231em',
         lineHeight: 1.53846153846,
         size: 13
