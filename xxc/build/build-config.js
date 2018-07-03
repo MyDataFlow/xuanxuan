@@ -37,8 +37,8 @@ if (!pkgArch || pkgArch === '-') {
     pkgArch = 'all';
 }
 
-const isDebug = process.argv[5] === 'debug';
-const isBeta = process.argv[6] === 'beta';
+const isDebug = process.argv[5] === 'debug' || process.argv[6] === 'debug';
+const isBeta = process.argv[6] === 'beta' || process.argv[5] === 'beta';
 const buildVersion = isBeta ? formatDate(new Date(), 'beta.yyyyMMddhhmm') : null;
 
 console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'isBeta=', isBeta, 'argv', process.argv);
@@ -82,7 +82,7 @@ const electronBuilder = {
     productName: config.name,
     appId: config.appid || `com.cnezsoft.${config.name}`,
     compression: 'maximum',
-    artifactName: '${productName}.${version}.${os}.${arch}.${ext}',
+    artifactName: '${productName}.${version}${env.PKG_BETA}.${os}.${arch}.${ext}',
     electronDownload: {mirror: 'https://npm.taobao.org/mirrors/electron/'},
     extraResources: [{
         from: 'app/build-in/',
@@ -129,12 +129,12 @@ const electronBuilder = {
     mac: {
         // icon: 'resources/icon.icns',
         icon: path.join(config.resourcePath, 'icon.icns'),
-        artifactName: '${productName}.${version}.${os}${env.PKG_ARCH}.${ext}'
+        artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
     },
     nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,
-        artifactName: "${productName}.${version}.${os}${env.PKG_ARCH}.setup.${ext}",
+        artifactName: "${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}",
         deleteAppDataOnUninstall: false
     },
     directories: {
@@ -173,7 +173,8 @@ const createPackage = (osType, arch, debug = isDebug) => {
         spawn('build', params, {
             shell: true,
             env: Object.assign({}, process.env, {
-                PKG_ARCH: debug ? '.debug' : (osType === 'win' ? (arch.includes('32') ? '32' : '64') : '')
+                PKG_ARCH: debug ? '.debug' : (osType === 'win' ? (arch.includes('32') ? '32' : '64') : ''),
+                PKG_BETA: isBeta ? '.beta' : ''
             }),
             stdio: 'inherit'
         })
