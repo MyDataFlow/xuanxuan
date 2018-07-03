@@ -6,6 +6,7 @@ import Button from '../../components/button';
 import Avatar from '../../components/avatar';
 import StringHelper from '../../utils/string-helper';
 import Lang from '../../lang';
+import WebView from '../common/webview';
 
 export default class MessageContentCard extends Component {
     static propTypes = {
@@ -47,7 +48,7 @@ export default class MessageContentCard extends Component {
             ...other
         } = this.props;
 
-        const {image, title, subtitle, content, icon, actions, url, htmlContent, contentType, contentUrl, originContentType, menu, provider} = card;
+        const {image, title, subtitle, content, icon, actions, url, htmlContent, webviewContent, contentType, contentUrl, originContentType, menu, provider} = card;
         let topView = null;
         if (contentUrl) {
             if (contentType === 'image') {
@@ -70,6 +71,8 @@ export default class MessageContentCard extends Component {
         if (StringHelper.isNotEmpty(content)) {
             if (React.isValidElement(content)) {
                 contentView = content;
+            } else if (webviewContent) {
+                contentView = <WebView {...content} />;
             } else if (htmlContent) {
                 contentView = <div className="content" dangerouslySetInnerHTML={{__html: content}} />;
             } else {
@@ -105,14 +108,14 @@ export default class MessageContentCard extends Component {
             {...other}
         >
             {topView}
-            <header>
+            {header || titleView || avatarView || subTitleView || ? <header>
                 {avatarView}
                 <hgroup>
                     {titleView}
                     {subTitleView}
                 </hgroup>
                 {header}
-            </header>
+            </header> : null}
             {contentView}
             {actionsButtons && actionsButtons.length ? <nav className="nav actions gray">{actionsButtons}</nav> : null}
             {children}
