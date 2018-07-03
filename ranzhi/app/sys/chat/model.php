@@ -993,6 +993,7 @@ EOT;
             $data->webViewUrl  = strpos($entry->login, 'http') === false ? commonModel::getSysURL() . str_replace('../', '/', $entry->login) : $entry->login;
             $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
             $data->auth        = empty($userID) ? '' : commonModel::getSysURL() . helper::createLink('entry', 'auth', "code={$entry->code}&token=" . $this->loadModel('sso')->createToken($userID, $entry->id));
+            $data->auth        = $data->webViewUrl;
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
             $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
 
