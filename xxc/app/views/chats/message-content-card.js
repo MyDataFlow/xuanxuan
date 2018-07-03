@@ -108,7 +108,7 @@ export default class MessageContentCard extends Component {
             {...other}
         >
             {topView}
-            {header || titleView || avatarView || subTitleView || ? <header>
+            {(header || titleView || avatarView || subTitleView) ? <header>
                 {avatarView}
                 <hgroup>
                     {titleView}
