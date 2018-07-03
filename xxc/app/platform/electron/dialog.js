@@ -72,7 +72,8 @@ const showRemoteOpenDialog = (options, callback) => {
         if (callback) {
             if (files && files.length) {
                 return callback(files.map(f => {
-                    return {path: f, name: Path.basename(f)};
+                    const stats = fs.statSync(f);
+                    return {path: f, name: Path.basename(f), size: stats && stats.size};
                 }));
             }
             return callback(files);
