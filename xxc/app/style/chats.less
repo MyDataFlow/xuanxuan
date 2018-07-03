@@ -835,10 +835,12 @@
     }
   }
 }
-
+.app-message-content.content-type-object {
+  .clearfix;
+}
 .app-message-card {
-  display: inline-flex;
-  flex-direction: column;
+  float: left;
+  display: block;
   margin: @space-xs 0;
   min-width: (300*@rem);
   max-width: (800*@rem);
@@ -931,6 +933,7 @@
     padding: @space-sm;
     position: relative;
     z-index: 1;
+    flex-wrap: wrap;
 
     .btn + .btn {margin-left: @space-sm;}
   }
@@ -1020,6 +1023,7 @@
   flex-wrap: nowrap;
   opacity: 0;
   height: 100%;
+  top: 0;
 
   .app-message-card:hover & {
     opacity: 1;
