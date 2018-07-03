@@ -3,6 +3,7 @@ import path from 'path';
 import os from 'os';
 import fse from 'fs-extra';
 import pkg from '../package.json';
+import {formatDate} from '../app/utils/date-helper';
 
 const platformMap = {
     win32: 'win',
@@ -37,9 +38,10 @@ if (!pkgArch || pkgArch === '-') {
 }
 
 const isDebug = process.argv[5] === 'debug';
-const buildVersion = null;
+const isBeta = process.argv[6] === 'beta';
+const buildVersion = isBeta ? formatDate(new Date(), 'beta.yyyyMMddhhmm') : null;
 
-console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'argv', process.argv);
+console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'isBeta=', isBeta, 'argv', process.argv);
 
 const config = Object.assign({
     name: pkg.name,
