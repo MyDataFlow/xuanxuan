@@ -26,7 +26,7 @@ ElectronApp.on('window-all-closed', () => {
 });
 
 const installExtensions = async () => {
-    if (DEBUG) {
+    if (process.env.NODE_ENV === 'development') {
         const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
         const extensions = [
