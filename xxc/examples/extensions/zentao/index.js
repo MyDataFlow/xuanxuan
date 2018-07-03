@@ -102,14 +102,15 @@ const renderObject = object => {
 let extension = null;
 
 const getAuthUrl = (url) => {
-    const auth = extension.auth;
-    if (auth) {
-        if (url) {
-            return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
-        }
-        return auth;
-    }
     return url;
+    // const auth = extension.auth;
+    // if (auth) {
+    //     if (url) {
+    //         return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
+    //     }
+    //     return auth;
+    // }
+    // return url;
 };
 
 const inspectX = ($doc, meta, cardMeta, url) => {
@@ -179,7 +180,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
         });
 
         object.actions = [{
-            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
+            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?size=lg&insertCss=${encodeURIComponent(injectCss)}`,
             label: `查看${RENDER_RULES[object.type].name}`,
             icon: 'mdi-open-in-app'
         }];
@@ -190,7 +191,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
             if (label && actionUrl && actionUrl.startsWith('/') && label !== '返回') {
                 const fullActionUrl = getAuthUrl(meta.rootUrl + actionUrl);
                 object.actions.push({
-                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
+                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?size=lg&insertCss=${encodeURIComponent(injectCss)}`,
                     label,
                     icon: ACTION_ICONS[label]
                 });
@@ -208,7 +209,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
         cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
         cardMeta.url = null;
 
-        cardMeta.desc = JSON.stringify(object);
+        // cardMeta.desc = JSON.stringify(object);
 
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
@@ -295,7 +296,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
         });
 
         object.actions = [{
-            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
+            url: `!openUrlInDialog/${encodeURIComponent(getAuthUrl(url))}/?size=lg&insertCss=${encodeURIComponent(injectCss)}`,
             label: `查看${RENDER_RULES[object.type].name}`,
             icon: 'mdi-open-in-app'
         }];
@@ -306,7 +307,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
             if (actionUrl && actionUrl.startsWith('/')) {
                 const fullActionUrl = getAuthUrl(meta.rootUrl + actionUrl);
                 object.actions.push({
-                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?width=${window.innerWidth - 40}px&height=${window.innerHeight - 40}px&insertCss=${encodeURIComponent(injectCss)}`,
+                    url: `!openUrlInDialog/${encodeURIComponent(fullActionUrl)}/?size=lg&insertCss=${encodeURIComponent(injectCss)}`,
                     label,
                     icon: ACTION_ICONS[label]
                 });
@@ -324,7 +325,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
         cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
         cardMeta.url = null;
 
-        cardMeta.desc = JSON.stringify(object);
+        // cardMeta.desc = JSON.stringify(object);
 
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
@@ -345,6 +346,11 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
 module.exports = {
     onAttach: ext => {
         extension = ext;
+        if (extension.auth) {
+            const authUrl = new URL(extension.auth);
+            authUrl.search = '';
+            extension._pkg.auth = authUrl.toString();
+        }
     },
     onDetach: ext => {
     },
@@ -362,10 +368,11 @@ module.exports = {
                     label: '打开浏览器并登录查看',
                     icon: 'mdi-open-in-new'
                 }];
+                console.log('Get zentao meta error', meta);
                 return cardMeta;
             }
             const $doc = $(meta.document);
-            if ($doc.find('body>#wrap').length) {
+            if ($doc.find('.outer').length) {
                 return inspectClassic($doc, meta, cardMeta, url);
             }
             return inspectX($doc, meta, cardMeta, url);
