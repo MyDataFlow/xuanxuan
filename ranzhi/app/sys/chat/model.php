@@ -94,12 +94,8 @@ class chatModel extends model
     public function getUserByUserID($userID = 0)
     {
         $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
-        if($user)
-        {
-            $user = $this->formatUsers($user);
-        }
-
-        return $user;
+        if(!$user) return array();
+        return $this->formatUsers($user);
     }
 
     /**
@@ -977,6 +973,7 @@ EOT;
         }
 
         $_SERVER['SCRIPT_NAME'] = 'index.php';
+        $userToken = $this->dao->select('token')->from(TABLE_USER)->where('id')->eq($userID)->fetch('token');
         foreach($entriesList as $entry)
         {
             $token = '';
@@ -991,7 +988,7 @@ EOT;
             $data->abbrName    = $entry->abbr;
             $data->webViewUrl  = strpos($entry->login, 'http') === false ? commonModel::getSysURL() . str_replace('../', '/', $entry->login) : $entry->login;
             $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
-            $data->auth        = empty($userID) ? '' : commonModel::getSysURL() . helper::createLink('entry', 'auth', "code={$entry->code}&token=" . $this->loadModel('sso')->createToken($userID, $entry->id));
+            $data->auth        = empty($userID) ? '' : commonModel::getSysURL() . helper::createLink('entry', 'auth', "code={$entry->code}&token=" . $this->loadModel('sso')->createToken($userToken, $entry->id));
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
             $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
 
