@@ -102,15 +102,14 @@ const renderObject = object => {
 let extension = null;
 
 const getAuthUrl = (url) => {
+    const auth = extension.auth;
+    if (auth) {
+        if (url) {
+            return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
+        }
+        return auth;
+    }
     return url;
-    // const auth = extension.auth;
-    // if (auth) {
-    //     if (url) {
-    //         return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
-    //     }
-    //     return auth;
-    // }
-    // return url;
 };
 
 const inspectX = ($doc, meta, cardMeta, url) => {
@@ -208,8 +207,6 @@ const inspectX = ($doc, meta, cardMeta, url) => {
         }
         cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
         cardMeta.url = null;
-
-        // cardMeta.desc = JSON.stringify(object);
 
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
@@ -325,8 +322,6 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
         cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
         cardMeta.url = null;
 
-        // cardMeta.desc = JSON.stringify(object);
-
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
         cardMeta.objectType = object.type;
@@ -351,11 +346,17 @@ module.exports = {
             authUrl.search = '';
             extension._pkg.auth = authUrl.toString();
         }
+        if (extension.serverEntry) {
+            extension.serverEntryHost = new URL(extension.serverEntry).host;
+        }
     },
     onDetach: ext => {
     },
     urlInspectors: [{
-        test: (/^https?:\/\/(\w+\.5upm\.com|pms\.zentao\.net|backyard\.cnezsoft\.com\/pms|demo\.zentao\.net|pro\.demo\.zentao\.net|zt\.io)\/\w+/i),
+        test: url => {
+            const urlHost = new URL(url).host;
+            return [extension.serverEntryHost, '.5upm.com', 'pms.zentao.net', 'demo.zentao.net', 'pro.demo.zentao.net', '.zentaopm.com'].some(urlHost.endsWith);
+        },
         getUrl: url => {
             return getAuthUrl(url);
         },
