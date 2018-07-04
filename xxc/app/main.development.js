@@ -26,7 +26,11 @@ ElectronApp.on('window-all-closed', () => {
 });
 
 const installExtensions = async () => {
-    console.log('>> Install electron extensions.');
+    if (process.env.SKIP_INSTALL_EXTENSIONS) {
+        console.log('>> Install electron development extensions. SKIPED.');
+        return;
+    }
+    console.log('>> Install electron development extensions. This will take a few minutes. If it take too long time, try close the terminal window and skip install extension by execute command "npm run start-hot-fast".');
     if (process.env.NODE_ENV === 'development') {
         const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
         const extensions = [
