@@ -975,9 +975,10 @@ class chat extends control
      */
     public function settings($account = '', $settings = '', $userID = 0)
     {
+        $this->loadModel('setting');
         if($settings)
         {
-            $this->loadModel('setting')->setItem("system.sys.chat.settings.$account", helper::jsonEncode($settings));
+            $this->setting->setItem("system.sys.chat.settings.$account", helper::jsonEncode($settings));
         }
 
         if(dao::isError())
@@ -989,7 +990,7 @@ class chat extends control
         {
             $this->output->result = 'success';
             $this->output->users  = array($userID);
-            $this->output->data   = !empty($settings) ? $settings : json_decode($this->config->chat->settings->$account);
+            $this->output->data   = !empty($settings) ? $settings : json_decode($this->setting->getItem("owner=system&app=sys&module=chat&section=settings&key=$account"));
         }
 
         die($this->app->encrypt($this->output));
