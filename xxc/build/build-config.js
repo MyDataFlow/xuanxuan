@@ -14,7 +14,8 @@ const platformMap = {
     osx: 'mac',
     mac: 'mac',
     all: 'all',
-    '*': 'all'
+    '*': 'all',
+    skipbuild: 'skipbuild'
 };
 const osPlatform = os.platform();
 let configName = process.argv[2];
@@ -202,7 +203,7 @@ const build = async () => {
     }
 };
 
-if (platform !== '-skipbuild') {
+if (platform !== 'skipbuild') {
     build();
 }
 
