@@ -1,11 +1,15 @@
 import React, {PureComponent, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import replaceViews from '../replace-views';
 
 export default class ChatSendboxToolbar extends PureComponent {
+    static get ChatSendboxToolbar() {
+        return replaceViews('chats/chat-sendbox-toolbar flex', ChatSendboxToolbar);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chatGid: PropTypes.string,
@@ -26,13 +30,9 @@ export default class ChatSendboxToolbar extends PureComponent {
         onPreviewButtonClick: null
     };
 
-    static get ChatSendboxToolbar() {
-        return replaceViews('chats/chat-sendbox-toolbar flex', ChatSendboxToolbar);
-    }
-
     render() {
         const {className, chatGid, showMessageTip, captureScreenHotkey, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, ...other} = this.props;
-        return (<div className={HTML.classes('app-chat-sendbox-toolbar flex', className)} {...other}>
+        return (<div className={classes('app-chat-sendbox-toolbar flex', className)} {...other}>
             <div className="flex flex-middle flex-auto toolbar">
                 {
                     App.im.ui.createSendboxToolbarItems(chatGid, showMessageTip, captureScreenHotkey).map(item => <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon name={item.icon} /></button></div>)
@@ -42,7 +42,7 @@ export default class ChatSendboxToolbar extends PureComponent {
             <div className="toolbar flex flex-none flex-middle">
                 <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (Enter)`} onClick={onSendButtonClick}>
                     <button
-                        className={HTML.classes('btn iconbutton rounded', {
+                        className={classes('btn iconbutton rounded', {
                             disabled: sendButtonDisabled,
                             'text-primary': !sendButtonDisabled
                         })}
