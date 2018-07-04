@@ -17,13 +17,12 @@ class entry extends control
             $sso = $this->sso->getByToken($token);
             if($sso)
             {
-                $user = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($sso->sid)->fetch();
+                $user = $this->dao->select('*')->from(TABLE_USER)->where('token')->eq($sso->sid)->andWhere('status')->eq('online')->fetch();
                 $this->session->set('random', '');
                 if($user && $this->user->login($user->account, $user->password)) $verification = true;
             }
         }
         if($verification == false) $this->locate($this->createLink('user', 'login'));
-        $referer = $this->createLink('entry', 'visit', 'entryID=' . $sso->entry . '&referer=' . $refer);
-        $this->locate($referer);
+        $this->locate($this->createLink('entry', 'visit', 'entryID=' . $sso->entry . '&referer=' . $refer));
     }
 }
