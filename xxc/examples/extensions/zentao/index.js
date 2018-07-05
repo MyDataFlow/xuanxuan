@@ -1,21 +1,19 @@
-// 从全局扩展对象中引入模块
 const {
-    utils,
     nodeModules
 } = global.Xext;
 
 const $ = nodeModules.jquery;
 
 const ACTION_ICONS = {
-    '完成': 'mdi-check-circle',
-    '取消': 'mdi-cancel',
-    '工时': 'mdi-clock-outline',
-    '日志': 'mdi-clock-outline',
-    '指派': 'mdi-hand-pointing-right',
-    '执行': 'mdi-play-box-outline',
-    '结果': 'mdi-playlist-play',
-    '开始': 'mdi-play-box-outline',
-    '暂停': 'mdi-pause',
+    完成: 'mdi-check-circle',
+    取消: 'mdi-cancel',
+    工时: 'mdi-clock-outline',
+    日志: 'mdi-clock-outline',
+    指派: 'mdi-hand-pointing-right',
+    执行: 'mdi-play-box-outline',
+    结果: 'mdi-playlist-play',
+    开始: 'mdi-play-box-outline',
+    暂停: 'mdi-pause',
 };
 const injectCss = '#header,#footer,#titlebar,#mainMenu>.btn-toolbar>a:first-child,#mainMenu>.btn-toolbar>a:first-child+.divider{display: none!important}body,#wrap{padding: 0!important}#header,#header+#main{min-width: 400px!important}#mainActions .btn-toolbar{top:-50px}';
 
@@ -64,22 +62,22 @@ const renderObject = object => {
     const $content = $('<div></div>');
     const $simpleAttrs = $('<ul class="attrs"></ul>');
     rule.simple_attrs.forEach(attrName => {
-        $simpleAttrs.append('<li><strong class="attr-name">' + attrName + ':</strong> <span class="attr-value">' + (object.attrs[attrName] || '<span class="muted">无</span>') + '</span></li>');
+        $simpleAttrs.append(`<li><strong class="attr-name">${attrName}:</strong> <span class="attr-value">${object.attrs[attrName] || '<span class="muted">无</span>'}</span></li>`);
     });
     $simpleAttrs.appendTo($content);
 
     rule.attrs.forEach((attrName, idx) => {
         const attrValue = object.attrs[attrName];
-        const $detail = $('<details' + (idx < 1 ? ' open' : '') + '><summary>' + attrName + '</summary><div class="detail-content">' + (attrValue || '<span class="muted">空</span>') + '</div></details>');
+        const $detail = $(`<details${idx < 1 ? ' open' : ''}><summary>${attrName}</summary><div class="detail-content">${attrValue || '<span class="muted">空</span>'}</div></details>`);
         $content.append($detail);
     });
 
     if (object.files && object.files.length) {
         const $files = $('<ul class="files" style="padding: 0; margin: 0; list-style: none"></ul>');
         object.files.forEach(file => {
-            $files.append('<li><i class="icon mdi mdi-file-document muted"></i> <a href="' + file.url + '">' + file.name + ' <small class="muted">' + (file.size || '') + '</small></a></li>');
+            $files.append(`<li><i class="icon mdi mdi-file-document muted"></i> <a href="${file.url}">${file.name} <small class="muted">${file.size || ''}</small></a></li>`);
         });
-        const $detail = $('<details open><summary>附件（共 ' + object.files.length + ' 个）</summary><div class="detail-content"></div></details>');
+        const $detail = $(`<details open><summary>附件（共 ${object.files.length} 个）</summary><div class="detail-content"></div></details>`);
         $detail.find('.detail-content').append($files);
         $content.append($detail);
     }
@@ -102,15 +100,14 @@ const renderObject = object => {
 let extension = null;
 
 const getAuthUrl = (url) => {
+    const auth = extension.auth;
+    if (auth) {
+        if (url) {
+            return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
+        }
+        return auth;
+    }
     return url;
-    // const auth = extension.auth;
-    // if (auth) {
-    //     if (url) {
-    //         return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
-    //     }
-    //     return auth;
-    // }
-    // return url;
 };
 
 const inspectX = ($doc, meta, cardMeta, url) => {
@@ -169,7 +166,7 @@ const inspectX = ($doc, meta, cardMeta, url) => {
 
         $doc.find('#mainContent>.side-col>.cell>.detail').each((idx, element) => {
             const $filedSet = $(element);
-            const groupName = $filedSet.children('.detail-title').text();
+            // const groupName = $filedSet.children('.detail-title').text();
             const $table = $filedSet.find('table');
             if ($table.length) {
                 $table.find('tr').each((trIdx, trElement) => {
@@ -208,8 +205,6 @@ const inspectX = ($doc, meta, cardMeta, url) => {
         }
         cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
         cardMeta.url = null;
-
-        // cardMeta.desc = JSON.stringify(object);
 
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
@@ -285,7 +280,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
 
         $doc.find('.col-side>.main>fieldset,.col-side>.main>.tabs').each((idx, element) => {
             const $filedSet = $(element);
-            const groupName = $filedSet.children('legend').text();
+            // const groupName = $filedSet.children('legend').text();
             const $table = $filedSet.find('table');
             if ($table.length) {
                 $table.find('tr').each((trIdx, trElement) => {
@@ -316,7 +311,7 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
 
         cardMeta.icon = {
             className: `rounded ${RENDER_RULES[object.type].color}`,
-            icon: RENDER_RULES[object.type].icon + ' icon-2x'
+            icon: `${RENDER_RULES[object.type].icon} icon-2x`
         };
         cardMeta.title = object.title;
         if (object.files && object.files.length) {
@@ -324,8 +319,6 @@ const inspectClassic = ($doc, meta, cardMeta, url) => {
         }
         cardMeta.subtitle = `${object.type.toUpperCase()} #${object.id} ${url}`;
         cardMeta.url = null;
-
-        // cardMeta.desc = JSON.stringify(object);
 
         cardMeta.content = renderObject(object);
         cardMeta.htmlContent = true;
@@ -351,14 +344,18 @@ module.exports = {
             authUrl.search = '';
             extension._pkg.auth = authUrl.toString();
         }
+        if (extension.serverEntry) {
+            extension.serverEntryHost = new URL(extension.serverEntry).host;
+        }
     },
-    onDetach: ext => {
-    },
+    // onDetach: ext => {
+    // },
     urlInspectors: [{
-        test: (/^https?:\/\/(\w+\.5upm\.com|pms\.zentao\.net|backyard\.cnezsoft\.com\/pms|demo\.zentao\.net|pro\.demo\.zentao\.net|zt\.io)\/\w+/i),
-        getUrl: url => {
-            return getAuthUrl(url);
+        test: url => {
+            const urlHost = new URL(url).host;
+            return [extension.serverEntryHost, '.5upm.com', 'pms.zentao.net', 'demo.zentao.net', 'pro.demo.zentao.net', '.zentaopm.com'].some(urlHost.endsWith);
         },
+        getUrl: getAuthUrl,
         inspect: (meta, cardMeta, url) => {
             if (meta.document.length < 300 && (meta.document.includes('deny') || meta.document.includes('?m=user&f=login') || meta.document.includes('user-login'))) {
                 cardMeta.title = url;

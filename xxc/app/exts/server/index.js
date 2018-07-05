@@ -117,7 +117,7 @@ const processExtensions = async () => {
     }
 };
 
-const handleChatExtensions = (msg, socket) => {
+const handleChatExtensions = msg => {
     if (currentUser && msg.isSuccess && msg.data.length) {
         const baseUserExtsDir = Platform.ui.createUserDataPath(currentUser, '', 'extensions');
         msg.data.forEach(item => {

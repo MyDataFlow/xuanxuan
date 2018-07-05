@@ -6,7 +6,7 @@
     "type": "app",
     "appType": "webView",
     "webViewUrl": "http://fanyi.youdao.com/",
-    "icon": "mdi",
+    "icon": "mdi-translate",
     "accentColor": "#e02433",
     "hot": true,
     "main": "index.js",
