@@ -39,3 +39,4 @@ $config->xuanxuan->enabledMethods['chat']['upserttodo']         = 'upsertTodo';
 $config->xuanxuan->enabledMethods['chat']['gettodoes']          = 'getTodoes';
 $config->xuanxuan->enabledMethods['chat']['checkuserchange']    = 'checkUserChange';
 $config->xuanxuan->enabledMethods['chat']['extensions']         = 'extensions';
+$config->xuanxuan->enabledMethods['entry']['visit']             = 'visit';

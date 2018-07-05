@@ -110,6 +110,20 @@ func RepeatLogin() []byte {
     return message
 }
 
+
+//重新登录
+func BlockLogin() []byte {
+    blockLogin := []byte(`{"module":"chat","method":"blockLogin","message":"同时在线超出系统限制"}`)
+
+    message, err := aesEncrypt(blockLogin, util.Token)
+    if err != nil {
+        util.LogError().Println("aes encrypt error:", err)
+        return nil
+    }
+
+    return message
+}
+
 //测试登录
 func TestLogin() []byte {
     loginData := []byte(`{"result":"success","data":{"id":12,"account":"demo8","realname":"\u6210\u7a0b\u7a0b","avatar":"","role":"hr","dept":0,"status":"online","admin":"no","gender":"f","email":"ccc@demo.com","mobile":"","site":"","phone":""},"sid":"18025976a786ec78194e491e7b790731","module":"chat","method":"login"}`)
