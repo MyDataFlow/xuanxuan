@@ -171,7 +171,7 @@ const captureAndCutScreenImage = (hiddenWindows = false) => {
             }
         });
     } else {
-        throw new Error(`The platform(${Platform.env}) not support capture screenshot.`);
+        throw new Error(`The platform(${Platform.type}) not support capture screenshot.`);
     }
 };
 
