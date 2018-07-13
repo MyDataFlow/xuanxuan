@@ -100,13 +100,13 @@ const renderObject = object => {
 let extension = null;
 
 const getAuthUrl = (url) => {
-    const auth = extension.auth;
-    if (auth) {
-        if (url) {
-            return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
-        }
-        return auth;
-    }
+    // const auth = extension.auth;
+    // if (auth) {
+    //     if (url) {
+    //         return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
+    //     }
+    //     return auth;
+    // }
     return url;
 };
 
@@ -353,7 +353,7 @@ module.exports = {
     urlInspectors: [{
         test: url => {
             const urlHost = new URL(url).host;
-            return [extension.serverEntryHost, '.5upm.com', 'pms.zentao.net', 'demo.zentao.net', 'pro.demo.zentao.net', '.zentaopm.com'].some(urlHost.endsWith);
+            return [extension.serverEntryHost, '.5upm.com', 'pms.zentao.net', 'demo.zentao.net', 'pro.demo.zentao.net', '.zentaopm.com'].some(x => urlHost.endsWith(x));
         },
         getUrl: getAuthUrl,
         inspect: (meta, cardMeta, url) => {
