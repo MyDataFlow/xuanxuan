@@ -91,6 +91,10 @@ class UserConfig {
         this.makeChange(this.$, true);
     }
 
+    get lastChangeTime() {
+        return this.$.lastChangeTime;
+    }
+
     get autoReconnect() {
         return this.get('user.autoReconnect');
     }
@@ -132,6 +136,14 @@ class UserConfig {
 
     set sendHDEmoticon(flag) {
         return this.set('ui.chat.sendHDEmoticon', flag);
+    }
+
+    get sendMarkdown() {
+        return this.get('ui.chat.sendMarkdown');
+    }
+
+    set sendMarkdown(flag) {
+        return this.set('ui.chat.sendMarkdown', flag);
     }
 
     isChatSidebarHidden(cgid, defaultValue) {

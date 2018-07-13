@@ -24,8 +24,9 @@ import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
-import HTMLHelper from '../../utils/html-helper';
+import {strip} from '../../utils/html-helper';
 import {addContextMenuCreator} from '../context-menu';
+import ui from '../ui';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -113,7 +114,7 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             id: 'invite',
             icon: 'account-multiple-plus',
             label: Lang.string('chat.toolbor.invite'),
-            click: e => {
+            click: () => {
                 ChatInviteDialog.show(chat);
             }
         });
@@ -175,7 +176,7 @@ const captureAndCutScreenImage = (hiddenWindows = false) => {
     }
 };
 
-const createCatureScreenContextMenuItems = (chat) => {
+const createCatureScreenContextMenuItems = () => {
     if (!Platform.screenshot) {
         throw new Error(`The platform(${Platform.type}) not support take screenshots.`);
     }
@@ -205,21 +206,22 @@ const createCatureScreenContextMenuItems = (chat) => {
     return items;
 };
 
-const createSendboxToolbarItems = (chatGid, showMessageTip, captureScreenHotkey) => {
+const createSendboxToolbarItems = (chatGid, onPreviewButtonClick) => {
+    const {userConfig} = profile;
     const items = [{
         id: 'emoticon',
-        icon: 'emoticon',
+        icon: 'mdi-emoticon',
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
         click: e => {
             EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, emoji => {
-                sendContentToChat(Emojione.convert(emoji.unicode) + ' ');
+                sendContentToChat(`${Emojione.convert(emoji.unicode)} `);
             });
         }
     }];
     if (profile.user.isVersionSupport('fileServer')) {
         items.push({
             id: 'image',
-            icon: 'image',
+            icon: 'mdi-image',
             label: Lang.string('chat.sendbox.toolbar.image'),
             click: () => {
                 Platform.dialog.showOpenDialog({
@@ -234,7 +236,7 @@ const createSendboxToolbarItems = (chatGid, showMessageTip, captureScreenHotkey)
             }
         }, {
             id: 'file',
-            icon: 'file-outline',
+            icon: 'mdi-file-outline',
             label: Lang.string('chat.sendbox.toolbar.file'),
             click: () => {
                 Platform.dialog.showOpenDialog(null, files => {
@@ -245,11 +247,11 @@ const createSendboxToolbarItems = (chatGid, showMessageTip, captureScreenHotkey)
             }
         });
     }
-    if (Platform.screenshot) {
+    if (Platform.screenshot && userConfig) {
         items.push({
             id: 'captureScreen',
-            icon: 'content-cut rotate-270 inline-block',
-            label: Lang.string('chat.sendbox.toolbar.captureScreen') + (captureScreenHotkey || ''),
+            icon: 'mdi-content-cut rotate-270 inline-block',
+            label: `${Lang.string('chat.sendbox.toolbar.captureScreen')} ${(userConfig.captureScreenHotkey || '')} (${Lang.string('chat.sendbox.toolbar.moreOptions')})`,
             click: () => {
                 captureAndCutScreenImage();
             },
@@ -261,16 +263,35 @@ const createSendboxToolbarItems = (chatGid, showMessageTip, captureScreenHotkey)
     }
     items.push({
         id: 'setFontSize',
-        icon: 'format-size',
+        icon: 'mdi-format-size',
         label: Lang.string('chat.sendbox.toolbar.setFontSize'),
         click: e => {
             ChatChangeFontPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
         }
     });
-    if (showMessageTip) {
+    const sendMarkdown = userConfig && userConfig.sendMarkdown;
+    const hasMarkdownContextMenu = sendMarkdown && onPreviewButtonClick;
+    items.push({
+        id: 'markdown',
+        icon: sendMarkdown ? 'mdi-markdown icon-2x text-green' : 'mdi-markdown icon-2x',
+        label: Lang.string(sendMarkdown ? 'chat.sendbox.toolbar.markdown.enabled' : 'chat.sendbox.toolbar.markdown.disabled') + (hasMarkdownContextMenu ? ` (${Lang.string('chat.sendbox.toolbar.moreOptions')})` : ''),
+        className: sendMarkdown ? 'selected' : '',
+        click: () => {
+            userConfig.sendMarkdown = !userConfig.sendMarkdown;
+        },
+        contextMenu: hasMarkdownContextMenu ? e => {
+            ui.showContextMenu({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, [{
+                label: Lang.string('chat.sendbox.toolbar.previewDraft'),
+                click: onPreviewButtonClick,
+                icon: 'mdi-file-find'
+            }]);
+            e.preventDefault();
+        } : null
+    });
+    if (userConfig && userConfig.showMessageTip) {
         items.push({
             id: 'tips',
-            icon: 'comment-question-outline',
+            icon: 'mdi-comment-question-outline',
             label: Lang.string('chat.sendbox.toolbar.tips'),
             click: e => {
                 ChatTipPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'});
@@ -494,24 +515,25 @@ const createChatMemberContextMenuItems = (member, chat) => {
     return menu;
 };
 
-const linkMembersInText = (text, format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>') => {
+const linkMembersInText = (text, {format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>'}) => {
     if (text && text.indexOf('@') > -1) {
         const langAtAll = Lang.string('chat.message.atAll');
-        text = text.replace(new RegExp('@(all|' + langAtAll + ')', 'g'), `<span class="at-all">@${langAtAll}</span>`);
+        text = text.replace(new RegExp(`@(all|${langAtAll})`, 'g'), `<span class="at-all">@${langAtAll}</span>`);
 
         const userAccount = profile.userAccount;
         members.forEach(m => {
-            text = text.replace(new RegExp('@(' + m.account + '|' + m.realname + ')', 'g'), StringHelper.format(format, {displayName: m.displayName, id: m.id, account: m.account, className: m.account === userAccount ? 'at-me' : ''}));
+            text = text.replace(new RegExp(`@(${m.account}|${m.realname})`, 'g'), StringHelper.format(format, {displayName: m.displayName, id: m.id, account: m.account, className: m.account === userAccount ? 'at-me' : ''}));
         });
     }
     return text;
 };
 
 let onRenderChatMessageContentListener = null;
-const renderChatMessageContent = (messageContent) => {
+const renderChatMessageContent = (messageContent, {renderMarkdown = false}) => {
     if (typeof messageContent === 'string' && messageContent.length) {
-        messageContent = messageContent.replace(/\n\n\n/g, '\u200B\n\u200B\n\u200B\n').replace(/\n\n/g, '\u200B\n\u200B\n');
-        messageContent = Markdown(messageContent);
+        if (renderMarkdown) {
+            messageContent = Markdown(messageContent);
+        }
         messageContent = Emojione.toImage(messageContent);
         if (onRenderChatMessageContentListener) {
             messageContent = onRenderChatMessageContentListener(messageContent);
@@ -524,7 +546,7 @@ const onRenderChatMessageContent = listener => {
     onRenderChatMessageContentListener = listener;
 };
 
-const createGroupChat = (members) => {
+const createGroupChat = (groupMembers) => {
     return Modal.prompt(Lang.string('chat.create.newChatNameTip'), '', {
         inputProps: {placeholder: Lang.string('chat.rename.newTitle')},
         onSubmit: newName => {
@@ -535,7 +557,7 @@ const createGroupChat = (members) => {
         }
     }).then(newName => {
         if (newName) {
-            return Server.createChatWithMembers(members, {name: newName});
+            return Server.createChatWithMembers(groupMembers, {name: newName});
         }
         return Promise.reject(false);
     });
@@ -616,18 +638,21 @@ const createMessageContextMenu = message => {
                     copyHtmlText = message.renderedTextContent(renderChatMessageContent, linkMembersInText);
                 }
                 if (Platform.clipboard.write) {
-                    Platform.clipboard.write({text: HTMLHelper.strip(copyHtmlText), html: copyHtmlText});
+                    Platform.clipboard.write({text: strip(copyHtmlText), html: copyHtmlText});
                 } else {
                     (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(copyHtmlText);
                 }
             }
-        }, {
-            icon: 'mdi-markdown',
-            label: Lang.string('chat.message.copyMarkdown'),
-            click: () => {
-                Platform.clipboard.writeText(message.content);
-            }
         });
+        if (!message.isPlainTextContent) {
+            items.push({
+                icon: 'mdi-markdown',
+                label: Lang.string('chat.message.copyMarkdown'),
+                click: () => {
+                    Platform.clipboard.writeText(message.content);
+                }
+            });
+        }
     }
     if (profile.user.isVersionSupport('todo')) {
         if (items.length) {

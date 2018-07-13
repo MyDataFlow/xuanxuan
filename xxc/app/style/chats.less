@@ -250,6 +250,7 @@
     margin-bottom: @space-sm;
   }
 
+  &.content-type-plain,
   &.content-type-text {
     display: flex;
     flex-direction: row;
@@ -265,6 +266,7 @@
       position: relative;
       top: (-2*@rem);
       opacity: 0;
+      align-self: flex-end;
     }
     &:hover {
       > .app-message-content-text {
@@ -785,8 +787,8 @@
 
   > .btn-copy-code {
     position: absolute;
-    right: (5*@rem);
-    top: (5*@rem);
+    right: (2*@rem);
+    top: (2*@rem);
     visibility: hidden;
     opacity: 0;
     transition: opacity @animation-type @animation-speed-normal;

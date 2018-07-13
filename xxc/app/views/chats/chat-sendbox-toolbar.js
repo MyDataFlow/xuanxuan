@@ -13,8 +13,7 @@ export default class ChatSendboxToolbar extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
         chatGid: PropTypes.string,
-        showMessageTip: PropTypes.bool,
-        captureScreenHotkey: PropTypes.string,
+        userConfigChangeTime: PropTypes.number,
         sendButtonDisabled: PropTypes.bool,
         onSendButtonClick: PropTypes.func,
         onPreviewButtonClick: PropTypes.func
@@ -23,21 +22,20 @@ export default class ChatSendboxToolbar extends PureComponent {
     static defaultProps = {
         className: null,
         chatGid: null,
-        showMessageTip: true,
-        captureScreenHotkey: null,
         sendButtonDisabled: true,
         onSendButtonClick: null,
-        onPreviewButtonClick: null
+        onPreviewButtonClick: null,
+        userConfigChangeTime: null,
     };
 
+
     render() {
-        const {className, chatGid, showMessageTip, captureScreenHotkey, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, ...other} = this.props;
+        const {className, chatGid, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, userConfigChangeTime, ...other} = this.props;
         return (<div className={classes('app-chat-sendbox-toolbar flex', className)} {...other}>
             <div className="flex flex-middle flex-auto toolbar">
                 {
-                    App.im.ui.createSendboxToolbarItems(chatGid, showMessageTip, captureScreenHotkey).map(item => <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon name={item.icon} /></button></div>)
+                    App.im.ui.createSendboxToolbarItems(chatGid, sendButtonDisabled ? null : onPreviewButtonClick).map(item => <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className={classes('btn iconbutton rounded', item.className)} type="button">{Icon.render(item.icon)}</button></div>)
                 }
-                <div className="hint--top has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.previewDraft')} onClick={onPreviewButtonClick}><button disabled={sendButtonDisabled} className="btn iconbutton rounded" type="button"><Icon name="file-document-box" /></button></div>
             </div>
             <div className="toolbar flex flex-none flex-middle">
                 <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (Enter)`} onClick={onSendButtonClick}>

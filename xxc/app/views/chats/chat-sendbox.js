@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
+import {classes} from '../../utils/html-helper';
 import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
@@ -9,7 +8,11 @@ import {ChatSendboxToolbar} from './chat-sendbox-toolbar';
 import MessagesPreivewDialog from './messages-preview-dialog';
 import replaceViews from '../replace-views';
 
-class ChatSendbox extends Component {
+export default class ChatSendbox extends Component {
+    static get ChatSendbox() {
+        return replaceViews('chats/chat-sendbox', ChatSendbox);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -19,10 +22,6 @@ class ChatSendbox extends Component {
         className: null,
         chat: null,
     };
-
-    static get ChatSendbox() {
-        return replaceViews('chats/chat-sendbox', ChatSendbox);
-    }
 
     constructor(props) {
         super(props);
@@ -155,11 +154,11 @@ class ChatSendbox extends Component {
             }
         }
         placeholder = placeholder || Lang.string('chat.sendbox.placeholder.sendMessage');
-        const userConfig = App.userConfig;
+        const {userConfig} = App.profile;
 
         return (<div
             {...other}
-            className={HTML.classes('app-chat-sendbox', className)}
+            className={classes('app-chat-sendbox', className)}
         >
             <DraftEditor
                 className="app-chat-drafteditor dock-top box scroll-y"
@@ -168,9 +167,7 @@ class ChatSendbox extends Component {
                 onChange={this.handleOnChange}
                 onReturnKeyDown={this.handleOnReturnKeyDown}
             />
-            <ChatSendboxToolbar className="dock-bottom" chatGid={chat.gid} showMessageTip={userConfig && userConfig.showMessageTip} captureScreenHotkey={userConfig && userConfig.captureScreenHotkey} sendButtonDisabled={this.state.sendButtonDisabled} onSendButtonClick={this.handleSendButtonClick} onPreviewButtonClick={this.handlePreviewBtnClick} />
+            <ChatSendboxToolbar className="dock-bottom" chatGid={chat.gid} userConfigChangeTime={userConfig && userConfig.lastChangeTime} sendButtonDisabled={this.state.sendButtonDisabled} onSendButtonClick={this.handleSendButtonClick} onPreviewButtonClick={this.handlePreviewBtnClick} />
         </div>);
     }
 }
-
-export default ChatSendbox;

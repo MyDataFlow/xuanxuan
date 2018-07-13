@@ -18,6 +18,7 @@ export default {
     },
     'ui.chat.sendHDEmoticon': true,
     'ui.chat.showMessageTip': true,
+    'ui.chat.sendMarkdown': false,
     'ui.chat.enableSearchInEmojionePicker': false,
     'ui.chat.contacts.groupBy': 'normal', // 'normal', 'role', 'dept'
     'ui.chat.contacts.order.role': {},

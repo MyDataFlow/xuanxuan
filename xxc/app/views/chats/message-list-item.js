@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import App from '../../core';
 import Lang from '../../lang';
@@ -16,11 +16,15 @@ import {NotificationMessage} from './notification-message';
 import {MessageContentUrl} from './message-content-url';
 import replaceViews from '../replace-views';
 import ChatMessage from '../../core/models/chat-message';
-import {showContextMenu} from "../../core/context-menu";
+import {showContextMenu} from '../../core/context-menu';
 
 const showTimeLabelInterval = 1000 * 60 * 5;
 
 export default class MessageListItem extends Component {
+    static get MessageListItem() {
+        return replaceViews('chats/message-list-item', MessageListItem);
+    }
+
     static propTypes = {
         message: PropTypes.object.isRequired,
         lastMessage: PropTypes.object,
@@ -49,10 +53,6 @@ export default class MessageListItem extends Component {
         ignoreStatus: false,
         textContentConverter: null,
     };
-
-    static get MessageListItem() {
-        return replaceViews('chats/message-list-item', MessageListItem);
-    }
 
     constructor(props) {
         super(props);
@@ -196,7 +196,7 @@ export default class MessageListItem extends Component {
         }
 
         if (message.isBroadcast) {
-            return (<div className={HTML.classes('app-message-item app-message-item-broadcast', className)} {...other}>
+            return (<div className={classes('app-message-item app-message-item-broadcast', className)} {...other}>
                 {showDateDivider && <MessageDivider date={message.date} />}
                 <MessageBroadcast contentConverter={textContentConverter} style={basicFontStyle} message={message} />
             </div>);
@@ -263,7 +263,7 @@ export default class MessageListItem extends Component {
             if (hideHeader && !showDateDivider && lastMessage && message.date && (message.date - lastMessage.date) <= showTimeLabelInterval) {
                 hideTimeLabel = true;
             }
-            timeLabelView = <span className={HTML.classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
+            timeLabelView = <span className={classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
         }
 
         if (!staticUI && !ignoreStatus && needResend) {
@@ -282,7 +282,7 @@ export default class MessageListItem extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-message-item', className, {
+            className={classes('app-message-item', className, {
                 'app-message-sending': !ignoreStatus && needCheckResend && !needResend,
                 'app-message-send-fail': !ignoreStatus && needResend,
                 'with-avatar': !hideHeader,

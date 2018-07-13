@@ -26,8 +26,12 @@ renderer.code = (code, lang) => {
  */
 Marked.setOptions({
     renderer,
-    gfm: true,
-    sanitize: true,
+    breaks: true, // If true, use GFM hard and soft line breaks. Requires gfm be true.
+    gfm: true, // If true, use approved GitHub Flavored Markdown (GFM) specification.
+    sanitize: false, // If true, sanitize the HTML passed into markdownString with the sanitizer function.
+    headerIds: false,
+    smartLists: true, // If true, use smarter list behavior than those found in markdown.pl.
+    smartypants: true, // If true, use "smart" typographic punctuation for things like quotes and dashes.
 });
 
 export default Marked;
