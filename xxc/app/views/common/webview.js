@@ -23,6 +23,7 @@ export default class WebView extends Component {
         injectForm: PropTypes.any,
         useMobileAgent: PropTypes.bool,
         hideBeforeDOMReady: PropTypes.bool,
+        style: PropTypes.object,
     };
 
     static defaultProps = {
@@ -35,7 +36,8 @@ export default class WebView extends Component {
         injectForm: null,
         onDomReady: null,
         useMobileAgent: false,
-        hideBeforeDOMReady: true
+        hideBeforeDOMReady: true,
+        style: null,
     };
 
     constructor(props) {
@@ -180,6 +182,26 @@ export default class WebView extends Component {
         if (onDomReady) {
             onDomReady();
         }
+
+        const {contextmenu} = Platform;
+        if (contextmenu && (contextmenu.showInputContextMenu || contextmenu.showSelectionContextMenu)) {
+            const webContents = webview.getWebContents();
+            if (webContents) {
+                webContents.on('context-menu', (e, props) => {
+                    const {selectionText, isEditable} = props;
+                    if (isEditable) {
+                        if (contextmenu.showInputContextMenu) {
+                            contextmenu.showInputContextMenu();
+                        }
+                    } else if (selectionText && selectionText.trim() !== '') {
+                        if (contextmenu.showSelectionContextMenu) {
+                            contextmenu.showSelectionContextMenu();
+                        }
+                    }
+                });
+            }
+        }
+
         this.setState({domReady: true});
     };
 
