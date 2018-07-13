@@ -282,6 +282,7 @@
     "chat.sendbox.toolbar.previewDraft": "预览草稿",
     "chat.sendbox.toolbar.markdown.enabled": "Markdown - 已启用",
     "chat.sendbox.toolbar.markdown.disabled": "Markdown - 已禁用",
+    "chat.sendbox.toolbar.markdownGuide": "Markdown 语法指南",
     "chat.sendbox.toolbar.moreOptions": "右键查看更多选项",
     "chat.sendbox.placeholder.sendMessage": "发送消息",
     "chat.sendbox.placeholder.memberIsOffline": "发送消息（{0}现在不在线，你发送的消息将在对方下次上线时送达）",

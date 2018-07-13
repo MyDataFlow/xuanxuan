@@ -270,21 +270,29 @@ const createSendboxToolbarItems = (chatGid, onPreviewButtonClick) => {
         }
     });
     const sendMarkdown = userConfig && userConfig.sendMarkdown;
-    const hasMarkdownContextMenu = sendMarkdown && onPreviewButtonClick;
     items.push({
         id: 'markdown',
         icon: sendMarkdown ? 'mdi-markdown icon-2x text-green' : 'mdi-markdown icon-2x',
-        label: Lang.string(sendMarkdown ? 'chat.sendbox.toolbar.markdown.enabled' : 'chat.sendbox.toolbar.markdown.disabled') + (hasMarkdownContextMenu ? ` (${Lang.string('chat.sendbox.toolbar.moreOptions')})` : ''),
+        label: Lang.string(sendMarkdown ? 'chat.sendbox.toolbar.markdown.enabled' : 'chat.sendbox.toolbar.markdown.disabled') + (sendMarkdown ? ` (${Lang.string('chat.sendbox.toolbar.moreOptions')})` : ''),
         className: sendMarkdown ? 'selected' : '',
         click: () => {
             userConfig.sendMarkdown = !userConfig.sendMarkdown;
         },
-        contextMenu: hasMarkdownContextMenu ? e => {
-            ui.showContextMenu({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, [{
-                label: Lang.string('chat.sendbox.toolbar.previewDraft'),
-                click: onPreviewButtonClick,
-                icon: 'mdi-file-find'
-            }]);
+        contextMenu: sendMarkdown ? e => {
+            const menuItems = [];
+            if (onPreviewButtonClick) {
+                menuItems.push({
+                    label: Lang.string('chat.sendbox.toolbar.previewDraft'),
+                    click: onPreviewButtonClick,
+                    icon: 'mdi-file-find'
+                });
+            }
+            menuItems.push({
+                icon: 'mdi-help-circle',
+                label: Lang.string('chat.sendbox.toolbar.markdownGuide'),
+                url: `!openUrlInDialog/${encodeURIComponent('http://wowubuntu.com/markdown/')}/?size=lg&insertCss=${encodeURIComponent('.wikistyle>p:first-child{display:none!important}')}`
+            });
+            ui.showContextMenu({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, menuItems);
             e.preventDefault();
         } : null
     });
