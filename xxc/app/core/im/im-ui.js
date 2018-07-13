@@ -533,6 +533,8 @@ const renderChatMessageContent = (messageContent, {renderMarkdown = false}) => {
     if (typeof messageContent === 'string' && messageContent.length) {
         if (renderMarkdown) {
             messageContent = Markdown(messageContent);
+        } else {
+            messageContent = strip(messageContent);
         }
         messageContent = Emojione.toImage(messageContent);
         if (onRenderChatMessageContentListener) {

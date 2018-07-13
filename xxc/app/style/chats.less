@@ -250,7 +250,6 @@
     margin-bottom: @space-sm;
   }
 
-  &.content-type-plain,
   &.content-type-text {
     display: flex;
     flex-direction: row;
@@ -275,6 +274,10 @@
       }
       > .actions {opacity: 1;}
     }
+  }
+
+  &.content-type-plain {
+    white-space: pre;
   }
 
   .sharing &.content-type-text > .app-message-content-text {
