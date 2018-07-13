@@ -9,6 +9,10 @@ import App from '../../core';
 import replaceViews from '../replace-views';
 
 class ChatListItem extends Component {
+    static get ChatListItem() {
+        return replaceViews('chats/chat-list-item', ChatListItem);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         children: PropTypes.any,
@@ -26,10 +30,6 @@ class ChatListItem extends Component {
         badge: null,
         notUserLink: false,
     };
-
-    static get ChatListItem() {
-        return replaceViews('chats/chat-list-item', ChatListItem);
-    }
 
     shouldComponentUpdate(nextProps) {
         return (this.props.className !== nextProps.className ||
