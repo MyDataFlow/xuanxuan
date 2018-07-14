@@ -3,8 +3,14 @@ import {classes} from '../../utils/html-helper';
 import replaceViews from '../replace-views';
 import MessageContentCard from './message-content-card';
 import {getUrlMeta} from '../../core/ui';
+import WebView from '../common/webview';
 import Lang from '../../lang';
+
 export default class MessageContentUrl extends PureComponent {
+    static get MessageContentUrl() {
+        return replaceViews('chats/message-content-url', MessageContentUrl);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         url: PropTypes.string.isRequired,
@@ -15,10 +21,6 @@ export default class MessageContentUrl extends PureComponent {
         className: null,
         data: null
     };
-
-    static get MessageContentUrl() {
-        return replaceViews('chats/message-content-url', MessageContentUrl);
-    }
 
     constructor(props) {
         super(props);
@@ -67,28 +69,41 @@ export default class MessageContentUrl extends PureComponent {
 
         const {meta, loading} = this.state;
         const card = Object.assign({
+            clickable: true,
             title: url,
         }, meta, {
             icon: (meta && !loading) ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin',
             url: null
         });
 
+        let headerView = null;
+
         if (meta && !loading) {
             if (!card.menu) {
                 card.menu = [];
             }
+            const {webviewContent, content} = card;
+            if (webviewContent) {
+                card.content = <WebView {...content} ref={e => {this.webview = e;}} />;
+                card.menu.push({
+                    label: Lang.string('ext.app.open'),
+                    url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
+                    icon: 'mdi-open-in-app'
+                });
+            }
             card.menu.push({
                 label: Lang.string('chat.message.refreshCard'),
                 click: () => {
-                    this.tryGetUrlMeta();
+                    if (this.webview) {
+                        this.webview.reloadWebview();
+                    } else {
+                        this.tryGetUrlMeta();
+                    }
                 },
                 icon: 'mdi-refresh'
             });
         }
 
-        const footerView = (meta && !meta.url) ? null : <a className="dock" href={url} title={card.title} />;
-        const headerView = (meta && !meta.url) ? <a className="dock" href={url} title={card.title} /> : null;
-
-        return <MessageContentCard card={card} header={headerView} className={classes('app-message-content-url relative')} {...other}>{footerView}</MessageContentCard>;
+        return <MessageContentCard card={card} header={headerView} className={classes('app-message-content-url relative')} {...other} />;
     }
 }

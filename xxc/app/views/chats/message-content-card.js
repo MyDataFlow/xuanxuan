@@ -9,11 +9,16 @@ import Lang from '../../lang';
 import WebView from '../common/webview';
 
 export default class MessageContentCard extends Component {
+    static get MessageContentCard() {
+        return replaceViews('chats/message-content-card', MessageContentCard);
+    }
+
     static propTypes = {
         baseClassName: PropTypes.string,
         card: PropTypes.object.isRequired,
         className: PropTypes.string,
         header: PropTypes.any,
+        children: PropTypes.any,
         style: PropTypes.object,
     };
 
@@ -22,13 +27,11 @@ export default class MessageContentCard extends Component {
         className: '',
         header: null,
         style: null,
+        children: null,
     };
 
-    static get MessageContentCard() {
-        return replaceViews('chats/message-content-card', MessageContentCard);
-    }
-
     handleActionButtonClick(action, e) {
+        console.log('handleActionButtonClick', action);
         if (action.url && App.ui.openUrl(action.url, e.target)) {
             e.stopPropagation();
         } else if (action.click) {
@@ -48,7 +51,7 @@ export default class MessageContentCard extends Component {
             ...other
         } = this.props;
 
-        const {image, title, subtitle, content, icon, actions, url, htmlContent, webviewContent, contentType, contentUrl, originContentType, menu, provider} = card;
+        const {image, title, subtitle, content, icon, actions, url, htmlContent, webviewContent, contentType, contentUrl, originContentType, menu, provider, clickable} = card;
         let topView = null;
         if (contentUrl) {
             if (contentType === 'image') {
@@ -88,14 +91,16 @@ export default class MessageContentCard extends Component {
         }
 
         const cardsMenu = [];
-        if (provider) {
-            cardsMenu.push(<div key="provider" className="hint--top-left" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
-        }
         if (menu && menu.length) {
             menu.forEach((menuItem, menuItemIndex) => {
                 cardsMenu.push(<div key={menuItemIndex} className="hint--top-left" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
             });
         }
+        if (provider) {
+            cardsMenu.push(<div key="provider" className="hint--top-left" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
+        }
+
+        const clickView = clickable ? <a className="dock" href={url} title={title} /> : null;
 
         return (<div
             className={classes('app-message-card', baseClassName, className, {
@@ -113,10 +118,13 @@ export default class MessageContentCard extends Component {
                 <hgroup>
                     {titleView}
                     {subTitleView}
+                    {clickable === 'title' ? clickView : null}
                 </hgroup>
                 {header}
+                {clickable === 'header' ? clickView : null}
             </header> : null}
             {contentView}
+            {clickable === 'content' || clickable === true ? clickView : null}
             {actionsButtons && actionsButtons.length ? <nav className="nav actions gray">{actionsButtons}</nav> : null}
             {children}
             {cardsMenu && cardsMenu.length ? <div className="app-menu-card-menu">{cardsMenu}</div> : null}
