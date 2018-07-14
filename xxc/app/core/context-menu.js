@@ -7,7 +7,7 @@ import {isWebUrl} from '../utils/html-helper';
 // Store all inner creators
 const contextMenuCreators = {};
 
-const tryAddDividerItem  = items => {
+const tryAddDividerItem = items => {
     if (items.length && items[items.length - 1] !== 'divider') {
         items.push('divider');
     }
