@@ -233,3 +233,17 @@ addContextMenuCreator('link', context => {
         return items;
     }
 });
+
+if (Platform.clipboard && Platform.clipboard.writeText) {
+    addContextMenuCreator('emoji', context => {
+        const {emoji} = context;
+        if (emoji) {
+            return [{
+                label: Lang.string('common.copy'),
+                click: () => {
+                    Platform.clipboard.writeText(emoji);
+                }
+            }];
+        }
+    });
+}

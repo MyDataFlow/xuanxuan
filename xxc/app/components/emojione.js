@@ -1,5 +1,5 @@
-import Emojione from 'emojione';
 import Config from 'Config';
+import Emojione from 'emojione';
 
 /**
  * Emojione png image path
