@@ -30,7 +30,7 @@ export const getSearchParam = (key, search = null) => {
             if (pairValues.length > 1) {
                 try {
                     params[pairValues[0]] = decodeURIComponent(pairValues[1]);
-                } catch(_) {
+                } catch (_) {
                     if (DEBUG) {
                         console.error(_, {key, search});
                     }
