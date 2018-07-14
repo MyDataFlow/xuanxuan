@@ -25,6 +25,7 @@ body,#wrap{padding:0!important}
 @media(max-width: 650px){
 .outer>.row-table,#mainContent.main-row{display:block!important}
 .outer>.row-table>.col-main,.outer>.row-table>.col-side,#mainContent.main-row>.main-col,#mainContent.main-row>.side-col{display:block!important;padding:0!important;max-width:initial!important;width:100%!important}
+#mainContent.main-row>.main-col{margin-bottom:10px!important;}
 }`;
 
 let extension = null;
