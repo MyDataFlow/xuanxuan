@@ -53,12 +53,11 @@ export const strip = html => {
     return html.replace(/<(?:.|\n)*?>/gm, '');
 };
 
-export const URL_REGEX = /^(https?):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/ig;
 export const isWebUrl = url => {
     if (typeof url !== 'string') {
         return false;
     }
-    return (URL_REGEX).test(url);
+    return (/^(https?):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/ig).test(url);
 };
 
 export default {
