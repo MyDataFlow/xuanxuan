@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {classes} from '../../utils/html-helper';
+import {classes, getKeyDecoration} from '../../utils/html-helper';
 import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
@@ -102,7 +102,9 @@ export default class ChatSendbox extends Component {
     }
 
     handleOnReturnKeyDown = e => {
-        if (!e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const keyDecoration = getKeyDecoration(e);
+        console.log('Return>', keyDecoration, App.profile.userConfig.sendMessageHotkey, Object.assign({}, e));
+        if (keyDecoration === App.profile.userConfig.sendMessageHotkey) {
             if (!this.state.sendButtonDisabled) {
                 setTimeout(() => {
                     this.handleSendButtonClick();

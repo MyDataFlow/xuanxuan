@@ -242,6 +242,14 @@ class UserConfig {
         return this.set('shortcut.captureScreen', shortcut);
     }
 
+    get sendMessageHotkey() {
+        return this.get('shortcut.sendMessage');
+    }
+
+    set sendMessageHotkey(shortcut) {
+        return this.set('shortcut.sendMessage', shortcut);
+    }
+
     get chatFontSize() {
         return this.get('ui.chat.fontSize');
     }

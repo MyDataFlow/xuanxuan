@@ -4,7 +4,7 @@ import Lang from '../../lang';
 import App from '../../core';
 import DEFAULT_USER_CONFIG from '../../core/profile/user-default-config';
 import Messager from '../../components/messager';
-import {UserSetting} from './user-setting';
+import UserSetting from './user-setting';
 
 const show = (callback) => {
     let userSetting = null;

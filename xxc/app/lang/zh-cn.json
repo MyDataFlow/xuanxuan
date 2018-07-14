@@ -285,6 +285,8 @@
     "chat.sendbox.toolbar.markdown.disabled": "Markdown - 已禁用",
     "chat.sendbox.toolbar.markdownGuide": "Markdown 语法指南",
     "chat.sendbox.toolbar.moreOptions": "右键查看更多选项",
+    "chat.sendbox.toolbar.changeHotkeyTip": "右键切换快捷键",
+    "chat.sendbox.changeHotkeyTip": "选择发送消息快捷键",
     "chat.sendbox.placeholder.sendMessage": "发送消息",
     "chat.sendbox.placeholder.memberIsOffline": "发送消息（{0}现在不在线，你发送的消息将在对方下次上线时送达）",
     "chat.atHim": "@她/他",
@@ -504,7 +506,8 @@
     "setting.windows.askEveryTime": "每次询问我操作",
     "setting.windows.minimizeMainWindow": "最小化窗口到通知栏",
     "setting.windows.quitApp": "关闭窗口并退出应用",
-    "setting.hotkeys.globalCaptureScreen": "全局截图快捷键",
+    "setting.hotkeys.sendMessage": "发送消息",
+    "setting.hotkeys.globalCaptureScreen": "全局截图",
     "setting.btn.reset": "重置为默认设置",
     "setting.message.reset": "已重置为默认，保存后生效。",
 

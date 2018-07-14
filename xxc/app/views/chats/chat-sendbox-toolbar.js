@@ -29,6 +29,34 @@ export default class ChatSendboxToolbar extends PureComponent {
         userConfigChangeTime: null,
     };
 
+    handleSendBtnContextMenu = e => {
+        const currentHotKey = App.profile.userConfig.sendMessageHotkey;
+        let itemsChecked = false;
+        const items = [{
+            label: Lang.string('chat.sendbox.changeHotkeyTip'),
+            disabled: true
+        }];
+        ['Enter', 'Alt+Enter', 'Ctrl+Enter', 'Shift+Enter', 'Ctrl+Shift+Enter', 'Ctrl+Alt+Enter'].forEach(x => {
+            if (currentHotKey === x) {
+                itemsChecked = true;
+            }
+            items.push({
+                label: x,
+                click: () => {
+                    App.profile.userConfig.sendMessageHotkey = x;
+                },
+                checked: currentHotKey === x
+            });
+        });
+        if (!itemsChecked) {
+            items.push({
+                label: currentHotKey,
+                checked: true
+            });
+        }
+
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY}, items);
+    };
 
     render() {
         const {className, chatGid, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, userConfigChangeTime, ...other} = this.props;
@@ -44,10 +72,11 @@ export default class ChatSendboxToolbar extends PureComponent {
                 }
             </div>
             <div className="toolbar flex flex-none flex-middle">
-                <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (Enter)`} onClick={onSendButtonClick}>
+                <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (${App.profile.userConfig.sendMessageHotkey} - ${Lang.string('chat.sendbox.toolbar.changeHotkeyTip')})`} onClick={onSendButtonClick}>
                     <button
+                        onContextMenu={this.handleSendBtnContextMenu}
                         className={classes('btn iconbutton rounded', {
-                            disabled: sendButtonDisabled,
+                            muted: sendButtonDisabled,
                             'text-primary': !sendButtonDisabled
                         })}
                         type="button"
