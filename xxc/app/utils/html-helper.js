@@ -1,3 +1,7 @@
+import Platform from 'Platform';
+
+const isWindowsOS = Platform.env.isWindowsOS;
+
 export const classes = (...args) => (
     args.map(arg => {
         if (Array.isArray(arg)) {
@@ -58,6 +62,26 @@ export const isWebUrl = url => {
         return false;
     }
     return (/^(https?):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/ig).test(url);
+};
+
+export const getKeyDecoration = event => {
+    const shortcut = [];
+    if (event.metaKey) {
+        shortcut.push(isWindowsOS ? 'Windows' : 'Command');
+    }
+    if (event.ctrlKey) {
+        shortcut.push('Ctrl');
+    }
+    if (event.altKey) {
+        shortcut.push('Alt');
+    }
+    if (event.shiftKey) {
+        shortcut.push('Shift');
+    }
+    if (event.key && event.key !== 'Meta' && event.key !== 'Control' && event.key !== 'Alt' && event.key !== 'Shift') {
+        shortcut.push(String.fromCharCode(event.keyCode));
+    }
+    return shortcut.join('+');
 };
 
 export default {

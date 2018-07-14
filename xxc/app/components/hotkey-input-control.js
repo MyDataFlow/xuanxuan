@@ -1,21 +1,19 @@
 import React, {Component, PropTypes} from 'react';
-import Platform from 'Platform';
 import InputControl from './input-control';
-
-const isWindowsOS = Platform.env.isWindowsOS;
+import {getKeyDecoration} from '../utils/html-helper';
 
 class HotkeyInputControl extends Component {
+    static propTypes = {
+        defaultValue: PropTypes.string,
+        onChange: PropTypes.func,
+        inputProps: PropTypes.object,
+    };
+
     static defaultProps = {
         defaultValue: '',
         onChange: null,
         inputProps: null,
     };
-
-    static propTypes = {
-        defaultValue: PropTypes.string,
-        onChange: PropTypes.func,
-        inputProps: PropTypes.object,
-    }
 
     constructor(props) {
         super(props);
@@ -36,23 +34,7 @@ class HotkeyInputControl extends Component {
             this.changeValue('');
             return;
         }
-        let shortcut = [];
-        if (e.metaKey) {
-            shortcut.push(isWindowsOS ? 'Windows' : 'Command');
-        }
-        if (e.ctrlKey) {
-            shortcut.push('Ctrl');
-        }
-        if (e.altKey) {
-            shortcut.push('Alt');
-        }
-        if (e.shiftKey) {
-            shortcut.push('Shift');
-        }
-        if (e.key && e.key !== 'Meta' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Shift') {
-            shortcut.push(String.fromCharCode(e.keyCode));
-        }
-        shortcut = shortcut.join('+');
+        const shortcut = getKeyDecoration(e);
         this.changeValue(shortcut);
         e.preventDefault();
     }
