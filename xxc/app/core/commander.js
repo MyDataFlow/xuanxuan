@@ -120,7 +120,13 @@ export const execute = (command, ...params) => {
  */
 export const executeCommand = (commandText, commandContext = null) => {
     setCommandContext(commandContext);
-    return execute(...commandText.split('/').map(decodeURIComponent));
+    const params = commandText.split('/');
+    return execute(...params.map((p, idx) => {
+        if (p[0] === '?' && idx === (params.length - 1)) {
+            return p;
+        }
+        return decodeURIComponent(p);
+    }));
 };
 
 /**
