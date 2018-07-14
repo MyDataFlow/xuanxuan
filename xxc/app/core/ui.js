@@ -453,6 +453,7 @@ export const getUrlMeta = (url) => {
                 } else if (contentType.startsWith('video')) {
                     cardMeta.contentUrl = url;
                     cardMeta.contentType = 'video';
+                    cardMeta.clickable = 'title';
                     cardMeta.icon = 'mdi-video text-red icon-2x';
                 }
                 cardMeta.title = url;

@@ -40,6 +40,13 @@ export default class MessageContentCard extends Component {
         }
     }
 
+    handleMenuIconClick(menuItem, e) {
+        if (menuItem.click) {
+            menuItem.click(e);
+            e.stopPropagation();
+        }
+    }
+
     render() {
         let {
             card,
@@ -93,18 +100,17 @@ export default class MessageContentCard extends Component {
         const cardsMenu = [];
         if (menu && menu.length) {
             menu.forEach((menuItem, menuItemIndex) => {
-                cardsMenu.push(<div key={menuItemIndex} className="hint--top-left" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
+                cardsMenu.push(<div key={menuItemIndex} className="hint--top-left" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click ? this.handleMenuIconClick.bind(this, menuItem) : null} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
             });
         }
         if (provider) {
             cardsMenu.push(<div key="provider" className="hint--top-left" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
         }
 
-        const clickView = clickable ? <a className="dock" href={url} title={title} /> : null;
-
+        const clickView = (clickable && clickable !== true) ? <a className="dock" href={url || contentUrl} title={title} /> : null;
         return (<div
             className={classes('app-message-card', baseClassName, className, {
-                'app-link state': !!url,
+                'app-link state': clickable === true,
                 'with-avatar': !!avatarView,
                 'only-title': !contentView && !subTitleView && !actionsButtons.length
             })}
@@ -124,7 +130,7 @@ export default class MessageContentCard extends Component {
                 {clickable === 'header' ? clickView : null}
             </header> : null}
             {contentView}
-            {clickable === 'content' || clickable === true ? clickView : null}
+            {clickable === 'content' ? clickView : null}
             {actionsButtons && actionsButtons.length ? <nav className="nav actions gray">{actionsButtons}</nav> : null}
             {children}
             {cardsMenu && cardsMenu.length ? <div className="app-menu-card-menu">{cardsMenu}</div> : null}

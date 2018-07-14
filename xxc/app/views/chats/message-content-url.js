@@ -60,7 +60,7 @@ export default class MessageContentUrl extends PureComponent {
     }
 
     render() {
-        let {
+        const {
             url,
             className,
             data,
@@ -69,14 +69,11 @@ export default class MessageContentUrl extends PureComponent {
 
         const {meta, loading} = this.state;
         const card = Object.assign({
-            clickable: true,
+            clickable: 'content',
             title: url,
         }, meta, {
             icon: (meta && !loading) ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin',
-            url: null
         });
-
-        let headerView = null;
 
         if (meta && !loading) {
             if (!card.menu) {
@@ -85,6 +82,7 @@ export default class MessageContentUrl extends PureComponent {
             const {webviewContent, content} = card;
             if (webviewContent) {
                 card.content = <WebView {...content} ref={e => {this.webview = e;}} />;
+                card.clickable = 'header';
                 card.menu.push({
                     label: Lang.string('ext.app.open'),
                     url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
@@ -104,6 +102,6 @@ export default class MessageContentUrl extends PureComponent {
             });
         }
 
-        return <MessageContentCard card={card} header={headerView} className={classes('app-message-content-url relative')} {...other} />;
+        return <MessageContentCard card={card} className={classes('app-message-content-url relative')} {...other} />;
     }
 }
