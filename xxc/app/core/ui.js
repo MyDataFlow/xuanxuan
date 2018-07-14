@@ -12,7 +12,7 @@ import profile from './profile';
 import Notice from './notice';
 import ImageViewer from '../components/image-viewer';
 import Store from '../utils/store';
-import commander, {executeCommand, registerCommand} from './commander';
+import {executeCommand, registerCommand} from './commander';
 import WebViewDialog from '../views/common/webview-dialog';
 
 const EVENT = {
@@ -182,7 +182,7 @@ Server.onUserLoginout((user, code, reason, unexpected) => {
 document.body.classList.add(`os-${Platform.env.os}`);
 
 export const openUrlInApp = (url, appName) => {
-    commander.executeCommand(`openInApp/${appName}/${decodeURIComponent(appName)}`, {appName, url});
+    executeCommand(`openInApp/${appName}/${encodeURIComponent(appName)}`, {appName, url});
 };
 
 export const openUrlInDialog = (url, options, callback) => {
