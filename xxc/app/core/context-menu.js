@@ -82,23 +82,13 @@ export const removeContextMenuCreator = creatorId => {
     return false;
 };
 
-export const showContextMenu = (contextName, context) => {
-    if (!context) {
-        throw new Error('Context must be set.');
-    }
-    if (context instanceof Event) {
-        context = {event: context};
-    }
-    const {event, options, callback} = context;
-    if (!event) {
-        throw new Error('Context and context.event must be set.');
-    }
-
+export const getMenuItemsForContext = (contextName, context = {}) => {
+    const {event, options} = context;
     const items = [];
 
     // Get context menu items for link target element
     let linkItemsCount = 0;
-    if (options && options.linkTarget && event.target.tagName === 'A' && contextName !== 'link') {
+    if (event && options && options.linkTarget && event.target.tagName === 'A' && contextName !== 'link') {
         const linkItems = getInnerMenuItemsForContext('link', context);
         if (linkItems && linkItems.length) {
             linkItemsCount = linkItems.length;
@@ -164,6 +154,23 @@ export const showContextMenu = (contextName, context) => {
     if (textSelectItems.length) {
         tryAddDividerItem(items).push(...textSelectItems);
     }
+
+    return items;
+};
+
+export const showContextMenu = (contextName, context) => {
+    if (!context) {
+        throw new Error('Context must be set.');
+    }
+    if (context instanceof Event) {
+        context = {event: context};
+    }
+    const {event, options, callback} = context;
+    if (!event) {
+        throw new Error('Context and context.event must be set.');
+    }
+
+    const items = getMenuItemsForContext(contextName, context);
 
     if (DEBUG) {
         console.log('Show ContextMenu for context', contextName, items);
