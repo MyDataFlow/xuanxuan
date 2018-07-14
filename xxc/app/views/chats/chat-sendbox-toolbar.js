@@ -4,6 +4,7 @@ import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import replaceViews from '../replace-views';
+import {getMenuItemsForContext} from '../../core/context-menu';
 
 export default class ChatSendboxToolbar extends PureComponent {
     static get ChatSendboxToolbar() {
@@ -32,9 +33,14 @@ export default class ChatSendboxToolbar extends PureComponent {
     render() {
         const {className, chatGid, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, userConfigChangeTime, ...other} = this.props;
         return (<div className={classes('app-chat-sendbox-toolbar flex', className)} {...other}>
-            <div className="flex flex-middle flex-auto toolbar">
+            <div className="flex flex-middle flex-auto toolbar flex-wrap">
                 {
-                    App.im.ui.createSendboxToolbarItems(chatGid, sendButtonDisabled ? null : onPreviewButtonClick).map(item => <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className={classes('btn iconbutton rounded', item.className)} type="button">{Icon.render(item.icon)}</button></div>)
+                    getMenuItemsForContext('chat.sendbox.toolbar', {chatGid, openMessagePreview: sendButtonDisabled ? null : onPreviewButtonClick, sendContent: App.im.ui.sendContentToChat}).map((item, idx) => {
+                        if (item === 'divider') {
+                            return <div key={item.id || idx} className="divider" />;
+                        }
+                        return <div key={item.id || idx} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className={classes('btn iconbutton rounded', item.className)} type="button">{Icon.render(item.icon)}</button></div>;
+                    })
                 }
             </div>
             <div className="toolbar flex flex-none flex-middle">

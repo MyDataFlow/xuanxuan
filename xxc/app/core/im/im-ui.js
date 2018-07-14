@@ -206,7 +206,8 @@ const createCatureScreenContextMenuItems = () => {
     return items;
 };
 
-const createSendboxToolbarItems = (chatGid, onPreviewButtonClick) => {
+addContextMenuCreator('chat.sendbox.toolbar', context => {
+    const {chatGid, openMessagePreview} = context;
     const {userConfig} = profile;
     const items = [{
         id: 'emoticon',
@@ -281,9 +282,9 @@ const createSendboxToolbarItems = (chatGid, onPreviewButtonClick) => {
         contextMenu: sendMarkdown ? e => {
             const menuItems = [{
                 label: Lang.string('chat.sendbox.toolbar.previewDraft'),
-                click: onPreviewButtonClick,
+                click: openMessagePreview,
                 icon: 'mdi-file-find',
-                disabled: !onPreviewButtonClick
+                disabled: !openMessagePreview
             }, {
                 icon: 'mdi-help-circle',
                 label: Lang.string('chat.sendbox.toolbar.markdownGuide'),
@@ -304,7 +305,7 @@ const createSendboxToolbarItems = (chatGid, onPreviewButtonClick) => {
         });
     }
     return items;
-};
+});
 
 const chatRenamePrompt = chat => {
     return Modal.prompt(Lang.string('chat.rename.title'), chat.name, {
@@ -747,7 +748,6 @@ export default {
     isActiveChat,
     activeAndMapCacheChats,
     createChatToolbarItems,
-    createSendboxToolbarItems,
     linkMembersInText,
     renderChatMessageContent,
     createChatContextMenuItems,
