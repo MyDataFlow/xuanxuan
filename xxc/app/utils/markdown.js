@@ -60,7 +60,7 @@ const allowedTags = {
     tfoot: commonAttrs,
     tbody: commonAttrs,
     img: new Set(['class', 'id', 'style', 'src', 'alt']),
-    vedio: new Set(['class', 'id', 'style', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
+    video: new Set(['class', 'id', 'style', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
     source: new Set(['src', 'type']),
     audio: new Set(['class', 'id', 'style', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
     track: new Set(['default', 'kind', 'label', 'src', 'srclang']),
