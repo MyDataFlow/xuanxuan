@@ -355,12 +355,14 @@ addContextMenuCreator('chat.menu', context => {
             }
         });
 
-        menu.push({
-            label: Lang.string(chat.mute ? 'chat.toolbar.cancelMute' : 'chat.toolbar.mute'),
-            click: () => {
-                Server.toggleMuteChat(chat);
-            }
-        });
+        if (profile.user.isVersionSupport('muteChat')) {
+            menu.push({
+                label: Lang.string(chat.mute ? 'chat.toolbar.cancelMute' : 'chat.toolbar.mute'),
+                click: () => {
+                    Server.toggleMuteChat(chat);
+                }
+            });
+        }
     }
 
     if (chat.canRename(profile.user)) {
@@ -411,7 +413,7 @@ addContextMenuCreator('chat.menu', context => {
                 }
             });
         }
-        if (chat.canHide) {
+        if (chat.canHide && profile.user.isVersionSupport('hideChat')) {
             menu.push({
                 label: Lang.string(chat.hidden ? 'chat.toolbar.cancelHide' : 'chat.toolbar.hide'),
                 click: () => {
@@ -437,12 +439,14 @@ addContextMenuCreator('chat.menu', context => {
 addContextMenuCreator('chat.toolbar.more', ({chat}) => {
     if (chat.isOne2One) return [];
     const menu = [];
-    menu.push({
-        label: Lang.string(chat.mute ? 'chat.toolbar.cancelMute' : 'chat.toolbar.mute'),
-        click: () => {
-            Server.toggleMuteChat(chat);
-        }
-    });
+    if (profile.user.isVersionSupport('muteChat')) {
+        menu.push({
+            label: Lang.string(chat.mute ? 'chat.toolbar.cancelMute' : 'chat.toolbar.mute'),
+            click: () => {
+                Server.toggleMuteChat(chat);
+            }
+        });
+    }
     if (chat.canRename(profile.user)) {
         menu.push({
             label: Lang.string('common.rename'),
