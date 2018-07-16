@@ -27,6 +27,7 @@ $config->xuanxuan->enabledMethods['chat']['setcommitters']      = 'setCommitters
 $config->xuanxuan->enabledMethods['chat']['changepublic']       = 'changePublic';
 $config->xuanxuan->enabledMethods['chat']['star']               = 'star';
 $config->xuanxuan->enabledMethods['chat']['hide']               = 'hide';
+$config->xuanxuan->enabledMethods['chat']['mute']               = 'mute';
 $config->xuanxuan->enabledMethods['chat']['category']           = 'category';
 $config->xuanxuan->enabledMethods['chat']['addmember']          = 'addMember';
 $config->xuanxuan->enabledMethods['chat']['message']            = 'message';

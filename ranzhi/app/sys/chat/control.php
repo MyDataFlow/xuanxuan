@@ -726,6 +726,45 @@ class chat extends control
     }
 
     /**
+     * Mute a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $mute true: mute a chat | false: cacel mute a chat.
+     * @param  int    $userID
+     * @access public
+     * @return void
+     */
+    public function mute($gid = '', $mute = true, $userID = 0)
+    {
+        $chatList = $this->chat->muteChat($gid, $mute, $userID);
+        if(dao::isError())
+        {
+            if($mute)
+            {
+                $message = 'mute chat failed.';
+            }
+            else
+            {
+                $message = 'Mute chat failed.';
+            }
+
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
+        }
+        else
+        {
+            $data = new stdclass();
+            $data->gid  = $gid;
+            $data->mute = $mute;
+
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $data;
+        }
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
      * Set category for a chat
      *
      * @param  array $gids
