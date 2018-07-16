@@ -23,9 +23,9 @@ renderer.code = (code, lang) => {
     return `<pre class="code-block" ${fileName ? (` data-name="${fileName}"`) : ''}><div class="hint--left btn-copy-code app-link" data-url="!copyCode/${lang || ''}" data-hint="${Lang.string('common.copyCode')}"><button class="btn iconbutton rounded primary-pale text-primary" type="button"><i class="icon mdi mdi-code-not-equal-variant icon-2x"></i></button></div><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
 };
 
-const commonAttrs = new Set(['class', 'id', 'style']);
+const commonAttrs = new Set(['class', 'style']);
 const allowedTags = {
-    a: new Set(['class', 'id', 'href', 'title', 'style']),
+    a: new Set(['class', 'href', 'title', 'style']),
     b: commonAttrs,
     blockquote: commonAttrs,
     code: true,
@@ -56,14 +56,14 @@ const allowedTags = {
     table: commonAttrs,
     tr: commonAttrs,
     thead: commonAttrs,
-    th: new Set(['class', 'id', 'style', 'colspan', 'rowspan']),
-    td: new Set(['class', 'id', 'style', 'colspan', 'rowspan']),
+    th: new Set(['class', 'style', 'colspan', 'rowspan']),
+    td: new Set(['class', 'style', 'colspan', 'rowspan']),
     tfoot: commonAttrs,
     tbody: commonAttrs,
-    img: new Set(['class', 'id', 'style', 'src', 'alt']),
-    video: new Set(['class', 'id', 'style', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
+    img: new Set(['class', 'style', 'src', 'alt']),
+    video: new Set(['class', 'style', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
     source: new Set(['src', 'type']),
-    audio: new Set(['class', 'id', 'style', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
+    audio: new Set(['class', 'style', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
     track: new Set(['default', 'kind', 'label', 'src', 'srclang']),
     div: commonAttrs,
     span: commonAttrs,
@@ -71,7 +71,7 @@ const allowedTags = {
     dt: commonAttrs,
     dd: commonAttrs,
     abbr: commonAttrs,
-    details: new Set(['class', 'id', 'style', 'open']),
+    details: new Set(['class', 'style', 'open']),
     summary: commonAttrs,
     caption: commonAttrs,
 };
