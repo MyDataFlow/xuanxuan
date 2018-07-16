@@ -1,4 +1,4 @@
-import Platform from 'Platform';
+import Platform from 'Platform'; // eslint-disable-line
 import ContextMenu from '../components/context-menu';
 import timeSquence from '../utils/time-sequence';
 import Lang from '../lang';
@@ -7,7 +7,7 @@ import {isWebUrl} from '../utils/html-helper';
 // Store all inner creators
 const contextMenuCreators = {};
 
-const tryAddDividerItem = items => {
+export const tryAddDividerItem = items => {
     if (items.length && items[items.length - 1] !== 'divider') {
         items.push('divider');
     }
@@ -58,7 +58,7 @@ export const addContextMenuCreator = (creator, createFunc) => {
     }
     if (typeof createFunc === 'function') {
         creator.create = createFunc;
-    } else if (typeof createFunc === 'array') {
+    } else if (Array.isArray(createFunc)) {
         creator.items = createFunc;
     }
     if (!creator.id) {
