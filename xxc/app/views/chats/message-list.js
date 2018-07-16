@@ -41,6 +41,7 @@ class MessageList extends Component {
             if (this.lastMessage && (this.waitNewMessage || this.isScrollBottom) && this.lastMessage.cgid === chat.gid) {
                 this.waitNewMessage = null;
                 this.scrollToBottom(500);
+                App.im.ui.sendContentToChat();
             }
         });
     }
