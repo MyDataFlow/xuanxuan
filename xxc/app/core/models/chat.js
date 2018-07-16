@@ -215,6 +215,22 @@ class Chat extends Entity {
         this.$set('mute', mute);
     }
 
+    get hidden() {
+        return this.hide;
+    }
+
+    set hidden(hide) {
+        this.hide = hide;
+    }
+
+    get hide() {
+        return this.$get('hide');
+    }
+
+    set hide(hide) {
+        this.$set('hide', hide);
+    }
+
     get public() {
         return this.$get('public');
     }
@@ -540,6 +556,10 @@ class Chat extends Entity {
 
     canExit(user) {
         return this.isGroup && !this.isOwner(user);
+    }
+    
+    get canHide() {
+        return this.isGroup;
     }
 
     get isSystem() {

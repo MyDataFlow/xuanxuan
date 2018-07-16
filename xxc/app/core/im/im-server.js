@@ -229,12 +229,39 @@ const toggleChatStar = (chat) => {
         });
     };
     if (!chat.id) {
+        return createChat(chat).then(sendRequest);
+    }
+    return sendRequest();
+};
+
+const toggleMuteChat = (chat) => {
+    const sendRequest = () => {
+        return Server.socket.send({
+            method: 'mute',
+            params: [chat.gid, !chat.mute]
+        });
+    };
+    if (!chat.id) {
+        return createChat(chat).then(sendRequest);
+    }
+    return sendRequest();
+};
+
+const toggleHideChat = (chat) => {
+    const sendRequest = () => {
+        return Server.socket.send({
+            method: 'hide',
+            params: [chat.gid, !chat.hide]
+        });
+    };
+    if (!chat.id) {
         return createChat(chat).then(() => {
             return sendRequest();
         });
     }
     return sendRequest();
 };
+
 
 const setChatCategory = (chat, category) => {
     const isArray = Array.isArray(chat);
@@ -562,6 +589,8 @@ export default {
     setCommitters,
     toggleChatPublic,
     toggleChatStar,
+    toggleHideChat,
+    toggleMuteChat,
     setChatCategory,
     renameChat,
     sendSocketMessageForChat,

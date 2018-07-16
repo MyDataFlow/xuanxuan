@@ -25,7 +25,7 @@ import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
 import {strip} from '../../utils/html-helper';
-import {addContextMenuCreator, getMenuItemsForContext} from '../context-menu';
+import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem} from '../context-menu';
 import ui from '../ui';
 
 let activedChatId = null;
@@ -162,9 +162,7 @@ addContextMenuCreator('chat.toolbar', context => {
 const captureAndCutScreenImage = (hiddenWindows = false) => {
     if (Platform.screenshot) {
         Platform.screenshot.captureAndCutScreenImage(0, hiddenWindows).then(image => {
-            if (image) {
-                sendContentToChat(image, 'image');
-            }
+            return image && sendContentToChat(image, 'image');
         }).catch(error => {
             if (DEBUG) {
                 console.warn('Capture screen image error: ', error);
@@ -356,6 +354,13 @@ addContextMenuCreator('chat.menu', context => {
                 Server.toggleChatStar(chat);
             }
         });
+
+        menu.push({
+            label: Lang.string(chat.mute ? 'chat.toolbar.cancelMute' : 'chat.toolbar.mute'),
+            click: () => {
+                Server.toggleMuteChat(chat);
+            }
+        });
     }
 
     if (chat.canRename(profile.user)) {
@@ -397,11 +402,9 @@ addContextMenuCreator('chat.menu', context => {
         });
     }
 
-    if ((menuType === 'contacts' || menuType === 'groups') && !chat.isDismissed) {
-        if (viewType === 'category') {
-            if (menu.length) {
-                menu.push({type: 'separator'});
-            }
+    if (!chat.isDismissed && !chat.isRobot) {
+        tryAddDividerItem(menu);
+        if (viewType === 'category' && (menuType === 'contacts' || menuType === 'groups')) {
             menu.push({
                 label: Lang.string('chats.menu.group.add'),
                 click: () => {
@@ -409,6 +412,12 @@ addContextMenuCreator('chat.menu', context => {
                 }
             });
         }
+        menu.push({
+            label: Lang.string(chat.hidden ? 'chat.toolbar.cancelHide' : 'chat.toolbar.hide'),
+            click: () => {
+                Server.toggleHideChat(chat);
+            }
+        });
     }
 
     if (DEBUG && Platform.clipboard && Platform.clipboard.writeText) {
