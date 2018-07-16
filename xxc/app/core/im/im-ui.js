@@ -437,6 +437,12 @@ addContextMenuCreator('chat.menu', context => {
 addContextMenuCreator('chat.toolbar.more', ({chat}) => {
     if (chat.isOne2One) return [];
     const menu = [];
+    menu.push({
+        label: Lang.string(chat.mute ? 'chat.toolbar.cancelMute' : 'chat.toolbar.mute'),
+        click: () => {
+            Server.toggleMuteChat(chat);
+        }
+    });
     if (chat.canRename(profile.user)) {
         menu.push({
             label: Lang.string('common.rename'),
