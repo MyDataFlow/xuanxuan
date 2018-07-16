@@ -7,6 +7,10 @@ import Spinner from '../../components/spinner';
 import Lang from '../../lang';
 
 class ChatMessages extends Component {
+    static get ChatMessages() {
+        return replaceViews('chats/chat-messages', ChatMessages);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -16,10 +20,6 @@ class ChatMessages extends Component {
         className: null,
         chat: null,
     };
-
-    static get ChatMessages() {
-        return replaceViews('chats/chat-messages', ChatMessages);
-    }
 
     constructor(props) {
         super(props);

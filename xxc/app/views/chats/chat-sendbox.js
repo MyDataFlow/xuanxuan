@@ -32,12 +32,14 @@ export default class ChatSendbox extends Component {
 
     componentDidMount() {
         this.onSendContentToChatHandler = App.im.ui.onSendContentToChat(this.props.chat.gid, content => {
-            switch (content.type) {
-            case 'image':
-                this.editbox.appendImage(content.content);
-                break;
-            default:
-                this.editbox.appendContent(content.content);
+            if (content && content.content) {
+                switch (content.type) {
+                case 'image':
+                    this.editbox.appendImage(content.content);
+                    break;
+                default:
+                    this.editbox.appendContent(content.content);
+                }
             }
             this.editbox.focus();
         });
@@ -103,7 +105,6 @@ export default class ChatSendbox extends Component {
 
     handleOnReturnKeyDown = e => {
         const keyDecoration = getKeyDecoration(e);
-        console.log('Return>', keyDecoration, App.profile.userConfig.sendMessageHotkey, Object.assign({}, e));
         if (keyDecoration === App.profile.userConfig.sendMessageHotkey) {
             if (!this.state.sendButtonDisabled) {
                 setTimeout(() => {
