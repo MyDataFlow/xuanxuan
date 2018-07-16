@@ -401,12 +401,12 @@ const getLastRecentChat = () => {
 };
 
 const getContactChat = (member) => {
-    const members = [member.id, profile.user.id].sort();
-    const gid = members.join('&');
+    const membersId = [member.id, profile.user.id].sort();
+    const gid = membersId.join('&');
     return get(gid);
 };
 
-const getContactsChats = (sortList = true, groupedBy = false) => {
+const getContactsChats = (sortList = 'onlineFirst', groupedBy = false) => {
     const {user} = profile;
     let contactChats = [];
     if (!user) {

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
 import {showContextMenu} from '../../core/context-menu';
@@ -175,7 +175,7 @@ export default class MenuContactList extends Component {
             onDragStart={this.handleDragStart.bind(this, group)}
             onDragEnd={this.handleDragEnd.bind(this, group)}
             onClick={groupList.props.toggleWithHeading ? groupList.handleHeadingClick : null}
-            className={HTML.classes('heading', dragClasses)}
+            className={classes('heading', dragClasses)}
         >
             {iconView}
             <div className="title"><strong>{group.title || Lang.string('chats.menu.group.other')}</strong> {countView}</div>
@@ -209,11 +209,11 @@ export default class MenuContactList extends Component {
         } = this.props;
 
         const groupType = this.groupType;
-        const chats = App.im.chats.getContactsChats(true, groupType);
+        const chats = App.im.chats.getContactsChats('onlineFirst', groupType);
         const user = App.user;
         this.groupChats = chats;
 
-        return (<div className={HTML.classes('app-chats-menu-list app-contact-list app-chat-group-list list scroll-y', className)} {...other}>
+        return (<div className={classes('app-chats-menu-list app-contact-list app-chat-group-list list scroll-y', className)} {...other}>
             {user ? <MemberListItem
                 className="flex-middle app-member-me"
                 member={user}
@@ -233,16 +233,6 @@ export default class MenuContactList extends Component {
                 hideEmptyGroup={groupType !== 'category'}
                 forceCollapse={!!this.state.dragging}
             />
-            {/* {
-                GroupList.render(chats, {
-                    defaultExpand: this.defaultExpand,
-                    itemCreator: this.itemCreator,
-                    headingCreator: this.headingCreator,
-                    onExpandChange: this.onExpandChange,
-                    hideEmptyGroup: groupType !== 'category',
-                    forceCollapse: !!this.state.dragging
-                })
-            } */}
             {children}
         </div>);
     }

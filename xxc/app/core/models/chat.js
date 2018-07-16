@@ -712,7 +712,9 @@ class Chat extends Entity {
             return chats.sort(orders);
         }
         if (!orders || orders === 'default' || orders === true) {
-            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id']; // namePinyin
+            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id'];
+        } else if (orders === 'onlineFirst') {
+            orders = ['star', 'notice', 'online', 'lastActiveTime', 'createDate', 'name', 'id'];
         } else if (typeof orders === 'string') {
             orders = orders.split(' ');
         }
