@@ -114,7 +114,7 @@ const sanitizer = tag => {
  */
 Marked.setOptions({
     renderer,
-    breaks: true, //   If true, use GFM hard and soft line breaks. Requires gfm be true.
+    breaks: false, //   If true, use GFM hard and soft line breaks. Requires gfm be true.
     gfm: true, // If true, use approved GitHub Flavored Markdown (GFM) specification.
     sanitize: true, // If true, sanitize the HTML passed into markdownString with the sanitizer function.
     sanitizer: Config.ui['chat.markdown.html'] ? sanitizer : null, // A function to sanitize the HTML passed into markdownString.
