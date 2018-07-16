@@ -50,11 +50,11 @@ const updateChatNoticeTask = new DelayAction(() => {
                 const chatLastMessage = chat.lastMessage;
                 if (chatLastMessage && (!lastChatMessage || lastChatMessage.date < chatLastMessage.date)) {
                     lastChatMessage = chatLastMessage;
-                    if (!chat.mute) {
+                    if (!chat.isMuteOrHidden) {
                         lastNoticeChat = chat;
                     }
                 }
-                if (!chat.mute) {
+                if (!chat.isMuteOrHidden) {
                     notMuteCount += chat.noticeCount;
                 }
             }

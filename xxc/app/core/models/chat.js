@@ -557,7 +557,7 @@ class Chat extends Entity {
     canExit(user) {
         return this.isGroup && !this.isOwner(user);
     }
-    
+
     get canHide() {
         return this.isGroup;
     }
@@ -589,6 +589,10 @@ class Chat extends Entity {
         });
         this.renewUpdateId();
         return mutedMessages;
+    }
+
+    get isMuteOrHidden() {
+        return this.mute || this.hidden;
     }
 
     get messages() {

@@ -7,8 +7,19 @@ import {isWebUrl} from '../utils/html-helper';
 // Store all inner creators
 const contextMenuCreators = {};
 
+const isDividerItem = item => {
+    return item === 'divider' || item === '-' || item === 'separator' || item.type === 'divider';
+};
+
+export const tryRemoveLastDivider = items => {
+    if (items.length && isDividerItem(items.length - 1)) {
+        items.pop();
+    }
+    return items;
+};
+
 export const tryAddDividerItem = items => {
-    if (items.length && items[items.length - 1] !== 'divider') {
+    if (items.length && !isDividerItem(items[items.length - 1])) {
         items.push('divider');
     }
     return items;

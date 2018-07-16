@@ -25,7 +25,7 @@ import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
 import {strip} from '../../utils/html-helper';
-import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem} from '../context-menu';
+import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
 
 let activedChatId = null;
@@ -382,9 +382,7 @@ addContextMenuCreator('chat.menu', context => {
     }
 
     if (chat.canDismiss(profile.user)) {
-        if (menu.length) {
-            menu.push({type: 'separator'});
-        }
+        tryAddDividerItem(menu);
         menu.push({
             label: Lang.string('chat.group.dismiss'),
             click: () => {
@@ -394,7 +392,8 @@ addContextMenuCreator('chat.menu', context => {
     }
 
     if (chat.canExit(profile.user)) {
-        menu.push({type: 'separator'}, {
+        tryAddDividerItem(menu);
+        menu.push({
             label: Lang.string('chat.group.exit'),
             click: () => {
                 chatExitConfirm(chat);
@@ -412,18 +411,18 @@ addContextMenuCreator('chat.menu', context => {
                 }
             });
         }
-        menu.push({
-            label: Lang.string(chat.hidden ? 'chat.toolbar.cancelHide' : 'chat.toolbar.hide'),
-            click: () => {
-                Server.toggleHideChat(chat);
-            }
-        });
+        if (chat.canHide) {
+            menu.push({
+                label: Lang.string(chat.hidden ? 'chat.toolbar.cancelHide' : 'chat.toolbar.hide'),
+                click: () => {
+                    Server.toggleHideChat(chat);
+                }
+            });
+        }
     }
 
     if (DEBUG && Platform.clipboard && Platform.clipboard.writeText) {
-        if (menu.length) {
-            menu.push({type: 'separator'});
-        }
+        tryAddDividerItem(menu);
         menu.push({
             label: 'Copy share link',
             click: () => {
@@ -432,7 +431,7 @@ addContextMenuCreator('chat.menu', context => {
         });
     }
 
-    return menu;
+    return tryRemoveLastDivider(menu);
 });
 
 addContextMenuCreator('chat.toolbar.more', ({chat}) => {
