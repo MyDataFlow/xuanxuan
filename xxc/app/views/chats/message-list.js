@@ -1,10 +1,14 @@
 import React, {Component, PropTypes} from 'react';
-import {classes, isWebUrl} from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
 import App from '../../core';
 
 class MessageList extends Component {
+    static get MessageList() {
+        return replaceViews('chats/message-list', MessageList);
+    }
+
     static propTypes = {
         messages: PropTypes.array.isRequired,
         stayBottom: PropTypes.bool,
@@ -31,10 +35,6 @@ class MessageList extends Component {
         header: null,
         onScroll: null,
     };
-
-    static get MessageList() {
-        return replaceViews('chats/message-list', MessageList);
-    }
 
     componentDidMount() {
         this.onChatActiveHandler = App.im.ui.onActiveChat(chat => {
