@@ -243,7 +243,7 @@ export default class WebView extends Component {
         }
 
         return (<div
-            className={classes('webview relative fade', className, {in: !hideBeforeDOMReady || this.state.domReady})}
+            className={classes('webview fade', className, {in: !hideBeforeDOMReady || this.state.domReady})}
             dangerouslySetInnerHTML={{__html: webviewHtml}} // eslint-disable-line
             style={style}
         />);

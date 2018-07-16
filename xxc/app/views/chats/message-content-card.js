@@ -8,6 +8,22 @@ import StringHelper from '../../utils/string-helper';
 import Lang from '../../lang';
 import WebView from '../common/webview';
 
+const handleActionButtonClick = (action, e) => {
+    if (action.url && App.ui.openUrl(action.url, e.target)) {
+        e.stopPropagation();
+    } else if (action.click) {
+        action.click(e);
+        e.stopPropagation();
+    }
+};
+
+const handleMenuIconClick = (menuItem, e) => {
+    if (menuItem.click) {
+        menuItem.click(e);
+        e.stopPropagation();
+    }
+};
+
 export default class MessageContentCard extends Component {
     static get MessageContentCard() {
         return replaceViews('chats/message-content-card', MessageContentCard);
@@ -30,25 +46,8 @@ export default class MessageContentCard extends Component {
         children: null,
     };
 
-    handleActionButtonClick(action, e) {
-        console.log('handleActionButtonClick', action);
-        if (action.url && App.ui.openUrl(action.url, e.target)) {
-            e.stopPropagation();
-        } else if (action.click) {
-            action.click(e);
-            e.stopPropagation();
-        }
-    }
-
-    handleMenuIconClick(menuItem, e) {
-        if (menuItem.click) {
-            menuItem.click(e);
-            e.stopPropagation();
-        }
-    }
-
     render() {
-        let {
+        const {
             card,
             className,
             baseClassName,
@@ -82,7 +81,7 @@ export default class MessageContentCard extends Component {
             if (React.isValidElement(content)) {
                 contentView = content;
             } else if (webviewContent) {
-                contentView = <WebView {...content} />;
+                contentView = <WebView className="relative" {...content} />;
             } else if (htmlContent) {
                 contentView = <div className="content" dangerouslySetInnerHTML={{__html: content}} />;
             } else {
@@ -93,14 +92,14 @@ export default class MessageContentCard extends Component {
         const actionsButtons = [];
         if (actions) {
             actions.forEach((action, idx) => {
-                actionsButtons.push(<Button className={action.btnClass || 'rounded primary outline'} key={idx} label={action.label} icon={action.icon} onClick={this.handleActionButtonClick.bind(this, action)} />);
+                actionsButtons.push(<Button className={action.btnClass || 'rounded primary outline'} key={idx} label={action.label} icon={action.icon} onClick={handleActionButtonClick.bind(this, action)} />);
             });
         }
 
         const cardsMenu = [];
         if (menu && menu.length) {
             menu.forEach((menuItem, menuItemIndex) => {
-                cardsMenu.push(<div key={menuItemIndex} className="hint--top-left" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click ? this.handleMenuIconClick.bind(this, menuItem) : null} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
+                cardsMenu.push(<div key={menuItemIndex} className="hint--top-left" data-hint={menuItem.label}><a className="btn rounded iconbutton" onClick={menuItem.click ? handleMenuIconClick.bind(this, menuItem) : null} href={menuItem.url}><Avatar auto={menuItem.icon} className="avatar-sm" /></a></div>);
             });
         }
         if (provider) {

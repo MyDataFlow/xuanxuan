@@ -81,7 +81,7 @@ export default class MessageContentUrl extends PureComponent {
             }
             const {webviewContent, content} = card;
             if (webviewContent) {
-                card.content = <WebView {...content} ref={e => {this.webview = e;}} />;
+                card.content = <WebView className="relative" {...content} ref={e => {this.webview = e;}} />;
                 card.clickable = 'header';
                 card.menu.push({
                     label: Lang.string('ext.app.open'),
