@@ -1,5 +1,6 @@
 {
     "navbar.width": 50,
     "menu.width": 200,
-    "chat.flow.size": 40
+    "chat.flow.size": 40,
+    "chat.markdown.html": true
 }

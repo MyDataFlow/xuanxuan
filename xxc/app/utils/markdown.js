@@ -1,3 +1,4 @@
+import Config from 'Config';
 import Marked from 'marked';
 import HighlightJS from 'highlight.js';
 import Lang from '../lang';
@@ -116,7 +117,7 @@ Marked.setOptions({
     breaks: true, //   If true, use GFM hard and soft line breaks. Requires gfm be true.
     gfm: true, // If true, use approved GitHub Flavored Markdown (GFM) specification.
     sanitize: true, // If true, sanitize the HTML passed into markdownString with the sanitizer function.
-    sanitizer, // A function to sanitize the HTML passed into markdownString.
+    sanitizer: Config.ui['chat.markdown.html'] ? sanitizer : null, // A function to sanitize the HTML passed into markdownString.
     headerIds: false,
     smartLists: true, // If true, use smarter list behavior than those found in markdown.pl.
     smartypants: true, // If true, use "smart" typographic punctuation for things like quotes and dashes.
