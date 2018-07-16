@@ -1,5 +1,6 @@
+import Config from 'Config';
 import React, {PureComponent, PropTypes} from 'react';
-import {classes} from '../../utils/html-helper';
+import {classes, formatKeyDecoration} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
@@ -30,13 +31,14 @@ export default class ChatSendboxToolbar extends PureComponent {
     };
 
     handleSendBtnContextMenu = e => {
-        const currentHotKey = App.profile.userConfig.sendMessageHotkey;
+        const currentHotKey = formatKeyDecoration(App.profile.userConfig.sendMessageHotkey);
         let itemsChecked = false;
         const items = [{
             label: Lang.string('chat.sendbox.changeHotkeyTip'),
             disabled: true
         }];
-        ['Enter', 'Alt+Enter', 'Ctrl+Enter', 'Shift+Enter', 'Ctrl+Shift+Enter', 'Ctrl+Alt+Enter'].forEach(x => {
+        Config.ui['hotkey.sendMessageOptions'].forEach(x => {
+            x = formatKeyDecoration(x);
             if (currentHotKey === x) {
                 itemsChecked = true;
             }

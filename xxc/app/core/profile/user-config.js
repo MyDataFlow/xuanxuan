@@ -4,7 +4,7 @@ import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
 import timeSequence from '../../utils/time-sequence';
 
-class UserConfig {
+export default class UserConfig {
     static DEFAULT = DEFAULT;
 
     constructor(config) {
@@ -363,4 +363,3 @@ class UserConfig {
     }
 }
 
-export default UserConfig;

@@ -1,6 +1,7 @@
 import Platform from 'Platform';
 
 const isWindowsOS = Platform.env.isWindowsOS;
+const isOSX = Platform.env.isOSX;
 
 export const classes = (...args) => (
     args.map(arg => {
@@ -117,10 +118,24 @@ const specialKeys = {
     191: '/',
     224: 'Meta'
 };
+
+export const formatKeyDecoration = decoration => {
+    if (decoration) {
+        if (isWindowsOS) {
+            decoration = decoration.replace('Meta', 'Windows').replace('Command', 'Windows').replace('Option', 'Alt');
+        } else if (isOSX) {
+            decoration = decoration.replace('Meta', 'Command').replace('Windows', 'Command').replace('Alt', 'Option');
+        } else {
+            decoration = decoration.replace('Command', 'Meta').replace('Windows', 'Meta').replace('Option', 'Alt');
+        }
+    }
+    return decoration;
+};
+
 export const getKeyDecoration = event => {
     const shortcut = [];
     if (event.metaKey) {
-        shortcut.push(isWindowsOS ? 'Windows' : 'Command');
+        shortcut.push('Meta');
     }
     if (event.ctrlKey) {
         shortcut.push('Ctrl');
@@ -136,7 +151,7 @@ export const getKeyDecoration = event => {
     } else if (event.key && event.key !== 'Meta' && event.key !== 'Control' && event.key !== 'Alt' && event.key !== 'Shift') {
         shortcut.push(String.fromCharCode(event.keyCode) || event.key);
     }
-    return shortcut.join('+');
+    return formatKeyDecoration(shortcut.join('+'));
 };
 
 export default {
@@ -145,5 +160,6 @@ export default {
     getSearchParam,
     strip,
     isWebUrl,
-    getKeyDecoration
+    getKeyDecoration,
+    formatKeyDecoration
 };

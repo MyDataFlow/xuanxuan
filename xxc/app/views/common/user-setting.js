@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Platform from 'Platform';
-import {classes} from '../../utils/html-helper';
+import Config from 'Config';
+import {classes, formatKeyDecoration} from '../../utils/html-helper';
 import HotkeyInputControl from '../../components/hotkey-input-control';
 import Lang from '../../lang';
 import Checkbox from '../../components/checkbox';
@@ -154,7 +155,7 @@ const configs = [
             {
                 type: 'select',
                 name: 'shortcut.sendMessage',
-                options: ['Enter', 'Alt+Enter', 'Ctrl+Enter', 'Shift+Enter', 'Ctrl+Shift+Enter', 'Ctrl+Alt+Enter'],
+                options: Config.ui['hotkey.sendMessageOptions'].map(formatKeyDecoration),
                 caption: <div style={{width: 106}}>{Lang.string('setting.hotkeys.sendMessage')}</div>
             }, {
                 type: 'hotkey',
