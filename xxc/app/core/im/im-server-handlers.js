@@ -108,6 +108,16 @@ const chatStar = (msg, socket) => {
     }
 };
 
+const chatMute = (msg, socket) => {
+    if (msg.isSuccess) {
+        const chat = chats.get(msg.data.gid);
+        if (chat) {
+            chat.mute = msg.data.mute;
+            chats.update(chat);
+        }
+    }
+};
+
 const chatCategory = (msg, socket) => {
     if (msg.isSuccess) {
         const {gids, category} = msg.data;
@@ -219,6 +229,7 @@ export default {
     'chat/message': chatMessage,
     'chat/history': chatHistory,
     'chat/star': chatStar,
+    'chat/mute': chatMute,
     'chat/category': chatCategory,
     'chat/joinchat': chatJoinchat,
     'chat/hide': chatHide,

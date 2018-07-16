@@ -25,7 +25,7 @@ import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
 import {strip} from '../../utils/html-helper';
-import {addContextMenuCreator} from '../context-menu';
+import {addContextMenuCreator, getMenuItemsForContext} from '../context-menu';
 import ui from '../ui';
 
 let activedChatId = null;
@@ -96,7 +96,8 @@ const activeAndMapCacheChats = (chat, callback) => {
     return mapCacheChats(callback);
 };
 
-const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
+addContextMenuCreator('chat.toolbar', context => {
+    let {chat, showSidebarIcon = 'auto'} = context;
     const items = [];
     if (!chat.isRobot) {
         items.push({
@@ -143,22 +144,20 @@ const createChatToolbarItems = (chat, showSidebarIcon = 'auto') => {
             }
         });
     }
-    if (chat.isGroupOrSystem) {
-        const moreItems = createChatToolbarMoreContextMenuItems(chat);
-        if (moreItems && moreItems.length) {
-            items.push({
-                id: 'more',
-                icon: 'dots-horizontal',
-                label: Lang.string('chat.toolbor.more'),
-                click: e => {
-                    ContextMenu.show({x: e.pageX, y: e.pageY, direction: 'bottom-left'}, moreItems);
-                }
-            });
-        }
+    const moreItems = getMenuItemsForContext('chat.toolbar.more', {chat});
+    if (moreItems && moreItems.length) {
+        items.push({
+            id: 'more',
+            icon: 'dots-horizontal',
+            label: Lang.string('chat.toolbor.more'),
+            click: e => {
+                ContextMenu.show({x: e.pageX, y: e.pageY, direction: 'bottom-left'}, moreItems);
+            }
+        });
     }
     items[items.length - 1].hintPosition = 'bottom-left';
     return items;
-};
+});
 
 const captureAndCutScreenImage = (hiddenWindows = false) => {
     if (Platform.screenshot) {
@@ -338,7 +337,8 @@ const chatDismissConfirm = chat => {
     });
 };
 
-const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
+addContextMenuCreator('chat.menu', context => {
+    const {chat, menuType = null, viewType = null} = context;
     const menu = [];
     if (chat.isOne2One) {
         menu.push({
@@ -357,7 +357,6 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
             }
         });
     }
-
 
     if (chat.canRename(profile.user)) {
         menu.push({
@@ -425,9 +424,9 @@ const createChatContextMenuItems = (chat, menuType = null, viewType = null) => {
     }
 
     return menu;
-};
+});
 
-const createChatToolbarMoreContextMenuItems = chat => {
+addContextMenuCreator('chat.toolbar.more', ({chat}) => {
     if (chat.isOne2One) return [];
     const menu = [];
     if (chat.canRename(profile.user)) {
@@ -481,7 +480,7 @@ const createChatToolbarMoreContextMenuItems = chat => {
         });
     }
     return menu;
-};
+});
 
 const createChatMemberContextMenuItems = (member, chat) => {
     const menu = [];
@@ -747,13 +746,10 @@ export default {
     mapCacheChats,
     isActiveChat,
     activeAndMapCacheChats,
-    createChatToolbarItems,
     linkMembersInText,
     renderChatMessageContent,
-    createChatContextMenuItems,
     chatExitConfirm,
     chatRenamePrompt,
-    createChatToolbarMoreContextMenuItems,
     createGroupChat,
     sendContentToChat,
     onSendContentToChat,

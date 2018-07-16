@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import ContextMenu from '../../components/context-menu';
+import {showContextMenu} from '../../core/context-menu';
 import Icon from '../../components/icon';
 import GroupList from '../../components/group-list';
 import Button from '../../components/button';
@@ -19,6 +19,10 @@ const GROUP_TYPES = [
 ];
 
 export default class MenuContactList extends Component {
+    static get MenuContactList() {
+        return replaceViews('chats/menu-contact-list', MenuContactList);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         search: PropTypes.string,
@@ -32,10 +36,6 @@ export default class MenuContactList extends Component {
         filter: null,
         children: null,
     };
-
-    static get MenuContactList() {
-        return replaceViews('chats/menu-contact-list', MenuContactList);
-    }
 
     constructor(props) {
         super(props);
@@ -81,11 +81,14 @@ export default class MenuContactList extends Component {
         e.stopPropagation();
     };
 
-    handleItemContextMenu = (e) => {
-        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
-        const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contacts', this.state.groupType);
-        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-        e.preventDefault();
+    handleItemContextMenu = (event) => {
+        const chat = App.im.chats.get(event.currentTarget.attributes['data-gid'].value);
+        showContextMenu('chat.menu', {
+            event,
+            chat,
+            menuType: 'contacts',
+            viewType: this.state.groupType
+        });
     }
 
     itemCreator = chat => {
