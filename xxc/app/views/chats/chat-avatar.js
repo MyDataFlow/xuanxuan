@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import App from '../../core';
 import Chat from '../../core/models/chat';
@@ -14,15 +14,9 @@ const chatIcons = {
 };
 
 class ChatAvatar extends Component {
-    static defaultProps = {
-        chat: null,
-        grayOffline: false,
-        className: null,
-        avatarSize: null,
-        iconSize: null,
-        avatarClassName: null,
-        iconClassName: null,
-    };
+    static get ChatAvatar() {
+        return replaceViews('chats/chat-avatar', ChatAvatar);
+    }
 
     static propTypes = {
         chat: PropTypes.instanceOf(Chat),
@@ -34,14 +28,20 @@ class ChatAvatar extends Component {
         iconClassName: PropTypes.string,
     };
 
-    static get ChatAvatar() {
-        return replaceViews('chats/chat-avatar', ChatAvatar);
-    }
+    static defaultProps = {
+        chat: null,
+        grayOffline: false,
+        className: null,
+        avatarSize: null,
+        iconSize: null,
+        avatarClassName: null,
+        iconClassName: null,
+    };
 
     shouldComponentUpdate(nextProps) {
         const nextChat = nextProps.chat;
         const chat = this.props.chat;
-        if (chat !== nextChat) {
+        if (chat !== nextChat || this.lastChatUpdateId !== nextChat.updateId) {
             return true;
         }
         if (nextProps.grayOffline && nextChat.isOne2One && nextChat.getTheOtherOne(App).updateId !== this.lastOtherOneUpdateId) {
@@ -67,7 +67,7 @@ class ChatAvatar extends Component {
             const theOtherOne = chat.getTheOtherOne(App);
             this.lastOtherOneUpdateId = theOtherOne.updateId;
             const grayscale = grayOffline && (theOtherOne.isOffline || !App.profile.isUserOnline);
-            return <UserAvatar size={avatarSize} user={theOtherOne} className={HTML.classes(className, avatarClassName, {grayscale})} {...other} />;
+            return <UserAvatar size={avatarSize} user={theOtherOne} className={classes(className, avatarClassName, {grayscale})} {...other} />;
         }
         let icon = null;
         if (chat.isSystem) {
@@ -77,7 +77,9 @@ class ChatAvatar extends Component {
         } else {
             icon = chatIcons.group;
         }
-        return <Icon size={iconSize} name={`${icon.name} icon-2x`} className={HTML.classes(className, iconClassName, icon.colorClass)} {...other} />;
+        this.lastChatUpdateId = chat.updateId;
+        
+        return <Icon size={iconSize} name={`${icon.name} icon-2x`} className={classes(className, iconClassName, icon.colorClass)} {...other} />;
     }
 }
 

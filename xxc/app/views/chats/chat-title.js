@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
-import DateHelper from '../../utils/date-helper';
+import {classes} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
@@ -10,6 +9,10 @@ import MemberProfileDialog from '../common/member-profile-dialog';
 import replaceViews from '../replace-views';
 
 class ChatTitle extends Component {
+    static get ChatTitle() {
+        return replaceViews('chats/chat-title', ChatTitle);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -21,10 +24,6 @@ class ChatTitle extends Component {
         chat: null,
         children: null,
     };
-
-    static get ChatTitle() {
-        return replaceViews('chats/chat-title', ChatTitle);
-    }
 
     shouldComponentUpdate(nextProps) {
         return (this.props.className !== nextProps.className ||
@@ -48,7 +47,7 @@ class ChatTitle extends Component {
         this.lastOtherOneUpdateId = theOtherOne && theOtherOne.updateId;
         this.lastChatUpdateId = chat.updateId;
 
-        return (<div className={HTML.classes('chat-title heading', className)}>
+        return (<div className={classes('chat-title heading', className)} {...other}>
             <ChatAvatar chat={chat} size={24} className={theOtherOne ? 'state' : ''} onClick={onTitleClick} />
             {theOtherOne && <StatusDot status={theOtherOne.status} />}
             {
