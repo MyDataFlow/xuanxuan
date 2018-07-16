@@ -155,7 +155,7 @@ export default class ChatSendbox extends Component {
                 placeholder = Lang.format('chat.sendbox.placeholder.memberIsOffline', theOtherOne.displayName);
             }
         }
-        placeholder = placeholder || Lang.string('chat.sendbox.placeholder.sendMessage');
+        placeholder = placeholder || `${Lang.string('chat.sendbox.placeholder.sendMessage')}${App.profile.userConfig.sendMarkdown ? ' (Markdown)' : ''}`;
         const {userConfig} = App.profile;
 
         return (<div
