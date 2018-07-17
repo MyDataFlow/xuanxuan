@@ -26,7 +26,7 @@ import Todo from '../todo';
 import {strip} from '../../utils/html-helper';
 import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
-import {registerCommand} from '../commander';
+import {registerCommand, executeCommand} from '../commander';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -34,6 +34,7 @@ let activeCaches = {};
 const EVENT = {
     activeChat: 'im.chats.activeChat',
     sendContentToChat: 'im.chats.sendContentToChat',
+    suggestSendImage: 'im.chats.suggestSendImage'
 };
 
 const activeChat = chat => {
@@ -718,6 +719,24 @@ if (Platform.screenshot) {
     });
 }
 
+registerCommand('suggestClipboardImage', () => {
+    const newImage = Platform.clipboard.getNewImage();
+    if (newImage) {
+        Events.emit(EVENT.suggestSendImage, newImage);
+    }
+});
+
+if (Platform.ui.onWindowFocus && Platform.clipboard.getNewImage) {
+    Platform.ui.onWindowFocus(() => {
+        executeCommand('suggestClipboardImage');
+    });
+}
+
+const onSuggestSendImage = (listener) => {
+    return Events.on(`${EVENT.suggestSendImage}`, listener);
+};
+
+
 export default {
     activeChat,
     activeLastChat,
@@ -733,6 +752,7 @@ export default {
     sendContentToChat,
     onSendContentToChat,
     onRenderChatMessageContent,
+    onSuggestSendImage,
     hasMessageContextMenu,
 
     get currentActiveChatId() {

@@ -356,6 +356,8 @@ export default class FileData extends Entity {
                 date: originFile.lastModifiedDate || new Date().getTime(),
                 name: originFile.name,
                 size: originFile.size,
+                width: originFile.width,
+                height: originFile.height,
                 send: 0,
                 type: originFile.type,
                 originFile

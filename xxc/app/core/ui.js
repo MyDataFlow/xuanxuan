@@ -35,6 +35,7 @@ addContextMenuCreator('image', ({url, dataType}) => {
             label: Lang.string('menu.image.copy'),
             click: () => {
                 Platform.clipboard.writeImageFromUrl(url, dataType);
+                executeCommand('suggestClipboardImage');
             }
         });
     }

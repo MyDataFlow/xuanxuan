@@ -479,7 +479,9 @@ const sendImageMessage = async (imageFile, chat, onProgress) => {
         });
         imageFile.width = info.width;
         imageFile.height = info.height;
-        message.imageContent = imageFile.plain();
+        const imageObj = imageFile.plain();
+        delete imageObj.type;
+        message.imageContent = imageObj;
         await sendChatMessage(message, chat);
         return IMFiles.uploadFile(imageFile, progress => {
             message.updateImageContent({send: progress});

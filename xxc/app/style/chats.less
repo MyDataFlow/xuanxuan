@@ -1056,3 +1056,27 @@
     header > hgroup > h4 {font-size: (14*@rem);}
   }
 }
+
+.app-chats-suggest-panel {
+  width: (300*@rem);
+  max-height: (500*@rem);
+  min-height: (80*@rem);
+  right: @space;
+  bottom: @space;
+  overflow: hidden;
+  padding: @space-xs;
+  pointer-events: none;
+
+  &.in {
+    pointer-events: all;
+  }
+
+  .img-holder {
+    max-height: (500*@rem - 2*@space-xs);
+  }
+
+  .toolbar {
+    bottom: (-@space-xs);
+    background: rgba(255,255,255,.75);
+  }
+}
