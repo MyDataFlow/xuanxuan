@@ -471,12 +471,15 @@ const sendImageMessage = async (imageFile, chat, onProgress) => {
         });
         imageFile = FileData.create(imageFile);
         message.attachFile = imageFile;
-        const info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
-            Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
-            if (DEBUG) {
-                console.warn('Cannot get image information', imageFile);
-            }
-        });
+        let info = imageFile.imageInfo;
+        if (!info) {
+            info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
+                Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
+                if (DEBUG) {
+                    console.warn('Cannot get image information', imageFile);
+                }
+            });
+        }
         imageFile.width = info.width;
         imageFile.height = info.height;
         const imageObj = imageFile.plain();
