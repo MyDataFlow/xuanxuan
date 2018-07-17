@@ -38,12 +38,12 @@ export default class MessageContentUrl extends PureComponent {
         }
     }
 
-    getUrlMeta() {
+    getUrlMeta(disableCache = false) {
         if (this.state.meta && !this.state.loading) {
             return;
         }
         const {url} = this.props;
-        getUrlMeta(url).then(meta => {
+        getUrlMeta(url, disableCache).then(meta => {
             return this.setState({meta, loading: false});
         }).catch(_ => {
             if (DEBUG) {
@@ -55,7 +55,7 @@ export default class MessageContentUrl extends PureComponent {
 
     tryGetUrlMeta() {
         this.setState({loading: true}, () => {
-            this.getUrlMeta();
+            this.getUrlMeta(true);
         });
     }
 

@@ -409,7 +409,15 @@ const setTitle = title => {
 
 setTitle(Config.pkg.productName);
 
-export const getUrlMeta = (url) => {
+const urlMetaCaches = {};
+const maxUrlCacheSize = 20;
+export const getUrlMeta = (url, disableCache = false) => {
+    if (!disableCache) {
+        const urlMetaCache = urlMetaCaches[url];
+        if (urlMetaCache) {
+            return Promise.resolve(urlMetaCache.meta);
+        }
+    }
     if (Platform.ui.getUrlMeta) {
         let extInspector = null;
         if (global.ExtsRuntime) {
@@ -458,6 +466,19 @@ export const getUrlMeta = (url) => {
                 }
                 cardMeta.title = url;
             }
+
+            // Save cache
+            let cacheKeys = Object.keys(urlMetaCaches);
+            if (cacheKeys.length > maxUrlCacheSize) {
+                cacheKeys = cacheKeys.sort((x, y) => {
+                    return x.time - y.time;
+                });
+                for (let i = 0; i < (cacheKeys.length - maxUrlCacheSize); ++i) {
+                    delete urlMetaCaches[cacheKeys[i]];
+                }
+            }
+            urlMetaCaches[url] = {meta: cardMeta, time: new Date().getTime()};
+
             return Promise.resolve(cardMeta);
         });
     }
