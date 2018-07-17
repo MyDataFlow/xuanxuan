@@ -71,7 +71,7 @@ const configs = [
             }, {
                 type: 'boolean',
                 name: 'ui.notify.flashTrayIcon',
-                hidden: isBrowser || !Platform.env.isWindowsOS,
+                hidden: isBrowser,
                 caption: Lang.string('setting.notification.flashTrayIcon')
             }, {
                 type: 'select',
