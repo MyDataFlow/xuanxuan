@@ -1,5 +1,5 @@
 import Dexie from 'dexie';
-import {Entity, Member, Chat, ChatMessage as Message} from '../models';
+import {ChatMessage as Message} from '../models';
 
 const DB_VERSION = 1;
 let lastCreateDb = null;
