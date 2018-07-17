@@ -49,7 +49,7 @@ export default class ChatsSuggestPanel extends PureComponent {
             this.showSuggestPanelTimer = setTimeout(() => {
                 this.setState({show: false});
                 this.showSuggestPanelTimer = null;
-            }, Config.ui['chat.suggestPanelShowTime'] || 20000);
+            }, Config.ui['chat.suggestPanelShowTime'] || 10000);
         });
     }
 
