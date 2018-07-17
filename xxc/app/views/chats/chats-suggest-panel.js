@@ -54,11 +54,13 @@ export default class ChatsSuggestPanel extends PureComponent {
     }
 
     handleCloseBtnClick = () => {
-        if (this.showSuggestPanelTimer) {
-            clearTimeout(this.showSuggestPanelTimer);
-            this.showSuggestPanelTimer = null;
+        if (this.state.show) {
+            if (this.showSuggestPanelTimer) {
+                clearTimeout(this.showSuggestPanelTimer);
+                this.showSuggestPanelTimer = null;
+            }
+            this.setState({show: false});
         }
-        this.setState({show: false});
     };
 
     handleSendBtnClick = () => {
