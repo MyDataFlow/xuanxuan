@@ -34,7 +34,7 @@ class chat extends control
      * @access public
      * @return void
      */
-    public function login($account = '', $password = '', $status = '')
+    public function login($account = '', $password = '', $status = '', $userID = 0, $version = '')
     {
         $password = md5($password . $account);
         $user     = $this->loadModel('user')->identify($account, $password);
@@ -50,7 +50,7 @@ class chat extends control
                 $data->token  = md5($account . $password . microtime()); 
                 $user = $this->chat->editUser($data);
 
-                $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
+                $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan-v' . (empty($version) ? '?' : $version), $user->account);
 
                 $users = $this->chat->getUserList($status = 'online');
                 $user->signed = $this->chat->getSignedTime($account);

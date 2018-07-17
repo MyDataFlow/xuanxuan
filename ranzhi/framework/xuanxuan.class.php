@@ -134,9 +134,10 @@ class xuanxuan extends router
             /* params[0] is the server name. */
             unset($params[0]);
         }
-        if($userID && is_array($params))
+        if(is_array($params))
         {
             $params[] = $userID;
+            $params[] = $version;
         }
 
         $this->setModuleName($module);
