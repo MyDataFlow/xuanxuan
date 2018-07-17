@@ -1,4 +1,5 @@
 import Config from 'Config'; // eslint-disable-line
+import Platform from 'Platform'; // eslint-disable-line
 import Server from '../server';
 import imServerHandlers from './im-server-handlers';
 import Events from '../events';
@@ -383,7 +384,25 @@ const sendChatMessage = async (messages, chat, isSystemMessage = false) => {
         if (command) {
             if (command.action === 'version') {
                 const specialVersion = Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : '';
-                message.content = `\`\`\`\n$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';\n\`\`\``;
+                const contentLines = ['```'];
+                contentLines.push(
+                    `$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}';`,
+                    `$$serverVersion = '${profile.user.serverVersion}';`,
+                    `$$platform      = '${Platform.type}';`,
+                    `$$os            = '${Platform.env.os}';`
+                );
+                if (Platform.env.arch) {
+                    contentLines.push(`$$arch          = '${Platform.env.arch}';`);
+                }
+                contentLines.push('```');
+                message.content = contentLines.join('\n');
+            } else if (command.action === 'dataPath' && Platform.ui.createUserDataPath) {
+                const contentLines = ['```'];
+                contentLines.push(
+                    `$$dataPath = '${Platform.ui.createUserDataPath(profile.user, '', '')}';`,
+                );
+                contentLines.push('```');
+                message.content = contentLines.join('\n');
             }
         }
     });

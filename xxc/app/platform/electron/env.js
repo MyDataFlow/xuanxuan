@@ -10,6 +10,7 @@ const isOSX = OS_PLATFORM === 'osx' || OS_PLATFORM === 'darwin';
 const isWindowsOS = OS_PLATFORM === 'win32' || OS_PLATFORM === 'win64';
 
 export default {
+    arch: process.arch,
     os: isOSX ? 'mac' : isWindowsOS ? 'windows' : OS_PLATFORM,
     isWindowsOS,
     isOSX,

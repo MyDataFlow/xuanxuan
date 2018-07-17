@@ -403,6 +403,8 @@ class ChatMessage extends Entity {
             const content = this.content.trim();
             if (content === '$$version') {
                 return {action: 'version'};
+            } else if (content === '$$dataPath') {
+                return {action: 'dataPath'};
             }
         }
         return null;
