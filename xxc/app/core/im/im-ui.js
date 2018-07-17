@@ -339,12 +339,8 @@ addContextMenuCreator('chat.menu', context => {
     const {chat, menuType = null, viewType = null} = context;
     const menu = [];
     if (chat.isOne2One) {
-        menu.push({
-            label: Lang.string('member.profile.view'),
-            click: () => {
-                MemberProfileDialog.show(chat.getTheOtherOne({members, user: profile.user}));
-            }
-        }, {type: 'separator'});
+        menu.push(...getMenuItemsForContext('member', {member: chat.getTheOtherOne({members, user: profile.user})}));
+        tryAddDividerItem(menu);
     }
 
     if (!chat.isRobot) {
@@ -500,7 +496,7 @@ addContextMenuCreator('chat.toolbar.more', ({chat}) => {
     return menu;
 });
 
-const createChatMemberContextMenuItems = (member, chat) => {
+addContextMenuCreator('chat.member', ({member, chat}) => {
     const menu = [];
     if (member.account !== profile.userAccount && chat.isGroupOrSystem) {
         const one2OneGid = chats.getOne2OneChatGid([member, profile.user]);
@@ -516,14 +512,13 @@ const createChatMemberContextMenuItems = (member, chat) => {
             }
         });
     }
-    menu.push({
-        label: Lang.string('member.profile.view'),
-        click: () => {
-            MemberProfileDialog.show(member);
-        }
-    });
+
+    tryAddDividerItem(menu);
+    menu.push(...getMenuItemsForContext('member', {member}));
+
     if (chat.canKickOff(profile.user, member)) {
-        menu.push({type: 'separator'}, {
+        tryAddDividerItem(menu);
+        menu.push({
             label: Lang.string('chat.kickOffFromGroup'),
             click: () => {
                 return Modal.confirm(Lang.format('chat.kickOffFromGroup.confirm', member.displayName)).then(result => {
@@ -536,7 +531,7 @@ const createChatMemberContextMenuItems = (member, chat) => {
         });
     }
     return menu;
-};
+});
 
 const linkMembersInText = (text, {format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>'}) => {
     if (text && text.indexOf('@') > -1) {
@@ -613,7 +608,7 @@ const renameChatCategory = (group, type = 'contact', newCategoryName = null) => 
     }
 };
 
-const createGroupHeadingContextMenu = (group, type = 'contact') => {
+addContextMenuCreator('chat.group', ({group, type = 'contact'}) => {
     const menus = [];
     if (!group.system) {
         menus.push({
@@ -631,21 +626,19 @@ const createGroupHeadingContextMenu = (group, type = 'contact') => {
                 return Modal.confirm(Lang.format('chats.menu.group.delete.tip.format', defaultCategoryName), {
                     title: Lang.format('chats.menu.group.delete.confirm.format', group.title)
                 }).then(result => {
-                    if (result) {
-                        renameChatCategory(group, type, '');
-                    }
+                    return result && renameChatCategory(group, type, '');
                 });
             }
         });
     }
     return menus;
-};
+});
 
 const hasMessageContextMenu = message => {
     return message.isTextContent && Platform.clipboard && Platform.clipboard.writeText;
 };
 
-const createMessageContextMenu = message => {
+addContextMenuCreator('message.text', ({message}) => {
     const items = [];
     if (message.isTextContent && Platform.clipboard && Platform.clipboard.writeText) {
         items.push({
@@ -693,11 +686,6 @@ const createMessageContextMenu = message => {
         });
     }
     return items;
-};
-
-addContextMenuCreator('message.text', context => {
-    const {message} = context;
-    return createMessageContextMenu(message);
 });
 
 profile.onSwapUser(user => {
@@ -744,11 +732,8 @@ export default {
     createGroupChat,
     sendContentToChat,
     onSendContentToChat,
-    createChatMemberContextMenuItems,
     onRenderChatMessageContent,
-    createGroupHeadingContextMenu,
     hasMessageContextMenu,
-    createMessageContextMenu,
 
     get currentActiveChatId() {
         return activedChatId;

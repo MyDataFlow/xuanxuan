@@ -70,11 +70,13 @@ class MessageContentImage extends Component {
         }
     }
 
-    handleImageContextMenu = e => {
+    handleImageContextMenu = event => {
         if (isBrowser) return;
-        const items = App.ui.createImageContextMenuItems(this.state.url || this.imageUrl, this.imageType);
-        App.ui.showContextMenu({x: e.pageX, y: e.pageY}, items);
-        e.preventDefault();
+        showContextMenu('image', {
+            event,
+            url: this.state.url || this.imageUrl,
+            dataType: this.imageType
+        });
     };
 
     handleEmojiContextMenu = event => {

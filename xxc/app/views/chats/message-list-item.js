@@ -101,12 +101,10 @@ export default class MessageListItem extends Component {
         App.im.ui.sendContentToChat(`@${sender.displayName} `);
     }
 
-    handleUserContextMenu = e => {
+    handleUserContextMenu = event => {
         const {message} = this.props;
         const sender = message.getSender(App.members);
-        const items = App.im.ui.createChatMemberContextMenuItems(sender, App.im.chats.get(message.cgid));
-        ContextMenu.show({x: e.pageX, y: e.pageY}, items);
-        e.preventDefault();
+        showContextMenu('chat.member', {event, member: sender, chat: App.im.chats.get(message.cgid)});
     }
 
     checkResendMessage() {

@@ -14,6 +14,7 @@ import ImageViewer from '../components/image-viewer';
 import Store from '../utils/store';
 import {executeCommand, registerCommand} from './commander';
 import WebViewDialog from '../views/common/webview-dialog';
+import {addContextMenuCreator} from './context-menu';
 
 const EVENT = {
     app_link: 'app.link',
@@ -22,7 +23,7 @@ const EVENT = {
     ready: 'app.ready'
 };
 
-const createImageContextMenuItems = (url, dataType) => {
+addContextMenuCreator('image', ({url, dataType}) => {
     const items = [{
         label: Lang.string('menu.image.view'),
         click: () => {
@@ -77,34 +78,16 @@ const createImageContextMenuItems = (url, dataType) => {
     }
 
     return items;
-};
+});
 
-const createLinkContextMenu = (link, text) => {
-    const items = [{
-        label: Lang.string('common.openLink'),
+addContextMenuCreator('member', ({member}) => {
+    return [{
+        label: Lang.string('member.profile.view'),
         click: () => {
-            Platform.ui.openExternal(link);
+            MemberProfileDialog.show(member);
         }
     }];
-    if (Platform.clipboard && Platform.clipboard.writeText) {
-        items.push({
-            label: Lang.string('common.copyLink'),
-            click: () => {
-                Platform.clipboard.writeText(link);
-            }
-        });
-
-        if (text && text !== link && `${text}/` !== link) {
-            items.push({
-                label: Lang.format('common.copyFormat', text.length > 25 ? `${text.substr(0, 25)}…` : text),
-                click: () => {
-                    Platform.clipboard.writeText(text);
-                }
-            });
-        }
-    }
-    return items;
-};
+});
 
 const onAppLinkClick = (type, listener) => {
     return Events.on(`${EVENT.app_link}.${type}`, listener);
@@ -541,8 +524,6 @@ export default {
     showMessger: Messager.show,
     showContextMenu: ContextMenu.show,
     modal,
-    createImageContextMenuItems,
-    createLinkContextMenu,
     reloadWindow,
     triggerReady,
     onReady,

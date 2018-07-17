@@ -53,12 +53,8 @@ export default class MenuGroupList extends Component {
         return <ChatListItem onContextMenu={this.handleItemContextMenu} data-gid={chat.gid} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
     };
 
-    handleHeadingContextMenu(group, e) {
-        const menu = App.im.ui.createGroupHeadingContextMenu(group, 'group');
-        if (menu && menu.length) {
-            App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
-            e.preventDefault();
-        }
+    handleHeadingContextMenu(group, event) {
+        showContextMenu('chat.group', {group, event, type: 'group'});
     }
 
     handleDragOver(group, e) {
