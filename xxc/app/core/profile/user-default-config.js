@@ -41,6 +41,7 @@ export default {
     'ui.app.onClose': 'ask', // or "close", "minimize"
     // "local.ui.app.lastFileSavePath": ",
     'shortcut.captureScreen': 'Ctrl+Alt+Z',
+    'shortcut.focusWindow': 'Ctrl+Alt+X',
     'shortcut.sendMessage': 'Enter',
 
     'user.autoReconnect': true

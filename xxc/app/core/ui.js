@@ -485,6 +485,51 @@ export const getUrlMeta = (url, disableCache = false) => {
     return Promise.resolve({url, title: url});
 };
 
+if (Platform.shortcut) {
+    let globalHotkeys = null;
+    const registerShortcut = (loginUser, loginError) => {
+        if (loginError) {
+            return;
+        }
+        const userConfig = profile.userConfig;
+        if (userConfig) {
+            globalHotkeys = userConfig.globalHotkeys;
+            Object.keys(globalHotkeys).forEach(name => {
+                Platform.shortcut.registerGlobalShortcut(name, globalHotkeys[name], () => {
+                    executeCommand(`shortcut.${name}`);
+                });
+            });
+        }
+    };
+    profile.onUserConfigChange((change, config) => {
+        if (change && Object.keys(change).some(x => x.startsWith('shortcut.'))) {
+            registerShortcut();
+        }
+        if (config.needSave) {
+            Server.socket.uploadUserSettings();
+        }
+    });
+    Server.onUserLogin(registerShortcut);
+    Server.onUserLoginout(() => {
+        if (globalHotkeys) {
+            Object.keys(globalHotkeys).forEach(name => {
+                Platform.shortcut.unregisterGlobalShortcut(name);
+            });
+            globalHotkeys = null;
+        }
+    });
+
+    if (Platform.ui.showAndFocusWindow) {
+        registerCommand('shortcut.focusWindowHotkey', () => {
+            if (Platform.ui.hideWindow && Platform.ui.isWindowOpenAndFocus) {
+                Platform.ui.hideWindow();
+            } else {
+                Platform.ui.showAndFocusWindow();
+            }
+        });
+    }
+}
+
 export default {
     entryParams,
     get canQuit() {

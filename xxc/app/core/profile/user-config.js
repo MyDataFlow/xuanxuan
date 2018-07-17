@@ -242,6 +242,21 @@ export default class UserConfig {
         return this.set('shortcut.captureScreen', shortcut);
     }
 
+    get focusWindowHotkey() {
+        return this.get('shortcut.focusWindow');
+    }
+
+    set focusWindowHotkey(shortcut) {
+        return this.set('shortcut.focusWindow', shortcut);
+    }
+
+    get globalHotkeys() {
+        return {
+            captureScreenHotkey: this.captureScreenHotkey,
+            focusWindowHotkey: this.focusWindowHotkey
+        };
+    }
+
     get sendMessageHotkey() {
         return this.get('shortcut.sendMessage');
     }

@@ -158,9 +158,15 @@ const configs = [
                 options: Config.ui['hotkey.sendMessageOptions'].map(formatKeyDecoration),
                 caption: <div style={{width: 106}}>{Lang.string('setting.hotkeys.sendMessage')}</div>
             }, {
+                hidden: isBrowser,
                 type: 'hotkey',
                 name: 'shortcut.captureScreen',
                 caption: Lang.string('setting.hotkeys.globalCaptureScreen')
+            }, {
+                type: 'hotkey',
+                hidden: isBrowser,
+                name: 'shortcut.focusWindow',
+                caption: Lang.string('setting.hotkeys.globalFocusWindow')
             }
         ]
     }

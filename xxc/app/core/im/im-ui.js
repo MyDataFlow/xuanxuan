@@ -18,7 +18,6 @@ import EmojiPopover from '../../views/common/emoji-popover';
 import HotkeySettingDialog from '../../views/common/hotkey-setting-dialog';
 import Markdown from '../../utils/markdown';
 import Emojione from '../../components/emojione';
-import CoreServer from '../server';
 import ChatChangeFontPopover from '../../views/chats/chat-change-font-popover';
 import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
@@ -27,6 +26,7 @@ import Todo from '../todo';
 import {strip} from '../../utils/html-helper';
 import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
+import {registerCommand} from '../commander';
 
 let activedChatId = null;
 let activeCaches = {};
@@ -724,36 +724,9 @@ chats.onChatsInit(initChats => {
     }
 });
 
-if (Platform.screenshot && Platform.shortcut) {
-    const name = 'captureScreenShortcut';
-    let lastRegisterHotkey = null;
-    const registerShortcut = (loginUser, loginError) => {
-        if (loginError) {
-            return;
-        }
-        const userConfig = profile.userConfig;
-        if (userConfig) {
-            const captureScreenHotkey = userConfig.captureScreenHotkey;
-            if (captureScreenHotkey !== lastRegisterHotkey) {
-                lastRegisterHotkey = captureScreenHotkey;
-                Platform.shortcut.registerGlobalShortcut(name, lastRegisterHotkey, () => {
-                    captureAndCutScreenImage();
-                });
-            }
-        }
-    };
-    profile.onUserConfigChange((change, config) => {
-        if (change && change['shortcut.captureScreen']) {
-            registerShortcut();
-        }
-        if (config.needSave) {
-            CoreServer.socket.uploadUserSettings();
-        }
-    });
-    CoreServer.onUserLogin(registerShortcut);
-    CoreServer.onUserLoginout(() => {
-        lastRegisterHotkey = null;
-        Platform.shortcut.unregisterGlobalShortcut(name);
+if (Platform.screenshot) {
+    registerCommand('shortcut.captureScreenHotkey', () => {
+        captureAndCutScreenImage();
     });
 }
 
