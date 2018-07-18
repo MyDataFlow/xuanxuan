@@ -36,6 +36,7 @@
     * `jQuery` 现在作为可选的动态模块用于给扩展进行调用；
     * `marked` 模块升级至 `0.4.0`；
     * `$$version` 消息命令会显示更多信息，包括操作系统和平台信息；
+    * 增加 `$$dataPath` 消息命令，用于显示当前用户数据目录路径；
   * 客户端扩展机制：
     * 扩展可以通过定义 `target` 为 `chat.sendbox.toolbar` 的功能菜单创建器（`ContextMenuCreator`）来为发送框工具栏添加功能图标；
     * 扩展可以通过定义 `target` 为 （`chat.menu`、`chat.toolbar`、`chat.toolbar.more`、`chat.member`） 的功能菜单创建器（`ContextMenuCreator`）来为聊天添加右键功能菜单；
