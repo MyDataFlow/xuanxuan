@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import InputControl from './input-control';
-import {getKeyDecoration} from '../utils/html-helper';
+import {getKeyDecoration, formatKeyDecoration} from '../utils/html-helper';
 
 class HotkeyInputControl extends Component {
     static propTypes = {
@@ -18,7 +18,7 @@ class HotkeyInputControl extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: props.defaultValue,
+            value: formatKeyDecoration(props.defaultValue),
         };
     }
 
@@ -37,6 +37,7 @@ class HotkeyInputControl extends Component {
         const shortcut = getKeyDecoration(e);
         this.changeValue(shortcut);
         e.preventDefault();
+        e.stopPropagation();
     }
 
     getValue() {
