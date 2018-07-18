@@ -164,7 +164,7 @@ export default class ChatSendbox extends Component {
             className={classes('app-chat-sendbox', className)}
         >
             <DraftEditor
-                className="app-chat-drafteditor dock-top has-padding scroll-y"
+                className="app-chat-drafteditor white dock-top has-padding scroll-y"
                 ref={e => {this.editbox = e;}}
                 placeholder={placeholder}
                 onChange={this.handleOnChange}
