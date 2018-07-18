@@ -1,5 +1,5 @@
-import Platform from 'Platform';
-import Config from 'Config';
+import Platform from 'Platform'; // eslint-disable-line
+import Config from 'Config'; // eslint-disable-line
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
@@ -35,7 +35,6 @@ addContextMenuCreator('image', ({url, dataType}) => {
             label: Lang.string('menu.image.copy'),
             click: () => {
                 Platform.clipboard.writeImageFromUrl(url, dataType);
-                executeCommand('suggestClipboardImage');
             }
         });
     }
@@ -469,22 +468,42 @@ export const getUrlMeta = (url, disableCache = false) => {
     return Promise.resolve({url, title: url});
 };
 
-if (Platform.shortcut) {
-    let globalHotkeys = null;
-    const registerShortcut = (loginUser, loginError) => {
-        if (loginError) {
-            return;
-        }
-        const userConfig = profile.userConfig;
-        if (userConfig) {
-            globalHotkeys = userConfig.globalHotkeys;
-            Object.keys(globalHotkeys).forEach(name => {
-                Platform.shortcut.registerGlobalShortcut(name, globalHotkeys[name], () => {
+let isGlobalShortcutDisabled = false;
+
+let globalHotkeys = null;
+const registerShortcut = (loginUser, loginError) => {
+    if (!Platform.shortcut) {
+        return;
+    }
+    if (loginError) {
+        return;
+    }
+    const userConfig = profile.userConfig;
+    if (userConfig) {
+        globalHotkeys = userConfig.globalHotkeys;
+        Object.keys(globalHotkeys).forEach(name => {
+            Platform.shortcut.registerGlobalShortcut(name, globalHotkeys[name], () => {
+                if (!isGlobalShortcutDisabled) {
                     executeCommand(`shortcut.${name}`);
-                });
+                } else if (DEBUG) {
+                    console.log(`Global shortcut command '${name}' skiped.`);
+                }
             });
-        }
-    };
+        });
+    }
+};
+const unregisterGlobalShortcut = () => {
+    if (!Platform.shortcut) {
+        return;
+    }
+    if (globalHotkeys) {
+        Object.keys(globalHotkeys).forEach(name => {
+            Platform.shortcut.unregisterGlobalShortcut(name);
+        });
+        globalHotkeys = null;
+    }
+};
+if (Platform.shortcut) {
     profile.onUserConfigChange((change, config) => {
         if (change && Object.keys(change).some(x => x.startsWith('shortcut.'))) {
             registerShortcut();
@@ -494,14 +513,7 @@ if (Platform.shortcut) {
         }
     });
     Server.onUserLogin(registerShortcut);
-    Server.onUserLoginout(() => {
-        if (globalHotkeys) {
-            Object.keys(globalHotkeys).forEach(name => {
-                Platform.shortcut.unregisterGlobalShortcut(name);
-            });
-            globalHotkeys = null;
-        }
-    });
+    Server.onUserLoginout(unregisterGlobalShortcut);
 
     if (Platform.ui.showAndFocusWindow) {
         registerCommand('shortcut.focusWindowHotkey', () => {
@@ -514,11 +526,23 @@ if (Platform.shortcut) {
     }
 }
 
+export const disableGlobalShortcut = (disabled = true) => {
+    isGlobalShortcutDisabled = disabled;
+    unregisterGlobalShortcut();
+};
+
+export const enableGlobalShortcut = () => {
+    isGlobalShortcutDisabled = false;
+    registerShortcut();
+};
+
 export default {
     entryParams,
     get canQuit() {
         return !!Platform.ui.quit;
     },
+    disableGlobalShortcut,
+    enableGlobalShortcut,
     onAppLinkClick,
     emitAppLinkClick,
     quit,

@@ -6,6 +6,7 @@ import HotkeyInputControl from '../../components/hotkey-input-control';
 import Lang from '../../lang';
 import Checkbox from '../../components/checkbox';
 import SelectBox from '../../components/select-box';
+import timeSequence from '../../utils/time-sequence';
 
 const isBrowser = Platform.type === 'browser';
 
@@ -41,6 +42,11 @@ const configs = [
                 name: 'ui.chat.enableAnimate',
                 caption: Lang.string('setting.chats.enableAnimate'),
                 hidden: 'TODO: chats animate is not ready in current version.'
+            }, {
+                type: 'boolean',
+                name: 'ui.chat.listenClipboardImage',
+                caption: Lang.string('setting.chats.listenClipboardImage'),
+                hidden: isBrowser
             }
         ]
     }, {
@@ -156,7 +162,7 @@ const configs = [
                 type: 'select',
                 name: 'shortcut.sendMessage',
                 options: Config.ui['hotkey.sendMessageOptions'].map(formatKeyDecoration),
-                caption: <div style={{width: 106}}>{Lang.string('setting.hotkeys.sendMessage')}</div>
+                caption: Lang.string('setting.hotkeys.sendMessage')
             }, {
                 hidden: isBrowser,
                 type: 'hotkey',
@@ -244,9 +250,10 @@ class UserSetting extends Component {
         if (item.getConverter) {
             value = item.getConverter(value);
         }
+        const controlId = `selectbox-${timeSequence()}`;
         return (<div className={classes('control flex', item.className)} key={item.name}>
-            <div>{item.caption}</div>
-            <SelectBox value={value} options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded" />
+            <label htmlFor={controlId} style={{flex: '1 1 0%'}}>{item.caption}</label>
+            <SelectBox selectProps={{id: controlId}} value={value} options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded" />
         </div>);
     }
 
@@ -277,7 +284,7 @@ class UserSetting extends Component {
                     if (section.hidden) {
                         return null;
                     }
-                    return (<section key={section.name} className="space">
+                    return (<section key={section.name} className={`space app-setting-group-${section.name}`}>
                         <header className="heading divider space-sm">
                             <strong className="title text-gray">{section.title}</strong>
                         </header>

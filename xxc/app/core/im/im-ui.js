@@ -7,7 +7,6 @@ import Server from './im-server';
 import members from '../members';
 import StringHelper from '../../utils/string-helper';
 import DateHelper from '../../utils/date-helper';
-import MemberProfileDialog from '../../views/common/member-profile-dialog';
 import Modal from '../../components/modal';
 import ContextMenu from '../../components/context-menu';
 import ChatCommittersSettingDialog from '../../views/chats/chat-committers-setting-dialog';
@@ -34,7 +33,8 @@ let activeCaches = {};
 const EVENT = {
     activeChat: 'im.chats.activeChat',
     sendContentToChat: 'im.chats.sendContentToChat',
-    suggestSendImage: 'im.chats.suggestSendImage'
+    suggestSendImage: 'im.chats.suggestSendImage',
+    sendboxFocus: 'im.chat.sendbox.focus'
 };
 
 const activeChat = chat => {
@@ -720,22 +720,35 @@ if (Platform.screenshot) {
 }
 
 registerCommand('suggestClipboardImage', () => {
+    if (!profile.userConfig.listenClipboardImage) {
+        return;
+    }
     const newImage = Platform.clipboard.getNewImage();
     if (newImage) {
         Events.emit(EVENT.suggestSendImage, newImage);
     }
 });
 
-if (Platform.ui.onWindowFocus && Platform.clipboard.getNewImage) {
-    Platform.ui.onWindowFocus(() => {
-        executeCommand('suggestClipboardImage');
-    });
-}
+// if (Platform.ui.onWindowFocus && Platform.clipboard.getNewImage) {
+//     Platform.ui.onWindowFocus(() => {
+//         executeCommand('suggestClipboardImage');
+//     });
+// }
 
 const onSuggestSendImage = (listener) => {
-    return Events.on(`${EVENT.suggestSendImage}`, listener);
+    return Events.on(EVENT.suggestSendImage, listener);
 };
 
+const emitChatSendboxFocus = (chat, sendboxContent) => {
+    Events.emit(EVENT.sendboxFocus, chat, sendboxContent);
+    if (profile.userConfig.listenClipboardImage && StringHelper.isEmpty(sendboxContent)) {
+        executeCommand('suggestClipboardImage');
+    }
+};
+
+const onChatSendboxFocus = (listener) => {
+    return Events.on(EVENT.sendboxFocus, listener);
+};
 
 export default {
     activeChat,
@@ -754,6 +767,8 @@ export default {
     onRenderChatMessageContent,
     onSuggestSendImage,
     hasMessageContextMenu,
+    emitChatSendboxFocus,
+    onChatSendboxFocus,
 
     get currentActiveChatId() {
         return activedChatId;

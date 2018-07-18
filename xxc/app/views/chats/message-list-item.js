@@ -149,6 +149,10 @@ export default class MessageListItem extends Component {
     };
 
     handleContentContextMenu = event => {
+        if (event.target.tagName === 'WEBVIEW') {
+            return;
+        }
+
         if (showContextMenu(this.isUrlContent ? 'link' : 'message.text', {
             event,
             message: this.props.message,

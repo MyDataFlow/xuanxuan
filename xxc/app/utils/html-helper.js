@@ -118,6 +118,7 @@ const specialKeys = {
     191: '/',
     224: 'Meta'
 };
+const modifyKeys = new Set(['Alt', 18, 'Meta', 224, 'Ctrl', 17, 'Shift', 16]);
 
 export const formatKeyDecoration = decoration => {
     if (decoration) {
@@ -133,6 +134,7 @@ export const formatKeyDecoration = decoration => {
 };
 
 export const getKeyDecoration = event => {
+    const keyCode = event.keyCode;
     const shortcut = [];
     if (event.metaKey) {
         shortcut.push('Meta');
@@ -146,10 +148,12 @@ export const getKeyDecoration = event => {
     if (event.shiftKey) {
         shortcut.push('Shift');
     }
-    if (specialKeys[event.keyCode]) {
-        shortcut.push(specialKeys[event.keyCode]);
-    } else if (event.key && event.key !== 'Meta' && event.key !== 'Control' && event.key !== 'Alt' && event.key !== 'Shift') {
-        shortcut.push(String.fromCharCode(event.keyCode) || event.key);
+    if (keyCode && !modifyKeys.has(keyCode)) {
+        if (specialKeys[keyCode]) {
+            shortcut.push(specialKeys[keyCode]);
+        } else {
+            shortcut.push(String.fromCharCode(keyCode) || event.key);
+        }
     }
     return formatKeyDecoration(shortcut.join('+'));
 };

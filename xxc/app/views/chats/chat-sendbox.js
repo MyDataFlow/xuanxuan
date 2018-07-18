@@ -140,7 +140,11 @@ export default class ChatSendbox extends Component {
         MessagesPreivewDialog.show(messages, {onHidden: () => {
             this.editbox.focus();
         }});
-    }
+    };
+
+    handleOnFocus = e => {
+        App.im.ui.emitChatSendboxFocus(this.props.chat, this.editbox.getContent());
+    };
 
     render() {
         const {
@@ -164,11 +168,12 @@ export default class ChatSendbox extends Component {
             className={classes('app-chat-sendbox', className)}
         >
             <DraftEditor
-                className="app-chat-drafteditor dock-top has-padding scroll-y"
+                className="app-chat-drafteditor white dock-top has-padding scroll-y"
                 ref={e => {this.editbox = e;}}
                 placeholder={placeholder}
                 onChange={this.handleOnChange}
                 onReturnKeyDown={this.handleOnReturnKeyDown}
+                onFocus={this.handleOnFocus}
             />
             <ChatSendboxToolbar className="dock-bottom" chatGid={chat.gid} userConfigChangeTime={userConfig && userConfig.lastChangeTime} sendButtonDisabled={this.state.sendButtonDisabled} onSendButtonClick={this.handleSendButtonClick} onPreviewButtonClick={this.handlePreviewBtnClick} />
         </div>);

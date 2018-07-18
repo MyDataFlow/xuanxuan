@@ -28,6 +28,7 @@ export default {
     'ui.chat.contacts.category.default': '',
     'ui.chat.groups.category.default': '',
     'ui.chat.groups.categories': {},
+    'ui.chat.listenClipboardImage': true,
     'ui.notify.enableSound': true,
     'ui.notify.playSoundCondition': 'onWindowHide', // or "onWindowBlur", "
     'ui.notify.muteOnUserIsBusy': true,

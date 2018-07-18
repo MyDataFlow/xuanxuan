@@ -493,6 +493,7 @@
     "setting.chats.showMessageTip": "在消息发送框工具栏显示消息框小技巧按钮",
     "setting.chats.enableSearchInEmojionePicker": "表情面板启用搜索（重新载入后生效）",
     "setting.chats.enableAnimate": "启用动画效果",
+    "setting.chats.listenClipboardImage": "监听剪切板图片并提示直接发送",
     "setting.notification.enableSoundNotification": "启用声音提醒",
     "setting.notification.muteOnUserIsBusy": "当用户状态为忙碌时不使用声音提醒",
     "setting.notification.onNeed": "收到新消息时",
@@ -515,7 +516,7 @@
     "setting.windows.quitApp": "关闭窗口并退出应用",
     "setting.hotkeys.sendMessage": "发送消息",
     "setting.hotkeys.globalCaptureScreen": "全局截图",
-    "setting.hotkeys.globalFocusWindow": "显示（或隐藏）喧喧界面窗口（后台可用）",
+    "setting.hotkeys.globalFocusWindow": "显示或隐藏喧喧界面窗口（后台可用）",
     "setting.btn.reset": "重置为默认设置",
     "setting.message.reset": "已重置为默认，保存后生效。",
 
