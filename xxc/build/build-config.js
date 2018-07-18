@@ -174,6 +174,7 @@ const createPackage = (osType, arch, debug = isDebug) => {
         spawn('build', params, {
             shell: true,
             env: Object.assign({}, process.env, {
+                SKIP_INSTALL_EXTENSIONS: debug ? 1 : 0,
                 PKG_ARCH: debug ? '.debug' : (osType === 'win' ? (arch.includes('32') ? '32' : '64') : ''),
                 PKG_BETA: isBeta ? '.beta' : ''
             }),
