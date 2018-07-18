@@ -982,6 +982,7 @@ EOT;
                 $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
             }
             $data = new stdClass();
+            $data->entryID     = $entry->id;
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;

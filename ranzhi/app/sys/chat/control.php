@@ -47,7 +47,6 @@ class chat extends control
                 $data = new stdclass();
                 $data->id     = $user->id;
                 $data->status = $status;
-                $data->token  = md5($account . $password . microtime()); 
                 $user = $this->chat->editUser($data);
 
                 $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
