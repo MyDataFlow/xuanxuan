@@ -62,7 +62,7 @@ export const isWebUrl = url => {
     if (typeof url !== 'string') {
         return false;
     }
-    return (/^(https?):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/ig).test(url);
+    return (/^(https?):\/\/[-A-Za-z0-9\u4e00-\u9fa5+&@#/%?=~_|!:,.;]+[-A-Za-z0-9\u4e00-\u9fa5+&@#/%=~_|]$/ig).test(url);
 };
 
 const specialKeys = {
