@@ -4,7 +4,7 @@
     "sourceType": "module",
     "allowImportExportEverywhere": true,
     "ecmaFeatures": {
-      "jsx": true // enable JSX
+      "jsx": true
     }
   },
   "extends": "airbnb",
@@ -74,13 +74,12 @@
   ],
   "settings": {
     "import/resolver": {
-      "webpack": {
-        "config": "../build/webpack.config.development.js"
-      },
       "babel-module": {
         "alias": {
-          "Platform": "platform/electron",
-          "Config": "config/index.js"
+          "Platform": "./app/platform/electron/index.js",
+          "Config": "./app/config/index.js",
+          "ExtsRuntime": "./app/exts/runtime.js",
+          "ExtsView": "./app/views/exts/index.js"
         }
       }
     }

@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import Platform from 'Platform';
-import HTML from '../../utils/html-helper';
+import Config from 'Config';
+import {classes, formatKeyDecoration} from '../../utils/html-helper';
 import HotkeyInputControl from '../../components/hotkey-input-control';
 import Lang from '../../lang';
 import Checkbox from '../../components/checkbox';
 import SelectBox from '../../components/select-box';
-import replaceViews from '../replace-views';
 
 const isBrowser = Platform.type === 'browser';
 
@@ -71,7 +71,7 @@ const configs = [
             }, {
                 type: 'boolean',
                 name: 'ui.notify.flashTrayIcon',
-                hidden: isBrowser || !Platform.env.isWindowsOS,
+                hidden: isBrowser,
                 caption: Lang.string('setting.notification.flashTrayIcon')
             }, {
                 type: 'select',
@@ -153,19 +153,26 @@ const configs = [
         title: Lang.string('setting.section.hotkeys'),
         items: [
             {
+                type: 'select',
+                name: 'shortcut.sendMessage',
+                options: Config.ui['hotkey.sendMessageOptions'].map(formatKeyDecoration),
+                caption: <div style={{width: 106}}>{Lang.string('setting.hotkeys.sendMessage')}</div>
+            }, {
+                hidden: isBrowser,
                 type: 'hotkey',
                 name: 'shortcut.captureScreen',
                 caption: Lang.string('setting.hotkeys.globalCaptureScreen')
+            }, {
+                type: 'hotkey',
+                hidden: isBrowser,
+                name: 'shortcut.focusWindow',
+                caption: Lang.string('setting.hotkeys.globalFocusWindow')
             }
         ]
     }
 ];
 
 class UserSetting extends Component {
-    static get UserSetting() {
-        return replaceViews('common/user-setting', UserSetting);
-    }
-
     static propTypes = {
         settings: PropTypes.object.isRequired,
         className: PropTypes.string,
@@ -229,7 +236,7 @@ class UserSetting extends Component {
         if (item.getConverter) {
             value = item.getConverter(value);
         }
-        return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={HTML.classes('flex', item.className)} />;
+        return <HotkeyInputControl key={item.name} defaultValue={value} labelStyle={{flex: 1}} onChange={this.changeConfig.bind(this, item)} label={item.caption} className={classes('flex', item.className)} />;
     }
 
     renderSelectItem(item) {
@@ -237,7 +244,7 @@ class UserSetting extends Component {
         if (item.getConverter) {
             value = item.getConverter(value);
         }
-        return (<div className={HTML.classes('control flex', item.className)} key={item.name}>
+        return (<div className={classes('control flex', item.className)} key={item.name}>
             <div>{item.caption}</div>
             <SelectBox value={value} options={item.options} onChange={this.changeConfig.bind(this, item)} selectClassName="rounded" />
         </div>);
@@ -249,7 +256,7 @@ class UserSetting extends Component {
             value = item.getConverter(value);
         }
         const checked = !!value;
-        return (<div className={HTML.classes('control', item.className)} key={item.name}>
+        return (<div className={classes('control', item.className)} key={item.name}>
             <Checkbox checked={checked} label={item.caption} onChange={this.changeConfig.bind(this, item)} />
         </div>);
     }
@@ -263,7 +270,7 @@ class UserSetting extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-user-setting space', className)}
+            className={classes('app-user-setting space', className)}
         >
             {
                 configs.map(section => {

@@ -215,6 +215,22 @@ class Chat extends Entity {
         this.$set('mute', mute);
     }
 
+    get hidden() {
+        return this.hide;
+    }
+
+    set hidden(hide) {
+        this.hide = hide;
+    }
+
+    get hide() {
+        return this.$get('hide');
+    }
+
+    set hide(hide) {
+        this.$set('hide', hide);
+    }
+
     get public() {
         return this.$get('public');
     }
@@ -542,6 +558,10 @@ class Chat extends Entity {
         return this.isGroup && !this.isOwner(user);
     }
 
+    get canHide() {
+        return this.isGroup;
+    }
+
     get isSystem() {
         return this.type === TYPES.system || this.type === TYPES.robot;
     }
@@ -569,6 +589,10 @@ class Chat extends Entity {
         });
         this.renewUpdateId();
         return mutedMessages;
+    }
+
+    get isMuteOrHidden() {
+        return this.mute || this.hidden;
     }
 
     get messages() {
@@ -692,7 +716,9 @@ class Chat extends Entity {
             return chats.sort(orders);
         }
         if (!orders || orders === 'default' || orders === true) {
-            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id']; // namePinyin
+            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id'];
+        } else if (orders === 'onlineFirst') {
+            orders = ['star', 'notice', 'online', 'lastActiveTime', 'createDate', 'name', 'id'];
         } else if (typeof orders === 'string') {
             orders = orders.split(' ');
         }

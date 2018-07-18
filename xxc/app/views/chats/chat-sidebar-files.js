@@ -27,6 +27,10 @@ const renderFileList = files => {
 };
 
 class ChatSidebarFiles extends Component {
+    static get ChatSidebarFiles() {
+        return replaceViews('chats/chat-sidebar-files', ChatSidebarFiles);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -38,10 +42,6 @@ class ChatSidebarFiles extends Component {
         chat: null,
         children: null,
     };
-
-    static get ChatSidebarFiles() {
-        return replaceViews('chats/chat-sidebar-files', ChatSidebarFiles);
-    }
 
     constructor(props) {
         super(props);
@@ -58,7 +58,7 @@ class ChatSidebarFiles extends Component {
     loadFiles() {
         const chat = this.props.chat;
         return App.im.chats.getChatFiles(chat).then(files => {
-            this.setState({files, loading: false});
+            return this.setState({files, loading: false});
         });
     }
 

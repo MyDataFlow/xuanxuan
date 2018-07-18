@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `im_message` (
   `order` bigint(8) unsigned NOT NULL,
   `type` enum('normal', 'broadcast', 'notify') NOT NULL DEFAULT 'normal',
   `content` text NOT NULL DEFAULT '',
-  `contentType` enum('text', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
+  `contentType` enum('text', 'plain', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
   `data` text NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `mgid` (`gid`),

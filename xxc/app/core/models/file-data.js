@@ -286,6 +286,12 @@ export default class FileData extends Entity {
         this.$set('height', height);
     }
 
+    get imageInfo() {
+        const width = this.width;
+        const height = this.height;
+        return width && height ? {width, height} : null;
+    }
+
     get name() {
         return this.$get('name');
     }
@@ -356,6 +362,8 @@ export default class FileData extends Entity {
                 date: originFile.lastModifiedDate || new Date().getTime(),
                 name: originFile.name,
                 size: originFile.size,
+                width: originFile.width,
+                height: originFile.height,
                 send: 0,
                 type: originFile.type,
                 originFile

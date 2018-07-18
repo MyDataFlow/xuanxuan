@@ -19,11 +19,12 @@ const CONTENT_TYPES = {
     file: 'file',
     image: 'image',
     text: 'text',
+    plain: 'plain',
     emoticon: 'emoticon',
     object: 'object'
 };
 
-const OBJECT_TYPES  = {
+const OBJECT_TYPES = {
     default: 'default',
     url: 'url'
 };
@@ -232,7 +233,11 @@ class ChatMessage extends Entity {
     }
 
     get isTextContent() {
-        return this.contentType === CONTENT_TYPES.text;
+        return this.contentType === CONTENT_TYPES.text || this.contentType === CONTENT_TYPES.plain;
+    }
+
+    get isPlainTextContent() {
+        return this.contentType === CONTENT_TYPES.plain;
     }
 
     get isImageContent() {
@@ -298,14 +303,15 @@ class ChatMessage extends Entity {
     renderedTextContent(...converters) {
         if (this._renderedTextContent === undefined) {
             let content = this.content;
+            const renderOptions = {renderMarkdown: !this.isPlainTextContent};
             if (typeof content === 'string' && content.length) {
                 if (converters && converters.length) {
                     converters.forEach(converter => {
-                        content = converter(content);
+                        content = converter(content, renderOptions);
                     });
                 }
                 this._renderedTextContent = content;
-                this._isBlockContent = content && (content.includes('<h1 id="') || content.includes('<h2 id="') || content.includes('<h3 id="'));
+                this._isBlockContent = content && (content.includes('<h1>') || content.includes('<h2>') || content.includes('<h3>'));
             } else {
                 this._renderedTextContent = '';
                 this._isBlockContent = false;
@@ -397,6 +403,8 @@ class ChatMessage extends Entity {
             const content = this.content.trim();
             if (content === '$$version') {
                 return {action: 'version'};
+            } else if (content === '$$dataPath') {
+                return {action: 'dataPath'};
             }
         }
         return null;

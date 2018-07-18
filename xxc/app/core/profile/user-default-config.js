@@ -18,6 +18,7 @@ export default {
     },
     'ui.chat.sendHDEmoticon': true,
     'ui.chat.showMessageTip': true,
+    'ui.chat.sendMarkdown': false,
     'ui.chat.enableSearchInEmojionePicker': false,
     'ui.chat.contacts.groupBy': 'normal', // 'normal', 'role', 'dept'
     'ui.chat.contacts.order.role': {},
@@ -40,6 +41,7 @@ export default {
     'ui.app.onClose': 'ask', // or "close", "minimize"
     // "local.ui.app.lastFileSavePath": ",
     'shortcut.captureScreen': 'Ctrl+Alt+Z',
+    'shortcut.focusWindow': 'Ctrl+Alt+X',
     'shortcut.sendMessage': 'Enter',
 
     'user.autoReconnect': true

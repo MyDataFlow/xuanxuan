@@ -401,12 +401,12 @@ const getLastRecentChat = () => {
 };
 
 const getContactChat = (member) => {
-    const members = [member.id, profile.user.id].sort();
-    const gid = members.join('&');
+    const membersId = [member.id, profile.user.id].sort();
+    const gid = membersId.join('&');
     return get(gid);
 };
 
-const getContactsChats = (sortList = true, groupedBy = false) => {
+const getContactsChats = (sortList = 'onlineFirst', groupedBy = false) => {
     const {user} = profile;
     let contactChats = [];
     if (!user) {
@@ -621,11 +621,12 @@ const getGroups = (sortList = true, groupedBy = false) => {
         const groupedChats = {};
         groupChats.forEach(chat => {
             const isDismissed = chat.isDismissed;
-            const categoryId = isDismissed ? '_dismissed' : (chat.category || '');
-            const categoryName = isDismissed ? Lang.string('chats.menu.group.dismissed') : (categoryId || user.config.groupsDefaultCategoryName);
+            const isHidden = chat.hide;
+            const categoryId = isDismissed ? '_dismissed' : isHidden ? '_hidden' : (chat.category || '');
+            const categoryName = isDismissed ? Lang.string('chats.menu.group.dismissed') : isHidden ? Lang.string('chats.menu.group.hidden') : (categoryId || user.config.groupsDefaultCategoryName);
             if (!groupedChats[categoryId]) {
                 groupedChats[categoryId] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat]};
-                if (isDismissed) {
+                if (isDismissed || isHidden) {
                     groupedChats[categoryId].system = true;
                 }
             } else {
@@ -666,6 +667,8 @@ const getGroups = (sortList = true, groupedBy = false) => {
             user.config.groupsCategories = categories;
         }
         return orderedGroups;
+    } else {
+        
     }
     return groupChats;
 };

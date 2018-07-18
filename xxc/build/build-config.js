@@ -3,6 +3,7 @@ import path from 'path';
 import os from 'os';
 import fse from 'fs-extra';
 import pkg from '../package.json';
+import oldPkg from '../app/package.json';
 import {formatDate} from '../app/utils/date-helper';
 
 const platformMap = {
@@ -111,7 +112,8 @@ const electronBuilder = {
         'index.html',
         'main.js',
         'main.js.map',
-        'package.json'
+        'package.json',
+        'node_modules/'
     ],
     win: {
         target: [
@@ -125,17 +127,15 @@ const electronBuilder = {
             'tar.gz'
         ],
         icon: path.join(config.resourcePath, 'icons/')
-        // icon: 'resources/icons/'
     },
     mac: {
-        // icon: 'resources/icon.icns',
         icon: path.join(config.resourcePath, 'icon.icns'),
         artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
     },
     nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,
-        artifactName: "${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}",
+        artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}',
         deleteAppDataOnUninstall: false
     },
     directories: {
@@ -150,7 +150,7 @@ fse.outputJsonSync('./build/electron-builder.json', electronBuilder, {spaces: 4}
 console.log('\n\nBuildConfig > electron-builder.json generated success.');
 
 // 输出应用 package.json 文件
-fse.outputJsonSync('./app/package.json', appPkg, {spaces: 4});
+fse.outputJsonSync('./app/package.json', Object.assign(oldPkg, appPkg), {spaces: 4});
 console.log('\n\nBuildConfig > app/package.json generated success.');
 
 // type 可以为 '', 'debug' 或 'broser'

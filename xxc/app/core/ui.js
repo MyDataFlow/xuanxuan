@@ -12,8 +12,9 @@ import profile from './profile';
 import Notice from './notice';
 import ImageViewer from '../components/image-viewer';
 import Store from '../utils/store';
-import commander, {executeCommand, registerCommand} from './commander';
+import {executeCommand, registerCommand} from './commander';
 import WebViewDialog from '../views/common/webview-dialog';
+import {addContextMenuCreator} from './context-menu';
 
 const EVENT = {
     app_link: 'app.link',
@@ -22,7 +23,7 @@ const EVENT = {
     ready: 'app.ready'
 };
 
-const createImageContextMenuItems = (url, dataType) => {
+addContextMenuCreator('image', ({url, dataType}) => {
     const items = [{
         label: Lang.string('menu.image.view'),
         click: () => {
@@ -34,6 +35,7 @@ const createImageContextMenuItems = (url, dataType) => {
             label: Lang.string('menu.image.copy'),
             click: () => {
                 Platform.clipboard.writeImageFromUrl(url, dataType);
+                executeCommand('suggestClipboardImage');
             }
         });
     }
@@ -77,34 +79,16 @@ const createImageContextMenuItems = (url, dataType) => {
     }
 
     return items;
-};
+});
 
-const createLinkContextMenu = (link, text) => {
-    const items = [{
-        label: Lang.string('common.openLink'),
+addContextMenuCreator('member', ({member}) => {
+    return [{
+        label: Lang.string('member.profile.view'),
         click: () => {
-            Platform.ui.openExternal(link);
+            MemberProfileDialog.show(member);
         }
     }];
-    if (Platform.clipboard && Platform.clipboard.writeText) {
-        items.push({
-            label: Lang.string('common.copyLink'),
-            click: () => {
-                Platform.clipboard.writeText(link);
-            }
-        });
-
-        if (text && text !== link && `${text}/` !== link) {
-            items.push({
-                label: Lang.format('common.copyFormat', text.length > 25 ? `${text.substr(0, 25)}…` : text),
-                click: () => {
-                    Platform.clipboard.writeText(text);
-                }
-            });
-        }
-    }
-    return items;
-};
+});
 
 const onAppLinkClick = (type, listener) => {
     return Events.on(`${EVENT.app_link}.${type}`, listener);
@@ -182,7 +166,7 @@ Server.onUserLoginout((user, code, reason, unexpected) => {
 document.body.classList.add(`os-${Platform.env.os}`);
 
 export const openUrlInApp = (url, appName) => {
-    commander.executeCommand(`openInApp/${appName}/${decodeURIComponent(appName)}`, {appName, url});
+    executeCommand(`openInApp/${appName}/${encodeURIComponent(appName)}`, {appName, url});
 };
 
 export const openUrlInDialog = (url, options, callback) => {
@@ -409,7 +393,15 @@ const setTitle = title => {
 
 setTitle(Config.pkg.productName);
 
-export const getUrlMeta = (url) => {
+const urlMetaCaches = {};
+const maxUrlCacheSize = 20;
+export const getUrlMeta = (url, disableCache = false) => {
+    if (!disableCache) {
+        const urlMetaCache = urlMetaCaches[url];
+        if (urlMetaCache) {
+            return Promise.resolve(urlMetaCache.meta);
+        }
+    }
     if (Platform.ui.getUrlMeta) {
         let extInspector = null;
         if (global.ExtsRuntime) {
@@ -453,15 +445,74 @@ export const getUrlMeta = (url) => {
                 } else if (contentType.startsWith('video')) {
                     cardMeta.contentUrl = url;
                     cardMeta.contentType = 'video';
+                    cardMeta.clickable = 'title';
                     cardMeta.icon = 'mdi-video text-red icon-2x';
                 }
                 cardMeta.title = url;
             }
+
+            // Save cache
+            let cacheKeys = Object.keys(urlMetaCaches);
+            if (cacheKeys.length > maxUrlCacheSize) {
+                cacheKeys = cacheKeys.sort((x, y) => {
+                    return x.time - y.time;
+                });
+                for (let i = 0; i < (cacheKeys.length - maxUrlCacheSize); ++i) {
+                    delete urlMetaCaches[cacheKeys[i]];
+                }
+            }
+            urlMetaCaches[url] = {meta: cardMeta, time: new Date().getTime()};
+
             return Promise.resolve(cardMeta);
         });
     }
     return Promise.resolve({url, title: url});
 };
+
+if (Platform.shortcut) {
+    let globalHotkeys = null;
+    const registerShortcut = (loginUser, loginError) => {
+        if (loginError) {
+            return;
+        }
+        const userConfig = profile.userConfig;
+        if (userConfig) {
+            globalHotkeys = userConfig.globalHotkeys;
+            Object.keys(globalHotkeys).forEach(name => {
+                Platform.shortcut.registerGlobalShortcut(name, globalHotkeys[name], () => {
+                    executeCommand(`shortcut.${name}`);
+                });
+            });
+        }
+    };
+    profile.onUserConfigChange((change, config) => {
+        if (change && Object.keys(change).some(x => x.startsWith('shortcut.'))) {
+            registerShortcut();
+        }
+        if (config.needSave) {
+            Server.socket.uploadUserSettings();
+        }
+    });
+    Server.onUserLogin(registerShortcut);
+    Server.onUserLoginout(() => {
+        if (globalHotkeys) {
+            Object.keys(globalHotkeys).forEach(name => {
+                Platform.shortcut.unregisterGlobalShortcut(name);
+            });
+            globalHotkeys = null;
+        }
+    });
+
+    if (Platform.ui.showAndFocusWindow) {
+        registerCommand('shortcut.focusWindowHotkey', () => {
+            if (Platform.ui.hideWindow && Platform.ui.isWindowOpenAndFocus) {
+                Platform.ui.hideWindow();
+            } else {
+                Platform.ui.showAndFocusWindow();
+            }
+        });
+    }
+}
 
 export default {
     entryParams,
@@ -474,8 +525,6 @@ export default {
     showMessger: Messager.show,
     showContextMenu: ContextMenu.show,
     modal,
-    createImageContextMenuItems,
-    createLinkContextMenu,
     reloadWindow,
     triggerReady,
     onReady,

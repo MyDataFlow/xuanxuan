@@ -25,7 +25,7 @@ const getPlainTextOfChatMessage = (chatMessage, limitLength = 255, ignoreBreak =
 };
 
 let lastNoticeChat = null;
-let lastTotal = 0;
+let lastNoticeInfo = {};
 const updateChatNoticeTask = new DelayAction(() => {
     const userConfig = profile.userConfig;
     if (!userConfig) {
@@ -34,6 +34,7 @@ const updateChatNoticeTask = new DelayAction(() => {
 
     let total = 0;
     let lastChatMessage = null;
+    let notMuteCount = 0;
 
     chats.forEach(chat => {
         if (chat.noticeCount) {
@@ -49,14 +50,19 @@ const updateChatNoticeTask = new DelayAction(() => {
                 const chatLastMessage = chat.lastMessage;
                 if (chatLastMessage && (!lastChatMessage || lastChatMessage.date < chatLastMessage.date)) {
                     lastChatMessage = chatLastMessage;
-                    lastNoticeChat = chat;
+                    if (!chat.isMuteOrHidden) {
+                        lastNoticeChat = chat;
+                    }
+                }
+                if (!chat.isMuteOrHidden) {
+                    notMuteCount += chat.noticeCount;
                 }
             }
         }
     });
 
     let message = null;
-    if (total && lastTotal < total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
+    if (total && notMuteCount > 0 && lastNoticeInfo.notMuteCount < notMuteCount && lastNoticeInfo.total < total && userConfig.enableWindowNotification && (Platform.type === 'browser' || notice.isMatchWindowCondition(userConfig.windowNotificationCondition))) {
         message = userConfig.safeWindowNotification ? {
             title: Lang.format('notification.receviedMessages.format', total),
         } : {
@@ -81,7 +87,9 @@ const updateChatNoticeTask = new DelayAction(() => {
     let sound = false;
     if (
         total &&
-        lastTotal < total &&
+        notMuteCount > 0 &&
+        lastNoticeInfo.total < total &&
+        lastNoticeInfo.notMuteCount < notMuteCount &&
         userConfig.enableSound &&
         (!userConfig.muteOnUserIsBusy || !profile.user.isBusy) &&
         notice.isMatchWindowCondition(userConfig.playSoundCondition)) {
@@ -91,14 +99,16 @@ const updateChatNoticeTask = new DelayAction(() => {
     const tray = {label: total ? Lang.format('notification.receviedMessages.format', total) : ''};
     if (
         total &&
+        notMuteCount > 0 &&
+        lastNoticeInfo.notMuteCount < notMuteCount &&
         userConfig.flashTrayIcon &&
         notice.isMatchWindowCondition(userConfig.flashTrayIconCondition)
     ) {
         tray.flash = true;
     }
 
-    lastTotal = total;
-    notice.update({chats: total, message, sound, tray});
+    lastNoticeInfo = {total, chats: total, message, sound, tray, notMuteCount}
+    notice.update(lastNoticeInfo);
 }, 200);
 
 const runChatNoticeTask = () => {

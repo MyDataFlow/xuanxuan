@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import ContextMenu from '../../components/context-menu';
+import {showContextMenu} from '../../core/context-menu';
 import Icon from '../../components/icon';
 import GroupList from '../../components/group-list';
 import Button from '../../components/button';
@@ -19,6 +19,10 @@ const GROUP_TYPES = [
 ];
 
 export default class MenuContactList extends Component {
+    static get MenuContactList() {
+        return replaceViews('chats/menu-contact-list', MenuContactList);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         search: PropTypes.string,
@@ -32,10 +36,6 @@ export default class MenuContactList extends Component {
         filter: null,
         children: null,
     };
-
-    static get MenuContactList() {
-        return replaceViews('chats/menu-contact-list', MenuContactList);
-    }
 
     constructor(props) {
         super(props);
@@ -81,23 +81,22 @@ export default class MenuContactList extends Component {
         e.stopPropagation();
     };
 
-    handleItemContextMenu = (e) => {
-        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
-        const menuItems = App.im.ui.createChatContextMenuItems(chat, 'contacts', this.state.groupType);
-        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-        e.preventDefault();
+    handleItemContextMenu = (event) => {
+        const chat = App.im.chats.get(event.currentTarget.attributes['data-gid'].value);
+        showContextMenu('chat.menu', {
+            event,
+            chat,
+            menuType: 'contacts',
+            viewType: this.state.groupType
+        });
     }
 
     itemCreator = chat => {
         return <ChatListItem onContextMenu={this.handleItemContextMenu} data-gid={chat.gid} key={chat.gid} filterType={this.props.filter} chat={chat} className="item" />;
     };
 
-    handleHeadingContextMenu(group, e) {
-        const menu = App.im.ui.createGroupHeadingContextMenu(group);
-        if (menu && menu.length) {
-            App.ui.showContextMenu({x: e.clientX, y: e.clientY, target: e.target}, menu);
-            e.preventDefault();
-        }
+    handleHeadingContextMenu(group, event) {
+        showContextMenu('chat.group', {group, event});
     }
 
     handleDragOver(group, e) {
@@ -172,7 +171,7 @@ export default class MenuContactList extends Component {
             onDragStart={this.handleDragStart.bind(this, group)}
             onDragEnd={this.handleDragEnd.bind(this, group)}
             onClick={groupList.props.toggleWithHeading ? groupList.handleHeadingClick : null}
-            className={HTML.classes('heading', dragClasses)}
+            className={classes('heading', dragClasses)}
         >
             {iconView}
             <div className="title"><strong>{group.title || Lang.string('chats.menu.group.other')}</strong> {countView}</div>
@@ -206,11 +205,11 @@ export default class MenuContactList extends Component {
         } = this.props;
 
         const groupType = this.groupType;
-        const chats = App.im.chats.getContactsChats(true, groupType);
+        const chats = App.im.chats.getContactsChats('onlineFirst', groupType);
         const user = App.user;
         this.groupChats = chats;
 
-        return (<div className={HTML.classes('app-chats-menu-list app-contact-list app-chat-group-list list scroll-y', className)} {...other}>
+        return (<div className={classes('app-chats-menu-list app-contact-list app-chat-group-list list scroll-y', className)} {...other}>
             {user ? <MemberListItem
                 className="flex-middle app-member-me"
                 member={user}
@@ -230,16 +229,6 @@ export default class MenuContactList extends Component {
                 hideEmptyGroup={groupType !== 'category'}
                 forceCollapse={!!this.state.dragging}
             />
-            {/* {
-                GroupList.render(chats, {
-                    defaultExpand: this.defaultExpand,
-                    itemCreator: this.itemCreator,
-                    headingCreator: this.headingCreator,
-                    onExpandChange: this.onExpandChange,
-                    hideEmptyGroup: groupType !== 'category',
-                    forceCollapse: !!this.state.dragging
-                })
-            } */}
             {children}
         </div>);
     }

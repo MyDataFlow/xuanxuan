@@ -34,7 +34,7 @@ class chat extends control
      * @access public
      * @return void
      */
-    public function login($account = '', $password = '', $status = '')
+    public function login($account = '', $password = '', $status = '', $userID = 0, $version = '')
     {
         $password = md5($password . $account);
         $user     = $this->loadModel('user')->identify($account, $password);
@@ -49,7 +49,7 @@ class chat extends control
                 $data->status = $status;
                 $user = $this->chat->editUser($data);
 
-                $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan', $user->account);
+                $this->loadModel('action')->create('user', $user->id, 'loginXuanxuan', '', 'xuanxuan-v' . (empty($version) ? '?' : $version), $user->account);
 
                 $users = $this->chat->getUserList($status = 'online');
                 $user->signed = $this->chat->getSignedTime($account);
@@ -716,6 +716,45 @@ class chat extends control
             $data = new stdclass();
             $data->gid  = $gid;
             $data->hide = $hide;
+
+            $this->output->result = 'success';
+            $this->output->users  = array($userID);
+            $this->output->data   = $data;
+        }
+        die($this->app->encrypt($this->output));
+    }
+
+    /**
+     * Mute a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $mute true: mute a chat | false: cacel mute a chat.
+     * @param  int    $userID
+     * @access public
+     * @return void
+     */
+    public function mute($gid = '', $mute = true, $userID = 0)
+    {
+        $chatList = $this->chat->muteChat($gid, $mute, $userID);
+        if(dao::isError())
+        {
+            if($mute)
+            {
+                $message = 'mute chat failed.';
+            }
+            else
+            {
+                $message = 'Mute chat failed.';
+            }
+
+            $this->output->result  = 'fail';
+            $this->output->message = $message;
+        }
+        else
+        {
+            $data = new stdclass();
+            $data->gid  = $gid;
+            $data->mute = $mute;
 
             $this->output->result = 'success';
             $this->output->users  = array($userID);

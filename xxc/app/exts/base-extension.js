@@ -505,7 +505,7 @@ export default class Extension {
                     return false;
                 }
                 if (typeof x.test === 'function') {
-                    return x.test(url);
+                    return x.test(url, urlObj);
                 } else if (Array.isArray(x.test)) {
                     x.test = new Set(x.test);
                 } else if (typeof x.test === 'string') {

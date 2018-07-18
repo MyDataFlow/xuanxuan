@@ -495,6 +495,26 @@ class chatModel extends model
     }
 
     /**
+     * Mute a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $mute
+     * @param  int    $userID
+     * @access public
+     * @return bool
+     */
+    public function muteChat($gid = '', $mute = true, $userID = 0)
+    {
+        $this->dao->update(TABLE_IM_CHATUSER)
+            ->set('mute')->eq($mute)
+            ->where('cgid')->eq($gid)
+            ->andWhere('user')->eq($userID)
+            ->exec();
+
+        return !dao::isError();
+    }
+
+    /**
      * Set category for a chat
      *
      * @param  array  $gids

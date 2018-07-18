@@ -9,6 +9,10 @@ import App from '../../core';
 import replaceViews from '../replace-views';
 
 class ChatListItem extends Component {
+    static get ChatListItem() {
+        return replaceViews('chats/chat-list-item', ChatListItem);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         children: PropTypes.any,
@@ -26,10 +30,6 @@ class ChatListItem extends Component {
         badge: null,
         notUserLink: false,
     };
-
-    static get ChatListItem() {
-        return replaceViews('chats/chat-list-item', ChatListItem);
-    }
 
     shouldComponentUpdate(nextProps) {
         return (this.props.className !== nextProps.className ||
@@ -78,7 +78,9 @@ class ChatListItem extends Component {
         if (!badge && badge !== false) {
             const noticeCount = chat.noticeCount;
             if (noticeCount) {
-                badge = <div className="label circle red label-sm">{noticeCount > 99 ? '99+' : noticeCount}</div>;
+                badge = <div className={classes('label circle label-sm', chat.isMuteOrHidden ? 'blue' : 'red')}>{noticeCount > 99 ? '99+' : noticeCount}</div>;
+            } else if (chat.mute) {
+                badge = <Icon name="bell-off" className="muted" />;
             } else if (chat.star) {
                 badge = <Icon name="star" className="icon-sm muted" />;
             }
