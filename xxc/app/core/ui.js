@@ -1,5 +1,5 @@
-import Platform from 'Platform';
-import Config from 'Config';
+import Platform from 'Platform'; // eslint-disable-line
+import Config from 'Config'; // eslint-disable-line
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
@@ -35,7 +35,6 @@ addContextMenuCreator('image', ({url, dataType}) => {
             label: Lang.string('menu.image.copy'),
             click: () => {
                 Platform.clipboard.writeImageFromUrl(url, dataType);
-                executeCommand('suggestClipboardImage');
             }
         });
     }

@@ -41,6 +41,11 @@ const configs = [
                 name: 'ui.chat.enableAnimate',
                 caption: Lang.string('setting.chats.enableAnimate'),
                 hidden: 'TODO: chats animate is not ready in current version.'
+            }, {
+                type: 'boolean',
+                name: 'ui.chat.listenClipboardImage',
+                caption: Lang.string('setting.chats.listenClipboardImage'),
+                hidden: isBrowser
             }
         ]
     }, {

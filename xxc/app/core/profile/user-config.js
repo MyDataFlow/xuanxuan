@@ -361,6 +361,14 @@ export default class UserConfig {
         return this.set('ui.chat.list.group.states', states);
     }
 
+    set listenClipboardImage(flag) {
+        return this.set('ui.chat.listenClipboardImage', flag);
+    }
+
+    get listenClipboardImage() {
+        return this.get('ui.chat.listenClipboardImage', true);
+    }
+
     setChatMenuGroupState(listType, groupType, id, expanded) {
         const chatGroupStates = this.chatGroupStates;
         const key = `${listType}.${groupType}.${id}`;
