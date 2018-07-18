@@ -373,7 +373,7 @@ const getRecents = (includeStar = true, sortList = true) => {
     } else {
         const now = new Date().getTime();
         recents = all.filter(chat => {
-            return !chat.hidden && !chat.isDeleteOne2One && !chat.isDismissed && (chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME));
+            return (chat.noticeCount || (!chat.mute && !chat.hidden)) && !chat.isDeleteOne2One && !chat.isDismissed && (chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME));
         });
         if (!recents.length) {
             recents = all.filter(chat => chat.isSystem);
