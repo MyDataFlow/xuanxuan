@@ -27,6 +27,7 @@ const copyMedia = () => copy('./app/media/**/*', `${destRoot}/media`);
 const copyAssets = () => copy('./app/assets/**/*', `${destRoot}/assets`);
 const copyIndexHTML = () => copy('./app/index.html', destRoot);
 const copyPKG = () => copy('./app/package.json', destRoot);
+const copyManifest = () => copy('./app/manifest.json', destRoot);
 const copyIcons = () => copy('./resources/**/*', `${destRoot}/resources`);
 
 const publish = () => {
@@ -49,7 +50,7 @@ const publish = () => {
 const packageAll = () => {
     console.log('>> Packge for browser: ');
     return fse.emptyDir(destRoot).then(() => {
-        return Promise.all([copyDist(), copyMedia(), copyAssets(), copyIndexHTML(), copyPKG(), copyIcons()]).then(() => {
+        return Promise.all([copyDist(), copyMedia(), copyAssets(), copyIndexHTML(), copyPKG(), copyManifest(), copyIcons()]).then(() => {
             console.log('>> Package for browser finished, dest path is', destRoot);
             if (argv.publish) {
                 return publish();

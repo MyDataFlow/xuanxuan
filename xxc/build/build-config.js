@@ -113,7 +113,11 @@ const electronBuilder = {
         'main.js',
         'main.js.map',
         'package.json',
-        'node_modules/'
+        'node_modules/',
+        {
+            from: '../resources/',
+            to: 'resources'
+        }
     ],
     win: {
         target: [
@@ -152,6 +156,41 @@ console.log('\n\nBuildConfig > electron-builder.json generated success.');
 // 输出应用 package.json 文件
 fse.outputJsonSync('./app/package.json', Object.assign(oldPkg, appPkg), {spaces: 4});
 console.log('\n\nBuildConfig > app/package.json generated success.');
+
+fse.outputJsonSync('./app/manifest.json', {
+    name: config.productName,
+    start_url: 'index.html',
+    display: 'standalone',
+    background_color: '#fff',
+    theme_color: '#3f51b5',
+    description: config.description,
+    icons: [{
+        src: 'resources/icons/48x48.png',
+        sizes: '48x48',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/64x64.png',
+        sizes: '64x64',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/96x96.png',
+        sizes: '96x96',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/128x128.png',
+        sizes: '128x128',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/256x256.png',
+        sizes: '256x256',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/512x512.png',
+        sizes: '512x512',
+        type: 'image/png'
+    }],
+}, {spaces: 4});
+console.log('\n\nBuildConfig > app/manifest.json generated success.');
 
 // type 可以为 '', 'debug' 或 'broser'
 const buildApp = (isDebugMode = isDebug) => {

@@ -31,8 +31,8 @@
     "package-win-debug": "npm run build-config - win x64 debug",
     "package-all": "npm run build-config - all all && npm run package-win-debug && npm run package-mac-debug",
     "package-beta": "npm run build-config - all all - beta && npm run package-win-debug beta && npm run package-mac-debug beta",
-    "package-browser": "npm run build-browser && npm run copy-browser-files",
-    "publish-browser": "npm run build-browser && npm run copy-browser-files -- --publish",
+    "package-browser": "npm run build-config - skipbuild && npm run build-browser && npm run copy-browser-files",
+    "publish-browser": "npm run build-config - skipbuild && npm run build-browser && npm run copy-browser-files -- --publish",
     "hot-server-browser": "npm run hot-server -- --target=browser",
     "start-browser": "http-server ./app -a 127.0.0.1 -p 8088",
     "docs": "./node_modules/.bin/esdoc"
