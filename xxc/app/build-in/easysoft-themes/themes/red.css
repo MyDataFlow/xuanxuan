@@ -1,3 +1,9 @@
+body {
+  --color-primary: #e62340;
+  --color-secondary: #f5515f;
+  --color-pale: #f5515f;
+}
+
 .primary {
   background-color: #e62340!important;
   border-color: #e62340!important;

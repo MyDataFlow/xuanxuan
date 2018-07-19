@@ -526,6 +526,24 @@ if (Platform.shortcut) {
     }
 }
 
+export const isSmallScreen = () => {
+    return window.innerWidth < 768;
+};
+
+export const showMobileChatsMenu = (toggle) => {
+    if (!isSmallScreen()) {
+        return;
+    }
+    const {classList} = document.body;
+    if (toggle === true) {
+        classList.add('app-show-chats-menu');
+    } else if (toggle === false) {
+        classList.remove('app-show-chats-menu');
+    } else {
+        classList.toggle('app-show-chats-menu');
+    }
+};
+
 export const disableGlobalShortcut = (disabled = true) => {
     isGlobalShortcutDisabled = disabled;
     unregisterGlobalShortcut();
@@ -541,6 +559,8 @@ export default {
     get canQuit() {
         return !!Platform.ui.quit;
     },
+    isSmallScreen,
+    showMobileChatsMenu,
     disableGlobalShortcut,
     enableGlobalShortcut,
     onAppLinkClick,

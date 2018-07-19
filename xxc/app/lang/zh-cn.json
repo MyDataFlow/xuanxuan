@@ -336,6 +336,7 @@
     "navbar.contacts.label": "联系人",
     "navbar.groups.label": "讨论组",
     "navbar.exts.label": "扩展应用",
+    "navbar.chats.menu": "展开/折叠聊天列表",
 
     "exts.home.label": "应用",
     "exts.home.desc": "浏览和管理我的应用。",
