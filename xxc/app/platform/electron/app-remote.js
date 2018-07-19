@@ -148,7 +148,7 @@ class AppRemote {
         options = Object.assign({
             width: 900,
             height: 650,
-            minWidth: 900,
+            minWidth: 400,
             minHeight: 650,
             url: 'index.html',
             hashRoute: '/index',

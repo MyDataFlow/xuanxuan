@@ -55,6 +55,7 @@ const activeChat = chat => {
             chat.muteNotice();
             chats.saveChatMessages(chat.messages);
         }
+        ui.showMobileChatsMenu(false);
     }
 };
 

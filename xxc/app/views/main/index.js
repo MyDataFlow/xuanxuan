@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Route, Redirect} from 'react-router-dom';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import ROUTES from '../common/routes';
 import App from '../../core';
 import {Navbar} from './navbar';
@@ -34,13 +34,13 @@ class Index extends Component {
     }
 
     render() {
-        let {
+        const {
             className,
             userStatus,
             ...other
         } = this.props;
 
-        return (<div className={HTML.classes('app-main', className)} {...other}>
+        return (<div className={classes('app-main', className)} {...other}>
             <GlobalMessage className="dock-top" />
             <Navbar userStatus={userStatus} className="dock-left primary shadow-2" />
             <Route path={ROUTES.apps.__} exact component={CacheContainer} />
