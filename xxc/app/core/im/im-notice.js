@@ -119,13 +119,20 @@ chats.onChatMessages(runChatNoticeTask);
 
 Platform.ui.onWindowFocus(() => {
     const activedChat = ui.currentActiveChat;
-    if (lastNoticeChat && lastNoticeChat.noticeCount && (!activedChat || (!activedChat.noticeCount && activedChat.gid !== lastNoticeChat.gid))) {
-        window.location.hash = `#/chats/recents/${lastNoticeChat.gid}`;
-    } else if (activedChat && activedChat.noticeCount) {
+    if (activedChat && activedChat.noticeCount) {
         activedChat.muteNotice();
         chats.saveChatMessages(activedChat.messages, activedChat);
     }
 });
+
+if (Platform.ui.onWindowRestore) {
+    Platform.ui.onWindowRestore(() => {
+        const activedChat = ui.currentActiveChat;
+        if (lastNoticeChat && lastNoticeChat.noticeCount && (!activedChat || (!activedChat.noticeCount && activedChat.gid !== lastNoticeChat.gid))) {
+            window.location.hash = `#/chats/recents/${lastNoticeChat.gid}`;
+        }
+    });
+}
 
 export default {
     updateChatNotice: updateChatNoticeTask.do

@@ -162,8 +162,10 @@ addContextMenuCreator('chat.toolbar', context => {
 
 const captureAndCutScreenImage = (hiddenWindows = false) => {
     if (Platform.screenshot) {
+        const captureScreenChatId = activedChatId;
         Platform.screenshot.captureAndCutScreenImage(0, hiddenWindows).then(image => {
-            return image && sendContentToChat(image, 'image');
+            activeChat(captureScreenChatId);
+            return image && sendContentToChat(image, 'image', captureScreenChatId);
         }).catch(error => {
             if (DEBUG) {
                 console.warn('Capture screen image error: ', error);
@@ -728,12 +730,6 @@ registerCommand('suggestClipboardImage', () => {
         Events.emit(EVENT.suggestSendImage, newImage);
     }
 });
-
-// if (Platform.ui.onWindowFocus && Platform.clipboard.getNewImage) {
-//     Platform.ui.onWindowFocus(() => {
-//         executeCommand('suggestClipboardImage');
-//     });
-// }
 
 const onSuggestSendImage = (listener) => {
     return Events.on(EVENT.suggestSendImage, listener);

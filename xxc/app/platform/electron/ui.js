@@ -165,6 +165,10 @@ browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
 
+const onWindowRestore = listener => {
+    browserWindow.on('restore', listener);
+};
+
 export default {
     userDataPath,
     browserWindow,
@@ -183,6 +187,7 @@ export default {
     closeWindow,
     openDevTools,
     onWindowBlur,
+    onWindowRestore,
 
     showWindow,
     hideWindow,
