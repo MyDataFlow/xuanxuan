@@ -886,10 +886,10 @@ class chat extends control
 
             $errors[] = $error;
         }
-        elseif(!empty($chat->admins))
+        elseif(!empty($chat->committers))
         {
-            $admins = explode(',', $chat->admins);
-            if(!in_array($userID, $admins))
+            $committers = explode(',', $chat->committers);
+            if(!in_array($userID, $committers))
             {
                 $error = new stdclass();
                 $error->gid      = $message->cgid;
