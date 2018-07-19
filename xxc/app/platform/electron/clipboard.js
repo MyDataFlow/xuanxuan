@@ -8,14 +8,12 @@ const writeImageFromUrl = (url, dataType) => {
     clipboard.writeImage(img);
 };
 
-let lastNewImage = null;
-const getNewImage = () => {
-    let currentImage = clipboard.readImage();
-    if (currentImage && !currentImage.isEmpty()) {
-        const size = currentImage.getSize();
-        const base64 = currentImage.toDataURL();
+const getImageData = nativeImg => {
+    if (nativeImg && !nativeImg.isEmpty()) {
+        const size = nativeImg.getSize();
+        const base64 = nativeImg.toDataURL();
         const base64Length = base64.length;
-        currentImage = {
+        return {
             name: `clipboard-image-${size.width}x${size.height}.png`,
             type: 'base64',
             base64,
@@ -23,10 +21,16 @@ const getNewImage = () => {
             height: size.height,
             size: Math.ceil(((4 * (base64Length / 3))) + (base64Length % 3 !== 0 ? 4 : 0))
         };
-        if (!lastNewImage || currentImage.base64 !== lastNewImage.base64) {
-            lastNewImage = currentImage;
-            return currentImage;
-        }
+    }
+    return null;
+};
+
+let lastNewImage = getImageData(clipboard.readImage());
+const getNewImage = () => {
+    const currentImage = getImageData(clipboard.readImage());
+    if (!lastNewImage || currentImage.base64 !== lastNewImage.base64) {
+        lastNewImage = currentImage;
+        return currentImage;
     }
     return null;
 };
