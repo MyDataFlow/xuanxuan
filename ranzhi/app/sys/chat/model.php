@@ -27,7 +27,7 @@ class chatModel extends model
         {
             $chat = new stdclass();
             $chat->gid         = $this->createGID();
-            $chat->name        = 'system group';
+            $chat->name        = $this->lang->chat->systemGroup;
             $chat->type        = 'system';
             $chat->createdBy   = 'system';
             $chat->createdDate = helper::now();

@@ -1,7 +1,8 @@
 <?php
-$lang->chat->settings = '喧喧设置';
-$lang->chat->version  = '版本';
-$lang->chat->key      = '密钥';
+$lang->chat->settings    = '喧喧设置';
+$lang->chat->version     = '版本';
+$lang->chat->key         = '密钥';
+$lang->chat->systemGroup = '系统';
 
 $lang->chat->createKey      = '重新生成密钥';
 $lang->chat->upgradeSuccess = '升级成功！';
