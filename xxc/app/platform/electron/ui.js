@@ -65,7 +65,11 @@ const closeWindow = () => {
 };
 
 const showAndFocusWindow = () => {
-    showWindow();
+    if (browserWindow.isMinimized()) {
+        browserWindow.restore();
+    } else {
+        showWindow();
+    }
     focusWindow();
 };
 

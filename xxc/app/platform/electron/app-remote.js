@@ -361,7 +361,11 @@ class AppRemote {
     showAndFocusWindow(windowName = 'main') {
         const browserWindow = this.windows[windowName];
         if (browserWindow) {
-            browserWindow.show();
+            if (browserWindow.isMinimized()) {
+                browserWindow.restore();
+            } else {
+                browserWindow.show();
+            }
             browserWindow.focus();
         }
     }
