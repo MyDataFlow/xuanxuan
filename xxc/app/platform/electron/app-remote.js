@@ -179,7 +179,7 @@ class AppRemote {
             hashRoute: `/${name}`,
             url: 'index.html',
             autoHideMenuBar: !IS_MAC_OSX,
-            backgroundColor: '#FFF',
+            backgroundColor: '#ffffff',
             show: DEBUG,
             webPreferences: {webSecurity: false}
         }, options);
