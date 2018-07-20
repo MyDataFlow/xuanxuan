@@ -6,16 +6,39 @@
 
 本次更新增加了大量实用功能，优化扩展机制，提升了使用体验。
 
+
+### 功能预览
+
+
+#### 小窗口模式
+
+支持小窗口模式，同时提升浏览器端版本在 iPad 和 iPhone 上的体验。
+
+![xuanxuan2.0-mobile.gif](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xuanxuan2.0-mobile.gif)
+
+#### 快速显示和因此喧喧主窗口
+
+即便喧喧在后台也可以一键呼出了，处理完工作，一键隐藏。
+
+![xuanxuan2.0-shortcut.gif](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xuanxuan2.0-shortcut.gif)
+
+#### 免打扰和聊天存档
+
+将聊天设置为免打扰，或者将讨论组存档。
+
+![xuanxuan2.0-mute-and-hide.png](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xuanxuan2.0-mute-and-hide.png)
+
 ### 更新明细
 
+* 新增 对小尺寸窗口的支持，浏览器端支持 PWA 模式，优化浏览器端界面交互方式；
 * 新增 Markdown 开关功能，发送消息时默认不使用 Markdown 格式发送，通过按钮开关开启 Markdown 格式功能，并提供了 Markdown 格式指南文档；
-* 新增 WebView 中右键菜单操作，包括复制、粘贴、撤销等操作，支持 WebView 打开的应用页面和对话框打开的第三方网页以及 Web 卡片界面；
-* 新增 复制高清 Emoji 表情符功能，在消息中的高清 Emoji 图像上点击右键进行复制操作；
+* 新增 全局快捷键功能，用于一键隐藏和显示喧喧窗口，默认快捷键 <kbd>Ctrl+Alt+X</kbd>；
 * 新增 切换发送消息快捷键功能，可以通过个人设置面板设置或者通过发送按钮右键菜单进行切换；
 * 新增 聊天免打扰功能，将聊天设置为免打扰后，将不会在后台收到显性通知（弹窗或声音提醒）；
 * 新增 聊天存档功能（仅支持讨论组），将聊天存档后将不会在最近聊天上显示，也不会在后台收到显性通知，在讨论组列表中会在已存档分组中显示；
-* 新增 全局快捷键功能，用于一键隐藏和显示喧喧窗口；
 * 新增 一键发送剪切板图片功能，当窗口激活时如果检测到剪切板有新的图标会提示一键发送该图片；
+* 新增 复制高清 Emoji 表情符功能，在消息中的高清 Emoji 图像上点击右键进行复制操作；
+* 新增 WebView 中右键菜单操作，包括复制、粘贴、撤销等操作，支持 WebView 打开的应用页面和对话框打开的第三方网页以及 Web 卡片界面；
 * 优化 拖放发送文件功能，现在可以一次性拖放多个文件到聊天窗口进行发送；
 * 优化 Markdown 渲染机制，现在默认支持完整 Markdown 格式，并支持 GFM（GitHub Flavored Markdown）语法，允许使用一些简单的格式化 HTML 标签（例如 `<kbd>`、`<sub>`、`<mark>` 等）；
 * 优化 发送框中的链接显示，现在会高亮发送框中的链接；
