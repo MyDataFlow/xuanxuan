@@ -73,6 +73,10 @@ export default class DisplayContainer extends Component {
             all[id] = {props};
             this.setState({all});
         } else {
+            const {style, cache} = props;
+            if (cache && style) {
+                item.ref.setStyle(style);
+            }
             item.ref.show(callback);
             return item.ref;
         }
