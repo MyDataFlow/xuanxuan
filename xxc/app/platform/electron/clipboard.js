@@ -28,7 +28,7 @@ const getImageData = nativeImg => {
 let lastNewImage = getImageData(clipboard.readImage());
 const getNewImage = () => {
     const currentImage = getImageData(clipboard.readImage());
-    if (!lastNewImage || currentImage.base64 !== lastNewImage.base64) {
+    if (!lastNewImage || !currentImage || currentImage.base64 !== lastNewImage.base64) {
         lastNewImage = currentImage;
         return currentImage;
     }
