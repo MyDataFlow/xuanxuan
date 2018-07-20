@@ -1,4 +1,4 @@
-import Platform from 'Platform';
+import Platform from 'Platform'; // eslint-disable-line
 
 const isWindowsOS = Platform.env.isWindowsOS;
 const isOSX = Platform.env.isOSX;
@@ -118,7 +118,7 @@ const specialKeys = {
     191: '/',
     224: 'Meta'
 };
-const modifyKeys = new Set(['Alt', 18, 'Meta', 224, 'Ctrl', 17, 'Shift', 16]);
+const modifyKeys = new Set(['Alt', 18, 'Meta', 224, 'Ctrl', 17, 'Shift', 16, 'Option', 'Windows', 'Command']);
 
 export const formatKeyDecoration = decoration => {
     if (decoration) {
@@ -158,6 +158,13 @@ export const getKeyDecoration = event => {
     return formatKeyDecoration(shortcut.join('+'));
 };
 
+export const isOnlyModifyKeys = decoration => {
+    if (!decoration) {
+        return false;
+    }
+    return decoration.split('+').every(x => (modifyKeys.has(x)));
+};
+
 export default {
     classes,
     rem,
@@ -165,5 +172,6 @@ export default {
     strip,
     isWebUrl,
     getKeyDecoration,
-    formatKeyDecoration
+    formatKeyDecoration,
+    isOnlyModifyKeys
 };

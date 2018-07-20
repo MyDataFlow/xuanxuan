@@ -1,6 +1,6 @@
 import React, {PureComponent, PropTypes} from 'react';
 import hotkeys from 'hotkeys-js';
-import HTML from '../utils/html-helper';
+import {classes} from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
 
 hotkeys.filter = event => {
@@ -19,6 +19,28 @@ hotkeys.filter = event => {
 };
 
 class InputControl extends PureComponent {
+    static propTypes = {
+        value: PropTypes.string,
+        defaultValue: PropTypes.string,
+        label: PropTypes.any,
+        className: PropTypes.string,
+        placeholder: PropTypes.string,
+        autoFocus: PropTypes.bool,
+        style: PropTypes.object,
+        labelStyle: PropTypes.object,
+        inputType: PropTypes.string.isRequired,
+        inputStyle: PropTypes.object,
+        inputProps: PropTypes.object,
+        helpText: PropTypes.string,
+        onChange: PropTypes.func,
+        disabled: PropTypes.bool,
+        inputClassName: PropTypes.string,
+        children: PropTypes.any,
+        name: PropTypes.string,
+        hotkeyScope: PropTypes.string,
+        hotKeys: PropTypes.object,
+    };
+
     static defaultProps = {
         label: ' ',
         className: '',
@@ -40,28 +62,6 @@ class InputControl extends PureComponent {
         hotkeyScope: null,
         hotKeys: null
     };
-
-    static propTypes = {
-        value: PropTypes.string,
-        defaultValue: PropTypes.string,
-        label: PropTypes.any,
-        className: PropTypes.string,
-        placeholder: PropTypes.string,
-        autoFocus: PropTypes.bool,
-        style: PropTypes.object,
-        labelStyle: PropTypes.object,
-        inputType: PropTypes.string.isRequired,
-        inputStyle: PropTypes.object,
-        inputProps: PropTypes.object,
-        helpText: PropTypes.string,
-        onChange: PropTypes.func,
-        disabled: PropTypes.bool,
-        inputClassName: PropTypes.string,
-        children: PropTypes.any,
-        name: PropTypes.string,
-        hotkeyScope: PropTypes.string,
-        hotKeys: PropTypes.object,
-    }
 
     constructor(props) {
         super(props);
@@ -137,7 +137,7 @@ class InputControl extends PureComponent {
             ...other
         } = this.props;
 
-        return (<div className={HTML.classes('control', className, {disabled})} {...other}>
+        return (<div className={classes('control', className, {disabled})} {...other}>
             {label !== false && <label htmlFor={this.controlName} style={labelStyle}>{label}</label>}
             <input
                 data-hotkeyScope={this.hotkeyScope}
@@ -147,7 +147,7 @@ class InputControl extends PureComponent {
                 defaultValue={defaultValue}
                 id={this.controlName}
                 type={inputType}
-                className={HTML.classes('input', inputClassName)}
+                className={classes('input', inputClassName)}
                 placeholder={placeholder}
                 onChange={this.handleChange}
                 style={inputStyle}

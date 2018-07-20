@@ -1,10 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import InputControl from './input-control';
-import {getKeyDecoration, formatKeyDecoration} from '../utils/html-helper';
+import {getKeyDecoration, formatKeyDecoration, isOnlyModifyKeys, classes} from '../utils/html-helper';
+import Lang from '../lang';
 
 class HotkeyInputControl extends Component {
     static propTypes = {
         defaultValue: PropTypes.string,
+        className: PropTypes.string,
         onChange: PropTypes.func,
         inputProps: PropTypes.object,
     };
@@ -13,20 +15,22 @@ class HotkeyInputControl extends Component {
         defaultValue: '',
         onChange: null,
         inputProps: null,
+        className: null,
     };
 
     constructor(props) {
         super(props);
         this.state = {
             value: formatKeyDecoration(props.defaultValue),
+            error: null
         };
     }
 
-    changeValue(value) {
+    changeValue(value, error = null) {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
-        this.setState({value});
+        this.setState({value, error});
     }
 
     handleKeyDownEvent = e => {
@@ -35,10 +39,20 @@ class HotkeyInputControl extends Component {
             return;
         }
         const shortcut = getKeyDecoration(e);
-        this.changeValue(shortcut);
+        if (isOnlyModifyKeys(shortcut)) {
+            this.changeValue(shortcut, Lang.string('setting.hotkeys.cantSetOnlyMotifyKeys'));
+        } else {
+            this.changeValue(shortcut);
+        }
         e.preventDefault();
         e.stopPropagation();
-    }
+    };
+
+    handleBlurEvent = e => {
+        if (isOnlyModifyKeys(this.state.value)) {
+            this.changeValue('', Lang.string('setting.hotkeys.cantSetOnlyMotifyKeys'));
+        }
+    };
 
     getValue() {
         return this.state.value;
@@ -48,15 +62,19 @@ class HotkeyInputControl extends Component {
         const {
             onChange,
             defaultValue,
+            className,
             inputProps,
             ...other
         } = this.props;
 
         return (<InputControl
             {...other}
+            placeholder={defaultValue}
+            className={classes(className, {'has-error': !!this.state.error})}
+            helpText={this.state.error}
             ref={e => {this.inputControl = e;}}
             value={this.state.value}
-            inputProps={Object.assign({onKeyDown: this.handleKeyDownEvent}, inputProps)}
+            inputProps={Object.assign({onKeyDown: this.handleKeyDownEvent, onBlur: this.handleBlurEvent}, inputProps)}
         />);
     }
 }

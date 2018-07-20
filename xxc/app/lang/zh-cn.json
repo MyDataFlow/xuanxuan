@@ -518,6 +518,7 @@
     "setting.hotkeys.sendMessage": "发送消息",
     "setting.hotkeys.globalCaptureScreen": "全局截图",
     "setting.hotkeys.globalFocusWindow": "显示或隐藏喧喧界面窗口（后台可用）",
+    "setting.hotkeys.cantSetOnlyMotifyKeys": "快捷键组合不能全部是修饰键（Ctrl, Alt/Option, Shift, Windows/Command），至少需要一个普通按键。",
     "setting.btn.reset": "重置为默认设置",
     "setting.message.reset": "已重置为默认，保存后生效。",
 
