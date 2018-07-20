@@ -1,6 +1,7 @@
 import Config from 'Config';
 import Marked from 'marked';
 import HighlightJS from 'highlight.js';
+import HTMLParser from 'fast-html-parser';
 import Lang from '../lang';
 import {strip} from './html-helper';
 
@@ -75,7 +76,6 @@ const allowedTags = {
     summary: commonAttrs,
     caption: commonAttrs,
 };
-const tmpEle = document.createElement('div');
 const sanitizer = tag => {
     const isCloseTag = tag.startsWith('</');
     if (isCloseTag) {
@@ -94,16 +94,17 @@ const sanitizer = tag => {
     }
 
     const filterResult = [`<${tagName}`];
-    tmpEle.innerHTML = tag;
-    const attributes = tmpEle.children[0].attributes;
-    for (let i = 0; i < attributes.length; ++i) {
-        const attr = attributes.item(i);
-        const attrName = attr.name;
-        if (allowedRule.has(attrName)) {
-            const attrValue = attr.value;
-            const quoteType = attrValue.includes('"') ? '\'' : '"';
-            filterResult.push(`${attrName}=${quoteType}${attrValue}${quoteType}`);
-        }
+    const element = HTMLParser.parse(`${tag}</${tagName}>`);
+    const firstChild = element && element.firstChild;
+    const attrs = firstChild && firstChild.attributes;
+    if (attrs) {
+        Object.keys(attrs).forEach(attrName => {
+            if (allowedRule.has(attrName)) {
+                const attrValue = attrs[attrName];
+                const quoteType = attrValue.includes('"') ? '\'' : '"';
+                filterResult.push(`${attrName}=${quoteType}${attrValue}${quoteType}`);
+            }
+        });
     }
     filterResult.push('>');
     return filterResult.join(' ');
