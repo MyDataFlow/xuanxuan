@@ -136,8 +136,8 @@ export const formatKeyDecoration = decoration => {
 export const getKeyDecoration = event => {
     const keyCode = event.keyCode;
     const shortcut = [];
-    if (event.metaKey) {
-        shortcut.push('Meta');
+    if (event.shiftKey) {
+        shortcut.push('Shift');
     }
     if (event.ctrlKey) {
         shortcut.push('Ctrl');
@@ -145,8 +145,8 @@ export const getKeyDecoration = event => {
     if (event.altKey) {
         shortcut.push('Alt');
     }
-    if (event.shiftKey) {
-        shortcut.push('Shift');
+    if (event.metaKey) {
+        shortcut.push('Meta');
     }
     if (keyCode && !modifyKeys.has(keyCode)) {
         if (specialKeys[keyCode]) {

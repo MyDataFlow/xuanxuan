@@ -6,9 +6,7 @@
 
 本次更新增加了大量实用功能，优化扩展机制，提升了使用体验。
 
-
 ### 功能预览
-
 
 #### 小窗口模式
 
@@ -16,7 +14,7 @@
 
 ![xuanxuan2.0-mobile.gif](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/xuanxuan2.0-mobile.gif)
 
-#### 快速显示和因此喧喧主窗口
+#### 快速显示和隐藏喧喧主窗口
 
 即便喧喧在后台也可以一键呼出了，处理完工作，一键隐藏。
 
