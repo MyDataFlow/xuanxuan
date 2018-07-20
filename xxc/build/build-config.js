@@ -181,6 +181,14 @@ fse.outputJsonSync('./app/manifest.json', {
         sizes: '128x128',
         type: 'image/png'
     }, {
+        src: 'resources/icons/144x144.png',
+        sizes: '144x144',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/192x192.png',
+        sizes: '192x192',
+        type: 'image/png'
+    }, {
         src: 'resources/icons/256x256.png',
         sizes: '256x256',
         type: 'image/png'

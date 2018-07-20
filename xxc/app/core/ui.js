@@ -526,7 +526,7 @@ if (Platform.shortcut) {
     }
 }
 
-export const isSmallScreen = () => {
+export const isSmallScreen = () => { 
     return window.innerWidth < 768;
 };
 

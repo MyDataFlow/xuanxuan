@@ -121,4 +121,53 @@
         }
     }
 
+    .app-login-form {
+        width: (300*@rem);
+    }
+    .app-login > .dock-right.has-padding {
+        padding: 0 (10*@rem)!important;
+        left: 0;
+        text-align: center;
+    }
+
+    .app-message-card > .webview {
+        width: 100%!important;
+    }
+
+    [data-hint]:focus:before,
+    [data-hint]:focus:after {
+        display: none!important;
+    }
+}
+
+@media (max-width: 550px) {
+    .app-chat {
+        > .SplitPane {
+            > .Resizer {display: none!important;}
+            > .Pane1 {width: 100%!important;}
+            > .Pane2 {
+                position: absolute!important;
+                left: 0!important;
+                top: 0!important;
+                right: 0!important;
+                bottom: 0!important;
+                z-index: 1400;
+                width: 100%!important;
+                .transition-fast(transform);
+                background: rgba(0,0,0,.03);
+                transform: translateX(0);
+
+                .app-chat-sidebar {
+                    left: (50*@rem)!important;
+                    .shadow-3;
+                    background: #fff;
+                }
+            }
+
+            &.soloPane1 > .Pane2 {
+                display: block!important;
+                transform: translateX(100%)!important;
+            }
+        }
+    }
 }

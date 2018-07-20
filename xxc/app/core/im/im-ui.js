@@ -45,6 +45,7 @@ const activeChat = chat => {
         if (!activedChatId || chat.gid !== activedChatId) {
             activedChatId = chat.gid;
             Events.emit(EVENT.activeChat, chat);
+            ui.showMobileChatsMenu(false);
         }
         const urlHash = window.location.hash;
         if (!urlHash.endsWith(`/${chat.gid}`)) {
@@ -55,7 +56,6 @@ const activeChat = chat => {
             chat.muteNotice();
             chats.saveChatMessages(chat.messages);
         }
-        ui.showMobileChatsMenu(false);
     }
 };
 
@@ -421,16 +421,6 @@ addContextMenuCreator('chat.menu', context => {
                 }
             });
         }
-    }
-
-    if (DEBUG && Platform.clipboard && Platform.clipboard.writeText) {
-        tryAddDividerItem(menu);
-        menu.push({
-            label: 'Copy share link',
-            click: () => {
-                Platform.clipboard.writeText(`[${chat.getDisplayName({members, user: profile.user})}](#/chats/recents/${chat.gid})`);
-            }
-        });
     }
 
     return tryRemoveLastDivider(menu);
