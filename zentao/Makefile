@@ -16,6 +16,7 @@ zentao:
 	cp -r ../ranzhi/db/xuanxuan.sql ./build/db/
 	cp -r ../ranzhi/app/sys/chat ./build/module/
 	cp -r ../ranzhi/app/sys/action ./build/module/
+	cp -r ./xuanxuan/* ./build/module/
 	sed -i 's/site,//' ./build/module/chat/model.php
 	sed -i 's/admin, g/g/' ./build/module/chat/model.php
 	sed -e '/password = md5/d' ./build/module/chat/control.php
