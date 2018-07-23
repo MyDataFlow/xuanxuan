@@ -708,3 +708,20 @@ module.exports = UserAvatar;
 当进行扩展开发时，无需将扩展打包为 `.zip` 文件进行安装测试，可以直接从开发目录加载扩展。从开发目录加载的扩展会显示 “开发中” 标签，显示配置文件中的错误，并且提供重新载入等快捷操作。
 
 ![喧喧扩展开发模式](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/extensions/extension-develop.png)
+
+## 后台安装扩展
+
+Version > 1.5 的版本，支持后台统一管理扩展应用。
+
+### 然之
+登录然之管理系统->后台管理->应用
+添加(修改)应用
+``平台``中勾选``喧喧``,设置``版本号``
+上传``附件``，附件支持.zip或.xext。
+
+### XXB
+登录XXB->应用
+添加(修改)应用
+``平台``中勾选``喧喧``,设置``版本号``
+上传``附件``，附件支持.zip或.xext。
+
