@@ -23,8 +23,35 @@ export default class WebApp extends Component {
         onPageTitleUpdated: null,
     };
 
+    constructor(props) {
+        super(props);
+        const {app} = this.props;
+        const {hasServerEntry} = app.app;
+        this.state = {
+            url: hasServerEntry ? null : (app.directUrl || app.app.webViewUrl),
+            loading: hasServerEntry
+        };
+    }
+
     componentDidMount() {
-        this.props.app.webview = this.webview.webview;
+        const {app} = this.props;
+        if (this.webview) {
+            app.webview = this.webview.webview;
+        }
+        const {loading} = this.state;
+        if (loading) {
+            app.app.getEntryUrl().then(url => {
+                this.setState({url, loading: false});
+            }).catch(_ => {
+                this.setState({loading: false});
+            });
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.webview) {
+            this.props.app.webview = this.webview.webview;
+        }
     }
 
     handleOnPageTitleUpdated = (title, explicitSet) => {
@@ -41,13 +68,19 @@ export default class WebApp extends Component {
             onLoadingChange,
         } = this.props;
 
-        const nodeintegration = app.app.isLocalWebView;
-        const preload = app.app.webViewPreloadScript;
-        const injectScript = app.app.injectScript;
-        const injectCSS = app.app.injectCSS;
+        const {url, loading} = this.state;
+        let webView = null;
+        if (url) {
+            const nodeintegration = app.app.isLocalWebView;
+            const preload = app.app.webViewPreloadScript;
+            const {injectScript, injectCSS} = app.app;
+            webView = <WebView ref={e => {this.webview = e;}} className="dock scroll-none" src={url} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} insertCss={injectCSS} executeJavaScript={injectScript} />;
+        }
 
-        return (<div className={classes('app-web-app', className)}>
-            <WebView ref={e => {this.webview = e;}} className="dock scroll-none" src={app.directUrl || app.app.webViewUrl} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} insertCss={injectCSS} executeJavaScript={injectScript} />
-        </div>);
+        return (
+            <div className={classes('app-web-app load-indicator', className, {loading})}>
+                {webView}
+            </div>
+        );
     }
 }

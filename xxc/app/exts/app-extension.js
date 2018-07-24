@@ -54,6 +54,13 @@ export default class AppExtension extends Extension {
         return this._webViewUrl;
     }
 
+    getEntryUrl(referer = null) {
+        if (this.hasServerEntry) {
+            return super.getEntryUrl(referer);
+        }
+        return Promise.resolve(this.webViewUrl);
+    }
+
     get webViewPreloadScript() {
         if (this._appType !== APP_TYPES.webView) {
             return null;
