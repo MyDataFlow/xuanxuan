@@ -1,11 +1,16 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Avatar from '../../components/avatar';
 import HTML from '../../utils/html-helper';
 import App from '../../core';
 import {StatusDot} from './status-dot';
 import replaceViews from '../replace-views';
 
-class UserAvatar extends PureComponent {
+class UserAvatar extends Component {
+    static get UserAvatar() {
+        return replaceViews('common/user-avatar', UserAvatar);
+    }
+
     static propTypes = {
         user: PropTypes.object,
         className: PropTypes.string,
@@ -17,10 +22,6 @@ class UserAvatar extends PureComponent {
         showStatusDot: null,
         user: null,
     };
-
-    static get UserAvatar() {
-        return replaceViews('common/user-avatar', UserAvatar);
-    }
 
     shouldComponentUpdate(nextProps) {
         return nextProps.className !== this.props.className || nextProps.user !== this.props.user || !nextProps.user || !this.props.user || nextProps.user.status !== this.props.user.status || nextProps.user.avatar !== this.props.user.avatar || nextProps.user.realname !== this.props.user.realname;

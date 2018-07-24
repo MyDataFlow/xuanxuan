@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {classes, getKeyDecoration} from '../../utils/html-helper';
 import Emojione from '../../components/emojione';
 import Lang from '../../lang';

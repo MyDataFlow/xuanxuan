@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {classes} from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';

@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ExtsView from 'ExtsView';
 import ROUTES from '../common/routes';
 import {Index as ChatsView} from '../chats';

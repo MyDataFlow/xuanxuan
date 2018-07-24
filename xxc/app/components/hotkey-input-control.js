@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import InputControl from './input-control';
 import {getKeyDecoration, formatKeyDecoration, isOnlyModifyKeys, classes} from '../utils/html-helper';
 import Lang from '../lang';

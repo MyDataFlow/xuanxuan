@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import SearchControl from '../../components/search-control';
 import Icon from '../../components/icon';

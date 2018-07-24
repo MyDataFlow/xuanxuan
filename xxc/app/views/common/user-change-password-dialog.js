@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Modal from '../../components/modal';
 import InputControl from '../../components/input-control';
 import Messager from '../../components/messager';
