@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import {classes} from '../../utils/html-helper';
 import replaceViews from '../replace-views';
 import MessageContentCard from './message-content-card';

@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Route, Link} from 'react-router-dom';
 import Config from 'Config';
 import ExtsRuntime from 'ExtsRuntime';

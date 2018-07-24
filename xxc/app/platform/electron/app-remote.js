@@ -219,7 +219,11 @@ class AppRemote {
             }
         });
 
-        let url = options.url;
+        browserWindow.webContents.on('will-navigate', event => {
+            event.preventDefault();
+        });
+
+        let {url} = options;
         if (url) {
             if (!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = `file://${this.entryPath}/${options.url}`;

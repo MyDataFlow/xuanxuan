@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Platform from 'Platform';
 import {classes} from '../../utils/html-helper';
 import timeSequence from '../../utils/time-sequence';

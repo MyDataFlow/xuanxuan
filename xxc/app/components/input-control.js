@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import hotkeys from 'hotkeys-js';
 import {classes} from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
@@ -140,7 +141,7 @@ class InputControl extends PureComponent {
         return (<div className={classes('control', className, {disabled})} {...other}>
             {label !== false && <label htmlFor={this.controlName} style={labelStyle}>{label}</label>}
             <input
-                data-hotkeyScope={this.hotkeyScope}
+                data-hotkey-scope={this.hotkeyScope}
                 disabled={!!disabled}
                 ref={e => {this.input = e;}}
                 value={this.controled ? value : undefined}

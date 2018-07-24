@@ -140,6 +140,12 @@ class AppSocket extends Socket {
 
     onData(data, flags) {
         const msg = SocketMessage.fromJSON(data);
+        if (!msg) {
+            if (DEBUG) {
+                console.error('Cannot handle data:', data);
+            }
+            return;
+        }
         this.lastHandTime = new Date().getTime();
         if (Array.isArray(msg)) {
             msg.forEach(x => {

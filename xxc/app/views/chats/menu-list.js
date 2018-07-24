@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import App from '../../core';
 import {showContextMenu} from '../../core/context-menu';
 import {MenuContactList} from './menu-contact-list';

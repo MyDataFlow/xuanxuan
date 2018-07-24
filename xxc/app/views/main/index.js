@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Route, Redirect} from 'react-router-dom';
 import {classes} from '../../utils/html-helper';
 import ROUTES from '../common/routes';
