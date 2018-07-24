@@ -406,8 +406,18 @@ export const getUrlMeta = (url, disableCache = false) => {
         if (global.ExtsRuntime) {
             extInspector = global.ExtsRuntime.getUrlInspector(url);
         }
-        return Platform.ui.getUrlMeta((extInspector && extInspector.getUrl) ? extInspector.getUrl(url) : url).then(meta => {
-            const favicons = meta.favicons;
+        const getUrl = () => {
+            if (extInspector && extInspector.getUrl) {
+                const urlResult = extInspector.getUrl(url);
+                if (urlResult instanceof Promise) {
+                    return urlResult;
+                }
+                return Promise.resolve(urlResult);
+            }
+            return Promise.resolve(url);
+        };
+        return getUrl().then(Platform.ui.getUrlMeta).then(meta => {
+            const {favicons} = meta;
             let cardMeta = {
                 url,
                 title: meta.title,
@@ -421,7 +431,12 @@ export const getUrlMeta = (url, disableCache = false) => {
                     cardMeta = extInspector.inspect(meta, cardMeta, url);
                 } catch (err) {
                     if (DEBUG) {
-                        console.error('Inspect url error', {err, meta, cardMeta, extInspector});
+                        console.error('Inspect url error', {
+                            err,
+                            meta,
+                            cardMeta,
+                            extInspector
+                        });
                     }
                 }
                 if (cardMeta instanceof Promise) {
