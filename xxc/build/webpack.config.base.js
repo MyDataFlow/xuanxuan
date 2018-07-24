@@ -3,22 +3,20 @@
  */
 
 import path from 'path';
-import validate from 'webpack-validator';
 import {
     dependencies as externals
 } from '../app/package.json';
 
-export default validate({
+export default {
+    mode: 'production',
+
     module: {
-        loaders: [{
+        rules: [{
             test: /\.jsx?$/,
-            loaders: ['babel-loader'],
+            loader: 'babel-loader',
             exclude: /node_modules/
-        }, {
-            test: /\.json$/,
-            loader: 'json-loader'
         }],
-        noParse: [/ajv/]
+        noParse: [/ajv/, /BufferUtil/, /Validation/]
     },
 
     output: {
@@ -31,18 +29,21 @@ export default validate({
 
     // https://webpack.github.io/docs/configuration.html#resolve
     resolve: {
-        extensions: ['', '.js', '.jsx', '.json'],
-        packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
+        extensions: ['.js', '.jsx', '.json'],
+        mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
         alias: {
             Platform: 'platform/electron',
             Config: 'config/index.js',
             ExtsRuntime: 'exts/runtime.js',
             ExtsView: 'views/exts/index.js',
         },
-        root: path.join(__dirname, '../app')
+        modules: [
+            path.join(__dirname, '../app'),
+            'node_modules'
+        ]
     },
 
     plugins: [],
 
     externals: Object.keys(externals || {})
-});
+};
