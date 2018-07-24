@@ -140,6 +140,11 @@ class xuanxuan extends router
             $params[] = $version;
         }
 
+        if($userID && $module == 'entry' && $method == 'visit')
+        {
+            $this->session->set('userID', $userID);
+        }
+
         $this->setModuleName($module);
         $this->setMethodName($method);
         $this->setParams($params);

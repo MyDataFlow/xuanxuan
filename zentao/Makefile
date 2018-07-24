@@ -13,6 +13,7 @@ zentao:
 	cp -r ../ranzhi/lib/phpaes ./build/lib/
 	cp -r ../ranzhi/framework/xuanxuan.class.php ./build/framework/
 	cp -r ../ranzhi/www/xuanxuan.php ./build/www/
+	cp -r ../ranzhi/www/upgradexuanxuan.php ./build/www/
 	cp -r ../ranzhi/db/xuanxuan.sql ./build/db/
 	cp -r ../ranzhi/app/sys/chat ./build/module/
 	cp -r ../ranzhi/app/sys/action ./build/module/
