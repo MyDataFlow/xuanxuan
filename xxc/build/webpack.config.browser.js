@@ -4,14 +4,13 @@
 
 import path from 'path';
 import webpack from 'webpack';
-import validate from 'webpack-validator';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import merge from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import baseConfig from './webpack.config.base';
 
-export default validate(merge(baseConfig, {
+export default merge(baseConfig, {
     devtool: 'cheap-module-source-map',
 
     entry: {
@@ -29,18 +28,21 @@ export default validate(merge(baseConfig, {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.less$/,
-                loader: ExtractTextPlugin.extract('style-loader', 'css-loader?minimize=1!less-loader')
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'less-loader']
+                })
             },
 
             // Fonts
-            {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-            {test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
-            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
+            {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff'},
+            {test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff'},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/octet-stream'},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader'},
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=image/svg+xml'},
 
             // Images
             {
@@ -52,15 +54,18 @@ export default validate(merge(baseConfig, {
 
     // https://webpack.github.io/docs/configuration.html#resolve
     resolve: {
-        extensions: ['', '.js', '.jsx', '.json'],
-        packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
+        extensions: ['.js', '.jsx', '.json'],
+        mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
         alias: {
             Platform: 'platform/browser',
             Config: 'config/index.js',
             ExtsRuntime: 'platform/browser/exts.js',
             ExtsView: 'platform/browser/exts.js'
         },
-        root: path.join(__dirname, '../app')
+        modules: [
+            path.join(__dirname, '../app'),
+            'node_modules'
+        ]
     },
 
     plugins: [
@@ -87,4 +92,4 @@ export default validate(merge(baseConfig, {
     ],
 
     target: 'web'
-}));
+});

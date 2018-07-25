@@ -16,7 +16,7 @@ export default {
             loader: 'babel-loader',
             exclude: /node_modules/
         }],
-        noParse: [/ajv/, /BufferUtil/, /Validation/]
+        // noParse: [/ajv/, /BufferUtil/, /Validation/]
     },
 
     output: {
