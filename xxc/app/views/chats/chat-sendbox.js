@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {classes, getKeyDecoration} from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
+import {getKeyDecoration} from '../../utils/shortcut';
 import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
