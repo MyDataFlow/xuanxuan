@@ -153,7 +153,7 @@ export default class Extension {
 
     get entryID() {return this._pkg.entryID;}
 
-    getEntryUrl(referer = null) {
+    getEntryUrl(referer = '') {
         if (global.ExtsRuntime) {
             const {getEntryVisitUrl} = global.ExtsRuntime;
             if (getEntryVisitUrl) {
@@ -299,18 +299,14 @@ export default class Extension {
         return this.mainFile;
     }
 
-    getConfigStoreKey(forUser = false) {
-        return forUser ? `EXTENSION::${this.id}::USER::${Extension.user.identify}::config` : `EXTENSION::${this.id}::config`;
-    }
-
-    getConfig(key, forUser = false) {
+    getConfig(key) {
         if (!this._config) {
-            this._config = Store.get(this.getConfigStoreKey(forUser), {});
+            this._config = Store.get(`EXTENSION::${this.id}::config`, {});
         }
         return key === undefined ? this._config : this._config[key];
     }
 
-    setConfig(key, value, forUser = false) {
+    setConfig(key, value) {
         const config = this.getConfig();
         if (typeof key === 'object') {
             Object.assign(config, key);
@@ -318,12 +314,12 @@ export default class Extension {
             config[key] = value;
         }
         this._config = config;
-        Store.set(this.getConfigStoreKey(forUser), this._config);
+        Store.set(`EXTENSION::${this.id}::config`, this._config);
     }
 
-    getUserConfig(key) {
+    getUserConfig(key, defualtValue) {
         if (Extension.user) {
-            return this.getConfig(key, true);
+            return Extension.user.config.getForExtension(this.name, key, defualtValue);
         } else if (DEBUG) {
             console.warn('Cannot set user config for the exteions, because current user is not logined.', this);
         }
@@ -331,7 +327,7 @@ export default class Extension {
 
     setUserConfig(key, value) {
         if (Extension.user) {
-            return this.setUserConfig(key, value, true);
+            return Extension.user.config.setForExtension(this.name, key, value);
         } else if (DEBUG) {
             console.warn('Cannot set user config for the exteions, because current user is not logined.', this);
         }

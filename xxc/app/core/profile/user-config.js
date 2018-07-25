@@ -86,6 +86,25 @@ export default class UserConfig {
         }
     }
 
+    getForExtension(extensionName, key, defaultValue) {
+        if (typeof extensionName === 'object' && extensionName.name) {
+            extensionName = extensionName.name;
+        }
+        const extensionConfig = this.get(`EXTENSION::${extensionName}`, {});
+        const value = key !== undefined ? extensionConfig[key] : extensionConfig;
+        return value !== undefined ? value : defaultValue;
+    }
+
+    setForExtension(extensionName, keyOrObj, value) {
+        const extensionConfig = this.getForExtension(extensionName);
+        if (typeof keyOrObj === 'object') {
+            Object.assign(extensionConfig, keyOrObj);
+        } else {
+            extensionConfig[keyOrObj] = value;
+        }
+        return this.set(`EXTENSION::${extensionName}`, extensionConfig);
+    }
+
     reset(newConfig) {
         this.$ = Object.assign({}, DEFAULT, newConfig);
         this.makeChange(this.$, true);
