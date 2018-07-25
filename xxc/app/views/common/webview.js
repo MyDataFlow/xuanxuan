@@ -62,7 +62,7 @@ export default class WebView extends Component {
         webview.addEventListener('did-fail-load', this.handleLoadFail);
         webview.addEventListener('new-window', this.handleNewWindow);
         webview.addEventListener('dom-ready', this.handleDomReady);
-        // webview.addEventListener('will-navigate', this.handleWillNavigate);
+        webview.addEventListener('will-navigate', this.handleWillNavigate);
     }
 
     componentWillUnmount() {
@@ -75,7 +75,7 @@ export default class WebView extends Component {
             webview.removeEventListener('did-fail-load', this.handleLoadFail);
             webview.removeEventListener('new-window', this.handleNewWindow);
             webview.removeEventListener('dom-ready', this.handleDomReady);
-            // webview.removeEventListener('will-navigate', this.handleWillNavigate);
+            webview.removeEventListener('will-navigate', this.handleWillNavigate);
         }
     }
 
@@ -116,7 +116,7 @@ export default class WebView extends Component {
         this.setState({
             errorCode: null,
             errorDescription: null,
-            domReady: false
+            // domReady: false
         });
     };
 
@@ -239,7 +239,7 @@ export default class WebView extends Component {
 
         let webviewHtml;
         if (this.state.errorCode) {
-            webviewHtml = `<div class="dock box danger"><h1>${this.state.errorCode}</h1><div>${this.state.errorDescription}</div></div>`;
+            webviewHtml = `<div class="dock box danger"><h1>ERROR ${this.state.errorCode}</h1><div>${this.state.errorDescription}</div></div>`;
         } else if (isElectron) {
             webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (` preload="${options.preload}"`) : ''} />`;
         } else {
