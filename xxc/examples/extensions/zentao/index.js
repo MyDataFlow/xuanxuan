@@ -30,27 +30,11 @@ body,#wrap{padding:0!important}
 
 let extension = null;
 
-const getAuthUrl = (url) => {
-    // const auth = extension.auth;
-    // if (auth) {
-    //     if (url) {
-    //         return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
-    //     }
-    //     return auth;
-    // }
-    return url;
-};
-
 module.exports = {
     onAttach: ext => {
         extension = ext;
-        if (extension.auth) {
-            const authUrl = new URL(extension.auth);
-            authUrl.search = '';
-            extension._pkg.auth = authUrl.toString();
-        }
-        if (extension.serverEntry) {
-            extension.serverEntryHost = new URL(extension.serverEntry).host;
+        if (extension.entryUrl) {
+            extension.serverEntryHost = new URL(extension.entryUrl).host;
         }
     },
     // onDetach: ext => {
@@ -60,7 +44,9 @@ module.exports = {
             const urlHost = new URL(url).host;
             return [extension.serverEntryHost, '.5upm.com', 'pms.zentao.net', 'demo.zentao.net', 'pro.demo.zentao.net', '.zentaopm.com', 'test.zentao.net'].some(x => urlHost.endsWith(x));
         },
-        getUrl: getAuthUrl,
+        getUrl: url => {
+            return extension.getEntryUrl(url);
+        },
         inspect: (meta, cardMeta, url) => {
             if (meta.document.length < 300 && (meta.document.includes('deny') || meta.document.includes('?m=user&f=login') || meta.document.includes('user-login'))) {
                 cardMeta.title = url;
@@ -95,7 +81,7 @@ module.exports = {
                 cardMeta.webviewContent = true;
                 cardMeta.content = {
                     insertCss: injectCss,
-                    src: getAuthUrl(url),
+                    src: url,
                     style: {height: '400px', width: '550px'}
                 };
                 cardMeta.title = object.title;
