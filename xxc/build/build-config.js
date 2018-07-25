@@ -200,7 +200,7 @@ fse.outputJsonSync('./app/manifest.json', {
 }, {spaces: 4});
 console.log('\n\nBuildConfig > app/manifest.json generated success.');
 
-// type 可以为 '', 'debug' 或 'broser'
+// type 可以为 '', 'debug' 或 'browser'
 const buildApp = (isDebugMode = isDebug) => {
     console.log('\n\nBuildConfig > build app ', isDebug ? '[debug]' : '');
     return new Promise((resolve, reject) => {

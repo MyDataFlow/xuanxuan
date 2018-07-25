@@ -21,7 +21,7 @@
     "build-config": "node --max_old_space_size=2096 -r babel-register ./build/build-config.js",
     "package": "npm run build-config - - -",
     "package-debug": "npm run build-config - - - debug",
-    "package-mac": "npm run build-config - mac",
+    "package-mac": "npm run build-config - mac x64",
     "package-mac-debug": "npm run build-config - mac x64 debug",
     "package-win": "npm run build-config - win x64",
     "package-win-32": "npm run build-config - win ia32",
