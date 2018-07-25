@@ -416,6 +416,15 @@ export const getUrlMeta = (url, disableCache = false) => {
             }
             return Promise.resolve(url);
         };
+        if (extInspector && extInspector.noMeta && extInspector.inspect) {
+            return getUrl().then(url => {
+                const cardMeta = extInspector.inspect(url);
+                if (cardMeta instanceof Promise) {
+                    return cardMeta;
+                }
+                return Promise.resolve(cardMeta);
+            });
+        }
         return getUrl().then(Platform.ui.getUrlMeta).then(meta => {
             const {favicons} = meta;
             let cardMeta = {

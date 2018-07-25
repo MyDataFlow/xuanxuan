@@ -73,7 +73,7 @@ export default class MessageContentUrl extends PureComponent {
             clickable: 'content',
             title: url,
         }, meta, {
-            icon: (meta && !loading) ? (meta.icon || 'mdi-web icon-2x text-info') : 'mdi-loading muted spin',
+            icon: (meta && !loading) ? (meta.icon === false ? null : (meta.icon || 'mdi-web icon-2x text-info')) : 'mdi-loading muted spin',
         });
 
         if (meta && !loading) {
@@ -89,6 +89,15 @@ export default class MessageContentUrl extends PureComponent {
                     url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
                     icon: 'mdi-open-in-app'
                 });
+                if (DEBUG) {
+                    card.menu.push({
+                        label: Lang.string('ext.app.openDevTools'),
+                        click: () => {
+                            this.webview.webview.openDevTools();
+                        },
+                        icon: 'mdi-auto-fix'
+                    });
+                }
             }
             card.menu.push({
                 label: Lang.string('chat.message.refreshCard'),

@@ -54,7 +54,7 @@ export default class WebView extends Component {
     }
 
     componentDidMount() {
-        const webview = this.webview;
+        const {webview} = this;
         webview.addEventListener('did-start-loading', this.handleLoadingStart);
         webview.addEventListener('did-finish-load', this.handleLoadingStop);
         webview.addEventListener('did-stop-loading', this.handleLoadingStop);
@@ -62,11 +62,11 @@ export default class WebView extends Component {
         webview.addEventListener('did-fail-load', this.handleLoadFail);
         webview.addEventListener('new-window', this.handleNewWindow);
         webview.addEventListener('dom-ready', this.handleDomReady);
-        webview.addEventListener('will-navigate', this.handleWillNavigate);
+        // webview.addEventListener('will-navigate', this.handleWillNavigate);
     }
 
     componentWillUnmount() {
-        const webview = this.webview;
+        const {webview} = this;
         if (webview) {
             webview.removeEventListener('did-start-loading', this.handleLoadingStart);
             webview.removeEventListener('did-finish-load', this.handleLoadingStop);
@@ -75,7 +75,7 @@ export default class WebView extends Component {
             webview.removeEventListener('did-fail-load', this.handleLoadFail);
             webview.removeEventListener('new-window', this.handleNewWindow);
             webview.removeEventListener('dom-ready', this.handleDomReady);
-            webview.removeEventListener('will-navigate', this.handleWillNavigate);
+            // webview.removeEventListener('will-navigate', this.handleWillNavigate);
         }
     }
 
@@ -84,7 +84,7 @@ export default class WebView extends Component {
     }
 
     reloadWebview() {
-        const webview = this.webview;
+        const {webview} = this;
         return webview && webview.reload();
     }
 
@@ -116,7 +116,7 @@ export default class WebView extends Component {
         this.setState({
             errorCode: null,
             errorDescription: null,
-            domReady: false
+            // domReady: false
         });
     };
 
@@ -144,7 +144,7 @@ export default class WebView extends Component {
     };
 
     handleDomReady = () => {
-        const webview = this.webview;
+        const {webview} = this;
         const {onDomReady} = this.props;
         const {insertCss, executeJavaScript, onExeCuteJavaScript} = this.props;
         if (insertCss) {
@@ -243,10 +243,12 @@ export default class WebView extends Component {
             webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
         }
 
-        return (<div
-            className={classes('webview fade', className, {in: !hideBeforeDOMReady || this.state.domReady})}
-            dangerouslySetInnerHTML={{__html: webviewHtml}} // eslint-disable-line
-            style={style}
-        />);
+        return (
+            <div
+                className={classes('webview fade', className, {in: !hideBeforeDOMReady || this.state.domReady})}
+                dangerouslySetInnerHTML={{__html: webviewHtml}} // eslint-disable-line
+                style={style}
+            />
+        );
     }
 }
