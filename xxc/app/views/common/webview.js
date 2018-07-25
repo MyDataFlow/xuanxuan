@@ -116,7 +116,7 @@ export default class WebView extends Component {
         this.setState({
             errorCode: null,
             errorDescription: null,
-            // domReady: false
+            domReady: false
         });
     };
 
@@ -141,6 +141,9 @@ export default class WebView extends Component {
         if (onLoadingChange) {
             onLoadingChange(false);
         }
+        this.setState({
+            domReady: true
+        });
     };
 
     handleDomReady = () => {
