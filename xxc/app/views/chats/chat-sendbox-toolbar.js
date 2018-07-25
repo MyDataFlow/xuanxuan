@@ -1,7 +1,8 @@
 import Config from 'Config';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {classes, formatKeyDecoration} from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
+import {formatKeyDecoration} from '../../utils/shortcut';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';

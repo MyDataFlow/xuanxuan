@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputControl from './input-control';
-import {getKeyDecoration, formatKeyDecoration, isOnlyModifyKeys, classes} from '../utils/html-helper';
+import {classes} from '../utils/html-helper';
+import {getKeyDecoration, formatKeyDecoration, isOnlyModifyKeys} from '../utils/shortcut';
 import Lang from '../lang';
 
 class HotkeyInputControl extends Component {
@@ -28,8 +29,9 @@ class HotkeyInputControl extends Component {
     }
 
     changeValue(value, error = null) {
-        if (this.props.onChange) {
-            this.props.onChange(value);
+        const {onChange} = this.props;
+        if (onChange) {
+            onChange(value);
         }
         this.setState({value, error});
     }
