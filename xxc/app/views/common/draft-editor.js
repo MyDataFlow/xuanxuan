@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import {
     Editor,
     EditorState,
@@ -81,18 +82,15 @@ const draftDecorator = new CompositeDecorator([{
         }
         return <span data-offset-key={props.offsetKey}>{props.children}</span>;
     }
-}, /*{
+}, {
     strategy: (contentBlock, callback, contentState) => {
-        findWithRegex(Emojione.regAscii, contentBlock, callback);
+        findWithRegex(/(https?):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/g, contentBlock, callback);
     },
     component: (props) => {
-        let ascii = props.decoratedText;
-        if(ascii) {
-            return <span data-offset-key={props.offsetKey} className="code">{props.children}</span>;
-        }
-        return <span data-offset-key={props.offsetKey}>{props.children}</span>;
+        const url = props.decoratedText;
+        return <a className="text-primary" data-offset-key={props.offsetKey} href={url}>{props.children}</a>;
     }
-}*/]);
+}]);
 /* eslint-enable */
 
 class DraftEditor extends PureComponent {
@@ -121,6 +119,13 @@ class DraftEditor extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {editorState: EditorState.createEmpty(draftDecorator)};
+
+        this.onChange = this.onChange.bind(this);
+        this.handleKeyCommand = this.handleKeyCommand.bind(this);
+        this.handleReturn = this.handleReturn.bind(this);
+        this.blockRendererFn = this.blockRendererFn.bind(this);
+        this.handlePastedText = this.handlePastedText.bind(this);
+        this.handlePastedFiles = this.handlePastedFiles.bind(this);
     }
 
     getContent() {
@@ -144,21 +149,6 @@ class DraftEditor extends PureComponent {
 
     appendEmojione(emoji, callback) {
         this.appendContent(Emojione.shortnameToUnicode(emoji.shortname), callback);
-    }
-
-    appendEmojioneEntity(emoji, callback) {
-        const {editorState} = this.state;
-        const contentState = editorState.getCurrentContent();
-        const contentStateWithEntity = contentState.createEntity(
-            'emoji',
-            'Segmented',
-            {emoji, content: emoji.shortname}
-        );
-        const newEditorState = EditorState.set(
-            editorState,
-            {currentContent: contentStateWithEntity}
-        );
-        this.onChange(newEditorState, callback);
     }
 
     appendImage(image, callback) {
@@ -312,12 +302,12 @@ class DraftEditor extends PureComponent {
                 ref={e => {this.editor = e;}}
                 placeholder={placeholder}
                 editorState={this.state.editorState}
-                onChange={this.onChange.bind(this)}
-                handleKeyCommand={this.handleKeyCommand.bind(this)}
-                handleReturn={this.handleReturn.bind(this)}
-                blockRendererFn={this.blockRendererFn.bind(this)}
-                handlePastedText={this.handlePastedText.bind(this)}
-                handlePastedFiles={this.handlePastedFiles.bind(this)}
+                onChange={this.onChange}
+                handleKeyCommand={this.handleKeyCommand}
+                handleReturn={this.handleReturn}
+                blockRendererFn={this.blockRendererFn}
+                handlePastedText={this.handlePastedText}
+                handlePastedFiles={this.handlePastedFiles}
             />
         </div>);
     }

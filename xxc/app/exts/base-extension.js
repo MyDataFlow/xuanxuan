@@ -126,38 +126,61 @@ export default class Extension {
     }
 
     get pkg() {return this._pkg;}
+
     get description() {return this._pkg.description;}
+
     get version() {return this._pkg.version;}
+
     get author() {return this._pkg.author;}
+
     get publisher() {return this._pkg.publisher;}
+
     get license() {return this._pkg.license;}
+
     get homepage() {return this._pkg.homepage;}
+
     get keywords() {return this._pkg.keywords;}
+
     get engines() {return this._pkg.engines;}
+
     get repository() {return this._pkg.repository;}
+
     get bugs() {return this._pkg.bugs;}
+
     get hot() {return !!this._pkg.hot;}
 
-    get auth() {return this._pkg.auth;}
-    getAuthUrl(url) {
-        const auth = this.auth;
-        if (auth) {
-            if (url) {
-                return auth.includes('?') ? `${auth}&refer=${encodeURIComponent(url)}` : `${auth}?refer=${encodeURIComponent(url)}`;
+    get entryUrl() {return this._pkg.entryUrl;}
+
+    get entryID() {return this._pkg.entryID;}
+
+    getEntryUrl(referer = null) {
+        if (global.ExtsRuntime) {
+            const {getEntryVisitUrl} = global.ExtsRuntime;
+            if (getEntryVisitUrl) {
+                return getEntryVisitUrl(this, referer);
             }
-            return auth;
         }
-        return url;
+        return Promise.resolve(this.entryUrl);
     }
 
-    get serverEntry() {return this._pkg.serverEntry;}
+    get hasServerEntry() {
+        return this.entryID || this._pkg.entry;
+    }
+
     get download() {return this._pkg.download;}
+
     get isRemote() {return this._data.remote;}
+
     get isRemoteLoaded() {return this._data.remoteLoaded;}
+
     get md5() {return this._pkg.md5;}
+
     get user() {return this._data.user;}
+
     get remoteCachePath() {return this._data.remoteCachePath;}
+
     get loadRemoteFailed() {return this._data.loadRemoteFailed;}
+
     get downloadProgress() {
         if (this.isRemoteLoaded) {
             return 1;
@@ -167,6 +190,7 @@ export default class Extension {
         }
         return this._data.downloadProgress;
     }
+
     set downloadProgress(progress) {
         this._data.downloadProgress = progress;
     }
@@ -185,7 +209,7 @@ export default class Extension {
 
     get mainFile() {
         if (!this._mainFile) {
-            const buildIn = this.buildIn;
+            const {buildIn} = this;
             if (buildIn && buildIn.module) {
                 this._mainFile = 'BUILD-IN';
             } else if (this.pkg.main) {
@@ -196,7 +220,7 @@ export default class Extension {
     }
 
     get icon() {
-        const icon = this._pkg.icon;
+        const {icon} = this._pkg;
         if (icon && !this._icon) {
             if (icon.length > 1 && !icon.startsWith('http://') && !icon.startsWith('https://') && !icon.startsWith('mdi-') && !icon.startsWith('icon')) {
                 this._icon = Path.join(this.localPath, icon);
@@ -208,7 +232,7 @@ export default class Extension {
     }
 
     get authorName() {
-        const author = this.author;
+        const {author} = this;
         return author && (author.name || author);
     }
 
@@ -323,7 +347,7 @@ export default class Extension {
             }
             return null;
         }
-        const mainFile = this.mainFile;
+        const {mainFile} = this;
         if (mainFile) {
             const start = new Date().getTime();
 
@@ -387,7 +411,7 @@ export default class Extension {
         if (this._module && this._loaded) {
             this.callModuleMethod('onDetach', this);
         }
-        const mainFile = this.mainFile;
+        const {mainFile} = this;
         if (mainFile && mainFile !== 'BUILD-IN') {
             delete __non_webpack_require__.cache[mainFile]; // eslint-disable-line
         }
@@ -475,7 +499,7 @@ export default class Extension {
     }
 
     getCommand(commandName) {
-        const commands = this.commands;
+        const {commands} = this;
         let command = commands && commands[commandName];
         if (command) {
             if (typeof command === 'function') {
@@ -505,8 +529,9 @@ export default class Extension {
                     return false;
                 }
                 if (typeof x.test === 'function') {
-                    return x.test(url);
-                } else if (Array.isArray(x.test)) {
+                    return x.test(url, urlObj);
+                }
+                if (Array.isArray(x.test)) {
                     x.test = new Set(x.test);
                 } else if (typeof x.test === 'string') {
                     x.test = new RegExp(x.test, 'i');

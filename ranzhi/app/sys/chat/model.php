@@ -27,7 +27,7 @@ class chatModel extends model
         {
             $chat = new stdclass();
             $chat->gid         = $this->createGID();
-            $chat->name        = 'system group';
+            $chat->name        = $this->lang->chat->systemGroup;
             $chat->type        = 'system';
             $chat->createdBy   = 'system';
             $chat->createdDate = helper::now();
@@ -487,6 +487,26 @@ class chatModel extends model
     {
         $this->dao->update(TABLE_IM_CHATUSER)
             ->set('hide')->eq($hide)
+            ->where('cgid')->eq($gid)
+            ->andWhere('user')->eq($userID)
+            ->exec();
+
+        return !dao::isError();
+    }
+
+    /**
+     * Mute a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $mute
+     * @param  int    $userID
+     * @access public
+     * @return bool
+     */
+    public function muteChat($gid = '', $mute = true, $userID = 0)
+    {
+        $this->dao->update(TABLE_IM_CHATUSER)
+            ->set('mute')->eq($mute)
             ->where('cgid')->eq($gid)
             ->andWhere('user')->eq($userID)
             ->exec();
@@ -973,7 +993,6 @@ EOT;
         }
 
         $_SERVER['SCRIPT_NAME'] = 'index.php';
-        $userToken = $this->dao->select('token')->from(TABLE_USER)->where('id')->eq($userID)->fetch('token');
         foreach($entriesList as $entry)
         {
             $token = '';
@@ -983,12 +1002,12 @@ EOT;
                 $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
             }
             $data = new stdClass();
+            $data->entryID     = $entry->id;
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
             $data->webViewUrl  = strpos($entry->login, 'http') === false ? commonModel::getSysURL() . str_replace('../', '/', $entry->login) : $entry->login;
             $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
-            $data->auth        = empty($userID) ? '' : commonModel::getSysURL() . helper::createLink('entry', 'auth', "code={$entry->code}&token=" . $this->loadModel('sso')->createToken($userToken, $entry->id));
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
             $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
 

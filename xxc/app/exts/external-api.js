@@ -11,8 +11,8 @@ import compareVersions from 'compare-versions';
 import hotkeys from 'hotkeys-js';
 import pinyin from 'pinyin';
 import uuid from 'uuid';
+import HTMLParser from 'fast-html-parser';
 import platform from 'Platform';
-import jquery from 'jquery';
 import components from '../components';
 import lang from '../lang';
 import utils from '../utils';
@@ -30,11 +30,14 @@ const nodeModules = {
     extractZip,
     emojione,
     DraftJs,
+    HTMLParser,
     compareVersions,
     hotkeys,
     pinyin,
     uuid,
-    jquery
+    get jquery() {
+        return __non_webpack_require__('jquery'); // eslint-disable-line
+    }
 };
 
 export default {

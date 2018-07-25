@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import App from '../../core';
-import ContextMenu from '../../components/context-menu';
+import {showContextMenu} from '../../core/context-menu';
 import {MenuContactList} from './menu-contact-list';
 import {MenuGroupList} from './menu-group-list';
 import {MenuSearchList} from './menu-search-list';
@@ -9,6 +9,10 @@ import {MenuRecentList} from './menu-recent-list';
 import replaceViews from '../replace-views';
 
 class MenuList extends Component {
+    static get MenuList() {
+        return replaceViews('chats/menu-list', MenuList);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         search: PropTypes.string,
@@ -24,10 +28,6 @@ class MenuList extends Component {
         children: null,
         onRequestClearSearch: null,
     };
-
-    static get MenuList() {
-        return replaceViews('chats/menu-list', MenuList);
-    }
 
     componentDidMount() {
         this.dataChangeHandler = App.events.onDataChange(data => {
@@ -51,10 +51,13 @@ class MenuList extends Component {
         App.events.off(this.dataChangeHandler);
     }
 
-    handleItemContextMenu = (chat, e) => {
-        const menuItems = App.im.ui.createChatContextMenuItems(chat, this.props.filter, this.props.filter === 'groups' ? 'category' : '');
-        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-        e.preventDefault();
+    handleItemContextMenu = (chat, event) => {
+        showContextMenu('chat.menu', {
+            event,
+            chat,
+            menuType: this.props.filter,
+            viewType: this.props.filter === 'groups' ? 'category' : ''
+        });
     };
 
     render() {

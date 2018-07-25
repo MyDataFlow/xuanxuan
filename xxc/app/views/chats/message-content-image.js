@@ -1,6 +1,7 @@
-import React, {Component, PropTypes} from 'react'; // eslint-disable-line
+import React, {Component} from 'react';
+import PropTypes from 'prop-types'; // eslint-disable-line
 import Platform from 'Platform';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import Lang from '../../lang';
 import Emojione from '../../components/emojione';
@@ -8,10 +9,15 @@ import ImageViewer from '../../components/image-viewer';
 import replaceViews from '../replace-views';
 import ImageHolder from '../../components/image-holder';
 import FileData from '../../core/models/file-data';
+import {showContextMenu} from '../../core/context-menu';
 
 const isBrowser = Platform.type === 'browser';
 
 class MessageContentImage extends Component {
+    static get MessageContentImage() {
+        return replaceViews('chats/message-content-image', MessageContentImage);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         message: PropTypes.object.isRequired,
@@ -20,10 +26,6 @@ class MessageContentImage extends Component {
     static defaultProps = {
         className: null,
     };
-
-    static get MessageContentImage() {
-        return replaceViews('chats/message-content-image', MessageContentImage);
-    }
 
     constructor(props) {
         super(props);
@@ -69,16 +71,24 @@ class MessageContentImage extends Component {
         }
     }
 
-    handleImageContextMenu = e => {
+    handleImageContextMenu = event => {
         if (isBrowser) return;
-        const items = App.ui.createImageContextMenuItems(this.state.url || this.imageUrl, this.imageType);
-        App.ui.showContextMenu({x: e.pageX, y: e.pageY}, items);
-        e.preventDefault();
-    }
+        showContextMenu('image', {
+            event,
+            url: this.state.url || this.imageUrl,
+            dataType: this.imageType
+        });
+    };
+
+    handleEmojiContextMenu = event => {
+        if (isBrowser) return;
+        const image = this.props.message.imageContent;
+        showContextMenu('emoji', {event, emoji: Emojione.shortnameToUnicode(image.content)});
+    };
 
     handleImageDoubleClick = () => {
         ImageViewer.show(this.state.url || this.imageUrl, null, null);
-    }
+    };
 
     render() {
         const {
@@ -93,7 +103,8 @@ class MessageContentImage extends Component {
         if (image.type === 'emoji') {
             return (<div
                 {...other}
-                className={HTML.classes(' emojione-hd', className)}
+                onContextMenu={this.handleEmojiContextMenu}
+                className={classes(' emojione-hd', className)}
                 dangerouslySetInnerHTML={{__html: Emojione.toImage(image.content)}}
             />);
         }

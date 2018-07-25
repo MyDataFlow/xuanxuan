@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import Config from 'Config';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
@@ -6,6 +7,10 @@ import {BuildInfo} from '../common/build-info';
 import replaceViews from '../replace-views';
 
 class About extends PureComponent {
+    static get About() {
+        return replaceViews('common/about', About);
+    }
+
     static propTypes = {
         className: PropTypes.string,
     };
@@ -13,10 +18,6 @@ class About extends PureComponent {
     static defaultProps = {
         className: null,
     };
-
-    static get About() {
-        return replaceViews('common/about', About);
-    }
 
     render() {
         const {

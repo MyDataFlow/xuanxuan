@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `im_message` (
   `order` bigint(8) unsigned NOT NULL,
   `type` enum('normal', 'broadcast', 'notify') NOT NULL DEFAULT 'normal',
   `content` text NOT NULL DEFAULT '',
-  `contentType` enum('text', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
+  `contentType` enum('text', 'plain', 'emotion', 'image', 'file', 'object') NOT NULL DEFAULT 'text',
   `data` text NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `mgid` (`gid`),
@@ -72,7 +72,5 @@ CREATE TABLE `im_messagestatus` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline';
-ALTER TABLE `sys_user` ADD `token` char(32) NULL DEFAULT '' AFTER `locked`;
 ALTER TABLE `sys_file` CHANGE `pathname` `pathname` char(100) NOT NULL;
-ALTER TABLE `sys_user` ADD INDEX `token` (`token`);
 

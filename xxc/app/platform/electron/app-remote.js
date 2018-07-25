@@ -148,7 +148,7 @@ class AppRemote {
         options = Object.assign({
             width: 900,
             height: 650,
-            minWidth: 900,
+            minWidth: 400,
             minHeight: 650,
             url: 'index.html',
             hashRoute: '/index',
@@ -179,7 +179,7 @@ class AppRemote {
             hashRoute: `/${name}`,
             url: 'index.html',
             autoHideMenuBar: !IS_MAC_OSX,
-            backgroundColor: '#FFF',
+            backgroundColor: '#ffffff',
             show: DEBUG,
             webPreferences: {webSecurity: false}
         }, options);
@@ -219,7 +219,11 @@ class AppRemote {
             }
         });
 
-        let url = options.url;
+        browserWindow.webContents.on('will-navigate', event => {
+            event.preventDefault();
+        });
+
+        let {url} = options;
         if (url) {
             if (!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = `file://${this.entryPath}/${options.url}`;
@@ -361,7 +365,11 @@ class AppRemote {
     showAndFocusWindow(windowName = 'main') {
         const browserWindow = this.windows[windowName];
         if (browserWindow) {
-            browserWindow.show();
+            if (browserWindow.isMinimized()) {
+                browserWindow.restore();
+            } else {
+                browserWindow.show();
+            }
             browserWindow.focus();
         }
     }

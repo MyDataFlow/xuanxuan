@@ -1,14 +1,21 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import Config from 'Config';
 import {Route, Redirect} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import {Menu} from './menu';
 import {ChatsCache} from './chats-cache';
 import {ChatsDndContainer} from './chats-dnd-container';
+import {ChatsSuggestPanel} from './chats-suggest-panel';
 import replaceViews from '../replace-views';
 
-class Index extends Component {
+export default class Index extends Component {
+    static get Index() {
+        return replaceViews('chats/index', Index);
+    }
+
     static propTypes = {
         match: PropTypes.object.isRequired,
         hidden: PropTypes.bool,
@@ -20,9 +27,9 @@ class Index extends Component {
         className: null,
     };
 
-    static get Index() {
-        return replaceViews('chats/index', Index);
-    }
+    handChatsCacheClick = () => {
+        App.ui.showMobileChatsMenu(false);
+    };
 
     render() {
         const {
@@ -33,10 +40,10 @@ class Index extends Component {
 
         App.im.ui.activeChat(match.params.id);
 
-        return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
+        return (<div className={classes('dock app-chats', className, {hidden})}>
             <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 <Menu className="dock" filter={match.params.filterType} />
-                <ChatsCache className="dock" filterType={match.params.filterType} chatId={match.params.id}>
+                <ChatsCache onClick={this.handChatsCacheClick} className="dock" filterType={match.params.filterType} chatId={match.params.id}>
                     <ChatsDndContainer className="dock" />
                 </ChatsCache>
             </SplitPane>
@@ -51,8 +58,7 @@ class Index extends Component {
                     return null;
                 }}
             />
+            <ChatsSuggestPanel />
         </div>);
     }
 }
-
-export default Index;

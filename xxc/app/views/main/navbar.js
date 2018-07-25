@@ -1,8 +1,9 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Route, Link} from 'react-router-dom';
 import Config from 'Config';
 import ExtsRuntime from 'ExtsRuntime';
-import HTML from '../../utils/html-helper';
+import {rem, classes} from '../../utils/html-helper';
 import Lang from '../../lang';
 import Avatar from '../../components/avatar';
 import App from '../../core';
@@ -68,6 +69,11 @@ class Navbar extends Component {
                 this.forceUpdate();
             }
         });
+
+        const hashFilters = window.location.hash.split('/');
+        if (hashFilters[0] === '#') {
+            this.lastFilterType = hashFilters[1];
+        }
     }
 
     componentWillUnmount() {
@@ -76,15 +82,29 @@ class Navbar extends Component {
 
     handleProfileAvatarClick = () => {
         this.setState({showUserMenu: true});
-    }
+    };
 
     handleUserMenuRequestClose = () => {
         this.setState({showUserMenu: false});
-    }
+    };
 
     handleSettingBtnClick = () => {
         UserSettingDialog.show();
-    }
+    };
+
+    handleMainNavItemClick = () => {
+        setTimeout(() => {
+            const hashFilters = window.location.hash.split('/');
+            if (hashFilters[0] !== '#') {
+                return;
+            }
+            const currentFilterType = hashFilters[1];
+            if (this.lastFilterType && this.lastFilterType === currentFilterType) {
+                App.ui.showMobileChatsMenu(true);
+            }
+            this.lastFilterType = currentFilterType;
+        }, 200);
+    };
 
     render() {
         const {
@@ -98,7 +118,7 @@ class Navbar extends Component {
         const isAvatarOnTop = userConfig && userConfig.avatarPosition === 'top';
 
         return (<div
-            className={HTML.classes('app-navbar', className, {
+            className={classes('app-navbar', className, {
                 'with-avatar-on-top': isAvatarOnTop
             })}
             {...other}
@@ -106,16 +126,16 @@ class Navbar extends Component {
             <nav className={`dock-${isAvatarOnTop ? 'top' : 'bottom'} app-nav-profile`}>
                 <div className="hint--right" data-hint={App.profile.summaryText}>
                     <a className="block relative app-profile-avatar" onClick={this.handleProfileAvatarClick}>
-                        <UserAvatar className="avatar-lg relative" style={{margin: HTML.rem((navbarWidth - 36) / 2)}} size={36} user={App.profile.user} />
+                        <UserAvatar className="avatar-lg relative" style={{margin: rem((navbarWidth - 36) / 2)}} size={36} user={App.profile.user} />
                         <StatusDot status={App.profile.userStatus} />
                     </a>
                 </div>
-                {this.state.showUserMenu && <UserMenu className={`dock-left dock-${isAvatarOnTop ? 'top' : 'bottom'}`} style={{left: HTML.rem(navbarWidth)}} onRequestClose={this.handleUserMenuRequestClose} />}
+                {this.state.showUserMenu && <UserMenu className={`dock-left dock-${isAvatarOnTop ? 'top' : 'bottom'}`} style={{left: rem(navbarWidth)}} onRequestClose={this.handleUserMenuRequestClose} />}
             </nav>
             <nav className="dock-top app-nav-main">
                 {
                     navbarItems.map(item => {
-                        return (<div key={item.to} className="hint--right nav-item" data-hint={item.label}>
+                        return (<div key={item.to} className="hint--right nav-item" data-hint={item.label} onClick={this.handleMainNavItemClick}>
                             <NavLink item={item} />
                             {
                                 (this.state.noticeBadge && item.to === ROUTES.chats.recents.__) ? <div className="label label-sm dock-right dock-top circle red badge">{this.state.noticeBadge}</div> : null

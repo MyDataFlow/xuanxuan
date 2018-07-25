@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import App from '../../core';

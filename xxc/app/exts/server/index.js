@@ -1,7 +1,7 @@
 import Platform from 'Platform';
 import extractZip from 'extract-zip';
 import Path from 'path';
-import {socket} from '../../core/server';
+import server, {socket} from '../../core/server';
 import {createExtension} from '../extension';
 
 let onChangeListener = null;
@@ -94,7 +94,8 @@ const processExtensions = async () => {
                 }, pkgJson, {
                     download: theExt.download,
                     md5: theExt.md5,
-                    auth: theExt.auth
+                    entryUrl: theExt.entryUrl,
+                    entryID: theExt.entryID
                 }), theExt.data);
                 newExt.hotAttach();
                 exts.splice(findIndex, 1, newExt);
@@ -117,26 +118,33 @@ const processExtensions = async () => {
     }
 };
 
+export const getEntryVisitUrl = (ext, referer = null) => {
+    return server.socket.sendAndListen({
+        module: 'entry',
+        method: 'visit',
+        params: {entryID: ext.entryID || ext.name, referer: referer || ext.entryUrl}
+    });
+};
+
 const handleChatExtensions = msg => {
     if (currentUser && msg.isSuccess && msg.data.length) {
         const baseUserExtsDir = Platform.ui.createUserDataPath(currentUser, '', 'extensions');
         msg.data.forEach(item => {
+            item = Object.assign({}, item);
             const extPkg = Object.assign(Object.assign(item, {
                 icon: item.logo,
+                entryUrl: item.entryUrl || item.webViewUrl
             }));
-            if (!item.download && item.auth) {
+            if (!item.download && item.webViewUrl) {
                 extPkg.type = 'app';
                 extPkg.appType = 'webView';
-                extPkg.webViewUrl = item.auth;
-            }
-            if (item.webViewUrl) {
-                extPkg.serverEntry = item.webViewUrl;
+                extPkg.webViewUrl = item.webViewUrl;
             }
             const extData = {remote: true};
             if (item.download) {
                 extData.remoteCachePath = Path.join(baseUserExtsDir, `${item.name}.zip`);
                 extData.localPath = Path.join(baseUserExtsDir, item.name);
-            } else if (item.auth) {
+            } else if (item.webViewUrl) {
                 extData.remoteLoaded = true;
             }
             const ext = createExtension(extPkg, extData);
@@ -154,8 +162,16 @@ const handleChatExtensions = msg => {
     }
 };
 
+const handleEntryVisit = msg => {
+    if (currentUser && msg.isSuccess && msg.data) {
+        return msg.data;
+    }
+    return false;
+};
+
 socket.setHandler({
     'chat/extensions': handleChatExtensions,
+    'entry/visit': handleEntryVisit
 });
 
 export const detachServerExtensions = user => {
@@ -204,6 +220,7 @@ export const setServerOnChangeListener = listener => {
 };
 
 export default {
+    getEntryVisitUrl,
     fetchServerExtensions,
     setServerOnChangeListener,
     detachServerExtensions

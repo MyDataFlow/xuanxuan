@@ -90,7 +90,7 @@ class SocketMessage {
             if (DEBUG) {
                 console.groupCollapsed('%cError: SocketMessage from json', 'color:red', error);
                 console.log('raw', json);
-                console.log('raw string', json.toString());
+                console.log('raw string', json && json.toString());
                 console.groupEnd();
             }
         }

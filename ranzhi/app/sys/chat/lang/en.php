@@ -1,7 +1,8 @@
 <?php
-$lang->chat->settings = 'Xuanxuan Settings';
-$lang->chat->version  = 'Version';
-$lang->chat->key      = 'Secret';
+$lang->chat->settings    = 'Xuanxuan Settings';
+$lang->chat->version     = 'Version';
+$lang->chat->key         = 'Secret';
+$lang->chat->systemGroup = 'System';
 
 $lang->chat->createKey      = 'New';
 $lang->chat->upgradeSuccess = 'Upgrade success.';

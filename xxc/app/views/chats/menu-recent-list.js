@@ -1,11 +1,16 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
-import ContextMenu from '../../components/context-menu';
 import {ChatListItem} from './chat-list-item';
 import replaceViews from '../replace-views';
+import {showContextMenu} from '../../core/context-menu';
 
 export default class MenuRecentList extends Component {
+    static get MenuRecentList() {
+        return replaceViews('chats/menu-recent-list', MenuRecentList);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         filter: PropTypes.string,
@@ -18,15 +23,14 @@ export default class MenuRecentList extends Component {
         children: null,
     };
 
-    static get MenuRecentList() {
-        return replaceViews('chats/menu-recent-list', MenuRecentList);
-    }
-
-    handleItemContextMenu = (e) => {
-        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
-        const menuItems = App.im.ui.createChatContextMenuItems(chat, this.props.filter, '');
-        ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-        e.preventDefault();
+    handleItemContextMenu = (event) => {
+        const chat = App.im.chats.get(event.currentTarget.attributes['data-gid'].value);
+        showContextMenu('chat.menu', {
+            event,
+            chat,
+            menuType: this.props.filter,
+            viewType: ''
+        });
     };
 
     render() {
@@ -50,7 +54,7 @@ export default class MenuRecentList extends Component {
             chatItemsView.splice(0, 0, <ChatListItem onContextMenu={this.handleItemContextMenu} data-gid={activeChat.gid} key={activeChat.gid} filterType={filter} chat={activeChat} className="item" />);
         }
 
-        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
+        return (<div className={classes('app-chats-menu-list list scroll-y', className)} {...other}>
             {chatItemsView}
             {children}
         </div>);

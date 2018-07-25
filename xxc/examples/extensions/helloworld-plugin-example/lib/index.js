@@ -76,5 +76,15 @@ module.exports = {
             label: '访问禅道',
             url: 'http://zentao.net'
         }]
+    }, {
+        match: 'chat.sendbox.toolbar',
+        create: context => {
+            return [{
+                label: 'say hello',
+                click: () => {
+                    context.sendContent('Hello!');
+                }
+            }];
+        }
     }]
 };

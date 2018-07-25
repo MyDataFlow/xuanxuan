@@ -23,7 +23,7 @@ const update = info => {
     }
 
     if (notify.setBadgeLabel) {
-        notify.setBadgeLabel(info.total || '');
+        notify.setBadgeLabel(info.notMuteCount || '');
     }
 
     if (notify.updateTrayIcon) {

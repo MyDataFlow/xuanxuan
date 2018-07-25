@@ -1,7 +1,7 @@
 {
     "name": "zentao",
-    "displayName": "禅道集成",
-    "version": "1.0.0",
+    "displayName": "禅道",
+    "version": "2.0.0",
     "description": "与禅道进行集成，支持禅道10.0+。",
     "type": "app",
     "appType": "webView",

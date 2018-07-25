@@ -1,6 +1,6 @@
 import React from 'react';
 import Display from './display';
-import HTML from '../utils/html-helper';
+import {classes} from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
 
 const show = (position, content, props = {}, callback = null) => {
@@ -141,7 +141,7 @@ const show = (position, content, props = {}, callback = null) => {
 
     style = Object.assign({width, height, top, left}, style);
 
-    className = HTML.classes('popover layer', className, `placement-${placement}`);
+    className = classes('popover layer', className, `placement-${placement}`);
     const arrowPlacementMap = {left: 'right', right: 'left', top: 'bottom', bottom: 'top'};
     const footer = arrow ? (<div style={arrowStyle} className={`display-arrow arrow-${arrowPlacementMap[placement]}`} />) : null;
     props = Object.assign({backdropClassName: 'clean', animation: `scale-from-${arrowPlacementMap[placement]}`}, props, {className, style, content, footer, plugName: 'popover'});

@@ -265,6 +265,7 @@
       position: relative;
       top: (-2*@rem);
       opacity: 0;
+      align-self: flex-end;
     }
     &:hover {
       > .app-message-content-text {
@@ -273,6 +274,10 @@
       }
       > .actions {opacity: 1;}
     }
+  }
+
+  &.content-type-plain {
+    white-space: pre;
   }
 
   .sharing &.content-type-text > .app-message-content-text {
@@ -325,6 +330,7 @@
   &.is-content-block {
     background-color: @color-pale;
     padding: (15*@rem) (25*@rem);
+    width: 100%;
   }
 }
 
@@ -785,8 +791,8 @@
 
   > .btn-copy-code {
     position: absolute;
-    right: (5*@rem);
-    top: (5*@rem);
+    right: (2*@rem);
+    top: (2*@rem);
     visibility: hidden;
     opacity: 0;
     transition: opacity @animation-type @animation-speed-normal;
@@ -841,7 +847,7 @@
   margin: @space-xs 0;
   min-width: (300*@rem);
   max-width: (800*@rem);
-  margin-right: (50*@rem);
+  margin-right: (30*@rem);
 
   > .img {
     background-position: center;
@@ -912,6 +918,8 @@
     > .avatar + hgroup {
       padding-left: @space-xs;
     }
+
+    + .webview {.divider-top;}
   }
 
   &.only-title {
@@ -1020,8 +1028,9 @@
 }
 .app-menu-card-menu {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-end;
   position: absolute;
   left: 100%;
   flex-wrap: nowrap;
@@ -1045,5 +1054,29 @@
 
   &.only-title {
     header > hgroup > h4 {font-size: (14*@rem);}
+  }
+}
+
+.app-chats-suggest-panel {
+  width: (300*@rem);
+  max-height: (500*@rem);
+  min-height: (80*@rem);
+  right: @space;
+  bottom: @space;
+  overflow: hidden;
+  padding: @space-xs;
+  pointer-events: none;
+
+  &.in {
+    pointer-events: all;
+  }
+
+  .img-holder {
+    max-height: (500*@rem - 2*@space-xs);
+  }
+
+  .toolbar {
+    bottom: (-@space-xs);
+    background: rgba(255,255,255,.75);
   }
 }

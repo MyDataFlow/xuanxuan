@@ -1,9 +1,12 @@
-import React, {PureComponent, PropTypes} from 'react';
-import {classes} from '../../utils/html-helper';
+import Config from 'Config';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
+import {classes, formatKeyDecoration} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import Lang from '../../lang';
 import App from '../../core';
 import replaceViews from '../replace-views';
+import {getMenuItemsForContext} from '../../core/context-menu';
 
 export default class ChatSendboxToolbar extends PureComponent {
     static get ChatSendboxToolbar() {
@@ -13,8 +16,7 @@ export default class ChatSendboxToolbar extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
         chatGid: PropTypes.string,
-        showMessageTip: PropTypes.bool,
-        captureScreenHotkey: PropTypes.string,
+        userConfigChangeTime: PropTypes.number,
         sendButtonDisabled: PropTypes.bool,
         onSendButtonClick: PropTypes.func,
         onPreviewButtonClick: PropTypes.func
@@ -23,27 +25,61 @@ export default class ChatSendboxToolbar extends PureComponent {
     static defaultProps = {
         className: null,
         chatGid: null,
-        showMessageTip: true,
-        captureScreenHotkey: null,
         sendButtonDisabled: true,
         onSendButtonClick: null,
-        onPreviewButtonClick: null
+        onPreviewButtonClick: null,
+        userConfigChangeTime: null,
+    };
+
+    handleSendBtnContextMenu = e => {
+        const currentHotKey = formatKeyDecoration(App.profile.userConfig.sendMessageHotkey);
+        let itemsChecked = false;
+        const items = [{
+            label: Lang.string('chat.sendbox.changeHotkeyTip'),
+            disabled: true
+        }];
+        Config.ui['hotkey.sendMessageOptions'].forEach(x => {
+            x = formatKeyDecoration(x);
+            if (currentHotKey === x) {
+                itemsChecked = true;
+            }
+            items.push({
+                label: x,
+                click: () => {
+                    App.profile.userConfig.sendMessageHotkey = x;
+                },
+                checked: currentHotKey === x
+            });
+        });
+        if (!itemsChecked) {
+            items.push({
+                label: currentHotKey,
+                checked: true
+            });
+        }
+
+        App.ui.showContextMenu({x: e.clientX, y: e.clientY}, items);
     };
 
     render() {
-        const {className, chatGid, showMessageTip, captureScreenHotkey, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, ...other} = this.props;
+        const {className, chatGid, sendButtonDisabled, onPreviewButtonClick, onSendButtonClick, userConfigChangeTime, ...other} = this.props;
         return (<div className={classes('app-chat-sendbox-toolbar flex', className)} {...other}>
-            <div className="flex flex-middle flex-auto toolbar">
+            <div className="flex flex-middle flex-auto toolbar flex-wrap">
                 {
-                    App.im.ui.createSendboxToolbarItems(chatGid, showMessageTip, captureScreenHotkey).map(item => <div key={item.id} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className="btn iconbutton rounded" type="button"><Icon name={item.icon} /></button></div>)
+                    getMenuItemsForContext('chat.sendbox.toolbar', {chatGid, openMessagePreview: sendButtonDisabled ? null : onPreviewButtonClick, sendContent: App.im.ui.sendContentToChat}).map((item, idx) => {
+                        if (item === 'divider') {
+                            return <div key={item.id || idx} className="divider" />;
+                        }
+                        return <div key={item.id || idx} className="hint--top has-padding-sm" data-hint={item.label} onContextMenu={item.contextMenu} onClick={item.click}><button className={classes('btn iconbutton rounded', item.className)} type="button">{Icon.render(item.icon)}</button></div>;
+                    })
                 }
-                <div className="hint--top has-padding-sm" data-hint={Lang.string('chat.sendbox.toolbar.previewDraft')} onClick={onPreviewButtonClick}><button disabled={sendButtonDisabled} className="btn iconbutton rounded" type="button"><Icon name="file-document-box" /></button></div>
             </div>
             <div className="toolbar flex flex-none flex-middle">
-                <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (Enter)`} onClick={onSendButtonClick}>
+                <div className="hint--top-left has-padding-sm" data-hint={`${Lang.string('chat.sendbox.toolbar.send')} (${App.profile.userConfig.sendMessageHotkey} - ${Lang.string('chat.sendbox.toolbar.changeHotkeyTip')})`} onClick={onSendButtonClick}>
                     <button
+                        onContextMenu={this.handleSendBtnContextMenu}
                         className={classes('btn iconbutton rounded', {
-                            disabled: sendButtonDisabled,
+                            muted: sendButtonDisabled,
                             'text-primary': !sendButtonDisabled
                         })}
                         type="button"

@@ -1,5 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import OpenedApp from '../../exts/opened-app';
 import replaceViews from '../replace-views';
 import {WebView} from '../common/webview';
@@ -22,6 +23,37 @@ export default class WebApp extends Component {
         onPageTitleUpdated: null,
     };
 
+    constructor(props) {
+        super(props);
+        const {app} = this.props;
+        const {hasServerEntry} = app.app;
+        this.state = {
+            url: hasServerEntry ? null : (app.directUrl || app.app.webViewUrl),
+            loading: hasServerEntry
+        };
+    }
+
+    componentDidMount() {
+        const {app} = this.props;
+        if (this.webview) {
+            app.webview = this.webview.webview;
+        }
+        const {loading} = this.state;
+        if (loading) {
+            app.app.getEntryUrl().then(url => {
+                this.setState({url, loading: false});
+            }).catch(_ => {
+                this.setState({loading: false});
+            });
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.webview) {
+            this.props.app.webview = this.webview.webview;
+        }
+    }
+
     handleOnPageTitleUpdated = (title, explicitSet) => {
         const {onPageTitleUpdated, app} = this.props;
         if (onPageTitleUpdated) {
@@ -29,25 +61,26 @@ export default class WebApp extends Component {
         }
     };
 
-    componentDidMount() {
-        this.props.app.webview = this.webview.webview;
-    }
-
     render() {
         const {
             className,
             app,
             onLoadingChange,
-            onPageTitleUpdated,
         } = this.props;
 
-        const nodeintegration = app.app.isLocalWebView;
-        const preload = app.app.webViewPreloadScript;
-        const injectScript = app.app.injectScript;
-        const injectCSS = app.app.injectCSS;
+        const {url, loading} = this.state;
+        let webView = null;
+        if (url) {
+            const nodeintegration = app.app.isLocalWebView;
+            const preload = app.app.webViewPreloadScript;
+            const {injectScript, injectCSS} = app.app;
+            webView = <WebView ref={e => {this.webview = e;}} className="dock scroll-none" src={url} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} insertCss={injectCSS} executeJavaScript={injectScript} />;
+        }
 
-        return (<div className={HTML.classes('app-web-app', className)}>
-            <WebView ref={e => this.webview = e} className="dock scroll-none" src={app.directUrl || app.app.webViewUrl} onLoadingChange={onLoadingChange} onPageTitleUpdated={this.handleOnPageTitleUpdated} nodeintegration={nodeintegration} preload={preload} insertCss={injectCSS} executeJavaScript={injectScript} />
-        </div>);
+        return (
+            <div className={classes('app-web-app load-indicator', className, {loading})}>
+                {webView}
+            </div>
+        );
     }
 }

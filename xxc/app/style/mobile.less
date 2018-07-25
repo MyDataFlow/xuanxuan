@@ -1,0 +1,173 @@
+@media (max-width: 768px) {
+    .app-navbar {
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: auto;
+        width: 100%;
+        height: (50*@rem);
+
+        > .dock-top {
+            left: (4*@rem);
+        }
+
+        > .dock-bottom {
+            right: (4*@rem);
+            left: auto;
+            top: 0;
+        }
+
+        .hint--right {
+            &:before,
+            &:after {
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: auto;
+            }
+            &:before {
+                border-bottom-color: #383838;
+                margin-top: -12px;
+                margin-left: initial;
+                margin-bottom: initial;
+                border-right-color: transparent;
+            }
+
+            &:after {
+                margin-bottom: initial;
+            }
+
+            &:hover:after,
+            &:hover:before,
+            &:focus:after,
+            &:focus:before {
+                transform: translateX(-50%) translateY(8px);
+            }
+        }
+
+        .app-nav-profile {
+            right: (4*@rem)!important;
+            left: auto!important;
+            .hint--right {
+                &:hover:after,
+                &:hover:before,
+                &:focus:after,
+                &:focus:before {
+                    transform: translateX(-80%) translateY(8px);
+                }
+            }
+        }
+
+        .app-nav-main {
+            right: (56*@rem);
+            left: (0*@rem);
+            top: 0!important;
+            .avatar {
+                width: (64*@rem)!important;
+            }
+
+            + .dock-bottom {display: none!important;}
+        }
+
+        .app-usermenu {
+            left: auto!important;
+            right: (-4*@rem)!important;
+            top: (50*@rem)!important;
+            bottom: auto!important;
+        }
+    }
+
+    .app-main-container {
+        top: (50*@rem);
+        left: 0;
+    }
+
+    .app-chats {
+        .transition-fast(transform);
+        > .SplitPane > .Pane1 {
+            position: absolute!important;
+            left: (-300*@rem)!important;
+            top: 0;
+            bottom: 0;
+            z-index: @zindex-navbar;
+            width: (300*@rem)!important;
+            z-index: 1100;
+        }
+
+        > .SplitPane > .Resizer {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        > .SplitPane > .Pane2 {
+            opacity: 1;
+            .transition-normal(opacity);
+        }
+    }
+
+    .app-user-vertified .app-chats > .SplitPane {overflow: visible!important;}
+
+    .app-show-chats-menu {
+        .app-chats {
+            transform: translateX((300*@rem));
+
+            > .SplitPane > .Pane1 {
+                .shadow-3;
+            }
+
+            > .SplitPane > .Pane2 {
+                opacity: .35;
+            }
+        }
+    }
+
+    .app-login-form {
+        width: (300*@rem);
+    }
+    .app-login > .dock-right.has-padding {
+        padding: 0 (10*@rem)!important;
+        left: 0;
+        text-align: center;
+    }
+
+    .app-message-card > .webview {
+        width: 100%!important;
+    }
+
+    [data-hint]:focus:before,
+    [data-hint]:focus:after {
+        display: none!important;
+    }
+}
+
+@media (max-width: 550px) {
+    .app-chat {
+        > .SplitPane {
+            > .Resizer {display: none!important;}
+            > .Pane1 {width: 100%!important;}
+            > .Pane2 {
+                position: absolute!important;
+                left: 0!important;
+                top: 0!important;
+                right: 0!important;
+                bottom: 0!important;
+                z-index: 1400;
+                width: 100%!important;
+                .transition-fast(transform);
+                background: rgba(0,0,0,.03);
+                transform: translateX(0);
+
+                .app-chat-sidebar {
+                    left: (50*@rem)!important;
+                    .shadow-3;
+                    background: #fff;
+                }
+            }
+
+            &.soloPane1 > .Pane2 {
+                display: block!important;
+                transform: translateX(100%)!important;
+            }
+        }
+    }
+}

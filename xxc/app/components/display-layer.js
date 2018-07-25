@@ -1,6 +1,7 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import Spinner from './spinner';
-import HTML from '../utils/html-helper';
+import {classes} from '../utils/html-helper';
 import timeSequence from '../utils/time-sequence';
 import Status from '../utils/status';
 
@@ -28,6 +29,31 @@ export default class DisplayLayer extends PureComponent {
      * @memberof DisplayLayer
      */
     static STAGE = STAGE;
+
+    static propTypes = {
+        content: PropTypes.any,
+        contentLoadFail: PropTypes.any,
+        id: PropTypes.any,
+        animation: PropTypes.any,
+        onShown: PropTypes.func,
+        onHidden: PropTypes.func,
+        onLoad: PropTypes.func,
+        show: PropTypes.bool,
+        hotkey: PropTypes.bool,
+        cache: PropTypes.bool,
+        loadingContent: PropTypes.bool,
+        rootClassName: PropTypes.string,
+        className: PropTypes.string,
+        backdrop: PropTypes.bool,
+        backdropClassName: PropTypes.string,
+        contentClassName: PropTypes.string,
+        footer: PropTypes.any,
+        header: PropTypes.any,
+        plugName: PropTypes.string,
+        modal: PropTypes.bool,
+        children: PropTypes.any,
+        style: PropTypes.object,
+    };
 
     /**
      * Default properties values
@@ -61,31 +87,6 @@ export default class DisplayLayer extends PureComponent {
         id: null,
         children: null,
         style: null,
-    };
-
-    static propTypes = {
-        content: PropTypes.any,
-        contentLoadFail: PropTypes.any,
-        id: PropTypes.any,
-        animation: PropTypes.any,
-        onShown: PropTypes.func,
-        onHidden: PropTypes.func,
-        onLoad: PropTypes.func,
-        show: PropTypes.bool,
-        hotkey: PropTypes.bool,
-        cache: PropTypes.bool,
-        loadingContent: PropTypes.bool,
-        rootClassName: PropTypes.string,
-        className: PropTypes.string,
-        backdrop: PropTypes.bool,
-        backdropClassName: PropTypes.string,
-        contentClassName: PropTypes.string,
-        footer: PropTypes.any,
-        header: PropTypes.any,
-        plugName: PropTypes.string,
-        modal: PropTypes.bool,
-        children: PropTypes.any,
-        style: PropTypes.object,
     };
 
     /**
@@ -369,7 +370,7 @@ export default class DisplayLayer extends PureComponent {
             loadingContent = <Spinner />;
         }
 
-        rootClassName = HTML.classes(
+        rootClassName = classes(
             'display-layer',
             rootClassName,
             `display-stage-${this.stageName}`,
@@ -378,10 +379,10 @@ export default class DisplayLayer extends PureComponent {
         );
 
         return (<div onKeyUp={this.handeWindowKeyup.bind(this)} className={rootClassName} style={{zIndex: this.state.zIndex}}>
-            {backdrop && <div onClick={this.handleBackdropClick} className={HTML.classes('display-backdrop', backdropClassName)} />}
-            <div id={this.id} className={HTML.classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => {this.displayElement = e;}}>
+            {backdrop && <div onClick={this.handleBackdropClick} className={classes('display-backdrop', backdropClassName)} />}
+            <div id={this.id} className={classes('display', animation, className, {in: this.isStage(STAGE.shown)})} {...other} style={Object.assign({}, style, this.state.style)} ref={e => {this.displayElement = e;}}>
                 {header}
-                <div className={HTML.classes('content', contentClassName)}>{this.state.loading ? loadingContent : this.state.content}</div>
+                <div className={classes('content', contentClassName)}>{this.state.loading ? loadingContent : this.state.content}</div>
                 {children}
                 {footer}
             </div>

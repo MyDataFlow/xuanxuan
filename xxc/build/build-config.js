@@ -3,6 +3,7 @@ import path from 'path';
 import os from 'os';
 import fse from 'fs-extra';
 import pkg from '../package.json';
+import oldPkg from '../app/package.json';
 import {formatDate} from '../app/utils/date-helper';
 
 const platformMap = {
@@ -111,7 +112,12 @@ const electronBuilder = {
         'index.html',
         'main.js',
         'main.js.map',
-        'package.json'
+        'package.json',
+        'node_modules/',
+        {
+            from: '../resources/',
+            to: 'resources'
+        }
     ],
     win: {
         target: [
@@ -125,17 +131,15 @@ const electronBuilder = {
             'tar.gz'
         ],
         icon: path.join(config.resourcePath, 'icons/')
-        // icon: 'resources/icons/'
     },
     mac: {
-        // icon: 'resources/icon.icns',
         icon: path.join(config.resourcePath, 'icon.icns'),
         artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
     },
     nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,
-        artifactName: "${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}",
+        artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}',
         deleteAppDataOnUninstall: false
     },
     directories: {
@@ -150,8 +154,51 @@ fse.outputJsonSync('./build/electron-builder.json', electronBuilder, {spaces: 4}
 console.log('\n\nBuildConfig > electron-builder.json generated success.');
 
 // 输出应用 package.json 文件
-fse.outputJsonSync('./app/package.json', appPkg, {spaces: 4});
+fse.outputJsonSync('./app/package.json', Object.assign(oldPkg, appPkg), {spaces: 4});
 console.log('\n\nBuildConfig > app/package.json generated success.');
+
+fse.outputJsonSync('./app/manifest.json', {
+    name: config.productName,
+    start_url: 'index.html',
+    display: 'standalone',
+    background_color: '#fff',
+    theme_color: '#3f51b5',
+    description: config.description,
+    icons: [{
+        src: 'resources/icons/48x48.png',
+        sizes: '48x48',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/64x64.png',
+        sizes: '64x64',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/96x96.png',
+        sizes: '96x96',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/128x128.png',
+        sizes: '128x128',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/144x144.png',
+        sizes: '144x144',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/192x192.png',
+        sizes: '192x192',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/256x256.png',
+        sizes: '256x256',
+        type: 'image/png'
+    }, {
+        src: 'resources/icons/512x512.png',
+        sizes: '512x512',
+        type: 'image/png'
+    }],
+}, {spaces: 4});
+console.log('\n\nBuildConfig > app/manifest.json generated success.');
 
 // type 可以为 '', 'debug' 或 'broser'
 const buildApp = (isDebugMode = isDebug) => {
@@ -174,6 +221,7 @@ const createPackage = (osType, arch, debug = isDebug) => {
         spawn('build', params, {
             shell: true,
             env: Object.assign({}, process.env, {
+                SKIP_INSTALL_EXTENSIONS: debug ? 1 : 0,
                 PKG_ARCH: debug ? '.debug' : (osType === 'win' ? (arch.includes('32') ? '32' : '64') : ''),
                 PKG_BETA: isBeta ? '.beta' : ''
             }),

@@ -215,6 +215,22 @@ class Chat extends Entity {
         this.$set('mute', mute);
     }
 
+    get hidden() {
+        return this.hide;
+    }
+
+    set hidden(hide) {
+        this.hide = hide;
+    }
+
+    get hide() {
+        return this.$get('hide');
+    }
+
+    set hide(hide) {
+        this.$set('hide', hide);
+    }
+
     get public() {
         return this.$get('public');
     }
@@ -542,6 +558,10 @@ class Chat extends Entity {
         return this.isGroup && !this.isOwner(user);
     }
 
+    get canHide() {
+        return this.isGroup;
+    }
+
     get isSystem() {
         return this.type === TYPES.system || this.type === TYPES.robot;
     }
@@ -569,6 +589,10 @@ class Chat extends Entity {
         });
         this.renewUpdateId();
         return mutedMessages;
+    }
+
+    get isMuteOrHidden() {
+        return this.mute || this.hidden;
     }
 
     get messages() {
@@ -692,7 +716,9 @@ class Chat extends Entity {
             return chats.sort(orders);
         }
         if (!orders || orders === 'default' || orders === true) {
-            orders = ['star', 'notice', 'lastActiveTime', 'online', 'createDate', 'name', 'id']; // namePinyin
+            orders = ['star', 'notice', 'hide', 'mute', 'lastActiveTime', 'online', 'createDate', 'name', 'id'];
+        } else if (orders === 'onlineFirst') {
+            orders = ['star', 'notice', 'hide', 'online', 'mute', 'lastActiveTime', 'createDate', 'name', 'id'];
         } else if (typeof orders === 'string') {
             orders = orders.split(' ');
         }
@@ -713,8 +739,11 @@ class Chat extends Entity {
                     let xValue;
                     let yValue;
                     switch (order) {
-                    case 'isSystem':
                     case 'hide':
+                    case 'mute':
+                        result = (x[order] ? 0 : 1) - (y[order] ? 0 : 1);
+                        break;
+                    case 'isSystem':
                     case 'star':
                         result = (x[order] ? 1 : 0) - (y[order] ? 1 : 0);
                         break;

@@ -1,6 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import SplitPane from 'react-split-pane';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import Avatar from '../../components/avatar';
 import Lang from '../../lang';
@@ -12,6 +13,10 @@ import {ChatSidebar} from './chat-sidebar';
 import replaceViews from '../replace-views';
 
 class ChatView extends Component {
+    static get ChatView() {
+        return replaceViews('chats/chat-view', ChatView);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chatGid: PropTypes.string,
@@ -25,10 +30,6 @@ class ChatView extends Component {
         children: null,
         hidden: false,
     };
-
-    static get ChatView() {
-        return replaceViews('chats/chat-view', ChatView);
-    }
 
     componentDidMount() {
         const {chatGid} = this.props;
@@ -58,10 +59,10 @@ class ChatView extends Component {
         const chat = App.im.chats.get(chatGid);
 
         if (!chat || chat.delete) {
-            return <div key={chatGid} className={HTML.classes('box muted', {hidden})}>请在左侧选择一个聊天会话。</div>;
+            return <div key={chatGid} className={classes('box muted', {hidden})}>{Lang.string('chats.chat.selectOneOnMenu')}</div>;
         }
 
-        const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid, chat.isOne2One);
+        const hideSidebar = App.profile.userConfig.isChatSidebarHidden(chat.gid, App.ui.isSmallScreen() || chat.isOne2One);
         const isReadOnly = chat.isReadonly(App.profile.user);
         const isRobot = chat.isRobot;
 
@@ -92,7 +93,7 @@ class ChatView extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-chat dock', className, {hidden, 'chat-readonly': isReadOnly})}
+            className={classes('app-chat dock', className, {hidden, 'chat-readonly': isReadOnly})}
         >
             {isRobot ? chatView : <SplitPane className={hideSidebar ? 'soloPane1' : ''} split="vertical" primary="second" maxSize={360} minSize={150} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 {chatView}

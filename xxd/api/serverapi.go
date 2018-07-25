@@ -28,13 +28,13 @@ func StartXXD() error {
     for serverName, serverInfo := range util.Config.RanzhiServer {
         message, err := aesEncrypt(startXXD, serverInfo.RanzhiToken)
         if err != nil {
-            util.LogError().Printf("aes encrypt error:%s,ranzhi %s server login err", err, serverName)
+            util.LogError().Printf("Warning: AES encrypt error:%s, ranzhi %s server login err", err, serverName)
             return err
         }
 
         _, err = hyperttp.RequestInfo(serverInfo.RanzhiAddr, message)
         if err != nil {
-            util.LogError().Printf("start xxd to server [%s],login error: [%s]", serverName, err)
+            util.LogError().Printf("Warning: Start xxd to server [%s], login error: [%s]", serverName, err)
             return err
         }
     }
@@ -46,13 +46,13 @@ func StartXXD() error {
 func VerifyLogin(body []byte) (bool, error) {
     parseData := make(ParseData)
     if err := json.Unmarshal(body, &parseData); err != nil {
-        util.LogError().Println("json unmarshal error:", err)
+        util.LogError().Println("Warning: JSON unmarshal error:", err)
         return false, err
     }
 
     ranzhiServer, ok := RanzhiServer(parseData.ServerName())
     if !ok {
-        return false, util.Errorf("no ranzhi server name:%s", parseData.ServerName())
+        return false, util.Errorf("Warning: The server %s node was not found. ", parseData.ServerName())
     }
 
     //util.Println(ranzhiServer)
@@ -73,12 +73,12 @@ func VerifyLogin(body []byte) (bool, error) {
 func UploadFileInfo(serverName string, jsonData []byte) (string, error) {
     ranzhiServer, ok := RanzhiServer(serverName)
     if !ok {
-        return "", util.Errorf("%s", "no ranzhi server name")
+        return "", util.Errorf("Warning: server name not found")
     }
 
     message, err := aesEncrypt(jsonData, ranzhiServer.RanzhiToken)
     if err != nil {
-        util.LogError().Println("aes encrypt error:", err)
+        util.LogError().Println("Warning: AES encrypt error:", err)
         return "", err
     }
 

@@ -65,7 +65,11 @@ const closeWindow = () => {
 };
 
 const showAndFocusWindow = () => {
-    showWindow();
+    if (browserWindow.isMinimized()) {
+        browserWindow.restore();
+    } else {
+        showWindow();
+    }
     focusWindow();
 };
 
@@ -165,6 +169,10 @@ browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
 
+const onWindowRestore = listener => {
+    browserWindow.on('restore', listener);
+};
+
 export default {
     userDataPath,
     browserWindow,
@@ -183,6 +191,7 @@ export default {
     closeWindow,
     openDevTools,
     onWindowBlur,
+    onWindowRestore,
 
     showWindow,
     hideWindow,

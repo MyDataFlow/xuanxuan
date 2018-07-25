@@ -253,7 +253,7 @@
       position: relative;
       z-index: 10;
       opacity: 0;
-      transition: @animation-type @animation-speed-fast opacity;
+      .transition-fast(opacity);
     }
 
     > .toolbar {
@@ -427,7 +427,7 @@
     min-width: (300*@rem);
     margin: @space-sm;
     height: (100*@rem);
-    transition: box-shadow @animation-type @animation-speed-normal;
+    .transition-normal(box-shadow);
     position: relative;
     overflow: hidden;
 
@@ -437,7 +437,7 @@
       top: (-20*@rem);
       right: (-20*@rem);
       opacity: 0;
-      transition: @animation-speed-normal @animation-type;
+      .transition-normal();
       transition-property: opacity, top, right;
 
       &:before {
@@ -458,7 +458,7 @@
         border-right-color: #64dd17;
         top: (-20*@rem);
         right: (-20*@rem);
-        transition: @animation-speed-fast @animation-type;
+        .transition-normal();
         transition-property: opacity, top, right;
       }
     }

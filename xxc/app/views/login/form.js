@@ -1,6 +1,7 @@
 import Config from 'Config';
 import Platform from 'Platform';
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import InputControl from '../../components/input-control';
 import Checkbox from '../../components/checkbox';
 import Modal from '../../components/modal';

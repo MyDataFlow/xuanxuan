@@ -28,11 +28,12 @@ class AppView extends PureComponent {
     }
 
     render() {
+        const {isUserVertified} = App.profile;
         return (<div
             className="affix"
             style={{
                 transition: 'transform .4s',
-                transform: `translateX(${App.profile.isUserVertified ? '0' : '100%'})`
+                transform: `translateX(${isUserVertified ? '0' : '100%'})`
             }}
         >
             <LoginView
@@ -43,7 +44,7 @@ class AppView extends PureComponent {
                     left: '-100%',
                 }}
             />
-            <MainView userStatus={this.state.userStatus} className="dock" />
+            <MainView userStatus={this.state.userStatus} className={`dock${isUserVertified ? ' app-user-vertified' : ''}`} />
         </div>);
     }
 }

@@ -5,7 +5,7 @@ import manager from './manager';
 import App from '../core';
 import {setExtensionUser} from './extension';
 import {registerCommand, execute, createCommandObject} from '../core/commander';
-import {fetchServerExtensions, detachServerExtensions} from './server';
+import {fetchServerExtensions, detachServerExtensions, getEntryVisitUrl} from './server';
 
 global.Xext = Xext;
 
@@ -143,5 +143,6 @@ export default {
     ui,
     getUrlInspector,
     getUrlOpener,
-    exts: Exts
+    exts: Exts,
+    getEntryVisitUrl
 };

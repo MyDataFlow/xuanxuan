@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import ContextMenu from '../../components/context-menu';

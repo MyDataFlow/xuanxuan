@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Platform from 'Platform';
 import {classes} from '../../utils/html-helper';
 import timeSequence from '../../utils/time-sequence';
@@ -19,10 +20,12 @@ export default class WebView extends Component {
         insertCss: PropTypes.string,
         executeJavaScript: PropTypes.string,
         onExeCuteJavaScript: PropTypes.func,
+        onNavigate: PropTypes.func,
         onDomReady: PropTypes.func,
         injectForm: PropTypes.any,
         useMobileAgent: PropTypes.bool,
         hideBeforeDOMReady: PropTypes.bool,
+        style: PropTypes.object,
     };
 
     static defaultProps = {
@@ -32,10 +35,12 @@ export default class WebView extends Component {
         insertCss: null,
         executeJavaScript: null,
         onExeCuteJavaScript: null,
+        onNavigate: null,
         injectForm: null,
         onDomReady: null,
         useMobileAgent: false,
-        hideBeforeDOMReady: true
+        hideBeforeDOMReady: true,
+        style: null,
     };
 
     constructor(props) {
@@ -57,6 +62,7 @@ export default class WebView extends Component {
         webview.addEventListener('did-fail-load', this.handleLoadFail);
         webview.addEventListener('new-window', this.handleNewWindow);
         webview.addEventListener('dom-ready', this.handleDomReady);
+        webview.addEventListener('will-navigate', this.handleWillNavigate);
     }
 
     componentWillUnmount() {
@@ -64,9 +70,12 @@ export default class WebView extends Component {
         if (webview) {
             webview.removeEventListener('did-start-loading', this.handleLoadingStart);
             webview.removeEventListener('did-finish-load', this.handleLoadingStop);
+            webview.removeEventListener('did-stop-loading', this.handleLoadingStop);
             webview.removeEventListener('page-title-updated', this.handlePageTitleChange);
             webview.removeEventListener('did-fail-load', this.handleLoadFail);
             webview.removeEventListener('new-window', this.handleNewWindow);
+            webview.removeEventListener('dom-ready', this.handleDomReady);
+            webview.removeEventListener('will-navigate', this.handleWillNavigate);
         }
     }
 
@@ -76,7 +85,14 @@ export default class WebView extends Component {
 
     reloadWebview() {
         const webview = this.webview;
-        webview.reload();
+        return webview && webview.reload();
+    }
+
+    handleWillNavigate = e => {
+        const {onNavigate} = this.props;
+        if (onNavigate) {
+            onNavigate(e.url, e);
+        }
     }
 
     handleNewWindow = e => {
@@ -99,7 +115,8 @@ export default class WebView extends Component {
         }
         this.setState({
             errorCode: null,
-            errorDescription: null
+            errorDescription: null,
+            domReady: false
         });
     };
 
@@ -110,7 +127,9 @@ export default class WebView extends Component {
             onLoadingChange(false, errorCode, errorDescription, validatedURL);
         }
         this.setState({
-            errorCode, errorDescription
+            errorCode,
+            errorDescription,
+            domReady: true,
         });
         if (DEBUG) {
             console.error('Cannot load webview', e);
@@ -180,6 +199,26 @@ export default class WebView extends Component {
         if (onDomReady) {
             onDomReady();
         }
+
+        const {contextmenu} = Platform;
+        if (contextmenu && (contextmenu.showInputContextMenu || contextmenu.showSelectionContextMenu)) {
+            const webContents = webview.getWebContents();
+            if (webContents) {
+                webContents.on('context-menu', (e, props) => {
+                    const {selectionText, isEditable} = props;
+                    if (isEditable) {
+                        if (contextmenu.showInputContextMenu) {
+                            contextmenu.showInputContextMenu();
+                        }
+                    } else if (selectionText && selectionText.trim() !== '') {
+                        if (contextmenu.showSelectionContextMenu) {
+                            contextmenu.showSelectionContextMenu();
+                        }
+                    }
+                });
+            }
+        }
+
         this.setState({domReady: true});
     };
 
@@ -199,13 +238,15 @@ export default class WebView extends Component {
         if (this.state.errorCode) {
             webviewHtml = `<div class="dock box danger"><h1>${this.state.errorCode}</h1><div>${this.state.errorDescription}</div></div>`;
         } else if (isElectron) {
-            webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (' preload="' + options.preload + '"') : ''} />`;
+            webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (` preload="${options.preload}"`) : ''} />`;
         } else {
             webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
         }
 
-        return (<div className={classes('webview fade', className, {
-            in: !hideBeforeDOMReady || this.state.domReady
-        })} dangerouslySetInnerHTML={{__html: webviewHtml}} style={style} />);
+        return (<div
+            className={classes('webview fade', className, {in: !hideBeforeDOMReady || this.state.domReady})}
+            dangerouslySetInnerHTML={{__html: webviewHtml}} // eslint-disable-line
+            style={style}
+        />);
     }
 }

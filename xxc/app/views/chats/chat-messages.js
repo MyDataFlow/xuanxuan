@@ -1,5 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import {MessageList} from './message-list';
 import replaceViews from '../replace-views';
@@ -7,6 +8,10 @@ import Spinner from '../../components/spinner';
 import Lang from '../../lang';
 
 class ChatMessages extends Component {
+    static get ChatMessages() {
+        return replaceViews('chats/chat-messages', ChatMessages);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -16,10 +21,6 @@ class ChatMessages extends Component {
         className: null,
         chat: null,
     };
-
-    static get ChatMessages() {
-        return replaceViews('chats/chat-messages', ChatMessages);
-    }
 
     constructor(props) {
         super(props);
@@ -54,7 +55,7 @@ class ChatMessages extends Component {
             this.loadChatMessagesTask = setTimeout(() => {
                 this.setState({loading: true}, () => {
                     App.im.chats.loadChatMessages(chat).then(() => {
-                        this.setState({loading: false});
+                        return this.setState({loading: false});
                     });
                     this.loadChatMessagesTask = null;
                 });
@@ -81,14 +82,14 @@ class ChatMessages extends Component {
         let headerView = null;
         if (this.state.loading) {
             headerView = <Spinner className="has-padding" />;
-        } else if (chat.messages && chat.messages.length && chat.isLoadingOver) {
+        } else if (chat.messages && chat.isLoadingOver) {
             headerView = <div className="has-padding small muted text-center space-sm">― {Lang.string('chat.noMoreMessage')} ―</div>;
         } else {
             headerView = <a className="has-padding small muted text-center block space-sm" onClick={this.loadChatMessages.bind(this, 0)}>― {Lang.string('chat.loadMoreMessage')} ―</a>;
         }
 
         return (<div
-            className={HTML.classes('app-chat-messages white', className)}
+            className={classes('app-chat-messages white', className)}
             {...other}
         >
             <MessageList header={headerView} font={font} className="dock scroll-y user-selectable" messages={chat.messages} onScroll={chat.isLoadingOver ? null : this.handleScroll} />

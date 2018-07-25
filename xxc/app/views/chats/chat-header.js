@@ -1,11 +1,17 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import Icon from '../../components/icon';
 import App from '../../core';
 import {ChatTitle} from './chat-title';
 import replaceViews from '../replace-views';
+import {getMenuItemsForContext} from '../../core/context-menu';
 
 class ChatHeader extends Component {
+    static get ChatHeader() {
+        return replaceViews('chats/chat-header', ChatHeader);
+    }
+
     static propTypes = {
         chat: PropTypes.object,
         className: PropTypes.string,
@@ -19,10 +25,6 @@ class ChatHeader extends Component {
         children: null,
         showSidebarIcon: 'auto'
     };
-
-    static get ChatHeader() {
-        return replaceViews('chats/chat-header', ChatHeader);
-    }
 
     shouldComponentUpdate(nextProps) {
         const {chat} = nextProps;
@@ -51,13 +53,13 @@ class ChatHeader extends Component {
 
         return (<div
             {...other}
-            className={HTML.classes('app-chat-header flex flex-wrap space-between shadow-divider', className)}
+            className={classes('app-chat-header flex flex-wrap space-between shadow-divider', className)}
         >
             <ChatTitle chat={chat} className="flex flex-middle" />
             <div className="toolbar flex flex-middle text-rigth rounded">
                 {
-                    App.im.ui.createChatToolbarItems(chat, showSidebarIcon).map(item => {
-                        return <div key={item.id} className={`hint--${item.hintPosition || 'bottom'} has-padding-sm`} data-hint={item.label} onClick={item.click}><button className={'btn iconbutton rounded' + (item.className ? ` ${item.className}` : '')} type="button"><Icon className="icon-2x" name={item.icon} /></button></div>;
+                    getMenuItemsForContext('chat.toolbar', {chat, showSidebarIcon}).map(item => {
+                        return <div key={item.id} className={`hint--${item.hintPosition || 'bottom'} has-padding-sm`} data-hint={item.label} onClick={item.click}><button className={`btn iconbutton rounded${item.className ? ` ${item.className}` : ''}`} type="button"><Icon className="icon-2x" name={item.icon} /></button></div>;
                     })
                 }
             </div>
