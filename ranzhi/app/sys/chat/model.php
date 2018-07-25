@@ -1002,7 +1002,7 @@ EOT;
                 $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
             }
             $data = new stdClass();
-            $data->entryID     = $entry->integration ? $entry->id : 0;
+            $data->entryID     = $entry->integration ? (int)$entry->id : 0;
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
