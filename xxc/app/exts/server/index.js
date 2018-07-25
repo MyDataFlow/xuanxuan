@@ -118,11 +118,11 @@ const processExtensions = async () => {
     }
 };
 
-export const getEntryVisitUrl = (ext, referer = null) => {
+export const getEntryVisitUrl = (ext, referer = '') => {
     return server.socket.sendAndListen({
         module: 'entry',
         method: 'visit',
-        params: {entryID: ext.entryID || ext.name, referer: referer || ext.entryUrl}
+        params: {entryID: ext.entryID || ext.name, referer}
     });
 };
 
