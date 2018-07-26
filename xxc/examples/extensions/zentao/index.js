@@ -33,7 +33,7 @@ module.exports = {
         noMeta: true,
         inspect: (url) => {
             const cardMeta = {};
-            cardMeta.title = false;
+            cardMeta.title = null;
             cardMeta.webviewContent = true;
             cardMeta.icon = null;
             cardMeta.content = {
