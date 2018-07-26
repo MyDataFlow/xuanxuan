@@ -113,6 +113,7 @@ class xuanxuan extends router
         $input   = $this->decrypt($input);
         $version = !empty($input->v)      ? $input->v : '';
         $userID  = !empty($input->userID) ? $input->userID : '';
+        $client  = !empty($input->client) ? $input->client : '';
         $module  = !empty($input->module) ? $input->module : '';
         $method  = !empty($input->method) ? $input->method : '';
         $params  = !empty($input->params) ? $input->params : array();
@@ -143,6 +144,7 @@ class xuanxuan extends router
         if($userID && $module == 'entry' && $method == 'visit')
         {
             $this->session->set('userID', $userID);
+            $this->session->set('client', $client);
         }
 
         $this->setModuleName($module);

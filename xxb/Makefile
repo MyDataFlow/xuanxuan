@@ -69,6 +69,7 @@ xxb:
 	chmod -R 777 xxb/tmp
 	chmod -R 777 xxb/www/data
 	zip -rqm -9 xxb.$(VERSION).zip xxb
+	zip -rq -9 xuanxuan.ranzhi.${VERSION}.zip ../ranzhi/*
 
 deb:
 	mkdir ~/buildroot
@@ -100,3 +101,4 @@ rpm:
 	rpmbuild -ba ~/rpmbuild/SPECS/xxb.spec
 	cp ~/rpmbuild/RPMS/noarch/xxb-${VERSION}-1.noarch.rpm ./
 	rm -rf ~/rpmbuild
+

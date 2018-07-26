@@ -13,7 +13,7 @@ class admin extends control
         if($_POST)
         {
             if(strlen($this->post->key) != 32 or !validater::checkREG($this->post->key, '|^[A-Za-z0-9]+$|')) $this->send(array('result' => 'fail', 'message' => array('key' => $this->lang->chat->errorKey)));
-            if($this->post->key) $this->loadModel('setting')->setItem('system.xuanxuan.global.key', $this->post->key);
+            if($this->post->key) $this->loadModel('setting')->setItem('system.xuanxuan..key', $this->post->key);
             if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
 
             $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess));
