@@ -127,6 +127,7 @@ func chatLogin(parseData api.ParseData, client *Client) error {
         }
     }
 
+    //parseData["client"] = client.conn.RemoteAddr()
     loginData, userID, ok := api.ChatLogin(parseData)
     if userID == -1 {
         util.LogError().Println("chat login error")
