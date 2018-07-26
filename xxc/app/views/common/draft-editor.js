@@ -58,7 +58,8 @@ const draftDecorator = new CompositeDecorator([{
         const map = Emojione.mapUnicodeCharactersToShort();
         const emoji = Emojione.emojioneList[map[unicode]];
         if (emoji) {
-            const emojionePngPath = Emojione.imagePathPNG + emoji.fname + '.' + Emojione.imageType + Emojione.cacheBustParam;
+            console.log('emoji', emoji, Emojione);
+            const emojionePngPath = Emojione.imagePathPNG + emoji.uc_base + '.' + Emojione.imageType;
             const backgroundImage = 'url(' + emojionePngPath + ') no-repeat left top';
             return <span title={unicode} data-offset-key={props.offsetKey} style={{width: 16, height: 16, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', background: backgroundImage, backgroundSize: 'contain', textAlign: 'right', verticalAlign: 'bottom', position: 'relative', top: -2, fontSize: '16px', color: 'transparent'}}>{props.children}</span>;
         }

@@ -5,7 +5,7 @@ import HTMLParser from 'fast-html-parser';
 import Lang from '../lang';
 import {strip} from './html-helper';
 
-const renderer = new Marked.Renderer();
+export const renderer = new Marked.Renderer();
 
 renderer.code = (code, lang) => {
     let fileName = null;
