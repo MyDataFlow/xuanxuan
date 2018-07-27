@@ -8,7 +8,7 @@ hotkeys.filter = event => {
     const target = (event.target || event.srcElement);
     const tagName = target.tagName;
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(tagName)) {
-        const scopeAttr = target.attributes['data-hotkeyscope'];
+        const scopeAttr = target.attributes['data-hotkey-scope'];
         const scope = scopeAttr && scopeAttr.value;
         if (scope) {
             hotkeys.setScope(scope);
