@@ -107,7 +107,7 @@ export default class MessageContentCard extends Component {
             cardsMenu.push(<div key="provider" className="hint--top-left" data-hint={Lang.format('chat.message.provider.format', provider.label || provider.name)}><a className="btn rounded iconbutton" onClick={provider.click} href={provider.url}><Avatar auto={provider.icon} className="avatar-sm" /></a></div>);
         }
 
-        const clickView = (clickable && clickable !== true) ? <a className="dock" href={url || contentUrl} title={title} /> : null;
+        const clickView = (clickable && clickable !== true) ? <a className="dock" href={url || contentUrl} title={titleView ? title : null} /> : null;
         return (<div
             className={classes('app-message-card', baseClassName, className, {
                 'app-link state': clickable === true,

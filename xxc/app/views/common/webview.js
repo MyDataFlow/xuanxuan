@@ -237,13 +237,14 @@ export default class WebView extends Component {
             ...options
         } = this.props;
 
-        let webviewHtml;
-        if (this.state.errorCode) {
-            webviewHtml = `<div class="dock box gray"><h1>ERROR ${this.state.errorCode}</h1><div>${this.state.errorDescription}</div></div>`;
-        } else if (isElectron) {
+        let webviewHtml = '';
+        if (isElectron) {
             webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (` preload="${options.preload}"`) : ''} />`;
         } else {
             webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
+        }
+        if (this.state.errorCode) {
+            webviewHtml += `<div class="dock box gray"><h1>ERROR ${this.state.errorCode}</h1><h2>${src}</h2><div>${this.state.errorDescription}</div></div>`;
         }
 
         return (
