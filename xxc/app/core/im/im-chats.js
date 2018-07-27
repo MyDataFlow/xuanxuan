@@ -293,7 +293,7 @@ const update = (chatArr) => {
     }
 };
 
-const init = (chatArr) => {
+const init = (chatArr, eachCallback) => {
     publicChats = null;
     chats = {};
     if (chatArr && chatArr.length) {
@@ -315,6 +315,9 @@ const init = (chatArr) => {
             }
             chat.renewUpdateId();
             delete chat.loadingOffset;
+            if (eachCallback) {
+                eachCallback(chat);
+            }
         });
         Events.emit(EVENT.init, chats);
     }

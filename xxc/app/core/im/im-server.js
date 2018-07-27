@@ -593,6 +593,14 @@ const handleReceiveChatMessages = messages => {
     Events.emit(EVENT.message_receive, messages);
 };
 
+const handleInitChats = (newChats) => {
+    chats.init(newChats, chat => {
+        if (chat.isOne2One && chat.hide) {
+            toggleHideChat(chat);
+        }
+    });
+};
+
 const onSendChatMessages = listener => {
     return Events.on(EVENT.message_send, listener);
 };
@@ -633,6 +641,7 @@ export default {
     sendTextMessage,
     sendEmojiMessage,
     handleReceiveChatMessages,
+    handleInitChats,
     onSendChatMessages,
     onReceiveChatMessages,
     kickOfMemberFromChat,
