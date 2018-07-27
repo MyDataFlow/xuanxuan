@@ -20,5 +20,5 @@ zentao:
 	cp -r ./xuanxuan/* ./build/module/
 	sed -i 's/site,//' ./build/module/chat/model.php
 	sed -i 's/admin, g/g/' ./build/module/chat/model.php
-	sed -e '/password = md5/d' ./build/module/chat/control.php
+	sed -i '/password = md5/d' ./build/module/chat/control.php
 	zip -rqm -9 xuanxuan.zentao.$(VERSION).zip ./build/*
