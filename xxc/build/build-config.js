@@ -67,6 +67,7 @@ console.log('\nBuildConfig > config', config);
 const appPkg = {
     name: config.name,
     productName: config.productName,
+    displayName: config.productName,
     version: config.version,
     description: config.description,
     main: './main.js',
@@ -84,7 +85,8 @@ const electronBuilder = {
     productName: config.name,
     appId: config.appid || `com.cnezsoft.${config.name}`,
     compression: 'maximum',
-    artifactName: '${productName}.${version}${env.PKG_BETA}.${os}.${arch}.${ext}',
+    artifactName: '${name}.${version}${env.PKG_BETA}.${os}.${arch}.${ext}',
+    electronVersion: '1.7.9',
     electronDownload: {mirror: 'https://npm.taobao.org/mirrors/electron/'},
     extraResources: [{
         from: 'app/build-in/',
@@ -134,12 +136,12 @@ const electronBuilder = {
     },
     mac: {
         icon: path.join(config.resourcePath, 'icon.icns'),
-        artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
+        artifactName: '${name}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
     },
     nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,
-        artifactName: '${productName}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}',
+        artifactName: '${name}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}',
         deleteAppDataOnUninstall: false
     },
     directories: {
