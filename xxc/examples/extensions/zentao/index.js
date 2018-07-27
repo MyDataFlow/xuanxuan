@@ -35,7 +35,7 @@ module.exports = {
             const cardMeta = {};
             cardMeta.title = null;
             cardMeta.webviewContent = true;
-            cardMeta.icon = null;
+            cardMeta.icon = false;
             cardMeta.content = {
                 insertCss: injectCss,
                 src: url,
