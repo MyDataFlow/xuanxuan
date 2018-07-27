@@ -5,7 +5,6 @@ import StringHelper from '../utils/string-helper';
 const DEFAULT_LANG = 'zh-cn';
 
 let langData = Object.assign({}, ZhcnLang);
-langData['app.title'] = pkg.productName;
 langData['app.company'] = pkg.company;
 const currentLangName = DEFAULT_LANG;
 
