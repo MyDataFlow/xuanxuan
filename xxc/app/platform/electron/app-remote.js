@@ -1,9 +1,10 @@
 import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
+import fs from 'fs-extra';
+import path from 'path';
 import Lang from '../../lang';
 import Config from '../../config';
 import EVENT from './remote-events';
 import Events from './events';
-
 
 const IS_MAC_OSX = process.platform === 'darwin';
 const SHOW_LOG = DEBUG;
@@ -96,6 +97,19 @@ class AppRemote {
             Events.emit(eventId, ...args);
             if (SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
         });
+
+        this.migrate();
+    }
+
+    migrate() {
+        if (Config.pkg.version === '2.0.0') {
+            const userDataPath = ElectronApp.getPath('userData');
+            const oldUserDataPath = path.resolve(userDataPath, '../喧喧');
+            if(fs.existsSync(oldUserDataPath)) {
+                fs.copySync(oldUserDataPath, userDataPath, {overwrite: true});
+                fs.removeSync(oldUserDataPath);
+            }
+        }
     }
 
     init(entryPath) {

@@ -66,7 +66,7 @@ console.log('\nBuildConfig > config', config);
 
 const appPkg = {
     name: config.name,
-    productName: config.productName,
+    productName: config.name,
     displayName: config.productName,
     version: config.version,
     description: config.description,
