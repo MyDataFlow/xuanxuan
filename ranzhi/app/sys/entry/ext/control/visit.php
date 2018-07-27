@@ -19,7 +19,7 @@ class entry extends control
             $user   = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($this->session->userID)->fetch();
             $groups = $this->loadModel('group')->getByAccount($user->account);
 
-            $user->ip     = helper::getRemoteIp();
+            $user->ip     = $this->session->clientIP->IP;
             $user->groups = array_keys($groups);
             $user->rights = $this->loadModel('user')->authorize($user);
 
@@ -61,6 +61,7 @@ class entry extends control
             $this->output->method = $this->methodName;
             $this->output->result = 'success';
             $this->output->data   = $entry->integration ? $location : $entry->login;
+            $this->output->users  = array($this->session->userID);
             die($this->app->encrypt($this->output));
         }
 

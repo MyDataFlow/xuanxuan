@@ -68,6 +68,7 @@ type SendMsg struct {
 //解析数据.
 func dataProcessing(message []byte, client *Client) error {
     parseData, err := api.ApiParse(message, util.Token)
+	parseData["client"] = client.conn.RemoteAddr()
     if err != nil {
         util.LogError().Println("receive client message error")
         return err
@@ -77,7 +78,7 @@ func dataProcessing(message []byte, client *Client) error {
         return testSwitchMethod(message, parseData, client)
     }
 
-    return switchMethod(message, parseData, client)
+    return switchMethod(api.ApiUnparse(parseData, util.Token), parseData, client)
 }
 
 //根据不同的消息体选择对应的处理方法
@@ -127,7 +128,6 @@ func chatLogin(parseData api.ParseData, client *Client) error {
         }
     }
 
-    //parseData["client"] = client.conn.RemoteAddr()
     loginData, userID, ok := api.ChatLogin(parseData)
     if userID == -1 {
         util.LogError().Println("chat login error")
