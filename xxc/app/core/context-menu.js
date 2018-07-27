@@ -12,7 +12,7 @@ const isDividerItem = item => {
 };
 
 export const tryRemoveLastDivider = items => {
-    if (items.length && isDividerItem(items.length - 1)) {
+    if (items.length && isDividerItem(items[items.length - 1])) {
         items.pop();
     }
     return items;
