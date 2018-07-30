@@ -86,7 +86,7 @@ const electronBuilder = {
     appId: config.appid || `com.cnezsoft.${config.name}`,
     compression: 'maximum',
     artifactName: '${name}.${version}${env.PKG_BETA}.${os}.${arch}.${ext}',
-    electronVersion: '1.7.9',
+    // electronVersion: '1.7.9',
     electronDownload: {mirror: 'https://npm.taobao.org/mirrors/electron/'},
     extraResources: [{
         from: 'app/build-in/',

@@ -264,6 +264,23 @@ class AppRemote {
                     }
                 }]).popup(browserWindow);
             });
+
+            browserWindow.webContents.on('crashed', function () {
+                const options = {
+                    type: 'info',
+                    title: 'Renderer process crashed.',
+                    message: 'The renderer process has been crashed, you can reload or close it.',
+                    buttons: ['Reload', 'Close']
+                };
+                dialog.showMessageBox(options, (index) => {
+                    if (index === 0) {
+                        browserWindow.reload();
+                    }
+                    else {
+                        browserWindow.close();
+                    }
+                });
+            })
         }
 
         // if(DEBUG) {
