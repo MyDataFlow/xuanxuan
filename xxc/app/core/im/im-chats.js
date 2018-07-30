@@ -1,4 +1,5 @@
 import Config from 'Config';
+import Md5 from 'md5';
 import Chat from '../models/chat';
 import ChatMessage from '../models/chat-message';
 import NotificationMessage from '../models/notification-message';
@@ -24,6 +25,7 @@ const SEARCH_SCORE_MAP = {
 const EVENT = {
     init: 'chats.init',
     messages: 'chats.messages',
+    fetchQueueFinish: 'fetch.queue.finish.',
 };
 let chats = null;
 let publicChats = null;
@@ -167,6 +169,7 @@ const countChatMessages = (cgid, filter) => {
 };
 
 const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = true, rawData = false, returnCount = false) => {
+    // console.log('getChatMessages', {chat, queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount});
     if (!db.database || !db.database.chatMessages) {
         return Promise.resolve([]);
     } 
@@ -201,12 +204,54 @@ const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offs
     });
 };
 
+
+let isGetChatMessagesQueueBusy = false;
+const fetchChatMessagesQueue = [];
+const onFetchQueueFinish = (queueId, listener) => {
+    return Events.once(`${EVENT.fetchQueueFinish}${queueId}`, listener);
+};
+const processChatMessageQueue = () => {
+    console.log('processChatMessageQueue', fetchChatMessagesQueue.length, fetchChatMessagesQueue);
+    if (isGetChatMessagesQueueBusy) {
+        return;
+    }
+    if (fetchChatMessagesQueue.length) {
+        isGetChatMessagesQueueBusy = true;
+        const queueData = fetchChatMessagesQueue.pop();
+        const {queueId, chat, queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount} = queueData;
+        const handleChatMessageQueueResult = result => {
+            Events.emit(`${EVENT.fetchQueueFinish}${queueId}`, result);
+            isGetChatMessagesQueueBusy = false;
+            processChatMessageQueue();
+        };
+        getChatMessages(get(chat), queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount).then(handleChatMessageQueueResult).catch(handleChatMessageQueueResult);
+    }
+};
+const getChatMessagesInQueue = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = true, rawData = false, returnCount = false) => {
+    return new Promise((resolve, reject) => {
+        const queueData = {chat: chat.gid, queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount};
+        const queueId = Md5(JSON.stringify(queueData));
+        queueData.queueId = queueId;
+        if (!isGetChatMessagesQueueBusy || fetchChatMessagesQueue.every(x => x.queueId !== queueId)) {
+            fetchChatMessagesQueue.push(queueData);
+        }
+        onFetchQueueFinish(queueId, result => {
+            if (result instanceof Error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+        processChatMessageQueue();
+    });
+};
+
 /**
  * Load chat messages
  *
  * @param {Chat} chat
  */
-const loadChatMessages = (chat) => {
+const loadChatMessages = (chat, inQueue = true) => {
     let loadingOffset = chat.loadingOffset;
     if (loadingOffset === true) {
         return Promise.reject();
@@ -215,7 +260,7 @@ const loadChatMessages = (chat) => {
         loadingOffset = 0;
     }
     const limit = loadingOffset ? 20 : CHATS_LIMIT_DEFAULT;
-    return getChatMessages(chat, null, limit, loadingOffset, true, false).then(chatMessages => {
+    return (inQueue ? getChatMessagesInQueue : getChatMessages)(chat, null, limit, loadingOffset, true, false).then(chatMessages => {
         if (!chatMessages || chatMessages.length < limit) {
             loadingOffset = true;
         } else {
