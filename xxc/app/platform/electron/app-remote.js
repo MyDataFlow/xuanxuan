@@ -1,4 +1,4 @@
-import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
+import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain, dialog} from 'electron';
 import fs from 'fs-extra';
 import path from 'path';
 import Lang from '../../lang';
