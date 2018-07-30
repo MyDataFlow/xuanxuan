@@ -115,7 +115,7 @@ const saveChatMessages = (messages, chat) => {
 
 const updateChatMessages = (messages, muted = false, skipOld = false) => {
     if (skipOld === true) {
-        skipOld = 60 * 1000 * 60 * 12;
+        skipOld = 60 * 1000 * 60 * 24;
     }
     if (!Array.isArray(messages)) {
         messages = [messages];
