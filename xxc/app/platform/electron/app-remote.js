@@ -39,8 +39,6 @@ class AppRemote {
     constructor() {
         this.windows = {};
 
-        ElectronApp.setName(Lang.string('app.title'));
-
         // Bind events
         ipcMain.on(EVENT.app_quit, e => {
             this.quit();
@@ -99,6 +97,8 @@ class AppRemote {
         });
 
         this.migrate();
+
+        ElectronApp.setName(Lang.string('app.title'));
     }
 
     migrate() {

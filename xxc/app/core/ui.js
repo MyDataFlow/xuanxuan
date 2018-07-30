@@ -390,7 +390,7 @@ const setTitle = title => {
     document.title = title;
 };
 
-setTitle(Config.pkg.productName);
+setTitle(Lang.string('app.title'));
 
 const urlMetaCaches = {};
 const maxUrlCacheSize = 20;
