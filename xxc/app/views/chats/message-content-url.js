@@ -39,14 +39,24 @@ export default class MessageContentUrl extends PureComponent {
         }
     }
 
+    componentWillUnmount() {
+        this.unmounted = true;
+    }
+
     getUrlMeta(disableCache = false) {
         if (this.state.meta && !this.state.loading) {
             return;
         }
         const {url} = this.props;
         getUrlMeta(url, disableCache).then(meta => {
+            if (this.unmounted) {
+                return;
+            }
             return this.setState({meta, loading: false});
         }).catch(_ => {
+            if (this.unmounted) {
+                return;
+            }
             if (DEBUG) {
                 console.error('Get url meta error', _);
             }
