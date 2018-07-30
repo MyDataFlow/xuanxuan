@@ -102,7 +102,7 @@ class AppRemote {
     }
 
     migrate() {
-        if (Config.pkg.version === '2.0.0') {
+        if (!DEBUG && Config.pkg.version === '2.0.0') {
             const userDataPath = ElectronApp.getPath('userData');
             const oldUserDataPath = path.resolve(userDataPath, '../喧喧');
             if(fs.existsSync(oldUserDataPath)) {
