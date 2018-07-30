@@ -20,6 +20,12 @@ if (DEBUG && DEBUG !== 'production') {
     require('module').globalPaths.push(p); // eslint-disable-line
 }
 
+if(DEBUG && process.execPath.indexOf('electron') > -1) {
+    // it handles shutting itself down automatically
+    require('electron-local-crash-reporter').start();
+    console.log('\n>> electron-local-crash-reporter started.');
+}
+
 // Quit when all windows are closed.
 ElectronApp.on('window-all-closed', () => {
     ElectronApp.quit();
