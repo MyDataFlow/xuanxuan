@@ -211,7 +211,6 @@ const onFetchQueueFinish = (queueId, listener) => {
     return Events.once(`${EVENT.fetchQueueFinish}${queueId}`, listener);
 };
 const processChatMessageQueue = () => {
-    console.log('processChatMessageQueue', fetchChatMessagesQueue.length, fetchChatMessagesQueue);
     if (isGetChatMessagesQueueBusy) {
         return;
     }
