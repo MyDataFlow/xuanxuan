@@ -61,6 +61,9 @@
     * `electron-builder` 暂时冻结在 `20.4.0`；
     * `jQuery` 现在作为可选的动态模块用于给扩展进行调用；
     * `marked` 模块升级至 `0.4.0`；
+    * `emojione` 模块升级至 `3.1.7`；
+    * `react` 模块升级至 `16.4.1`；
+    * `webpack` 模块升级至 `4.16.1`；
     * `$$version` 消息命令会显示更多信息，包括操作系统和平台信息；
     * 增加 `$$dataPath` 消息命令，用于显示当前用户数据目录路径；
   * 客户端扩展机制：
@@ -70,10 +73,26 @@
     * 扩展可以通过定义 `target` 为 `link` 的功能菜单创建器（`ContextMenuCreator`）来为链接添加右键功能菜单；
     * 扩展可以通过定义 `target` 为 `member` 的功能菜单创建器（`ContextMenuCreator`）来为成员添加右键功能菜单；
     * 扩展支持通过 `urlInspectors` 将链接渲染为 WebView 卡片形式；
+  * XXD：
+    * 优化终端日志显示格式；
+    * 增加限制服务器上最大登录人数的配置项；
+    * 增加将客户端 IP 反馈给后端服务；
   * XXB：
     * 增加 `chat/mute` API，用于将聊天设置（或取消设置）为免打扰；
+    * 增加 `entry/visit` API，用于获取服务器端集成的应用免登录访问入口；
+    * 修复发送消息权限判断错误；
     * 修复系统会话默认名称为英文的问题；
 
+### 下载地址
+
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.win64.debug.setup.exe)；
+* MacOS：[xuanxuan.2.0.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.mac.dmg)；
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.linux.x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.linux.ia32.rpm)；
+* 浏览器端：[xuanxuan.2.0.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.2.0.0.browser.zip)；
+* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xxd.2.0.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xxd.2.0.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xxd.2.0.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xxd.2.0.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/2.0/xxd.2.0.0.linux.ia32.tar.gz)；
+* 服务器端：
+  * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb-2.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb-2.0.deb)；
+  * 然之：[4.7.0 稳定版](http://www.ranzhi.org/download/4.7.stable-127.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.ranzhi.2.0.0.zip)。
 
 ## v 1.6.0
 
@@ -102,7 +121,7 @@
 * 修复 调整聊天字体设置后恢复默认字体大小时消息发送者名称字体大小不正确的问题；
 * 开发相关：
   * 客户端：
-    * Electron 版本升级到 `2.0.3`；
+    * Electron 版本升级到 `2.0.5`；
     * 切换主题后会在 `<body>` 元素上添加 `data-theme` 属性，属性值为主题名称，方便扩展识别当前所使用的主题；
     * 增加命令机制，可以通过 `URL` 格式让用户启动命令操作，拷贝代码功能已通过命令机制重构；
     * 数据库管理模块 `dexie` 升级到 `2.0.4`；
