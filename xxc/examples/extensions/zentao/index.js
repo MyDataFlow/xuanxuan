@@ -10,6 +10,7 @@ body,#wrap{padding:0!important}
 .outer>.row-table>.col-main,.outer>.row-table>.col-side,#mainContent.main-row>.main-col,#mainContent.main-row>.side-col{display:block!important;padding:0!important;max-width:initial!important;width:100%!important}
 #mainContent.main-row>.main-col{margin-bottom:10px!important;}
 }`;
+const isWindows7 = window.navigator.userAgent.includes('Windows NT 6.');
 
 let extension = null;
 
@@ -39,7 +40,8 @@ module.exports = {
             cardMeta.content = {
                 insertCss: injectCss,
                 src: url,
-                style: {height: '400px', width: '550px'}
+                style: {height: '400px', width: '550px'},
+                type: isWindows7 ? 'iframe' : 'webview'
             };
             return cardMeta;
         }
