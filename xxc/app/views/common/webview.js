@@ -26,6 +26,7 @@ export default class WebView extends Component {
         useMobileAgent: PropTypes.bool,
         hideBeforeDOMReady: PropTypes.bool,
         style: PropTypes.object,
+        type: PropTypes.string,
     };
 
     static defaultProps = {
@@ -41,51 +42,105 @@ export default class WebView extends Component {
         useMobileAgent: false,
         hideBeforeDOMReady: true,
         style: null,
+        type: 'auto'
     };
 
     constructor(props) {
         super(props);
+        
+        this.webviewId = `webview-${timeSequence()}`;
+        const {type} = props;
+        this.isWebview = (type === 'auto' && isElectron) || type === 'webview';
+        this.isIframe = !this.isWebview;
         this.state = {
             errorCode: null,
             errorDescription: null,
             domReady: false
         };
-        this.webviewId = `webview-${timeSequence()}`;
     }
 
     componentDidMount() {
         const {webview} = this;
-        webview.addEventListener('did-start-loading', this.handleLoadingStart);
-        webview.addEventListener('did-finish-load', this.handleLoadingStop);
-        webview.addEventListener('did-stop-loading', this.handleLoadingStop);
-        webview.addEventListener('page-title-updated', this.handlePageTitleChange);
-        webview.addEventListener('did-fail-load', this.handleLoadFail);
-        webview.addEventListener('new-window', this.handleNewWindow);
-        webview.addEventListener('dom-ready', this.handleDomReady);
-        webview.addEventListener('will-navigate', this.handleWillNavigate);
+        if (webview) {
+            if (this.isWebview) {
+                webview.addEventListener('did-start-loading', this.handleLoadingStart);
+                webview.addEventListener('did-finish-load', this.handleLoadingStop);
+                webview.addEventListener('did-stop-loading', this.handleLoadingStop);
+                webview.addEventListener('page-title-updated', this.handlePageTitleChange);
+                webview.addEventListener('did-fail-load', this.handleLoadFail);
+                webview.addEventListener('new-window', this.handleNewWindow);
+                webview.addEventListener('dom-ready', this.handleDomReady);
+                webview.addEventListener('will-navigate', this.handleWillNavigate);
+            } else if (this.isIframe) {
+                const {iframe} = webview;
+                iframe.onload = () => {
+                    if (iframe.contentWindow.document.readyState !== 'loading') {
+                        this.handleDomReady();
+                    } else {
+                        iframe.contentWindow.document.addEventListener('DOMContentLoaded', e => {
+                            this.handleDomReady();
+                        });
+                    }
+                };
+                if (iframe.contentWindow.document.readyState !== 'loading') {
+                    this.handleDomReady();
+                }
+            }
+        }
     }
 
     componentWillUnmount() {
         const {webview} = this;
         if (webview) {
-            webview.removeEventListener('did-start-loading', this.handleLoadingStart);
-            webview.removeEventListener('did-finish-load', this.handleLoadingStop);
-            webview.removeEventListener('did-stop-loading', this.handleLoadingStop);
-            webview.removeEventListener('page-title-updated', this.handlePageTitleChange);
-            webview.removeEventListener('did-fail-load', this.handleLoadFail);
-            webview.removeEventListener('new-window', this.handleNewWindow);
-            webview.removeEventListener('dom-ready', this.handleDomReady);
-            webview.removeEventListener('will-navigate', this.handleWillNavigate);
+            if (this.isWebview) {
+                webview.removeEventListener('did-start-loading', this.handleLoadingStart);
+                webview.removeEventListener('did-stop-loading', this.handleLoadingStop);
+                webview.removeEventListener('page-title-updated', this.handlePageTitleChange);
+                webview.removeEventListener('did-fail-load', this.handleLoadFail);
+                webview.removeEventListener('new-window', this.handleNewWindow);
+                webview.removeEventListener('dom-ready', this.handleDomReady);
+                webview.removeEventListener('will-navigate', this.handleWillNavigate);
+            } else if (this.isIframe) {
+                const {iframe} = webview;
+                if (iframe) {
+                    iframe.onoad = null;
+                }
+            }
         }
     }
 
     get webview() {
-        return document.getElementById(this.webviewId);
+        let webview = document.getElementById(this.webviewId);
+        if (webview && this.isIframe) {
+            webview = {
+                contentWindow: webview.contentWindow,
+                iframe: webview,
+                reload() {
+                    webview.contentWindow.location.reload();
+                },
+                insertCSS(css) {
+                    const {document} = webview.contentWindow;
+                    const styleEle = document.createElement('style');
+                    styleEle.innerHTML = css;
+                    document.head.appendChild(styleEle);
+                },
+                executeJavaScript(code, userGesture, callback) {
+                    const {document} = webview.contentWindow;
+                    const scriptEle = document.createElement('script');
+                    scriptEle.innerHTML = code;
+                    document.body.appendChild(scriptEle);
+                    callback && callback();
+                }
+            };
+        }
+        return webview;
     }
 
     reloadWebview() {
         const {webview} = this;
-        return webview && webview.reload();
+        if (webview) {
+            webview.reload();
+        }
     }
 
     handleWillNavigate = e => {
@@ -204,7 +259,7 @@ export default class WebView extends Component {
         }
 
         const {contextmenu} = Platform;
-        if (contextmenu && (contextmenu.showInputContextMenu || contextmenu.showSelectionContextMenu)) {
+        if (this.isWebview && contextmenu && (contextmenu.showInputContextMenu || contextmenu.showSelectionContextMenu)) {
             const webContents = webview.getWebContents();
             if (webContents) {
                 webContents.on('context-menu', (e, props) => {
@@ -238,7 +293,8 @@ export default class WebView extends Component {
         } = this.props;
 
         let webviewHtml = '';
-        if (isElectron) {
+        const {isWebview} = this;
+        if (isWebview) {
             webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (` preload="${options.preload}"`) : ''} />`;
         } else {
             webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
