@@ -11,19 +11,11 @@ import {ChatsDndContainer} from './chats-dnd-container';
 import {ChatsSuggestPanel} from './chats-suggest-panel';
 import replaceViews from '../replace-views';
 
-<<<<<<< HEAD
-/**
- * 聊天界面核心部分
- */
-
-class Index extends Component {
-=======
 export default class Index extends Component {
     static get Index() {
         return replaceViews('chats/index', Index);
     }
 
->>>>>>> 9c53e7901cb4bb4c6716c79c05a152059ed143f2
     static propTypes = {
         match: PropTypes.object.isRequired,
         hidden: PropTypes.bool,
@@ -50,14 +42,7 @@ export default class Index extends Component {
          */
         App.im.ui.activeChat(match.params.id);
 
-<<<<<<< HEAD
-        /**
-         * SplitPane 左侧群组等联系人和聊天内容的主容器
-         */
-        return (<div className={HTML.classes('dock app-chats', className, {hidden})}>
-=======
         return (<div className={classes('dock app-chats', className, {hidden})}>
->>>>>>> 9c53e7901cb4bb4c6716c79c05a152059ed143f2
             <SplitPane split="vertical" maxSize={400} minSize={200} defaultSize={200} paneStyle={{userSelect: 'none'}}>
                 <Menu className="dock" filter={match.params.filterType} />
                 <ChatsCache onClick={this.handChatsCacheClick} className="dock" filterType={match.params.filterType} chatId={match.params.id}>

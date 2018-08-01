@@ -45,17 +45,8 @@ class Index extends Component {
             userStatus,
             ...other
         } = this.props;
-<<<<<<< HEAD
-        /**
-         * Navbar 是侧边栏
-         * 聊天核心部分是Route部分
-         * 是一个嵌套路由机制
-         */
-        return (<div className={HTML.classes('app-main', className)} {...other}>
-=======
 
         return (<div className={classes('app-main', className)} {...other}>
->>>>>>> 9c53e7901cb4bb4c6716c79c05a152059ed143f2
             <GlobalMessage className="dock-top" />
             <Navbar userStatus={userStatus} className="dock-left primary shadow-2" />
             <Route path={ROUTES.apps.__} exact component={CacheContainer} />
