@@ -21,5 +21,8 @@ zentao:
 	sed -i 's/site,//' ./build/module/chat/model.php
 	sed -i 's/admin, g/g/' ./build/module/chat/model.php
 	sed -i '/password = md5/d' ./build/module/chat/control.php
+	sed -i '/im_/zt_im_/' ./build/db/xuanxuan.sql
+	sed -i '/sys_user/zt_user/' ./build/db/xuanxuan.sql
+	sed -i '/sys_file/zt_file/' ./build/db/xuanxuan.sql
 	zip -rqm -9 xuanxuan.zentao.$(VERSION).zip ./build/*
 	rm -rf ./build
