@@ -9,7 +9,7 @@ zentao:
 	mkdir -p ./build/framework
 	mkdir -p ./build/db
 	mkdir -p ./build/www
-	cp ../ranzhi/config/ext/xuanxuan.php ./build/config/
+	cp ../ranzhi/config/ext/xuanxuan.php ./build/config/ext/
 	cp -r ../ranzhi/lib/phpaes ./build/lib/
 	cp -r ../ranzhi/framework/xuanxuan.class.php ./build/framework/
 	cp -r ../ranzhi/db/xuanxuan.sql ./build/db/
