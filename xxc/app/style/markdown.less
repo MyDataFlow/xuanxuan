@@ -1,15 +1,24 @@
 .markdown-content {
   a {
     color: @color-primary;
+    word-break: break-all;
   }
   p {
     margin: 0;
     white-space: pre-wrap;
   }
 
+  video {display: block;}
+
+  > *:last-child,
+  > *:last-child > *:last-child {margin-bottom: 0;}
+
+  > *:first-child,
+  > *:first-child > *:first-child {margin-top: 0;}
+
   ul, ol {
     margin: 0 0 8px 0;
-    padding-left: 16px;
+    padding-left: 20px;
   }
 
   pre {
@@ -23,6 +32,7 @@
 
     code {
       background: none;
+      word-break: break-all;
       &[data-lang] {
         &:before {
           content: attr(data-lang);
@@ -69,12 +79,15 @@
     }
   }
 
+  > pre:first-child {margin-top: 0}
+  > pre:last-child {margin-bottom: 0}
+
   h1, h2, h3 {
-    margin: 4px 0 16px 0;
+    margin: 16px 0;
   }
 
   h4, h5, h6 {
-    margin: 4px 0 8px;
+    margin: 8px 0;
   }
 
   h1 {
@@ -92,7 +105,8 @@
   table {
     margin: 4px 0 8px;
     max-width: 100%;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid @color-gray-lighter;
+    border-collapse: collapse;
 
     > thead > tr > td,
     > thead > tr > th,
@@ -100,15 +114,16 @@
     > tbody > tr > th,
     > tfoot > tr > td,
     > tfoot > tr > th {
-      border: 1px solid rgba(0,0,0,.1);
+      border: 1px solid @color-gray-lighter;
       padding: 4px 8px;
+      border-collapse: collapse;
     }
 
     > thead,
     > tfoot {
       > tr > td,
       > tr > th {
-        background-color: @color-gray-lighter;
+        background: rgba(0,0,0,.1);
       }
     }
   }

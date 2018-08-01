@@ -27,7 +27,7 @@ class chatModel extends model
         {
             $chat = new stdclass();
             $chat->gid         = $this->createGID();
-            $chat->name        = 'system group';
+            $chat->name        = $this->lang->chat->systemGroup;
             $chat->type        = 'system';
             $chat->createdBy   = 'system';
             $chat->createdDate = helper::now();
@@ -94,12 +94,8 @@ class chatModel extends model
     public function getUserByUserID($userID = 0)
     {
         $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
-        if($user)
-        {
-            $user = $this->formatUsers($user);
-        }
-
-        return $user;
+        if(!$user) return array();
+        return $this->formatUsers($user);
     }
 
     /**
@@ -499,6 +495,26 @@ class chatModel extends model
     }
 
     /**
+     * Mute a chat.
+     *
+     * @param  string $gid
+     * @param  bool   $mute
+     * @param  int    $userID
+     * @access public
+     * @return bool
+     */
+    public function muteChat($gid = '', $mute = true, $userID = 0)
+    {
+        $this->dao->update(TABLE_IM_CHATUSER)
+            ->set('mute')->eq($mute)
+            ->where('cgid')->eq($gid)
+            ->andWhere('user')->eq($userID)
+            ->exec();
+
+        return !dao::isError();
+    }
+
+    /**
      * Set category for a chat
      *
      * @param  array  $gids
@@ -798,7 +814,7 @@ EOT;
         case '1.3.0': $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
         case '1.4.0':
             $this->loadModel('upgrade')->execSQL($this->getUpgradeFile($version));
-            $messagesList = $this->dao->select('*')->from(TABLE_IM_USERMESSAGE)->fetchAll();
+            $messagesList = $this->dao->select('*')->from($this->config->db->prefix . 'im_usermessage')->fetchAll();
             if(!empty($messagesList)) foreach($messagesList as $messages)
             {
                 $messages = json_decode($messages->message);
@@ -929,6 +945,11 @@ EOT;
         return substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
 	}
 
+    /**
+     * Check for user data changes.
+     *
+     * @return string
+     */
     public function checkUserChange()
     {
         $data = $this->dao->select('id')->from(TABLE_ACTION)
@@ -937,5 +958,61 @@ EOT;
             ->andWhere('date')->gt(date(DT_DATETIME1, strtotime('-1 Minute')))
             ->fetch();
         return empty($data) ? 'no' : 'yes';
+    }
+
+    /**
+     * Get extension list.
+     * @param $userID
+     * @return array
+     */
+    public function getExtensionList($userID)
+    {
+        $entries = array();
+        $fileIDs = array();
+        $files   = array();
+
+        $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
+            ->where('status')->eq('online')
+            ->orderBy('`order`, id')
+            ->fetchAll();
+
+        foreach($entriesList as $index => $entry)
+        {
+            if(strpos(',' . $entry->platform . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
+            if($entry->package) $fileIDs[] = $entry->package;
+        }
+        if(empty($entriesList)) return $entries;
+
+        if($fileIDs)
+        {
+            $files = $this->dao->select('id,pathname,objectID')
+                ->from(TABLE_FILE)
+                ->where('objectType')->eq('entry')
+                ->andWhere('id')->in($fileIDs)
+                ->fetchAll('objectID');
+        }
+
+        $_SERVER['SCRIPT_NAME'] = 'index.php';
+        foreach($entriesList as $entry)
+        {
+            $token = '';
+            if(isset($files[$entry->id]->pathname))
+            {
+                $time  = time();
+                $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
+            }
+            $data = new stdClass();
+            $data->entryID     = $entry->integration ? (int)$entry->id : 0;
+            $data->name        = $entry->code;
+            $data->displayName = $entry->name;
+            $data->abbrName    = $entry->abbr;
+            $data->webViewUrl  = strpos($entry->login, 'http') === false ? commonModel::getSysURL() . str_replace('../', '/', $entry->login) : $entry->login;
+            $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
+            $data->md5         = empty($entry->package) ? '' : md5($entry->package);
+            $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
+
+            $entries[] = $data;
+        }
+        return $entries;
     }
 }

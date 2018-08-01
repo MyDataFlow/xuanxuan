@@ -58,13 +58,13 @@ type Stat interface {
 func InitHttp() {
     crt, key, err := CreateSignedCertKey()
     if err != nil {
-        util.LogError().Println("https server start error!")
+        util.LogError().Println("Warning: SSL certificate creation failed!")
         return
     }
 
     err = api.StartXXD()
     if err != nil {
-        util.Exit("ranzhi server login error")
+        util.Exit("Warning: Backend server login error")
     }
 
     mux := http.NewServeMux()
@@ -75,29 +75,31 @@ func InitHttp() {
 
     addr := util.Config.Ip + ":" + util.Config.CommonPort
 
-    util.Println("file server start,listen addr:", addr, download)
-    util.Println("file server start,listen addr:", addr, upload)
+    util.Println("Listen IP: ", util.Config.Ip)
+    util.Println("Websocket port: ", util.Config.ChatPort)
+    util.Println("Http port: ", util.Config.CommonPort)
 
-    util.LogInfo().Println("file server start,listen addr:", addr, download)
-    util.LogInfo().Println("file server start,listen addr:", addr, upload)
+    util.LogInfo().Println("Listen IP: ", util.Config.Ip)
+    util.LogInfo().Println("Websocket port: ", util.Config.ChatPort)
+    util.LogInfo().Println("Http port: ", util.Config.CommonPort)
 
     if util.Config.IsHttps != "1" {
-        util.Println("http server start,listen addr:http://", addr)
-        util.LogInfo().Println("http server start,listen addr:http://", addr, sInfo)
-
         if err := http.ListenAndServe(addr, mux); err != nil {
-            util.LogError().Println("http server listen err:", err)
-            util.Exit("http server listen err")
+            util.LogError().Println("Warning: http server listen error:", err)
+            util.Exit("Warning: http server listen error")
         }
     }else{
-        util.Println("https server start,listen addr:https://", addr)
-        util.LogInfo().Println("https server start,listen addr:https://", addr, sInfo)
-
         if err := http.ListenAndServeTLS(addr, crt, key, mux); err != nil {
-            util.LogError().Println("https server listen err:", err)
-            util.Exit("https server listen err")
+            util.LogError().Println("Warning: https server listen error:", err)
+            util.Exit("Warning: https server listen error")
         }
     }
+
+    util.Println("---------------------------------------- \n",)
+    util.Println("Visit http://xuan.im to get more help, or join official QQ group 367833155. \n",)
+    util.Println("Press Ctrl+C to stop the server. \n",)
+
+
 }
 
 //文件下载
@@ -121,9 +123,9 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
     reqSid := r.Form["sid"][0]
     reqGid := r.Form["gid"][0]
     session,err :=util.GetUid(serverName, reqGid)
-    util.Println("file_session:",session)
+    util.Println("Info: file_session:",session)
     if err!=nil {
-        fmt.Fprintln(w, "not supported request")
+        fmt.Fprintln(w, "Warning: Not supported request")
         return
     }
     if reqSid != string(util.GetMD5( session  + reqFileName )) {
@@ -133,7 +135,7 @@ func fileDownload(w http.ResponseWriter, r *http.Request) {
 
     fileTime, err := util.String2Int64(reqFileTime)
     if err != nil {
-        util.LogError().Println("file download,time undefined:", err)
+        util.LogError().Println("Warning: file download,time undefined:", err)
         w.WriteHeader(http.StatusInternalServerError)
         return
     }

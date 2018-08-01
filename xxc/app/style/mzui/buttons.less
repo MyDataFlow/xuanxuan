@@ -66,6 +66,21 @@
     color: @color-focus;
     background-color: @color-white;
   }
+
+  &.selected {
+    position: relative;
+    color: @color-green!important;
+    &:before {
+      content: ' ';
+      display: block;
+      height: (2*@rem);
+      position: absolute;
+      bottom: (6*@rem);
+      left: (3*@rem);
+      right: (4*@rem);
+      background: @color-green;
+    }
+  }
 }
 
 .btn {

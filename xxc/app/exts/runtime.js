@@ -1,8 +1,11 @@
 import Xext from './external-api';
 import Exts from './exts';
+import ui from './ui';
 import manager from './manager';
 import App from '../core';
-import {Index as View} from '../views/exts';
+import {setExtensionUser} from './extension';
+import {registerCommand, execute, createCommandObject} from '../core/commander';
+import {fetchServerExtensions, detachServerExtensions, getEntryVisitUrl} from './server';
 
 global.Xext = Xext;
 
@@ -16,22 +19,11 @@ const loadModules = () => {
             if (reloadExt) {
                 ext = reloadExt;
             }
+        } else {
+            ext.attach();
         }
-
-        if (ext.hasModule) {
-            if (ext.lazy) {
-                if (DEBUG) {
-                    console.collapse('Extension Lazy load', 'greenBg', ext.name, 'greenPale');
-                    console.log('extension', ext);
-                    console.groupEnd();
-                }
-            } else {
-                ext.loadModule(Xext);
-            }
-
-            if (ext.hasReplaceViews) {
-                Object.assign(replaceViews, ext.replaceViews);
-            }
+        if (ext.hasReplaceViews) {
+            Object.assign(replaceViews, ext.replaceViews);
         }
     });
 };
@@ -45,16 +37,20 @@ App.ui.onReady(() => {
 // Listen events
 App.server.onUserLogin((user, error) => {
     if (!error) {
+        setExtensionUser(user);
         Exts.forEach(ext => {
             ext.callModuleMethod('onUserLogin', user);
         });
     }
+    fetchServerExtensions(user);
 });
 
 App.server.onUserLoginout((user, code, reason, unexpected) => {
+    setExtensionUser(null);
     Exts.forEach(ext => {
         ext.callModuleMethod('onUserLoginout', user, code, reason, unexpected);
     });
+    detachServerExtensions(user);
 });
 
 App.profile.onUserStatusChange((status, oldStatus, user) => {
@@ -85,9 +81,68 @@ App.im.ui.onRenderChatMessageContent(content => {
     return content;
 });
 
+// Register 'extension' command
+registerCommand('extension', (context, extName, commandName, ...params) => {
+    const ext = Exts.getExt(extName);
+    if (ext) {
+        const command = ext.getCommand(commandName);
+        if (command) {
+            return execute(createCommandObject(command, null, {extension: ext}), ...params);
+        } else if (DEBUG) {
+            console.collapse('Command.execute.extension', 'redBg', commandName, 'redPale', 'command not found', 'redBg');
+            console.log('ext', ext);
+            console.log('params', params);
+            console.log('context', context);
+            console.groupEnd();
+        }
+    } else if (DEBUG) {
+        console.collapse('Command.execute.extension', 'redBg', commandName, 'redPale', 'extension not found', 'redBg');
+        console.log('extName', extName);
+        console.log('params', params);
+        console.log('context', context);
+        console.groupEnd();
+    }
+});
+
+registerCommand('showExtensionDialog', (context, extName) => {
+    const ext = Exts.getExt(extName);
+    if (ext) {
+        return ui.showExtensionDetailDialog(ext);
+    }
+});
+
+registerCommand('openInApp', (context, appName, url) => {
+    ui.openAppWithUrl(appName, url);
+});
+
+const getUrlInspector = (url, type = 'inspect') => {
+    let urlInspector = null;
+    if (Exts.exts.some(x => {
+        if (!x.disabled) {
+            const xInspector = x.getUrlInspector(url, type);
+            if (xInspector) {
+                urlInspector = xInspector;
+                return true;
+            }
+        }
+        return false;
+    })) {
+        return urlInspector;
+    }
+};
+
+const getUrlOpener = url => {
+    return getUrlInspector(url, 'open');
+};
+
+// Set replaceViews to global
 global.replaceViews = replaceViews;
 
 export default {
     loadModules,
-    View,
+    ui,
+    getUrlInspector,
+    getUrlOpener,
+    exts: Exts,
+    getEntryVisitUrl
 };

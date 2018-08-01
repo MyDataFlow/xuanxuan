@@ -113,6 +113,7 @@ class xuanxuan extends router
         $input   = $this->decrypt($input);
         $version = !empty($input->v)      ? $input->v : '';
         $userID  = !empty($input->userID) ? $input->userID : '';
+        $client  = !empty($input->client) ? $input->client : '';
         $module  = !empty($input->module) ? $input->module : '';
         $method  = !empty($input->method) ? $input->method : '';
         $params  = !empty($input->params) ? $input->params : array();
@@ -134,10 +135,14 @@ class xuanxuan extends router
             /* params[0] is the server name. */
             unset($params[0]);
         }
-        if($userID && is_array($params))
+        if(is_array($params))
         {
             $params[] = $userID;
+            $params[] = $version;
         }
+
+        $this->session->set('userID', $userID);
+        $this->session->set('clientIP', $client);
 
         $this->setModuleName($module);
         $this->setMethodName($method);

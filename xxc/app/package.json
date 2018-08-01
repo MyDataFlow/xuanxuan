@@ -1,22 +1,27 @@
 {
-  "name": "xuanxuan",
-  "productName": "喧喧",
-  "version": "1.5.0",
-  "description": "企业即时通讯平台",
-  "main": "./main.js",
-  "author": {
-    "name": "cnezsoft",
-    "email": "sunhao@cnezsoft.com",
-    "url": "http://cnezsoft.com"
-  },
-  "homepage": "http://xuan.im",
-  "company": "青岛易软天创网络科技有限公司",
-  "license": "ZPL 1.2",
-  "bugs": {
-    "url": "https://github.com/easysoft/xuanxuan/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/easysoft/xuanxuan.git"
-  }
+    "name": "xuanxuan",
+    "productName": "xuanxuan",
+    "version": "2.0.0",
+    "description": "企业即时通讯平台",
+    "main": "./main.js",
+    "author": {
+        "name": "青岛易软天创网络科技有限公司",
+        "email": "sunhao@cnezsoft.com"
+    },
+    "homepage": "http://xuan.im",
+    "company": "青岛易软天创网络科技有限公司",
+    "license": "ZPL 1.2",
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/easysoft/xuanxuan.git"
+    },
+    "buildTime": "2018-07-31T08:40:18.700Z",
+    "buildVersion": null,
+    "dependencies": {
+        "jquery": "^3.3.1"
+    },
+    "displayName": "喧喧"
 }

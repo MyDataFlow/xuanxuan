@@ -42,10 +42,15 @@ xxc/app/style.css.map
 xxc/app/dist
 xxc/app/web-dist
 xxc/app/package-lock.json
+xxc/app/manifest.json
 package-lock.json
 
 # User custom files
 *.custom
+*-backup
+build-config.*.json
+xxc/build/electron-config.json
+xxc/build/electron-builder.json
 
 .idea
 xxc/.vscode/settings.json
@@ -54,6 +59,9 @@ xxc/.vscode/settings.json
 ranzhi/db/upgradebackyard.sql
 xxd/certificate
 xxd/log
+
+# test files
+xxc/test
 
 # documentation
 xxc/docs

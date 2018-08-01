@@ -1,7 +1,6 @@
-import Platform from 'Platform';
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
-import StringHelper from '../../utils/string-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import replaceViews from '../replace-views';
 import Button from '../../components/button';
@@ -27,20 +26,6 @@ export default class NotificationMessage extends Component {
         return nextProps.className !== this.props.className || nextProps.contentConverter !== this.props.contentConverter || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content;
     }
 
-    handleContextMenu = e => {
-        if (e.target.tagName === 'A') {
-            const link = e.target.href;
-            if (link && (link.startsWith('http://') || link.startsWith('https://'))) {
-                let linkText = document.getSelection().toString();
-                if (linkText === '') {
-                    linkText = e.target.innerText;
-                }
-                App.ui.showContextMenu({x: e.pageX, y: e.pageY}, App.ui.createLinkContextMenu(link, linkText));
-                e.preventDefault();
-            }
-        }
-    };
-
     render() {
         let {
             message,
@@ -64,8 +49,7 @@ export default class NotificationMessage extends Component {
 
         return (<div
             {...other}
-            onContextMenu={this.handleContextMenu}
-            className={HTML.classes('app-message-notification layer rounded shadow-2', className)}
+            className={classes('app-message-notification layer rounded shadow-2', className)}
         >
             <div className="markdown-content" dangerouslySetInnerHTML={{__html: contentConverter ? contentConverter(content) : content}} />
             {actionsButtons && actionsButtons.length ? <nav className="actions nav gray">{actionsButtons}</nav> : null}

@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import AppAvatar from '../../components/app-avatar';
@@ -30,8 +31,8 @@ export default class AppHome extends PureComponent {
     }
 
     componentDidMount() {
-        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
-            if (ext.isApp) {
+        this.onExtChangeHandler = Exts.all.onExtensionChange((changedExtensions) => {
+            if (changedExtensions.some(x => x.isApp)) {
                 this.forceUpdate();
             }
         });
@@ -77,7 +78,7 @@ export default class AppHome extends PureComponent {
                         if (!app.avatarUIConfig) {
                             app.avatarUIConfig = {auto: app.appIcon, skin: app.appAccentColor, className: 'rounded shadow-1'};
                         }
-                        return <AppAvatar onContextMenu={this.handleAppContextMenu} data-name={app.name} key={app.name} title={app.description} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={app.avatarUIConfig} label={app.displayName} />;
+                        return <AppAvatar onContextMenu={this.handleAppContextMenu} data-name={app.name} key={app.name} title={`【${app.displayName}】${app.description || ''}`} href={`#${ROUTES.exts.app.id(app.name)}`} avatar={app.avatarUIConfig} label={app.displayName} />;
                     })
                 }
             </div>

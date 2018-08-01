@@ -4,10 +4,11 @@ import Lang from '../../lang';
 import App from '../../core';
 import DEFAULT_USER_CONFIG from '../../core/profile/user-default-config';
 import Messager from '../../components/messager';
-import {UserSetting} from './user-setting';
+import UserSetting from './user-setting';
 
 const show = (callback) => {
     let userSetting = null;
+    App.ui.disableGlobalShortcut();
     return Modal.show({
         title: Lang.string('common.setting'),
         id: 'app-user-setting-dialog',
@@ -35,6 +36,7 @@ const show = (callback) => {
                 }
             }
         ],
+        onHidden: App.ui.enableGlobalShortcut,
         content: <UserSetting ref={e => {userSetting = e;}} settings={App.profile.userConfig.plain()} />
     }, callback);
 };

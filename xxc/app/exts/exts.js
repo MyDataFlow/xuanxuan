@@ -3,7 +3,7 @@ import buildIns from './build-in/';
 import {createExtension} from './extension';
 import db from './extensions-db';
 import Events from '../core/events';
-import Lang from '../lang';
+import {setServerOnChangeListener} from './server';
 
 const EVENT = {
     onChange: 'Extension.onChange'
@@ -15,10 +15,10 @@ const PKG = Config.pkg;
 
 buildIns.forEach((buildIn, idx) => {
     if (!buildIn.publisher) {
-        buildIn.publisher = Config.exts.buildInPublisher || Lang.string('app.company');
+        buildIn.publisher = Config.exts.buildInPublisher || Config.pkg.company;
     }
     if (!buildIn.author) {
-        buildIn.author = Config.exts.buildInAuthor || Lang.string('app.company');
+        buildIn.author = Config.exts.buildInAuthor || Config.pkg.company;
     }
     ['version', 'license', 'homepage', 'bugs', 'repository'].forEach(key => {
         buildIn[key] = PKG[key];
@@ -36,6 +36,9 @@ const sortExts = () => {
             result = (y.disabled ? 0 : 1) - (x.disabled ? 0 : 1);
         }
         if (result === 0) {
+            result = (y.isRemote ? 1 : 0) - (x.isRemote ? 1 : 0);
+        }
+        if (result === 0) {
             result = y.installTime - x.installTime;
         }
         return result;
@@ -44,33 +47,50 @@ const sortExts = () => {
 sortExts();
 
 // Grouped extensions
-let apps = exts.filter(x => x.type === 'app');
-let themes = exts.filter(x => x.type === 'theme');
-let plugins = exts.filter(x => x.type === 'plugin');
+let apps;
+let themes;
+let plugins;
 
-db.setOnChangeListener((ext, changeAction) => {
-    if (changeAction === 'add') {
-        exts.splice(0, 0, ext);
-        sortExts();
-    } else if (changeAction === 'remove') {
-        const index = exts.findIndex(x => x.name === ext.name);
-        if (index > -1) {
-            exts.splice(index, 1);
-        }
-    } else if (changeAction === 'update') {
-        const index = exts.findIndex(x => x.name === ext.name);
-        if (index > -1) {
-            exts.splice(index, 1, ext);
-        } else {
-            exts.splice(0, 0, ext);
-        }
-    }
-
+const groupExts = () => {
     apps = exts.filter(x => x.type === 'app');
     themes = exts.filter(x => x.type === 'theme');
     plugins = exts.filter(x => x.type === 'plugin');
-    Events.emit(EVENT.onChange, ext, changeAction);
-});
+};
+
+groupExts();
+
+const onChangeListener = (changedExts, changeAction) => {
+    if (!Array.isArray(changedExts)) {
+        changedExts = [changedExts];
+    }
+    if (changeAction === 'remove') {
+        changedExts.forEach(ext => {
+            const findIndex = exts.findIndex(x => x.name === ext.name);
+            if (findIndex > -1) {
+                exts.splice(findIndex, 1);
+            }
+        });
+    } else if (changeAction === 'update' || changeAction === 'add' || changeAction === 'upsert') {
+        let hasExtAdd = false;
+        changedExts.forEach(ext => {
+            const findIndex = exts.findIndex(x => x.name === ext.name);
+            if (findIndex > -1) {
+                exts.splice(findIndex, 1, ext);
+            } else {
+                exts.splice(0, 0, ext);
+                hasExtAdd = true;
+            }
+        });
+        if (hasExtAdd) {
+            sortExts();
+        }
+    }
+    groupExts();
+    Events.emit(EVENT.onChange, changedExts, changeAction);
+};
+
+db.setOnChangeListener(onChangeListener);
+setServerOnChangeListener(onChangeListener);
 
 const getTypeList = type => {
     switch (type) {

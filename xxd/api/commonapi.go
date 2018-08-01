@@ -20,13 +20,13 @@ type ParseData map[string]interface{}
 func ApiParse(message, token []byte) (ParseData, error) {
     jsonData, err := aesDecrypt(message, token)
     if err != nil {
-        util.LogError().Println("aes decrypt error:", err)
+        util.LogError().Println("Warning: message data decrypt error:", err)
         return nil, err
     }
 
     parseData := make(ParseData)
     if err := json.Unmarshal([]byte(jsonData), &parseData); err != nil {
-        util.LogError().Println("json unmarshal error:", err)
+        util.LogError().Println("Warning: JSON unmarshal error:", err)
         return nil, err
     }
 
@@ -43,7 +43,7 @@ func ApiUnparse(parseData ParseData, token []byte) []byte {
 
     message, err := aesEncrypt(jsonData, token)
     if err != nil {
-        util.LogError().Println("aes encrypt error:", err)
+        util.LogError().Println("Warning: message data encrypt error:", err)
         return nil
     }
 

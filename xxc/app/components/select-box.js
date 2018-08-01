@@ -1,5 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../utils/html-helper';
 import StringHelper from '../utils/string-helper';
 
 class Selectbox extends Component {
@@ -62,7 +63,7 @@ class Selectbox extends Component {
     }
 
     render() {
-        let {
+        const {
             value,
             children,
             className,
@@ -74,7 +75,7 @@ class Selectbox extends Component {
         } = this.props;
 
         return (<div
-            className={HTML.classes('select', className, {
+            className={classes('select', className, {
                 focus: this.state.focus,
                 empty: this.state.empty,
                 normal: !this.state.focus

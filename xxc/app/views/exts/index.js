@@ -1,6 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {NavLink, Redirect} from 'react-router-dom';
-import HTML from '../../utils/html-helper';
+import {classes} from '../../utils/html-helper';
 import Lang from '../../lang';
 import ROUTES from '../common/routes';
 import Icon from '../../components/icon';
@@ -14,6 +15,7 @@ import {AppFiles} from './app-files';
 import {AppThemes} from './app-themes';
 import replaceViews from '../replace-views';
 import App from '../../core';
+import {ifEmptyThen} from '../../utils/string-helper';
 
 const buildInView = {
     home: AppHome,
@@ -42,7 +44,8 @@ export default class Index extends Component {
         super(props);
         this.state = {
             navScrolled: false,
-            loading: {}
+            loading: {},
+            pageTitles: {}
         };
     }
 
@@ -68,6 +71,9 @@ export default class Index extends Component {
     }
 
     checkScrollToCurrentApp() {
+        if (!this.appsNav) {
+            return;
+        }
         const hasScrollbar = this.appsNav.scrollWidth > this.appsNav.clientWidth;
         if (this.state.navScrolled !== hasScrollbar) {
             this.setState({navScrolled: hasScrollbar});
@@ -101,6 +107,12 @@ export default class Index extends Component {
         this.setState({loading});
     }
 
+    handleAppPageTitleUpadted(openApp, pageTitle) {
+        const {pageTitles} = this.state;
+        pageTitles[openApp.id] = pageTitle;
+        this.setState({pageTitles});
+    }
+
     handleOpenedAppContextMenu(openedApp, e) {
         const menuItems = Exts.ui.createOpenedAppContextMenu(openedApp, () => {
             this.forceUpdate();
@@ -119,38 +131,47 @@ export default class Index extends Component {
             match
         } = this.props;
 
+        if (!App.profile.isUserVertified) {
+            return null;
+        }
+
         const openedApps = Exts.ui.openedApps;
 
         let redirectView = null;
         if (match.url.startsWith(ROUTES.exts._)) {
-            if (!match.params.filterType || !match.params.id) {
+            const openedAppName = match.params.id;
+            if (openedAppName) {
+                if (!Exts.ui.openAppById(match.params.id, match.params.params)) {
+                    this.appNotFound = match.params.id;
+                    const defaultAppName = Exts.ui && Exts.ui.defaultApp ? Exts.ui.defaultApp.name : 'home';
+                    redirectView = <Redirect to={ROUTES.exts.app.id(defaultAppName)} />;
+                }
+            } else if (!match.params.filterType) {
                 redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.currentOpenedApp.name)} />;
-            } else if (match.params.id && !Exts.ui.openAppById(match.params.id, match.params.params)) {
-                this.appNotFound = match.params.id;
-                redirectView = <Redirect to={ROUTES.exts.app.id(Exts.ui.defaultApp.name)} />;
             }
         }
 
-        return (<div className={HTML.classes('app-exts dock column single', /* 'app-exts-dark', */ `app-exts-current-${Exts.ui.currentOpenedApp.name}`, className, {hidden})}>
+        return (<div className={classes('app-exts dock column single', /* 'app-exts-dark', */ `app-exts-current-${Exts.ui.currentOpenedApp.name}`, className, {hidden})}>
             <nav
-                className={HTML.classes('app-exts-nav nav flex-none', {'app-exts-nav-compact': openedApps.length > 7, 'app-exts-nav-scrolled': this.state.navScrolled})}
+                className={classes('app-exts-nav nav flex-none', {'app-exts-nav-compact': openedApps.length > 7, 'app-exts-nav-scrolled': this.state.navScrolled})}
                 onWheel={this.handleWheelEvent}
                 ref={e => {this.appsNav = e;}}
             >
                 {
                     openedApps.map(openedApp => {
                         const isCurrentApp = Exts.ui.isCurrentOpenedApp(openedApp.id);
+                        const displayName = ifEmptyThen(this.state.pageTitles[openedApp.id], openedApp.app.displayName);
                         return (<NavLink
                             onContextMenu={this.handleOpenedAppContextMenu.bind(this, openedApp)}
                             key={openedApp.id}
                             to={openedApp.routePath}
                             className={`ext-nav-item-${openedApp.appName}`}
                             id={`ext-nav-item-${openedApp.name}`}
-                            title={openedApp.app.description ? `${openedApp.app.displayName} - ${openedApp.app.description}` : openedApp.app.displayName}
+                            title={openedApp.app.description ? `【${displayName}】 - ${openedApp.app.description}` : displayName}
                         >
-                            <Avatar foreColor={isCurrentApp ? openedApp.app.appAccentColor : null} auto={openedApp.app.appIcon} className="rounded" />
+                            <Avatar foreColor={isCurrentApp ? openedApp.app.appAccentColor : null} auto={openedApp.app.appIcon} className="rounded flex-none" />
                             {this.state.loading[openedApp.id] && <Avatar icon="loading spin" className="circle loading-icon" />}
-                            <span className="text">{openedApp.app.displayName}</span>
+                            <span className="text">{displayName}</span>
                             {!openedApp.isFixed && <div title={Lang.string('common.close')} className="close rounded"><Icon data-id={openedApp.id} name="close" onClick={this.handleAppCloseBtnClick} /></div>}
                         </NavLink>);
                     })
@@ -165,14 +186,14 @@ export default class Index extends Component {
                     openedApps.map(openedApp => {
                         let appView = null;
                         if (openedApp.app.MainView) {
-                            appView = <openedApp.app.MainView app={openedApp} />;
+                            appView = <openedApp.app.MainView app={openedApp} onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} onPageTitleUpdated={this.handleAppPageTitleUpadted.bind(this, openedApp)} />;
                         } else if (openedApp.app.buildIn && buildInView[openedApp.id]) {
                             const TheAppView = buildInView[openedApp.id];
-                            appView = TheAppView && <TheAppView app={openedApp} />;
+                            appView = TheAppView && <TheAppView app={openedApp} onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} onPageTitleUpdated={this.handleAppPageTitleUpadted.bind(this, openedApp)} />;
                         } else {
-                            const webViewUrl = openedApp.app.webViewUrl;
-                            if (webViewUrl) {
-                                appView = <WebApp onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} app={openedApp} />;
+                            const directUrl = openedApp.directUrl;
+                            if (directUrl) {
+                                appView = <WebApp onLoadingChange={this.handleAppLoadingChange.bind(this, openedApp)} onPageTitleUpdated={this.handleAppPageTitleUpadted.bind(this, openedApp)} app={openedApp} />;
                             }
                         }
                         if (!appView) {
@@ -180,7 +201,7 @@ export default class Index extends Component {
                         }
                         return (<div
                             key={openedApp.id}
-                            className={HTML.classes(`app-exts-app app-exts-app-${openedApp.id} dock scroll-y`, {hidden: !Exts.ui.isCurrentOpenedApp(openedApp.id)})}
+                            className={classes(`app-exts-app app-exts-app-${openedApp.id} dock scroll-y`, {hidden: !Exts.ui.isCurrentOpenedApp(openedApp.id)})}
                             style={{backgroundColor: openedApp.app.appBackColor}}
                         >{appView}</div>);
                     })

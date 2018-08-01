@@ -31,6 +31,8 @@ type ConfigIni struct {
     UploadPath     string
     UploadFileSize int64
 
+    MaxOnlineUser int64
+
     // multiSite or singleSite
     SiteType      string
     DefaultServer string
@@ -63,6 +65,7 @@ func init() {
 
         Config.LogPath = dir + "/log/"
         Config.CrtPath = dir + "/certificate/"
+        Config.MaxOnlineUser = 0
 
         log.Println("config init error，use default conf!")
         log.Println(Config)
@@ -78,6 +81,7 @@ func init() {
     getLogPath(data)
     getCrtPath(data)
     getUploadFileSize(data)
+    getMaxOnlineUser(data)
 }
 
 //获取配置文件IP
@@ -163,6 +167,28 @@ func getUploadFileSize(config *goconfig.ConfigFile) error {
         } else {
             log.Println("config: get server upload file size error, default size 32MB.")
         }
+    }
+
+    if err != nil {
+        log.Println("upload file size parse error:", err)
+    }
+
+    return err
+}
+
+func getMaxOnlineUser(config *goconfig.ConfigFile) error {
+
+    Config.MaxOnlineUser = 0
+    var maxOnlineUser int64 = 0
+
+    onlineUser, err := config.GetValue("server", "maxOnlineUser")
+    if err != nil {
+        log.Printf("config: get server maxUser error:%v, default size 0.", err)
+        return err
+    }
+
+    if maxOnlineUser, err = String2Int64(onlineUser); err == nil {
+        Config.MaxOnlineUser = maxOnlineUser
     }
 
     if err != nil {

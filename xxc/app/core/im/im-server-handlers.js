@@ -1,13 +1,9 @@
-import Events from '../events';
 import chats from './im-chats';
 import Chat from '../models/chat';
-import ChatMessage from '../models/chat-message';
 import profile from '../profile';
-import Lang from '../../lang';
 import members from '../members';
 import imServer from './im-server';
 import imUI from './im-ui';
-import NotificationMessage from '../models/notification-message';
 
 const chatChangename = (msg, socket) => {
     if (msg.isSuccess) {
@@ -53,7 +49,7 @@ const chatGetlist = (msg, socket) => {
         } else {
             newChats = msg.data;
         }
-        chats.init(newChats);
+        imServer.handleInitChats(newChats);
     }
 };
 
@@ -103,6 +99,16 @@ const chatStar = (msg, socket) => {
         const chat = chats.get(msg.data.gid);
         if (chat) {
             chat.star = msg.data.star;
+            chats.update(chat);
+        }
+    }
+};
+
+const chatMute = (msg, socket) => {
+    if (msg.isSuccess) {
+        const chat = chats.get(msg.data.gid);
+        if (chat) {
+            chat.mute = msg.data.mute;
             chats.update(chat);
         }
     }
@@ -219,6 +225,7 @@ export default {
     'chat/message': chatMessage,
     'chat/history': chatHistory,
     'chat/star': chatStar,
+    'chat/mute': chatMute,
     'chat/category': chatCategory,
     'chat/joinchat': chatJoinchat,
     'chat/hide': chatHide,

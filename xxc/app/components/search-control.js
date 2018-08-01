@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../utils/html-helper';
 import InputControl from './input-control';
 import Icon from './icon';
@@ -124,7 +125,7 @@ class SearchControl extends PureComponent {
                 normal: !this.state.focus
             })}
             value={this.state.value}
-            label={<Icon name="search" />}
+            label={<Icon name="magnify" />}
             onFocus={this.handleOnInputFocus}
             onBlur={this.handleOnInputBlur}
             onChange={this.handleOnInputChange}

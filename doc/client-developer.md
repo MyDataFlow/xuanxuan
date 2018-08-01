@@ -19,11 +19,14 @@
 
 如果你是 nodejs 开发老手，请了解如下关键命令，并且跳过下面的 _详细步骤_ 章节。
 
-```
+```bash
 $ git clone https://github.com/easysoft/xuanxuan.git
 $ cd xuanxuan/xxc
 $ npm install
-$ npm run dev
+$ npm run hot-server
+
+# 新开一个命令行窗口执行
+$ npm run start-hot
 ```
 
 ## 详细步骤
@@ -107,9 +110,9 @@ $ npm info zui
 
 ```
 dist:
-   { shasum: '134f986bc53a62be2310a0438918b8a17b58c80c',
-     size: 9957159,
-     noattachment: false,
+    { shasum: '134f986bc53a62be2310a0438918b8a17b58c80c',
+        size: 9957159,
+        noattachment: false,
      tarball: '**http://registry.npm.taobao.org/zui/download/zui-1.6.0.tgz**' },
   publish_time: 1489730305654 }
 ```
@@ -126,13 +129,10 @@ dist:
 $ export ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/"
 ```
 
-Windows 用户可以打开系统属性面板来设置环境变量或者执行如下命令：
-
-```
-$ set ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/
-```
+Windows 用户需要打开系统属性面板来设置环境变量（变量名称为 `ELECTRON_MIRROR`，值为 `https://npm.taobao.org/mirrors/electron/`）。
 
 做了如上设置后，请重新执行 `npm install`。
+Windows 用户注意，设置新的环境变量之后需要重新打开一个命令行窗口，所设置的环境变量才会生效。
 
 ##### 单独安装 Electron
 
@@ -142,16 +142,16 @@ $ set ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/
 ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/" npm install electron
 ```
 
-Windows 用户无法运行上面的命令，需要先安装 `cross-env`，执行：
+Windows 用户无法运行上面的命令，仍然
 
 ```
-$ npm install cross-env
+$ npm install cross-env -g
 ```
 
 然后再执行：
 
 ```
-ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/" npm install electron
+cross-env ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/" npm install electron
 ```
 
 这样就可以强制从淘宝镜像安装 Electron。
@@ -197,15 +197,9 @@ $ npm run start-hot
 
 ![npm run start-hot 运行成功截图](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/npm_run_start-hot.png)
 
-#### 一步到位
+#### 首次启动时间过长
 
-启动 React 热更新服务器和客户端可以通过一个命令一步到位：
-
-```
-$ npm run dev
-```
-
-不过这种方式的缺点是无法单独查看热更新服务器和客户端调试的输出信息。你可以根据自己的习惯选择合适的启动方式。
+当首次执行 `npm run start-hot` 时，Electron 会尝试下载安装 `REACT_DEVELOPER_TOOLS` 方便进行 React 开发调试，此时命令行会显示 `Install electron development extensions...`。正常情况下只需要几分钟，但在网络不佳的话可能导致首次启动时间过长。如果超过5分钟主界面还没启动，可以尝试禁用自动安装 Electron 扩展，方法是使用 `npm run start-hot-fast` 代替 `npm run start-hot` 命令。
 
 #### 恭喜
 
@@ -384,6 +378,10 @@ $ brew install rpm
     <tr>
       <td><code>/xxc/resources/</code></td>
       <td>Electron 打包时用到的资源文件目录</td>
+    </tr>
+    <tr>
+      <td><code>/xxc/build/</code></td>
+      <td>Webpack 配置文件，开发模式脚本以及 Electron 安装包构建相关脚本</td>
     </tr>
     <tr>
       <td><code>/xxb/</code></td>

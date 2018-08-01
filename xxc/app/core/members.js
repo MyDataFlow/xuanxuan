@@ -130,7 +130,7 @@ const get = (idOrAccount) => {
 };
 
 const guess = (search) => {
-    let member = get(search);
+    let member = members[search];
     if (!member) {
         const findId = Object.keys(members).find(x => {
             const xMember = members[x];

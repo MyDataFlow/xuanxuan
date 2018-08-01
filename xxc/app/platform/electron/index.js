@@ -17,6 +17,7 @@ import crypto from './crypto';
 import Socket from './socket';
 import clipboard from './clipboard';
 import webview from './webview';
+import './debug';
 
 if (process.type !== 'renderer') {
     throw new Error('platform/electron/index.js must run in renderer process.');

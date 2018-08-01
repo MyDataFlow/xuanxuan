@@ -8,7 +8,7 @@ import replaceViews from '../replace-views';
 const DEFAULT_CONFIG = {
     size: 13,
     lineHeight: 1.5384615385,
-    title: '1em',
+    title: 13,
     titleLineHeight: 1.53846153846
 };
 

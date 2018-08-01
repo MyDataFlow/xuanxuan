@@ -16,12 +16,11 @@ import (
     "database/sql"
 )
 
-const Version = "v1.5.0"
+const Version = "v2.0.0"
 
 var Run bool = true
 var IsTest bool = false
 var Token []byte
-var TempToken string
 var DBConn *sql.DB
 
 func init() {
@@ -41,12 +40,13 @@ func init() {
         Printf("xuan xuan chat listen port:%s\n", Config.ChatPort)
     }
 
-    LogInfo().Println()
-    Printf("sys start,version:%s, server test model is %v\n", Version, IsTest)
-    Printf("ProgramName:%s,System:%s-%s\n", GetProgramName(), runtime.GOOS, runtime.GOARCH)
+    Printf("XXD %s is running \n", Version)
+    Printf("System: %s-%s\n", runtime.GOOS, runtime.GOARCH)
+    Printf("---------------------------------------- \n")
 
-    LogInfo().Printf("sys start,version:%s, server test model is %v\n", Version, IsTest)
+    LogInfo().Printf("XXD %s is running \n", Version)
     LogInfo().Printf("ProgramName:%s,System:%s-%s\n", GetProgramName(), runtime.GOOS, runtime.GOARCH)
+    LogInfo().Printf("---------------------------------------- \n")
 
     // 设置 cpu 使用
     runtime.GOMAXPROCS(runtime.NumCPU())

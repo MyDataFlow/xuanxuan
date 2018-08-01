@@ -1,8 +1,9 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import Icon from './icon';
 import Avatar from './avatar';
 import Lang from '../lang';
-import HTML from '../utils/html-helper';
+import {classes} from '../utils/html-helper';
 
 /**
  * Image cutter component
@@ -11,6 +12,21 @@ import HTML from '../utils/html-helper';
  * @extends {Component}
  */
 export default class ImageHolder extends PureComponent {
+    static propTypes = {
+        style: PropTypes.object,
+        source: PropTypes.string,
+        thumbnail: PropTypes.string,
+        width: PropTypes.number,
+        height: PropTypes.number,
+        progress: PropTypes.number,
+        status: PropTypes.string,
+        alt: PropTypes.string,
+        className: PropTypes.string,
+        loadingText: PropTypes.string,
+        previewUrl: PropTypes.string,
+        children: PropTypes.any,
+    };
+
     static defaultProps = {
         style: null,
         source: null,
@@ -23,20 +39,7 @@ export default class ImageHolder extends PureComponent {
         className: '',
         loadingText: '',
         previewUrl: null,
-    };
-
-    static propTypes = {
-        style: PropTypes.object,
-        source: PropTypes.string,
-        thumbnail: PropTypes.string,
-        width: PropTypes.number,
-        height: PropTypes.number,
-        progress: PropTypes.number,
-        status: PropTypes.string,
-        alt: PropTypes.string,
-        className: PropTypes.string,
-        loadingText: PropTypes.string,
-        previewUrl: PropTypes.string
+        children: null,
     };
 
     render() {
@@ -52,6 +55,7 @@ export default class ImageHolder extends PureComponent {
             className,
             loadingText,
             previewUrl,
+            children,
             ...other
         } = this.props;
 
@@ -93,13 +97,14 @@ export default class ImageHolder extends PureComponent {
         }
 
         return (<div
-            className={HTML.classes('img-holder', className)}
+            className={classes('img-holder', className)}
             style={style}
             {...other}
         >
             <div className="img-hold-box" style={innerStyle}>
                 {imgView}
             </div>
+            {children}
         </div>);
     }
 }

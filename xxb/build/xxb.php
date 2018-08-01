@@ -22,6 +22,12 @@ foreach($matches[0] as $match)
 
 file_put_contents(dirname(__DIR__) . '/xxb/db/xxb.sql', $sql);
 
-`sed -i '1a\$lang->system->menu = new stdClass();' xxb/app/sys/common/ext/lang/zh-cn/xuanxuan.php`;
+$str = <<<EOT
+$("#entryForm #visible").parent().parent().remove();
+$(".entry-version, .entry-files").show();
+$("#platformxuanxuan").selected().parent().parent().parent().hide();
+EOT;
+file_put_contents('xxb/app/sys/entry/js/common.js', $str, FILE_APPEND);
 
+`sed -i '1a\$lang->system->menu = new stdClass();' xxb/app/sys/common/ext/lang/zh-cn/xuanxuan.php`;
 `sed -i '1a\$lang->system->menu = new stdClass();' xxb/app/sys/common/ext/lang/en/xuanxuan.php`;

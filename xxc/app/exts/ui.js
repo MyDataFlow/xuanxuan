@@ -1,10 +1,11 @@
 import Platform from 'Platform';
 import Path from 'path';
-import {defaultApp, getApp} from './exts';
+import {defaultApp, getApp, forEach as forEachExt} from './exts';
 import OpenedApp from './opened-app';
 import Lang from '../lang';
 import manager from './manager';
-import App from '../core';
+import Modal from '../components/modal';
+import Messager from '../components/messager';
 import ExtensionDetailDialog from '../views/exts/extension-detail-dialog';
 
 const defaultOpenedApp = new OpenedApp(defaultApp);
@@ -56,12 +57,15 @@ const openApp = (name, pageName = null, params = null) => {
             }
             return false;
         }
+    } else {
+        if (params !== null) {
+            theOpenedApp.params = params;
+        }
     }
     theOpenedApp.updateOpenTime();
-    if (params !== null) theOpenedApp.params = params;
-    const appRoutePaht = theOpenedApp.hashRoute;
-    if (!window.location.hash.startsWith(appRoutePaht)) {
-        window.location.hash = appRoutePaht;
+    const appHashRoute = theOpenedApp.hashRoute;
+    if (window.location.hash !== appHashRoute) {
+        window.location.hash = appHashRoute;
     }
     currentOpenedApp = theOpenedApp;
     if (DEBUG) {
@@ -70,6 +74,10 @@ const openApp = (name, pageName = null, params = null) => {
         console.groupEnd();
     }
     return true;
+};
+
+const openAppWithUrl = (name, url, pageName = null) => {
+    openApp(name, pageName, `DIRECT=${url}`);
 };
 
 const openAppById = (id, params = null) => {
@@ -124,7 +132,7 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
         confirm = true;
     }
     if (confirm) {
-        return App.ui.modal.confirm(Lang.format('ext.uninstallConfirm.format', extension.displayName)).then(confirmed => {
+        return Modal.confirm(Lang.format('ext.uninstallConfirm.format', extension.displayName)).then(confirmed => {
             if (confirmed) {
                 return uninstallExtension(extension, false, callback);
             }
@@ -132,13 +140,13 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
         });
     }
     return manager.uninstall(extension).then(x => {
-        App.ui.showMessger(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'success'});
+        Messager.show(Lang.format('ext.uninstallSuccess.format', extension.displayName), {type: 'success'});
         if (callback) {
             callback();
         }
     }).catch(error => {
         if (error) {
-            App.ui.showMessger(Lang.error(error), {type: 'danger'});
+            Messager.show(Lang.error(error), {type: 'danger'});
         }
     });
 };
@@ -146,13 +154,13 @@ const uninstallExtension = (extension, confirm = true, callback = null) => {
 const installExtension = (devMode = false) => {
     manager.openInstallDialog((extension, error) => {
         if (extension) {
-            App.ui.showMessger(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
+            Messager.show(Lang.format('ext.installSuccess.format', extension.displayName), {type: 'success'});
         } else if (error) {
             let msg = Lang.string('ext.installFail');
             if (error) {
                 msg += Lang.error(error);
             }
-            App.ui.showMessger(msg, {type: 'danger'});
+            Messager.show(msg, {type: 'danger'});
         }
     }, devMode);
 };
@@ -165,29 +173,37 @@ const createSettingContextMenu = extension => {
     const items = [];
 
     if (extension.disabled) {
-        if (!extension.buildIn) {
+        if (!extension.buildIn && !extension.isRemote) {
             items.push({
                 label: Lang.string('ext.enable'),
-                click: manager.setExtensiondisabled.bind(null, extension, false, null)
+                click: manager.setExtensionDisabled.bind(null, extension, false, null)
             });
         }
     } else {
         if (extension.isApp) {
-            items.push({
+            items.push(extension.avaliable ? {
                 label: Lang.string('ext.openApp'),
                 click: openApp.bind(null, extension.name, null, null)
+            } : {
+                disabled: true,
+                label: `${Lang.string('ext.openApp')} (${Lang.string(extension.needRestart ? 'ext.extension.needRestart' : 'ext.unavailable')})`,
             });
         }
-        if (!extension.buildIn) {
+        if (!extension.buildIn && !extension.isRemote) {
             items.push({
                 label: Lang.string('ext.disable'),
-                click: manager.setExtensiondisabled.bind(null, extension, true, null)
+                click: manager.setExtensionDisabled.bind(null, extension, true, null)
             });
         }
     }
     if (extension.buildIn) {
         items.push({
             label: Lang.string('ext.cannotUninstallBuidIn'),
+            disabled: true,
+        });
+    } else if (extension.isRemote) {
+        items.push({
+            label: Lang.string('ext.cannotUninstallRemote'),
             disabled: true,
         });
     } else {
@@ -286,8 +302,8 @@ const createOpenedAppContextMenu = (theOpenedApp, refreshUI) => {
         items.push({
             label: Lang.string('ext.app.close'),
             click: () => {
-                closeApp(theOpenedApp.name);
-                if (refreshUI) {
+                const closeAppResult = closeApp(theOpenedApp.name);
+                if (closeAppResult && closeAppResult !== true && refreshUI) {
                     refreshUI();
                 }
             }
@@ -340,6 +356,7 @@ export default {
     openAppById,
     closeApp,
     closeAllApp,
+    openAppWithUrl,
 
     createSettingContextMenu,
 

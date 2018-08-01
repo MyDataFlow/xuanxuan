@@ -1,6 +1,7 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
-import Icon from '../../components/icon';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
+import {getKeyDecoration} from '../../utils/shortcut';
 import Emojione from '../../components/emojione';
 import Lang from '../../lang';
 import App from '../../core';
@@ -9,7 +10,11 @@ import {ChatSendboxToolbar} from './chat-sendbox-toolbar';
 import MessagesPreivewDialog from './messages-preview-dialog';
 import replaceViews from '../replace-views';
 
-class ChatSendbox extends Component {
+export default class ChatSendbox extends Component {
+    static get ChatSendbox() {
+        return replaceViews('chats/chat-sendbox', ChatSendbox);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -20,10 +25,6 @@ class ChatSendbox extends Component {
         chat: null,
     };
 
-    static get ChatSendbox() {
-        return replaceViews('chats/chat-sendbox', ChatSendbox);
-    }
-
     constructor(props) {
         super(props);
         this.state = {
@@ -33,12 +34,14 @@ class ChatSendbox extends Component {
 
     componentDidMount() {
         this.onSendContentToChatHandler = App.im.ui.onSendContentToChat(this.props.chat.gid, content => {
-            switch (content.type) {
-            case 'image':
-                this.editbox.appendImage(content.content);
-                break;
-            default:
-                this.editbox.appendContent(content.content);
+            if (content && content.content) {
+                switch (content.type) {
+                case 'image':
+                    this.editbox.appendImage(content.content);
+                    break;
+                default:
+                    this.editbox.appendContent(content.content);
+                }
             }
             this.editbox.focus();
         });
@@ -103,7 +106,8 @@ class ChatSendbox extends Component {
     }
 
     handleOnReturnKeyDown = e => {
-        if (!e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const keyDecoration = getKeyDecoration(e);
+        if (keyDecoration === App.profile.userConfig.sendMessageHotkey) {
             if (!this.state.sendButtonDisabled) {
                 setTimeout(() => {
                     this.handleSendButtonClick();
@@ -138,7 +142,11 @@ class ChatSendbox extends Component {
         MessagesPreivewDialog.show(messages, {onHidden: () => {
             this.editbox.focus();
         }});
-    }
+    };
+
+    handleOnFocus = e => {
+        App.im.ui.emitChatSendboxFocus(this.props.chat, this.editbox.getContent());
+    };
 
     render() {
         const {
@@ -154,23 +162,22 @@ class ChatSendbox extends Component {
                 placeholder = Lang.format('chat.sendbox.placeholder.memberIsOffline', theOtherOne.displayName);
             }
         }
-        placeholder = placeholder || Lang.string('chat.sendbox.placeholder.sendMessage');
-        const userConfig = App.userConfig;
+        placeholder = placeholder || `${Lang.string('chat.sendbox.placeholder.sendMessage')}${App.profile.userConfig.sendMarkdown ? ' (Markdown)' : ''}`;
+        const {userConfig} = App.profile;
 
         return (<div
             {...other}
-            className={HTML.classes('app-chat-sendbox', className)}
+            className={classes('app-chat-sendbox', className)}
         >
             <DraftEditor
-                className="app-chat-drafteditor dock-top box scroll-y"
+                className="app-chat-drafteditor white dock-top has-padding scroll-y"
                 ref={e => {this.editbox = e;}}
                 placeholder={placeholder}
                 onChange={this.handleOnChange}
                 onReturnKeyDown={this.handleOnReturnKeyDown}
+                onFocus={this.handleOnFocus}
             />
-            <ChatSendboxToolbar className="dock-bottom" chatGid={chat.gid} showMessageTip={userConfig && userConfig.showMessageTip} captureScreenHotkey={userConfig && userConfig.captureScreenHotkey} sendButtonDisabled={this.state.sendButtonDisabled} onSendButtonClick={this.handleSendButtonClick} onPreviewButtonClick={this.handlePreviewBtnClick} />
+            <ChatSendboxToolbar className="dock-bottom" chatGid={chat.gid} userConfigChangeTime={userConfig && userConfig.lastChangeTime} sendButtonDisabled={this.state.sendButtonDisabled} onSendButtonClick={this.handleSendButtonClick} onPreviewButtonClick={this.handlePreviewBtnClick} />
         </div>);
     }
 }
-
-export default ChatSendbox;

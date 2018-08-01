@@ -8,6 +8,7 @@ import remote from './remote';
 import shortcut from './shortcut';
 import Lang from '../../lang';
 import env from './env';
+import getUrlMeta from './get-url-meta';
 
 if (DEBUG) {
     global.$.Remote = Remote;
@@ -18,6 +19,10 @@ const browserWindow = Remote.getCurrentWindow();
 
 
 let onRequestQuitListener = null;
+
+const createUserDataPath = (user, fileName, dirName = 'images') => {
+    return Path.join(userDataPath, 'users', user.identify, dirName, fileName);
+};
 
 const makeFileUrl = url => {
     return url;
@@ -60,7 +65,11 @@ const closeWindow = () => {
 };
 
 const showAndFocusWindow = () => {
-    showWindow();
+    if (browserWindow.isMinimized()) {
+        browserWindow.restore();
+    } else {
+        showWindow();
+    }
     focusWindow();
 };
 
@@ -148,9 +157,21 @@ const setOpenAtLogin = openAtLogin => {
     }
 };
 
+const copySelectText = () => {
+    browserWindow.webContents.copy();
+};
+
+const selectAllText = () => {
+    browserWindow.webContents.selectAll();
+};
+
 browserWindow.on('restore', () => {
     setShowInTaskbar(true);
 });
+
+const onWindowRestore = listener => {
+    browserWindow.on('restore', listener);
+};
 
 export default {
     userDataPath,
@@ -170,6 +191,7 @@ export default {
     closeWindow,
     openDevTools,
     onWindowBlur,
+    onWindowRestore,
 
     showWindow,
     hideWindow,
@@ -180,6 +202,10 @@ export default {
     reloadWindow,
     isOpenAtLogin,
     setOpenAtLogin,
+    getUrlMeta,
+    createUserDataPath,
+    copySelectText,
+    selectAllText,
 
     get isWindowFocus() {
         return browserWindow.isFocused();

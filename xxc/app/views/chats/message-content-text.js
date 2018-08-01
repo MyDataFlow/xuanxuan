@@ -1,9 +1,14 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import replaceViews from '../replace-views';
 
 class MessageContentText extends Component {
+    static get MessageContentText() {
+        return replaceViews('chats/message-content-text', MessageContentText);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         message: PropTypes.object.isRequired,
@@ -17,30 +22,12 @@ class MessageContentText extends Component {
         fontSize: null
     };
 
-    static get MessageContentText() {
-        return replaceViews('chats/message-content-text', MessageContentText);
-    }
-
     shouldComponentUpdate(nextProps) {
         return nextProps.className !== this.props.className || nextProps.contentConverter !== this.props.contentConverter || nextProps.message !== this.props.message || nextProps.message.content !== this.props.message.content || nextProps.fontSize !== this.props.fontSize;
     }
 
-    handleContextMenu = e => {
-        if (e.target.tagName === 'A') {
-            const link = e.target.href;
-            if (link && (link.startsWith('http://') || link.startsWith('https://'))) {
-                let linkText = document.getSelection().toString();
-                if (linkText === '') {
-                    linkText = e.target.innerText;
-                }
-                App.ui.showContextMenu({x: e.pageX, y: e.pageY}, App.ui.createLinkContextMenu(link, linkText));
-                e.preventDefault();
-            }
-        }
-    };
-
     render() {
-        let {
+        const {
             message,
             className,
             contentConverter,
@@ -52,8 +39,7 @@ class MessageContentText extends Component {
 
         return (<div
             {...other}
-            onContextMenu={this.handleContextMenu}
-            className={HTML.classes('app-message-content-text markdown-content', className, {
+            className={classes('app-message-content-text markdown-content', className, {
                 'is-content-block': message.isBlockContent
             })}
             dangerouslySetInnerHTML={{__html: contentConverter ? contentConverter(content) : content}}

@@ -1,4 +1,5 @@
-import React, {PureComponent, PropTypes} from 'react';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import SearchControl from '../../components/search-control';
@@ -35,8 +36,8 @@ export default class AppThemes extends PureComponent {
     }
 
     componentDidMount() {
-        this.onExtChangeHandler = Exts.all.onExtensionChange((ext) => {
-            if (ext.isTheme) {
+        this.onExtChangeHandler = Exts.all.onExtensionChange((changedExtensions) => {
+            if (changedExtensions.some(x => x.isTheme)) {
                 this.forceUpdate();
             }
         });

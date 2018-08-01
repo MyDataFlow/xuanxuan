@@ -1,4 +1,5 @@
 import Config from 'Config'; // eslint-disable-line
+import Platform from 'Platform'; // eslint-disable-line
 import Server from '../server';
 import imServerHandlers from './im-server-handlers';
 import Events from '../events';
@@ -15,6 +16,7 @@ import Lang from '../../lang';
 import ImageHelper from '../../utils/image';
 import FileData from '../models/file-data';
 import IMFiles from './im-files';
+import {isWebUrl} from '../../utils/html-helper';
 
 const MAX_BASE64_IMAGE_SIZE = 1024 * 10;
 
@@ -228,12 +230,39 @@ const toggleChatStar = (chat) => {
         });
     };
     if (!chat.id) {
+        return createChat(chat).then(sendRequest);
+    }
+    return sendRequest();
+};
+
+const toggleMuteChat = (chat) => {
+    const sendRequest = () => {
+        return Server.socket.send({
+            method: 'mute',
+            params: [chat.gid, !chat.mute]
+        });
+    };
+    if (!chat.id) {
+        return createChat(chat).then(sendRequest);
+    }
+    return sendRequest();
+};
+
+const toggleHideChat = (chat) => {
+    const sendRequest = () => {
+        return Server.socket.send({
+            method: 'hide',
+            params: [chat.gid, !chat.hide]
+        });
+    };
+    if (!chat.id) {
         return createChat(chat).then(() => {
             return sendRequest();
         });
     }
     return sendRequest();
 };
+
 
 const setChatCategory = (chat, category) => {
     const isArray = Array.isArray(chat);
@@ -275,20 +304,31 @@ const sendBoardChatMessage = (message, chat) => {
 };
 
 const createTextChatMessage = (message, chat) => {
+    const {userConfig} = profile;
     return new ChatMessage({
         content: message,
         user: profile.userId,
         cgid: chat.gid,
+        contentType: userConfig && userConfig.sendMarkdown ? ChatMessage.CONTENT_TYPES.text : ChatMessage.CONTENT_TYPES.plain
+    });
+};
+
+const createUrlObjectMessage = (message, chat) => {
+    return new ChatMessage({
+        content: JSON.stringify({type: ChatMessage.OBJECT_TYPES.url, url: message}),
+        user: profile.userId,
+        cgid: chat.gid,
+        contentType: ChatMessage.CONTENT_TYPES.object
     });
 };
 
 const sendTextMessage = (message, chat) => {
-    return sendChatMessage(createTextChatMessage(message, chat), chat);
+    return sendChatMessage(isWebUrl(message) ? createUrlObjectMessage(message, chat) : createTextChatMessage(message, chat), chat);
 };
 
 const createEmojiChatMessage = (emojicon, chat) => {
     return new ChatMessage({
-        contentType: 'image',
+        contentType: ChatMessage.CONTENT_TYPES.image,
         content: JSON.stringify({type: 'emoji', content: emojicon}),
         user: profile.userId,
         cgid: chat.gid,
@@ -344,7 +384,25 @@ const sendChatMessage = async (messages, chat, isSystemMessage = false) => {
         if (command) {
             if (command.action === 'version') {
                 const specialVersion = Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : '';
-                message.content = `\`\`\`\n$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}${DEBUG ? '[debug]' : ''}';\n$$serverVersion = '${profile.user.serverVersion}';\n\`\`\``;
+                const contentLines = ['```'];
+                contentLines.push(
+                    `$$version       = '${PKG.version}${PKG.buildVersion ? ('.' + PKG.buildVersion) : ''}${specialVersion}';`,
+                    `$$serverVersion = '${profile.user.serverVersion}';`,
+                    `$$platform      = '${Platform.type}';`,
+                    `$$os            = '${Platform.env.os}';`
+                );
+                if (Platform.env.arch) {
+                    contentLines.push(`$$arch          = '${Platform.env.arch}';`);
+                }
+                contentLines.push('```');
+                message.content = contentLines.join('\n');
+            } else if (command.action === 'dataPath' && Platform.ui.createUserDataPath) {
+                const contentLines = ['```'];
+                contentLines.push(
+                    `$$dataPath = '${Platform.ui.createUserDataPath(profile.user, '', '')}';`,
+                );
+                contentLines.push('```');
+                message.content = contentLines.join('\n');
             }
         }
     });
@@ -413,15 +471,20 @@ const sendImageMessage = async (imageFile, chat, onProgress) => {
         });
         imageFile = FileData.create(imageFile);
         message.attachFile = imageFile;
-        const info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
-            Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
-            if (DEBUG) {
-                console.warn('Cannot get image information', imageFile);
-            }
-        });
+        let info = imageFile.imageInfo;
+        if (!info) {
+            info = await ImageHelper.getImageInfo(imageFile.viewUrl).catch(() => {
+                Messager.show(Lang.error('CANNOT_HANDLE_IMAGE'));
+                if (DEBUG) {
+                    console.warn('Cannot get image information', imageFile);
+                }
+            });
+        }
         imageFile.width = info.width;
         imageFile.height = info.height;
-        message.imageContent = imageFile.plain();
+        const imageObj = imageFile.plain();
+        delete imageObj.type;
+        message.imageContent = imageObj;
         await sendChatMessage(message, chat);
         return IMFiles.uploadFile(imageFile, progress => {
             message.updateImageContent({send: progress});
@@ -530,6 +593,14 @@ const handleReceiveChatMessages = messages => {
     Events.emit(EVENT.message_receive, messages);
 };
 
+const handleInitChats = (newChats) => {
+    chats.init(newChats, chat => {
+        if (chat.isOne2One && chat.hide) {
+            toggleHideChat(chat);
+        }
+    });
+};
+
 const onSendChatMessages = listener => {
     return Events.on(EVENT.message_send, listener);
 };
@@ -550,6 +621,8 @@ export default {
     setCommitters,
     toggleChatPublic,
     toggleChatStar,
+    toggleHideChat,
+    toggleMuteChat,
     setChatCategory,
     renameChat,
     sendSocketMessageForChat,
@@ -568,6 +641,7 @@ export default {
     sendTextMessage,
     sendEmojiMessage,
     handleReceiveChatMessages,
+    handleInitChats,
     onSendChatMessages,
     onReceiveChatMessages,
     kickOfMemberFromChat,

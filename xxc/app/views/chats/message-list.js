@@ -1,10 +1,15 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
 import App from '../../core';
 
 class MessageList extends Component {
+    static get MessageList() {
+        return replaceViews('chats/message-list', MessageList);
+    }
+
     static propTypes = {
         messages: PropTypes.array.isRequired,
         stayBottom: PropTypes.bool,
@@ -32,18 +37,12 @@ class MessageList extends Component {
         onScroll: null,
     };
 
-    static get MessageList() {
-        return replaceViews('chats/message-list', MessageList);
-    }
-
     componentDidMount() {
-        if (this.props.stayBottom) {
-            this.scrollToBottom();
-        }
         this.onChatActiveHandler = App.im.ui.onActiveChat(chat => {
             if (this.lastMessage && (this.waitNewMessage || this.isScrollBottom) && this.lastMessage.cgid === chat.gid) {
                 this.waitNewMessage = null;
                 this.scrollToBottom(500);
+                App.im.ui.sendContentToChat();
             }
         });
     }
@@ -60,50 +59,16 @@ class MessageList extends Component {
                 } else {
                     this.waitNewMessage = newMessage;
                 }
-            } else {
-                const lastFirstMessage = this.checkHasNewOlderMessages(messages);
-                if (lastFirstMessage) {
-                    const lastFirstMessageEle = document.getElementById(`message-${lastFirstMessage.gid}`);
-                    if (lastFirstMessageEle) {
-                        if (this.scrollInfo) {
-                            this.scrollInfo.target.scrollTop = lastFirstMessageEle.offsetTop - 96;
-                        } else {
-                            lastFirstMessageEle.scrollIntoView({block: 'end', behavior: 'instant'});
-                        }
-                    }
-                } else if (this.isScrollBottom) {
-                    this.scrollToBottom(100);
-                }
             }
         }
     }
 
     componentWillUnmount() {
-        clearInterval(this.stayToBottomInterval);
         App.events.off(this.onChatActiveHandler);
     }
 
-    scrollToBottom = (utilTime = 0) => {
-        this.messageEndEle.scrollIntoView({block: 'end', behavior: 'instant'});
-        if (!utilTime) {
-            return;
-        }
-
-        const now = new Date().getTime();
-        if (utilTime) {
-            this.shouldStayInBottom = now + utilTime;
-        }
-        if (!this.stayToBottomInterval && this.shouldStayInBottom && this.shouldStayInBottom > now) {
-            this.stayToBottomInterval = setInterval(() => {
-                const time = new Date().getTime();
-                if (this.shouldStayInBottom && this.shouldStayInBottom > time) {
-                    this.scrollToBottom();
-                } else {
-                    clearInterval(this.stayToBottomInterval);
-                    this.stayToBottomInterval = null;
-                }
-            }, 50);
-        }
+    scrollToBottom = () => {
+        this.element.scrollTop = this.element.scrollHeight - this.element.clientHeight;
     }
 
     checkHasNewMessages(messages) {
@@ -127,7 +92,12 @@ class MessageList extends Component {
 
     handleScroll = e => {
         const target = e.target;
+        if (!target.classList.contains('app-message-list')) {
+            return;
+        }
         const scrollInfo = {
+            scrollHeight: target.scrollHeight,
+            scrollTop: target.scrollTop,
             target,
             isAtTop: target.scrollTop === 0,
             isAtBottom: (target.scrollHeight - target.scrollTop) === target.clientHeight
@@ -159,21 +129,23 @@ class MessageList extends Component {
         } = this.props;
 
         let lastMessage = null;
+        const messagesView = [];
+        if (messages) {
+            messages.forEach(message => {
+                const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem id={`message-${message.gid}`} staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps} />;
+                lastMessage = message;
+                messagesView.unshift(messageListItem);
+            });
+        }
 
         return (<div
             {...other}
-            className={HTML.classes('app-message-list', className, {'app-message-list-static': staticUI})}
+            className={classes('app-message-list flex column-reverse', className, {'app-message-list-static': staticUI})}
             onScroll={this.handleScroll}
+            ref={e => {this.element = e;}}
         >
+            {messagesView}
             {header}
-            {
-                messages && messages.map(message => {
-                    const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem id={`message-${message.gid}`} staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps} />;
-                    lastMessage = message;
-                    return messageListItem;
-                })
-            }
-            <div className="scroll-root-ele" ref={e => {this.messageEndEle = e;}} />
         </div>);
     }
 }

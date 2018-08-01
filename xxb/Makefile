@@ -45,6 +45,7 @@ xxb:
 	cp -r ./zdoo/app/sys/file xxb/app/sys/
 	cp -r ./zdoo/app/sys/misc xxb/app/sys/
 	cp -r ./zdoo/app/sys/package xxb/app/sys/
+	cp -r ./zdoo/app/sys/sso xxb/app/sys/
 	cp -r ./backend/* xxb/
 	cp -r ./VERSION xxb/
 	cp ./zdoo/www/index.php xxb/www/
@@ -68,7 +69,7 @@ xxb:
 	chmod -R 777 xxb/tmp
 	chmod -R 777 xxb/www/data
 	zip -rqm -9 xxb.$(VERSION).zip xxb
-	rm -rf xxb
+	zip -rq -9 xuanxuan.ranzhi.${VERSION}.zip ../ranzhi/*
 
 deb:
 	mkdir ~/buildroot
@@ -100,3 +101,4 @@ rpm:
 	rpmbuild -ba ~/rpmbuild/SPECS/xxb.spec
 	cp ~/rpmbuild/RPMS/noarch/xxb-${VERSION}-1.noarch.rpm ./
 	rm -rf ~/rpmbuild
+

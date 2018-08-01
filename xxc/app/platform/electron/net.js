@@ -1,7 +1,7 @@
 import fse from 'fs-extra';
 import Path from 'path';
 import network from '../common/network';
-import {userDataPath} from './ui';
+import {createUserDataPath} from './ui';
 
 const downloadFileOrigin = network.downloadFile;
 const uploadFileOrigin = network.uploadFile;
@@ -15,9 +15,9 @@ const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
 
 const filesCache = {};
 const createCachePath = (file, user, dirName = 'images') => {
-    return Path.join(userDataPath, 'users', user.identify, dirName, file.storageName);
+    return createUserDataPath(user, file.storageName, dirName);
 };
-const checkFileCache = (file, user) => {
+const checkFileCache = (file, user, dirName = 'images') => {
     if (file.path) {
         return Promise.resolve(false);
     }
@@ -30,7 +30,7 @@ const checkFileCache = (file, user) => {
         file.localPath = cachePath;
         return Promise.resolve(cachePath);
     }
-    cachePath = createCachePath(file, user);
+    cachePath = createCachePath(file, user, dirName);
     return fse.pathExists(cachePath).then(exists => {
         if (exists) {
             filesCache[file.gid] = cachePath;
@@ -41,9 +41,6 @@ const checkFileCache = (file, user) => {
     });
 };
 
-const getFileCache = file => {
-    return filesCache[file.gid];
-};
 
 const downloadFile = (user, file, onProgress) => {
     return checkFileCache(file, user).then(cachePath => {

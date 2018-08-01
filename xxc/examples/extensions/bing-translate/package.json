@@ -1,0 +1,25 @@
+{
+    "name": "bing-translate",
+    "displayName": "微软翻译",
+    "version": "1.0.0",
+    "description": "微软翻译，直接翻译消息。",
+    "type": "app",
+    "appType": "webView",
+    "webViewUrl": "https://cn.bing.com/translator/",
+    "icon": "mdi-translate",
+    "accentColor": "#008686",
+    "hot": true,
+    "main": "index.js",
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/bing-translate",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/bing-translate",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}

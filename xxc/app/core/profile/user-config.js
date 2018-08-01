@@ -4,7 +4,7 @@ import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
 import timeSequence from '../../utils/time-sequence';
 
-class UserConfig {
+export default class UserConfig {
     static DEFAULT = DEFAULT;
 
     constructor(config) {
@@ -86,9 +86,32 @@ class UserConfig {
         }
     }
 
+    getForExtension(extensionName, key, defaultValue) {
+        if (typeof extensionName === 'object' && extensionName.name) {
+            extensionName = extensionName.name;
+        }
+        const extensionConfig = this.get(`EXTENSION::${extensionName}`, {});
+        const value = key !== undefined ? extensionConfig[key] : extensionConfig;
+        return value !== undefined ? value : defaultValue;
+    }
+
+    setForExtension(extensionName, keyOrObj, value) {
+        const extensionConfig = this.getForExtension(extensionName);
+        if (typeof keyOrObj === 'object') {
+            Object.assign(extensionConfig, keyOrObj);
+        } else {
+            extensionConfig[keyOrObj] = value;
+        }
+        return this.set(`EXTENSION::${extensionName}`, extensionConfig);
+    }
+
     reset(newConfig) {
         this.$ = Object.assign({}, DEFAULT, newConfig);
         this.makeChange(this.$, true);
+    }
+
+    get lastChangeTime() {
+        return this.$.lastChangeTime;
     }
 
     get autoReconnect() {
@@ -132,6 +155,14 @@ class UserConfig {
 
     set sendHDEmoticon(flag) {
         return this.set('ui.chat.sendHDEmoticon', flag);
+    }
+
+    get sendMarkdown() {
+        return this.get('ui.chat.sendMarkdown');
+    }
+
+    set sendMarkdown(flag) {
+        return this.set('ui.chat.sendMarkdown', flag);
     }
 
     isChatSidebarHidden(cgid, defaultValue) {
@@ -230,6 +261,29 @@ class UserConfig {
         return this.set('shortcut.captureScreen', shortcut);
     }
 
+    get focusWindowHotkey() {
+        return this.get('shortcut.focusWindow');
+    }
+
+    set focusWindowHotkey(shortcut) {
+        return this.set('shortcut.focusWindow', shortcut);
+    }
+
+    get globalHotkeys() {
+        return {
+            captureScreenHotkey: this.captureScreenHotkey,
+            focusWindowHotkey: this.focusWindowHotkey
+        };
+    }
+
+    get sendMessageHotkey() {
+        return this.get('shortcut.sendMessage');
+    }
+
+    set sendMessageHotkey(shortcut) {
+        return this.set('shortcut.sendMessage', shortcut);
+    }
+
     get chatFontSize() {
         return this.get('ui.chat.fontSize');
     }
@@ -326,6 +380,14 @@ class UserConfig {
         return this.set('ui.chat.list.group.states', states);
     }
 
+    set listenClipboardImage(flag) {
+        return this.set('ui.chat.listenClipboardImage', flag);
+    }
+
+    get listenClipboardImage() {
+        return this.get('ui.chat.listenClipboardImage', true);
+    }
+
     setChatMenuGroupState(listType, groupType, id, expanded) {
         const chatGroupStates = this.chatGroupStates;
         const key = `${listType}.${groupType}.${id}`;
@@ -343,4 +405,3 @@ class UserConfig {
     }
 }
 
-export default UserConfig;

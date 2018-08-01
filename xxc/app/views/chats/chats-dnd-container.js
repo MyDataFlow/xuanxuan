@@ -1,5 +1,6 @@
-import React, {PureComponent, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../../utils/html-helper';
 import StringHelper from '../../utils/string-helper';
 import Lang from '../../lang';
 import App from '../../core';
@@ -8,6 +9,10 @@ import Emojione from '../../components/emojione';
 import replaceViews from '../replace-views';
 
 class ChatsDndContainer extends PureComponent {
+    static get ChatsDndContainer() {
+        return replaceViews('chats/chats-dnd-container', ChatsDndContainer);
+    }
+
     static propTypes = {
         className: PropTypes.string,
     };
@@ -15,10 +20,6 @@ class ChatsDndContainer extends PureComponent {
     static defaultProps = {
         className: null,
     };
-
-    static get ChatsDndContainer() {
-        return replaceViews('chats/chats-dnd-container', ChatsDndContainer);
-    }
 
     handleDndEnter = e => {
         e.target.classList.add('hover');
@@ -30,15 +31,23 @@ class ChatsDndContainer extends PureComponent {
 
     handleDndDrop = e => {
         e.target.classList.remove('hover');
-        const file = e.dataTransfer.files[0];
-        if (API.checkUploadFileSize(App.user, file.size)) {
-            if (file.type.startsWith('image/')) {
-                App.im.ui.sendContentToChat(file, 'image');
-            } else {
-                App.im.ui.sendContentToChat(file, 'file');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+            let hasError = false;
+            for (let i = 0; i < e.dataTransfer.files.length; ++i) {
+                const file = e.dataTransfer.files[i];
+                if (API.checkUploadFileSize(App.user, file.size)) {
+                    if (file.type.startsWith('image/')) {
+                        App.im.ui.sendContentToChat(file, 'image');
+                    } else {
+                        App.im.ui.sendContentToChat(file, 'file');
+                    }
+                } else {
+                    hasError = true;
+                }
             }
-        } else {
-            App.ui.showMessger(Lang.error({code: 'UPLOAD_FILE_IS_TOO_LARGE', formats: StringHelper.formatBytes(App.user.uploadFileSize)}), {type: 'warning'});
+            if (hasError) {
+                App.ui.showMessger(Lang.error({code: 'UPLOAD_FILE_IS_TOO_LARGE', formats: StringHelper.formatBytes(App.user.uploadFileSize)}), {type: 'warning'});
+            }
         }
     }
 
@@ -49,7 +58,7 @@ class ChatsDndContainer extends PureComponent {
         } = this.props;
 
         return (<div
-            className={HTML.classes('app-chats-dnd-container drag-n-drop-message center-content', className)}
+            className={classes('app-chats-dnd-container drag-n-drop-message center-content', className)}
             {...other}
             onDragEnter={this.handleDndEnter}
             onDrop={this.handleDndDrop}

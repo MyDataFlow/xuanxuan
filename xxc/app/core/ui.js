@@ -1,15 +1,20 @@
-import Platform from 'Platform';
+import Platform from 'Platform'; // eslint-disable-line
+import Config from 'Config'; // eslint-disable-line
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';
 import ContextMenu from '../components/context-menu';
 import modal from '../components/modal';
-import HTML from '../utils/html-helper';
+import {isWebUrl, getSearchParam} from '../utils/html-helper';
 import Lang from '../lang';
 import Events from './events';
 import profile from './profile';
 import Notice from './notice';
 import ImageViewer from '../components/image-viewer';
+import Store from '../utils/store';
+import {executeCommand, registerCommand} from './commander';
+import WebViewDialog from '../views/common/webview-dialog';
+import {addContextMenuCreator} from './context-menu';
 
 const EVENT = {
     app_link: 'app.link',
@@ -18,7 +23,7 @@ const EVENT = {
     ready: 'app.ready'
 };
 
-const createImageContextMenuItems = (url, dataType) => {
+addContextMenuCreator('image', ({url, dataType}) => {
     const items = [{
         label: Lang.string('menu.image.view'),
         click: () => {
@@ -73,41 +78,23 @@ const createImageContextMenuItems = (url, dataType) => {
     }
 
     return items;
-};
+});
 
-const createLinkContextMenu = (link, text) => {
-    const items = [{
-        label: Lang.string('common.openLink'),
+addContextMenuCreator('member', ({member}) => {
+    return [{
+        label: Lang.string('member.profile.view'),
         click: () => {
-            Platform.ui.openExternal(link);
+            MemberProfileDialog.show(member);
         }
     }];
-    if (Platform.clipboard && Platform.clipboard.writeText) {
-        items.push({
-            label: Lang.string('common.copyLink'),
-            click: () => {
-                Platform.clipboard.writeText(link);
-            }
-        });
-
-        if (text) {
-            items.push({
-                label: Lang.format('common.copyFormat', text.length > 25 ? `${text.substr(0, 25)}…` : text),
-                click: () => {
-                    Platform.clipboard.writeText(text);
-                }
-            });
-        }
-    }
-    return items;
-};
+});
 
 const onAppLinkClick = (type, listener) => {
     return Events.on(`${EVENT.app_link}.${type}`, listener);
 };
 
-const emitAppLinkClick = (type, target, element) => {
-    return Events.emit(`${EVENT.app_link}.${type}`, target, element);
+const emitAppLinkClick = (element, type, target, ...params) => {
+    return Events.emit(`${EVENT.app_link}.${type}`, target, element, ...params);
 };
 
 onAppLinkClick('Member', target => {
@@ -116,20 +103,25 @@ onAppLinkClick('Member', target => {
 
 let clearCopyCodeTip = null;
 if (Platform.clipboard && Platform.clipboard.writeText) {
-    onAppLinkClick('copyCode', (codeLang, element) => {
-        if (clearCopyCodeTip) {
-            clearTimeout(clearCopyCodeTip);
-            clearCopyCodeTip = null;
+    registerCommand('copyCode', context => {
+        const element = context.targetElement;
+        if (element) {
+            if (clearCopyCodeTip) {
+                clearTimeout(clearCopyCodeTip);
+                clearCopyCodeTip = null;
+            }
+            const code = element.nextElementSibling.innerText;
+            Platform.clipboard.writeText(code);
+            element.setAttribute('data-hint', Lang.string('common.copied'));
+            element.classList.add('hint--success');
+            clearCopyCodeTip = setTimeout(() => {
+                clearCopyCodeTip = null;
+                element.setAttribute('data-hint', Lang.string('common.copyCode'));
+                element.classList.remove('hint--success');
+            }, 2000);
+            return true;
         }
-        const code = element.nextElementSibling.innerText;
-        Platform.clipboard.writeText(code);
-        element.setAttribute('data-hint', Lang.string('common.copied'));
-        element.classList.add('hint--success');
-        clearCopyCodeTip = setTimeout(() => {
-            clearCopyCodeTip = null;
-            element.setAttribute('data-hint', Lang.string('common.copyCode'));
-            element.classList.remove('hint--success');
-        }, 2000);
+        return false;
     });
 }
 
@@ -172,6 +164,70 @@ Server.onUserLoginout((user, code, reason, unexpected) => {
 
 document.body.classList.add(`os-${Platform.env.os}`);
 
+export const openUrlInApp = (url, appName) => {
+    executeCommand(`openInApp/${appName}/${encodeURIComponent(appName)}`, {appName, url});
+};
+
+export const openUrlInDialog = (url, options, callback) => {
+    options = Object.assign({url}, options);
+    WebViewDialog.show(url, options, callback);
+};
+
+registerCommand('openUrlInDialog', (context, url) => {
+    if (!url && context.options && context.options.url) {
+        url = context.options.url;
+    }
+    const options = context.options;
+    if (url) {
+        openUrlInDialog(url, options);
+        return true;
+    }
+    return false;
+});
+
+export const openUrlInBrowser = url => {
+    return Platform.ui.openExternal(url);
+};
+
+registerCommand('openUrlInBrowser', (context, url) => {
+    if (!url && context.options && context.options.url) {
+        url = context.options.url;
+    }
+    if (url) {
+        openUrlInBrowser(url);
+        return true;
+    }
+    return false;
+});
+
+export const openUrl = (url, targetElement) => {
+    if (isWebUrl(url)) {
+        if (global.ExtsRuntime) {
+            const extInspector = global.ExtsRuntime.getUrlOpener(url, targetElement);
+            if (extInspector && extInspector) {
+                const openResult = extInspector.open(url);
+                if (openResult === true || openResult === false) {
+                    return openResult;
+                } else if (typeof openResult === 'string') {
+                    if (isWebUrl(openResult)) {
+                        return openUrlInBrowser(openResult);
+                    }
+                    return openUrl(openResult, targetElement);
+                }
+            }
+        }
+        openUrlInBrowser(url);
+        return true;
+    } else if (url[0] === '@') {
+        const params = url.substr(1).split('/').map(decodeURIComponent);
+        emitAppLinkClick(targetElement, ...params);
+        return true;
+    } else if (url[0] === '!') {
+        executeCommand(url.substr(1), {targetElement});
+        return true;
+    }
+};
+
 document.addEventListener('click', e => {
     let target = e.target;
     while (target && !((target.classList && target.classList.contains('app-link')) || (target.tagName === 'A' && target.attributes.href))) {
@@ -180,19 +236,13 @@ document.addEventListener('click', e => {
 
     if (target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes.href || target.attributes['data-url'])) {
         const link = (target.attributes['data-url'] || target.attributes.href).value;
-        if (link.startsWith('http://') || link.startsWith('https://')) {
-            Platform.ui.openExternal(link);
-            e.preventDefault();
-        } else if (link.startsWith('@')) {
-            const params = link.substr(1).split('/');
-            emitAppLinkClick(params[0], params[1], target);
+        if (openUrl(link, target)) {
             e.preventDefault();
         }
     }
 });
 
 window.addEventListener('online', () => {
-    // Events.emit(EVENT.net_online);
     if (profile.user) {
         if (!Server.socket.isLogging) {
             Server.login(profile.user);
@@ -200,7 +250,6 @@ window.addEventListener('online', () => {
     }
 });
 window.addEventListener('offline', () => {
-    // Events.emit(EVENT.net_offline);
     if (profile.isUserOnline) {
         profile.user.markDisconnect();
         Server.socket.close(null, 'net_offline');
@@ -302,21 +351,32 @@ if (Platform.ui.onWindowBlur && Platform.ui.hideWindow) {
 }
 
 const reloadWindow = () => {
-    if (Platform.ui.reloadWindow) {
-        return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
-            if (confirmed) {
-                Server.logout();
-                setTimeout(() => {
+    return modal.confirm(Lang.string('dialog.reloadWindowConfirmTip'), {title: Lang.string('dialog.reloadWindowConfirm')}).then(confirmed => {
+        if (confirmed) {
+            Server.logout();
+            setTimeout(() => {
+                Store.set('autoLoginNextTime', true);
+                if (Platform.ui.reloadWindow) {
                     Platform.ui.reloadWindow();
-                }, 1000);
-            }
-            return Promise.resolve(confirm);
-        });
+                } else {
+                    window.location.reload();
+                }
+            }, 1000);
+        }
+        return Promise.resolve(confirm);
+    });
+};
+
+export const isAutoLoginNextTime = () => {
+    const autoLoginNextTime = Store.get('autoLoginNextTime');
+    if (autoLoginNextTime) {
+        Store.remove('autoLoginNextTime');
     }
+    return autoLoginNextTime;
 };
 
 // Decode url params
-const entryParams = HTML.getSearchParam();
+const entryParams = getSearchParam();
 
 export const triggerReady = () => {
     Events.emit(EVENT.ready);
@@ -326,20 +386,220 @@ export const onReady = listener => {
     return Events.on(EVENT.ready, listener);
 };
 
+const setTitle = title => {
+    document.title = title;
+};
+
+setTitle(Lang.string('app.title'));
+
+const urlMetaCaches = {};
+const maxUrlCacheSize = 20;
+export const getUrlMeta = (url, disableCache = false) => {
+    if (!disableCache) {
+        const urlMetaCache = urlMetaCaches[url];
+        if (urlMetaCache) {
+            return Promise.resolve(urlMetaCache.meta);
+        }
+    }
+    if (Platform.ui.getUrlMeta) {
+        let extInspector = null;
+        if (global.ExtsRuntime) {
+            extInspector = global.ExtsRuntime.getUrlInspector(url);
+        }
+        const getUrl = () => {
+            if (extInspector && extInspector.getUrl) {
+                const urlResult = extInspector.getUrl(url);
+                if (urlResult instanceof Promise) {
+                    return urlResult;
+                }
+                return Promise.resolve(urlResult);
+            }
+            return Promise.resolve(url);
+        };
+        if (extInspector && extInspector.noMeta && extInspector.inspect) {
+            return getUrl().then(url => {
+                const cardMeta = extInspector.inspect(url);
+                if (cardMeta instanceof Promise) {
+                    return cardMeta;
+                }
+                return Promise.resolve(cardMeta);
+            });
+        }
+        return getUrl().then(Platform.ui.getUrlMeta).then(meta => {
+            const {favicons} = meta;
+            let cardMeta = {
+                url,
+                title: meta.title,
+                subtitle: meta.title ? url : null,
+                image: meta.image,
+                content: meta.description && meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
+                icon: favicons && favicons.length ? favicons[0].href : null
+            };
+            if (extInspector && extInspector.inspect) {
+                try {
+                    cardMeta = extInspector.inspect(meta, cardMeta, url);
+                } catch (err) {
+                    if (DEBUG) {
+                        console.error('Inspect url error', {
+                            err,
+                            meta,
+                            cardMeta,
+                            extInspector
+                        });
+                    }
+                }
+                if (cardMeta instanceof Promise) {
+                    return cardMeta.then(cardMeta => {
+                        cardMeta.provider = extInspector.provider;
+                        return Promise.resolve(cardMeta);
+                    });
+                } else if (cardMeta) {
+                    cardMeta.provider = extInspector.provider;
+                    return Promise.resolve(cardMeta);
+                }
+            }
+            if (!cardMeta.title) {
+                const contentType = meta.response.headers['content-type'];
+                cardMeta.originContenttype = contentType;
+                if (contentType.startsWith('image')) {
+                    cardMeta.contentUrl = url;
+                    cardMeta.contentType = 'image';
+                    cardMeta.icon = 'mdi-image text-green icon-2x';
+                } else if (contentType.startsWith('video')) {
+                    cardMeta.contentUrl = url;
+                    cardMeta.contentType = 'video';
+                    cardMeta.clickable = 'title';
+                    cardMeta.icon = 'mdi-video text-red icon-2x';
+                }
+                cardMeta.title = url;
+            }
+
+            // Save cache
+            let cacheKeys = Object.keys(urlMetaCaches);
+            if (cacheKeys.length > maxUrlCacheSize) {
+                cacheKeys = cacheKeys.sort((x, y) => {
+                    return x.time - y.time;
+                });
+                for (let i = 0; i < (cacheKeys.length - maxUrlCacheSize); ++i) {
+                    delete urlMetaCaches[cacheKeys[i]];
+                }
+            }
+            urlMetaCaches[url] = {meta: cardMeta, time: new Date().getTime()};
+
+            return Promise.resolve(cardMeta);
+        });
+    }
+    return Promise.resolve({url, title: url});
+};
+
+let isGlobalShortcutDisabled = false;
+
+let globalHotkeys = null;
+const registerShortcut = (loginUser, loginError) => {
+    if (!Platform.shortcut) {
+        return;
+    }
+    if (loginError) {
+        return;
+    }
+    const userConfig = profile.userConfig;
+    if (userConfig) {
+        globalHotkeys = userConfig.globalHotkeys;
+        Object.keys(globalHotkeys).forEach(name => {
+            Platform.shortcut.registerGlobalShortcut(name, globalHotkeys[name], () => {
+                if (!isGlobalShortcutDisabled) {
+                    executeCommand(`shortcut.${name}`);
+                } else if (DEBUG) {
+                    console.log(`Global shortcut command '${name}' skiped.`);
+                }
+            });
+        });
+    }
+};
+const unregisterGlobalShortcut = () => {
+    if (!Platform.shortcut) {
+        return;
+    }
+    if (globalHotkeys) {
+        Object.keys(globalHotkeys).forEach(name => {
+            Platform.shortcut.unregisterGlobalShortcut(name);
+        });
+        globalHotkeys = null;
+    }
+};
+if (Platform.shortcut) {
+    profile.onUserConfigChange((change, config) => {
+        if (change && Object.keys(change).some(x => x.startsWith('shortcut.'))) {
+            registerShortcut();
+        }
+        if (config.needSave) {
+            Server.socket.uploadUserSettings();
+        }
+    });
+    Server.onUserLogin(registerShortcut);
+    Server.onUserLoginout(unregisterGlobalShortcut);
+
+    if (Platform.ui.showAndFocusWindow) {
+        registerCommand('shortcut.focusWindowHotkey', () => {
+            if (Platform.ui.hideWindow && Platform.ui.isWindowOpenAndFocus) {
+                Platform.ui.hideWindow();
+            } else {
+                Platform.ui.showAndFocusWindow();
+            }
+        });
+    }
+}
+
+export const isSmallScreen = () => { 
+    return window.innerWidth < 768;
+};
+
+export const showMobileChatsMenu = (toggle) => {
+    if (!isSmallScreen()) {
+        return;
+    }
+    const {classList} = document.body;
+    if (toggle === true) {
+        classList.add('app-show-chats-menu');
+    } else if (toggle === false) {
+        classList.remove('app-show-chats-menu');
+    } else {
+        classList.toggle('app-show-chats-menu');
+    }
+};
+
+export const disableGlobalShortcut = (disabled = true) => {
+    isGlobalShortcutDisabled = disabled;
+    unregisterGlobalShortcut();
+};
+
+export const enableGlobalShortcut = () => {
+    isGlobalShortcutDisabled = false;
+    registerShortcut();
+};
+
 export default {
     entryParams,
     get canQuit() {
         return !!Platform.ui.quit;
     },
+    isSmallScreen,
+    showMobileChatsMenu,
+    disableGlobalShortcut,
+    enableGlobalShortcut,
     onAppLinkClick,
     emitAppLinkClick,
     quit,
     showMessger: Messager.show,
     showContextMenu: ContextMenu.show,
     modal,
-    createImageContextMenuItems,
-    createLinkContextMenu,
     reloadWindow,
     triggerReady,
-    onReady
+    onReady,
+    isAutoLoginNextTime,
+    openUrl,
+    getUrlMeta,
+    openUrlInDialog,
+    openUrlInBrowser,
+    openUrlInApp
 };

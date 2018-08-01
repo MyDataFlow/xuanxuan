@@ -7,9 +7,12 @@ $lang->poweredBy = "<a href='http://www.xuan.im/?v=%s' target='_blank'>{$lang->r
 $lang->menu->dashboard = new stdclass();
 $lang->menu->dashboard->user    = '组织|user|admin|';
 $lang->menu->dashboard->group   = '权限|group|browse|';
+$lang->menu->dashboard->entry   = '应用|entry|admin|';
 $lang->menu->dashboard->setting = '设置|setting|xuanxuan|';
 
 $lang->menu->sys = $lang->menu->dashboard;
 
 $lang->sys->dashboard->menuOrder[10] = 'user';
+
+unset($lang->entry->menu->webapp);
 

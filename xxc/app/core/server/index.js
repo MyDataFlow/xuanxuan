@@ -52,13 +52,17 @@ const checkVersionSupport = user => {
     const {serverVersion, uploadFileSize} = user;
     const compareVersionValue = compareVersions(serverVersion, '1.3.0');
     const compareVersionValue2 = compareVersions(serverVersion, '1.4.0');
+    const compareVersionValue3 = compareVersions(serverVersion, '1.6.0');
     return {
         messageOrder: compareVersionValue >= 0,
         userGetListWithId: compareVersionValue >= 0,
         wss: compareVersionValue > 0,
         fileServer: uploadFileSize !== 0,
         todo: compareVersionValue2 > 0,
-        socketPing: compareVersionValue2 > 0
+        socketPing: compareVersionValue2 > 0,
+        remoteExtension: compareVersions(serverVersion, '1.5.0') > 0,
+        muteChat: compareVersionValue3 > 0,
+        hideChat: compareVersionValue3 > 0,
     };
 };
 

@@ -20,18 +20,27 @@ if (DEBUG && DEBUG !== 'production') {
     require('module').globalPaths.push(p); // eslint-disable-line
 }
 
+if(DEBUG && process.execPath.indexOf('electron') > -1) {
+    // it handles shutting itself down automatically
+    require('electron-local-crash-reporter').start();
+    console.log('\n>> electron-local-crash-reporter started.');
+}
+
 // Quit when all windows are closed.
 ElectronApp.on('window-all-closed', () => {
     ElectronApp.quit();
 });
 
 const installExtensions = async () => {
-    if (DEBUG) {
+    if (process.env.SKIP_INSTALL_EXTENSIONS) {
+        console.log('>> Install electron development extensions. SKIPED.');
+        return;
+    }
+    console.log('>> Install electron development extensions. This will take a few minutes. If it take too long time, try close the terminal window and skip install extension by execute command "npm run start-hot-fast".');
+    if (process.env.NODE_ENV === 'development') {
         const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
-
         const extensions = [
-            'REACT_DEVELOPER_TOOLS',
-            'REDUX_DEVTOOLS'
+            'REACT_DEVELOPER_TOOLS'
         ];
         const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
         for (const name of extensions) { // eslint-disable-line
@@ -188,7 +197,7 @@ const createMenu = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 ElectronApp.on('ready', async () => {
-    // await installExtensions();
+    await installExtensions();
     application.ready();
     createMenu();
     if (DEBUG) console.info('\n>> Electron app ready.');

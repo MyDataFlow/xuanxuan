@@ -1,5 +1,6 @@
-import React, {PureComponent, PropTypes} from 'react';
-import HTML from '../utils/html-helper';
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
+import {classes} from '../utils/html-helper';
 import Skin from '../utils/skin';
 import Icon from '../components/icon';
 
@@ -85,8 +86,8 @@ export default class Button extends PureComponent {
         const buttonStyle = Object.assign(skin ? Skin.style(skin) : {}, style);
 
         if (type === 'a') {
-            return <a {...other} className={HTML.classes(btnClass, className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</a>;
+            return <a {...other} className={classes(btnClass, className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</a>;
         }
-        return <button {...other} type={type} className={HTML.classes('btn', className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</button>;
+        return <button {...other} type={type} className={classes('btn', className, {'btn-icon': !labelView && !children})} style={buttonStyle}>{iconView}{labelView}{children}</button>;
     }
 }

@@ -51,7 +51,7 @@ const getRef = id => {
  * @param {Object} id display layer style object
  * @param {?Function} callback
  */
-const setStyle = (id, newStyle, callback) => (displayContainer && displayContainer.remove(id, newStyle, callback));
+const setStyle = (id, newStyle, callback) => (displayContainer && displayContainer.setStyle(id, newStyle, callback));
 
 export default {
     show,

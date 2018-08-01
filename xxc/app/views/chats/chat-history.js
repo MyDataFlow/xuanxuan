@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import Icon from '../../components/icon';
@@ -36,7 +37,6 @@ class ChatHistory extends Component {
     constructor(props) {
         super(props);
 
-        const chat = props.chat;
         this.state = {
             pager: {
                 page: 1,

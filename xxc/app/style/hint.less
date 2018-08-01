@@ -79,7 +79,7 @@
   color: white;
   padding: 8px 10px;
   font-size: 12px;
-  line-height: 12px;
+  line-height: 16px;
   white-space: nowrap;
 }
 
@@ -88,6 +88,22 @@
   display: none !important;
 }
 
+// hint size
+
+.hint--md[data-hint]:after {
+  white-space: normal;
+  min-width: 200px;
+}
+
+.hint--sm[data-hint]:after {
+  white-space: normal;
+  min-width: 100px;
+}
+
+.hint--lg[data-hint]:after {
+  white-space: normal;
+  min-width: 300px;
+}
 
 /**
  * source: hint-position.scss

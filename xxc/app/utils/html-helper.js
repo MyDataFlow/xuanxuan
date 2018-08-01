@@ -1,4 +1,4 @@
-const classes = (...args) => (
+export const classes = (...args) => (
     args.map(arg => {
         if (Array.isArray(arg)) {
             return classes(arg);
@@ -15,9 +15,9 @@ const classes = (...args) => (
     }).filter(x => (typeof x === 'string') && x.length).join(' ')
 );
 
-const rem = (value, rootValue = 20) => (`${value / rootValue}rem`);
+export const rem = (value, rootValue = 20) => (`${value / rootValue}rem`);
 
-const getSearchParam = (key, search = null) => {
+export const getSearchParam = (key, search = null) => {
     const params = {};
     search = search === null ? window.location.search : search;
     if (search.length > 1) {
@@ -28,7 +28,14 @@ const getSearchParam = (key, search = null) => {
         for (const pair of searchArr) {
             const pairValues = pair.split('=', 2);
             if (pairValues.length > 1) {
-                params[pairValues[0]] = decodeURIComponent(pairValues[1]);
+                try {
+                    params[pairValues[0]] = decodeURIComponent(pairValues[1]);
+                } catch (_) {
+                    if (DEBUG) {
+                        console.error(_, {key, search});
+                    }
+                    params[pairValues[0]] = '';
+                }
             } else {
                 params[pairValues[0]] = '';
             }
@@ -37,7 +44,7 @@ const getSearchParam = (key, search = null) => {
     return key ? params[key] : params;
 };
 
-const strip = html => {
+export const strip = html => {
     if (typeof document !== 'undefined') {
         const tmp = document.createElement('DIV');
         tmp.innerHTML = html;
@@ -46,9 +53,18 @@ const strip = html => {
     return html.replace(/<(?:.|\n)*?>/gm, '');
 };
 
+export const isWebUrl = url => {
+    if (typeof url !== 'string') {
+        return false;
+    }
+    return (/^(https?):\/\/[-A-Za-z0-9\u4e00-\u9fa5+&@#/%?=~_|!:,.;]+[-A-Za-z0-9\u4e00-\u9fa5+&@#/%=~_|]$/ig).test(url);
+};
+
+
 export default {
     classes,
     rem,
     getSearchParam,
-    strip
+    strip,
+    isWebUrl,
 };

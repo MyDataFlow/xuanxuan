@@ -1,9 +1,9 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import hotkeys from 'hotkeys-js';
-import HTML from '../../utils/html-helper';
-import timeSequence from '../../utils/time-sequence';
+import {classes} from '../../utils/html-helper';
 import App from '../../core';
-import ContextMenu from '../../components/context-menu';
+import {showContextMenu} from '../../core/context-menu';
 import {ChatListItem} from './chat-list-item';
 import replaceViews from '../replace-views';
 import ROUTES from '../common/routes';
@@ -11,6 +11,10 @@ import ListItem from '../../components/list-item';
 import Lang from '../../lang';
 
 export default class MenuSearchList extends Component {
+    static get MenuSearchList() {
+        return replaceViews('chats/menu-search-list', MenuSearchList);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         search: PropTypes.string,
@@ -32,10 +36,6 @@ export default class MenuSearchList extends Component {
         morePageSize: 10,
         defaultPage: 1
     };
-
-    static get MenuSearchList() {
-        return replaceViews('chats/menu-search-list', MenuSearchList);
-    }
 
     constructor(props) {
         super(props);
@@ -92,13 +92,14 @@ export default class MenuSearchList extends Component {
         hotkeys.deleteScope('chatsMenuSearch');
     }
 
-    handleItemContextMenu = e => {
-        const chat = App.im.chats.get(e.currentTarget.attributes['data-gid'].value);
-        const menuItems = App.im.ui.createChatContextMenuItems(chat, this.props.filter, '');
-        if (menuItems && menuItems.length) {
-            ContextMenu.show({x: e.pageX, y: e.pageY}, menuItems);
-            e.preventDefault();
-        }
+    handleItemContextMenu = event => {
+        const chat = App.im.chats.get(event.currentTarget.attributes['data-gid'].value);
+        showContextMenu('chat.menu', {
+            event,
+            chat,
+            menuType: this.props.filter,
+            viewType: ''
+        });
     };
 
     render() {
@@ -139,7 +140,7 @@ export default class MenuSearchList extends Component {
                 data-gid={chat.gid}
                 filterType={filter}
                 chat={chat}
-                className={HTML.classes('item', {hover: isSelected})}
+                className={classes('item', {hover: isSelected})}
             />);
         }
         const notShowCount = list.length - maxIndex;
@@ -147,7 +148,7 @@ export default class MenuSearchList extends Component {
             listViews.push(<ListItem key="showMore" icon="chevron-double-down" className="flex-middle item muted" title={<span className="title small">{Lang.format('common.clickShowMoreFormat', notShowCount)}</span>} onClick={this.handleRequestMorePage} />);
         }
 
-        return (<div className={HTML.classes('app-chats-menu-list list scroll-y', className)} {...other}>
+        return (<div className={classes('app-chats-menu-list list scroll-y', className)} {...other}>
             {listViews}
             {children}
         </div>);

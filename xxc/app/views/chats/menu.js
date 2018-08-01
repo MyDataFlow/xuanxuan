@@ -1,10 +1,16 @@
-import React, {Component, PropTypes} from 'react';
-import HTML from '../../utils/html-helper';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {classes, getSearchParam} from '../../utils/html-helper';
 import {MenuHeader} from './menu-header';
 import {MenuList} from './menu-list';
 import replaceViews from '../replace-views';
+import App from '../../core';
 
 class Menu extends Component {
+    static get Menu() {
+        return replaceViews('chats/menu', Menu);
+    }
+
     static propTypes = {
         className: PropTypes.string,
         filter: PropTypes.string,
@@ -17,13 +23,9 @@ class Menu extends Component {
         children: null,
     };
 
-    static get Menu() {
-        return replaceViews('chats/menu', Menu);
-    }
-
     constructor(props) {
         super(props);
-        this.defaultSearch = HTML.getSearchParam('search');
+        this.defaultSearch = getSearchParam('search');
         this.state = {
             search: this.defaultSearch,
             searchFocus: false
@@ -60,7 +62,7 @@ class Menu extends Component {
             ...other
         } = this.props;
 
-        return (<div className={HTML.classes('app-chats-menu primary-pale', className)} {...other}>
+        return (<div className={classes('app-chats-menu primary-pale', className)} {...other}>
             <MenuHeader
                 ref={e => {this.menuHeader = e;}}
                 filter={filter}

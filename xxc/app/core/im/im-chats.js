@@ -1,4 +1,5 @@
 import Config from 'Config';
+import Md5 from 'md5';
 import Chat from '../models/chat';
 import ChatMessage from '../models/chat-message';
 import NotificationMessage from '../models/notification-message';
@@ -25,6 +26,7 @@ const SEARCH_SCORE_MAP = {
 const EVENT = {
     init: 'chats.init',
     messages: 'chats.messages',
+    fetchQueueFinish: 'fetch.queue.finish.',
 };
 let chats = null;
 let publicChats = null;
@@ -119,7 +121,7 @@ const saveChatMessages = (messages, chat) => {
 
 const updateChatMessages = (messages, muted = false, skipOld = false) => {
     if (skipOld === true) {
-        skipOld = 60 * 1000 * 60 * 12;
+        skipOld = 60 * 1000 * 60 * 24;
     }
     if (!Array.isArray(messages)) {
         messages = [messages];
@@ -171,6 +173,10 @@ const countChatMessages = (cgid, filter) => {
 };
 
 const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = true, rawData = false, returnCount = false) => {
+    // console.log('getChatMessages', {chat, queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount});
+    if (!db.database || !db.database.chatMessages) {
+        return Promise.resolve([]);
+    } 
     const cgid = chat ? chat.gid : null;
     let collection = db.database.chatMessages.orderBy('id').and(x => {
         return (!cgid || x.cgid === cgid) && (!queryCondition || queryCondition(x));
@@ -202,12 +208,53 @@ const getChatMessages = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offs
     });
 };
 
+
+let isGetChatMessagesQueueBusy = false;
+const fetchChatMessagesQueue = [];
+const onFetchQueueFinish = (queueId, listener) => {
+    return Events.once(`${EVENT.fetchQueueFinish}${queueId}`, listener);
+};
+const processChatMessageQueue = () => {
+    if (isGetChatMessagesQueueBusy) {
+        return;
+    }
+    if (fetchChatMessagesQueue.length) {
+        isGetChatMessagesQueueBusy = true;
+        const queueData = fetchChatMessagesQueue.pop();
+        const {queueId, chat, queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount} = queueData;
+        const handleChatMessageQueueResult = result => {
+            Events.emit(`${EVENT.fetchQueueFinish}${queueId}`, result);
+            isGetChatMessagesQueueBusy = false;
+            processChatMessageQueue();
+        };
+        getChatMessages(get(chat), queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount).then(handleChatMessageQueueResult).catch(handleChatMessageQueueResult);
+    }
+};
+const getChatMessagesInQueue = (chat, queryCondition, limit = CHATS_LIMIT_DEFAULT, offset = 0, reverse = true, skipAdd = true, rawData = false, returnCount = false) => {
+    return new Promise((resolve, reject) => {
+        const queueData = {chat: chat.gid, queryCondition, limit, offset, reverse, skipAdd, rawData, returnCount};
+        const queueId = Md5(JSON.stringify(queueData));
+        queueData.queueId = queueId;
+        if (!isGetChatMessagesQueueBusy || fetchChatMessagesQueue.every(x => x.queueId !== queueId)) {
+            fetchChatMessagesQueue.push(queueData);
+        }
+        onFetchQueueFinish(queueId, result => {
+            if (result instanceof Error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+        processChatMessageQueue();
+    });
+};
+
 /**
  * Load chat messages
  *
  * @param {Chat} chat
  */
-const loadChatMessages = (chat) => {
+const loadChatMessages = (chat, inQueue = true) => {
     let loadingOffset = chat.loadingOffset;
     if (loadingOffset === true) {
         return Promise.reject();
@@ -216,7 +263,7 @@ const loadChatMessages = (chat) => {
         loadingOffset = 0;
     }
     const limit = loadingOffset ? 20 : CHATS_LIMIT_DEFAULT;
-    return getChatMessages(chat, null, limit, loadingOffset, true, false).then(chatMessages => {
+    return (inQueue ? getChatMessagesInQueue : getChatMessages)(chat, null, limit, loadingOffset, true, false).then(chatMessages => {
         if (!chatMessages || chatMessages.length < limit) {
             loadingOffset = true;
         } else {
@@ -294,7 +341,7 @@ const update = (chatArr) => {
     }
 };
 
-const init = (chatArr) => {
+const init = (chatArr, eachCallback) => {
     publicChats = null;
     chats = {};
     if (chatArr && chatArr.length) {
@@ -316,6 +363,9 @@ const init = (chatArr) => {
             }
             chat.renewUpdateId();
             delete chat.loadingOffset;
+            if (eachCallback) {
+                eachCallback(chat);
+            }
         });
         Events.emit(EVENT.init, chats);
     }
@@ -374,7 +424,7 @@ const getRecents = (includeStar = true, sortList = true) => {
     } else {
         const now = new Date().getTime();
         recents = all.filter(chat => {
-            return !chat.isDeleteOne2One && !chat.isDismissed && (chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME));
+            return (chat.noticeCount || (!chat.mute && !chat.hidden)) && !chat.isDeleteOne2One && !chat.isDismissed && (chat.noticeCount || (includeStar && chat.star) || (chat.lastActiveTime && (now - chat.lastActiveTime) <= MAX_RECENT_TIME));
         });
         if (!recents.length) {
             recents = all.filter(chat => chat.isSystem);
@@ -402,12 +452,12 @@ const getLastRecentChat = () => {
 };
 
 const getContactChat = (member) => {
-    const members = [member.id, profile.user.id].sort();
-    const gid = members.join('&');
+    const membersId = [member.id, profile.user.id].sort();
+    const gid = membersId.join('&');
     return get(gid);
 };
 
-const getContactsChats = (sortList = true, groupedBy = false) => {
+const getContactsChats = (sortList = 'onlineFirst', groupedBy = false) => {
     const {user} = profile;
     let contactChats = [];
     if (!user) {
@@ -622,11 +672,12 @@ const getGroups = (sortList = true, groupedBy = false) => {
         const groupedChats = {};
         groupChats.forEach(chat => {
             const isDismissed = chat.isDismissed;
-            const categoryId = isDismissed ? '_dismissed' : (chat.category || '');
-            const categoryName = isDismissed ? Lang.string('chats.menu.group.dismissed') : (categoryId || user.config.groupsDefaultCategoryName);
+            const isHidden = chat.hide;
+            const categoryId = isDismissed ? '_dismissed' : isHidden ? '_hidden' : (chat.category || '');
+            const categoryName = isDismissed ? Lang.string('chats.menu.group.dismissed') : isHidden ? Lang.string('chats.menu.group.hidden') : (categoryId || user.config.groupsDefaultCategoryName);
             if (!groupedChats[categoryId]) {
                 groupedChats[categoryId] = {id: categoryId, title: categoryName || Lang.string('chats.menu.group.default'), list: [chat]};
-                if (isDismissed) {
+                if (isDismissed || isHidden) {
                     groupedChats[categoryId].system = true;
                 }
             } else {
@@ -667,6 +718,8 @@ const getGroups = (sortList = true, groupedBy = false) => {
             user.config.groupsCategories = categories;
         }
         return orderedGroups;
+    } else {
+        
     }
     return groupChats;
 };

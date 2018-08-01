@@ -1,6 +1,6 @@
 import React from 'react';
 import Display from './display';
-import HTML from '../utils/html-helper';
+import {classes} from '../utils/html-helper';
 import Icon from './icon';
 import timeSequence from '../utils/time-sequence';
 
@@ -19,7 +19,6 @@ const show = (position, menus, props = {}, callback = null) => {
         itemClassName,
         content,
         style,
-        direction,
     } = props;
 
     if (!position) {
@@ -58,6 +57,7 @@ const show = (position, menus, props = {}, callback = null) => {
             className,
             hidden,
             click,
+            url,
             render,
             type,
             disabled,
@@ -70,28 +70,28 @@ const show = (position, menus, props = {}, callback = null) => {
         if (render) {
             return render(item);
         } else if (type === 'divider' || type === 'separator') {
-            return <div key={id || idx} className={HTML.classes('divider', className)} {...other} />;
+            return <div key={id || idx} className={classes('divider', className)} {...other} />;
         }
         const iconView = item.icon && Icon.render(item.icon, {className: 'item-left-icon'});
         if (iconView) {
             hasIconLeft = true;
         }
-        return (<a onClick={handleItemClick.bind(null, item, idx)} key={id || idx} className={HTML.classes('item', itemClassName, className, {disabled})} {...other}>
+        return (<a href={url} onClick={handleItemClick.bind(null, item, idx)} key={id || idx} className={classes('item', itemClassName, className, {disabled})} {...other}>
             {iconView}
             {item.label && <span className="title">{item.label}</span>}
             {item.checked && <Icon name="check" />}
         </a>);
     });
-    content = (<div className={HTML.classes('list dropdown-menu', menuClassName, {'has-icon-left': hasIconLeft})}>
+    content = (<div className={classes('list dropdown-menu', menuClassName, {'has-icon-left': hasIconLeft})}>
         {itemsView}
         {content}
     </div>);
 
-    let x = position.x || 0;
-    let y = position.y || 0;
+    const x = position.x || 0;
+    const y = position.y || 0;
     style = Object.assign({maxWidth: window.innerWidth, maxHeight: window.innerHeight, left: x, top: y}, style);
 
-    className = HTML.classes('contextmenu layer', className);
+    className = classes('contextmenu layer', className);
 
     props = Object.assign({backdropClassName: 'clean', animation: false}, props, {className, style, content, plugName: 'contextmenu'});
     delete props.menuClassName;
@@ -131,9 +131,6 @@ const show = (position, menus, props = {}, callback = null) => {
             case 'bottom-left':
                 newX -= eleWidth;
                 break;
-            // case 'bottom-right':
-            // default:
-            //     break;
             }
         }
         if (position.offsetX) {
@@ -149,7 +146,7 @@ const show = (position, menus, props = {}, callback = null) => {
         } else {
             display.setStyle({opacity: 1});
         }
-    });
+    }, callback);
 };
 
 export default {

@@ -1,0 +1,25 @@
+{
+    "name": "youdao",
+    "displayName": "有道翻译",
+    "version": "1.0.0",
+    "description": "有道翻译，直接翻译消息。",
+    "type": "app",
+    "appType": "webView",
+    "webViewUrl": "http://fanyi.youdao.com/",
+    "icon": "mdi-translate",
+    "accentColor": "#e02433",
+    "hot": true,
+    "main": "index.js",
+    "author": {
+        "name": "Catouse"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/youdao",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/youdao",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}

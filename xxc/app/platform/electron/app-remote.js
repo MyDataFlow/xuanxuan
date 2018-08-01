@@ -1,9 +1,10 @@
-import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain} from 'electron';
+import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain, dialog} from 'electron';
+import fs from 'fs-extra';
+import path from 'path';
 import Lang from '../../lang';
 import Config from '../../config';
 import EVENT from './remote-events';
 import Events from './events';
-
 
 const IS_MAC_OSX = process.platform === 'darwin';
 const SHOW_LOG = DEBUG;
@@ -94,6 +95,23 @@ class AppRemote {
             Events.emit(eventId, ...args);
             if (SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
         });
+
+        this.migrate();
+
+        ElectronApp.setName(Lang.string('app.title'));
+    }
+
+    migrate() {
+        if (!DEBUG && Config.pkg.version === '2.0.0') {
+            try {
+                const userDataPath = ElectronApp.getPath('userData');
+                const oldUserDataPath = path.resolve(userDataPath, '../喧喧');
+                if(fs.existsSync(oldUserDataPath)) {
+                    fs.copySync(oldUserDataPath, userDataPath, {overwrite: true});
+                    fs.removeSync(oldUserDataPath);
+                }
+            } catch (_) {}
+        }
     }
 
     init(entryPath) {
@@ -148,7 +166,7 @@ class AppRemote {
         options = Object.assign({
             width: 900,
             height: 650,
-            minWidth: 900,
+            minWidth: 400,
             minHeight: 650,
             url: 'index.html',
             hashRoute: '/index',
@@ -179,7 +197,7 @@ class AppRemote {
             hashRoute: `/${name}`,
             url: 'index.html',
             autoHideMenuBar: !IS_MAC_OSX,
-            backgroundColor: '#FFF',
+            backgroundColor: '#ffffff',
             show: DEBUG,
             webPreferences: {webSecurity: false}
         }, options);
@@ -219,7 +237,11 @@ class AppRemote {
             }
         });
 
-        let url = options.url;
+        browserWindow.webContents.on('will-navigate', event => {
+            event.preventDefault();
+        });
+
+        let {url} = options;
         if (url) {
             if (!url.startsWith('file://') && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = `file://${this.entryPath}/${options.url}`;
@@ -244,6 +266,23 @@ class AppRemote {
                     }
                 }]).popup(browserWindow);
             });
+
+            browserWindow.webContents.on('crashed', function () {
+                const options = {
+                    type: 'info',
+                    title: 'Renderer process crashed.',
+                    message: 'The renderer process has been crashed, you can reload or close it.',
+                    buttons: ['Reload', 'Close']
+                };
+                dialog.showMessageBox(options, (index) => {
+                    if (index === 0) {
+                        browserWindow.reload();
+                    }
+                    else {
+                        browserWindow.close();
+                    }
+                });
+            })
         }
 
         // if(DEBUG) {
@@ -299,8 +338,6 @@ class AppRemote {
                 const {selectionText, isEditable} = props;
                 if (isEditable) {
                     INPUT_MENU.popup(mainWindow);
-                } else if (selectionText && selectionText.trim() !== '') {
-                    SELECT_MENU.popup(mainWindow);
                 }
             });
         }
@@ -363,7 +400,11 @@ class AppRemote {
     showAndFocusWindow(windowName = 'main') {
         const browserWindow = this.windows[windowName];
         if (browserWindow) {
-            browserWindow.show();
+            if (browserWindow.isMinimized()) {
+                browserWindow.restore();
+            } else {
+                browserWindow.show();
+            }
             browserWindow.focus();
         }
     }
