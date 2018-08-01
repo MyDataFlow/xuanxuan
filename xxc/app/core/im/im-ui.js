@@ -712,15 +712,17 @@ if (Platform.screenshot) {
     });
 }
 
-registerCommand('suggestClipboardImage', () => {
-    if (!profile.userConfig.listenClipboardImage) {
-        return;
-    }
-    const newImage = Platform.clipboard.getNewImage();
-    if (newImage) {
-        Events.emit(EVENT.suggestSendImage, newImage);
-    }
-});
+if (Platform.clipboard && Platform.clipboard.getNewImage) {
+    registerCommand('suggestClipboardImage', () => {
+        if (!profile.userConfig.listenClipboardImage) {
+            return;
+        }
+        const newImage = Platform.clipboard.getNewImage();
+        if (newImage) {
+            Events.emit(EVENT.suggestSendImage, newImage);
+        }
+    });
+}
 
 const onSuggestSendImage = (listener) => {
     return Events.on(EVENT.suggestSendImage, listener);

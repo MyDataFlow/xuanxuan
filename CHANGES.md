@@ -4,7 +4,7 @@
 
 [2018-07-31]
 
-本次更新增加了大量实用功能，优化扩展机制，提升了使用体验。
+本次更新增加了大量实用功能，优化扩展机制，提升了使用体验。新的禅道集成扩展包使得喧喧可以使用禅道的账户体系，为后续与禅道深入集成提供了基础。
 
 ### 功能预览
 
@@ -34,7 +34,7 @@
 * 新增 切换发送消息快捷键功能，可以通过个人设置面板设置或者通过发送按钮右键菜单进行切换；
 * 新增 聊天免打扰功能，将聊天设置为免打扰后，将不会在后台收到显性通知（弹窗或声音提醒）；
 * 新增 聊天存档功能（仅支持讨论组），将聊天存档后将不会在最近聊天上显示，也不会在后台收到显性通知，在讨论组列表中会在已存档分组中显示；
-* 新增 一键发送剪切板图片功能，当窗口激活时如果检测到剪切板有新的图标会提示一键发送该图片；
+* 新增 一键发送剪切板图片功能，当聊天输入框激活时如果检测到剪切板有新的图片会提示一键发送该图片；
 * 新增 复制高清 Emoji 表情符功能，在消息中的高清 Emoji 图像上点击右键进行复制操作；
 * 新增 WebView 中右键菜单操作，包括复制、粘贴、撤销等操作，支持 WebView 打开的应用页面和对话框打开的第三方网页以及 Web 卡片界面；
 * 优化 拖放发送文件功能，现在可以一次性拖放多个文件到聊天窗口进行发送；
@@ -93,6 +93,7 @@
 * 服务器端：
   * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.0/xxb.2.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb-2.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/2.0/xxb-2.0.deb)；
   * 然之：[4.7.0 稳定版](http://www.ranzhi.org/download/4.7.stable-127.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.ranzhi.2.0.0.zip)。
+  * 禅道：[扩展包](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan.zentao.2.0.0.zip)（扩展包可以在[禅道](http://www.zentao.net/)10.0上安装使用，使得喧喧使用禅道的账户体系、后续会与禅道进行深入集成。）
 
 ## v 1.6.0
 

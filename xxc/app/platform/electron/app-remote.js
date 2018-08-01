@@ -96,22 +96,7 @@ class AppRemote {
             if (SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
         });
 
-        this.migrate();
-
         ElectronApp.setName(Lang.string('app.title'));
-    }
-
-    migrate() {
-        if (!DEBUG && Config.pkg.version === '2.0.0') {
-            try {
-                const userDataPath = ElectronApp.getPath('userData');
-                const oldUserDataPath = path.resolve(userDataPath, '../喧喧');
-                if(fs.existsSync(oldUserDataPath)) {
-                    fs.copySync(oldUserDataPath, userDataPath, {overwrite: true});
-                    fs.removeSync(oldUserDataPath);
-                }
-            } catch (_) {}
-        }
     }
 
     init(entryPath) {
