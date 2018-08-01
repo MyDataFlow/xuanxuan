@@ -12,12 +12,11 @@ zentao:
 	cp ../ranzhi/config/ext/xuanxuan.php ./build/config/
 	cp -r ../ranzhi/lib/phpaes ./build/lib/
 	cp -r ../ranzhi/framework/xuanxuan.class.php ./build/framework/
-	cp -r ../ranzhi/www/xuanxuan.php ./build/www/
-	cp -r ../ranzhi/www/upgradexuanxuan.php ./build/www/
 	cp -r ../ranzhi/db/xuanxuan.sql ./build/db/
 	cp -r ../ranzhi/app/sys/chat ./build/module/
 	cp -r ../ranzhi/app/sys/action ./build/module/
-	cp -r ./xuanxuan/* ./build/module/
+	cp -r ./xuanxuan/module/* ./build/module/
+	cp -r ./xuanxuan/www/* ./build/www/
 	sed -i 's/site,//' ./build/module/chat/model.php
 	sed -i 's/admin, g/g/' ./build/module/chat/model.php
 	sed -i '/password = md5/d' ./build/module/chat/control.php
