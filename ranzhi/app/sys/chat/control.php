@@ -132,12 +132,12 @@ class chat extends control
                 {
                     $depts[$id] = array('name' => $dept->name, 'order' => (int)$dept->order, 'parent' => (int)$dept->parent);
                 }
-                $this->output->roles  = $roles;
-                $this->output->depts  = $depts;
+                $this->output->roles = $roles;
+                $this->output->depts = $depts;
             }
             else
             {
-                $this->output->partial  = $idList;
+                $this->output->partial = $idList;
             }
         }
 
