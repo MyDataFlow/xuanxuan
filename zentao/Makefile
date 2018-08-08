@@ -24,6 +24,9 @@ zentao:
 	sed -i "s/, 'sys'//" ./build/module/chat/control.php
 	sed -i 's/system.sys/system/' ./build/module/chat/control.php
 	sed -i 's/&app=sys//' ./build/module/chat/control.php
+	sed -i 'file->createdBy/file->addedBy/' ./build/module/chat/control.php
+	sed -i 'file->createdDate/file->addedDate/' ./build/module/chat/control.php
+	sed -i 'this->chat->getExtensionList(\$userID)/array()/' ./build/module/chat/control.php
 	sed -i 's/im_/zt_im_/' ./build/db/xuanxuan.sql
 	sed -i 's/sys_user/zt_user/' ./build/db/xuanxuan.sql
 	sed -i 's/sys_file/zt_file/' ./build/db/xuanxuan.sql
