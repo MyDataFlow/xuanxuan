@@ -21,7 +21,7 @@ zentao:
 	sed -i 's/admin, g/g/' ./build/module/chat/model.php
 	sed -i '/password = md5/d' ./build/module/chat/control.php
 	sed -i 's/tree/dept/' ./build/module/chat/control.php
-	sed -i 's/, \'sys\'//' ./build/module/chat/control.php
+	sed -i "s/, 'sys'//" ./build/module/chat/control.php
 	sed -i 's/system.sys/system/' ./build/module/chat/control.php
 	sed -i 's/&app=sys//' ./build/module/chat/control.php
 	sed -i 's/im_/zt_im_/' ./build/db/xuanxuan.sql
