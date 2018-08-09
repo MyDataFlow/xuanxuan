@@ -18,7 +18,7 @@ include '../framework/helper.class.php';
 $startTime = getTime();
 
 /* Run the app. */
-$appName = 'sys';
+$appName = '';
 $app     = xuanxuan::createApp($appName, dirname(dirname(__FILE__)), 'xuanxuan');
 
 $app->loadCommon();
