@@ -60,6 +60,18 @@ export const isWebUrl = url => {
     return (/^(https?):\/\/[-A-Za-z0-9\u4e00-\u9fa5+&@#/%?=~_|!:,.;]+[-A-Za-z0-9\u4e00-\u9fa5+&@#/%=~_|]$/ig).test(url);
 };
 
+export const formatLinkInText = (text) => {
+    return (text || "").replace(
+        /([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi,
+        (match, space, url) => {
+            var hyperlink = url;
+            if (!hyperlink.match('^https?:\/\/')) {
+                hyperlink = 'http://' + hyperlink;
+            }
+            return space + '<a href="' + hyperlink + '">' + url + '</a>';
+        }
+    );
+};
 
 export default {
     classes,
