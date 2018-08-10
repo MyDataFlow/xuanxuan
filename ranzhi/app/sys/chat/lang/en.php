@@ -4,10 +4,7 @@ $lang->chat->version     = 'Version';
 $lang->chat->key         = 'Secret';
 $lang->chat->systemGroup = 'System';
 
-$lang->chat->createKey      = 'New';
-$lang->chat->upgradeSuccess = 'Upgrade success.';
-$lang->chat->upgradeFail    = 'Upgrade fail.';
-$lang->chat->latestVersion  = 'Xuanxuan is already the latest version.';
+$lang->chat->createKey = 'New';
 
 $lang->chat->notAdmin         = 'You are not admin of chat.';
 $lang->chat->notSystemChat    = 'It is not a system chat.';

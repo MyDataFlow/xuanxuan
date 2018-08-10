@@ -9,7 +9,7 @@ ob_start();
 define('RUN_MODE', 'upgrade');
 
 /* Load the framework. */
-include '../framework/xuanxuan.class.php';
+include '../framework/router.class.php';
 include '../framework/control.class.php';
 include '../framework/model.class.php';
 include '../framework/helper.class.php';
@@ -19,9 +19,22 @@ $startTime = getTime();
 
 /* Run the app. */
 $appName = 'sys';
-$app     = xuanxuan::createApp($appName, '', 'xuanxuan');
+$app     = router::createApp($appName);
 $common  = $app->loadCommon();
-$common->loadModel('chat')->upgrade();
+
+/* Reset the config params to make sure the upgrade program will be lauched. */
+$config->set('requestType',    'GET');
+$config->set('default.module', 'upgrade');
+$config->set('default.method', 'upgradeXuanxuan');
+$app->setDebug();
+
+/* Check the installed version is the latest or not. */
+$config->installedVersion = $common->loadModel('upgrade')->getXuanxuanVersion();
+if(version_compare($config->xuanxuan->version, $config->installedVersion, '<=')) die(header('location: ../index.php'));
+
+/* Run it. */
+$app->parseRequest();
+$app->loadModule();
 
 /* Flush the buffer. */
 echo helper::removeUTF8Bom(ob_get_clean());
