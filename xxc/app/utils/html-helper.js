@@ -60,7 +60,7 @@ export const isWebUrl = url => {
     return (/^(https?):\/\/[-A-Za-z0-9\u4e00-\u9fa5+&@#/%?=~_|!:,.;]+[-A-Za-z0-9\u4e00-\u9fa5+&@#/%=~_|]$/ig).test(url);
 };
 
-export const formatLinkInText = (text) => {
+export const linkify = (text) => {
     return (text || "").replace(
         /([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi,
         (match, space, url) => {

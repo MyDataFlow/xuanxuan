@@ -22,7 +22,7 @@ import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
-import {strip, formatLinkInText} from '../../utils/html-helper';
+import {strip, linkify} from '../../utils/html-helper';
 import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
 import {registerCommand, executeCommand} from '../commander';
@@ -546,7 +546,7 @@ const renderChatMessageContent = (messageContent, {renderMarkdown = false}) => {
         if (renderMarkdown) {
             messageContent = Markdown(messageContent);
         } else {
-            messageContent = formatLinkInText(strip(messageContent));
+            messageContent = linkify(strip(messageContent));
         }
         messageContent = Emojione.toImage(messageContent);
         if (onRenderChatMessageContentListener) {
