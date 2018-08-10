@@ -112,7 +112,7 @@ func DBDeleteSendfail(server string, gid map[int][]string) {
     for userID, gids := range gid {
         if len(gids) > 0 {
             in := "'" + strings.Join(gids, "','") + "'"
-            _, err := DBConn.Exec("DELETE FROM sendfail WHERE `server` = '" + server + "' AND `userID` = " + string(userID) + " AND `gid` IN (" + in + ")")
+            _, err := DBConn.Exec("DELETE FROM sendfail WHERE `server` = '" + server + "' AND `userID` = " + Int2String(userID) + " AND `gid` IN (" + in + ")")
             if err != nil {
                 LogError().Println("SQLite DELETE sendfail messages error:", err)
             }
