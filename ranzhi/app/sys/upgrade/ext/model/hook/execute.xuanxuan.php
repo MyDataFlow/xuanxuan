@@ -13,7 +13,7 @@ else
         case '1.1.1' : $this->execSQL($this->getUpgradeFile('xuanxuan1.1.1'));
         case '1.3.0' : $this->execSQL($this->getUpgradeFile('xuanxuan1.3.0'));
         case '1.4.0' : $this->execSQL($this->getUpgradeFile('xuanxuan1.4.0'));
-        case '1.5.0' : $this->execSQL($this->getUpgradeFile('xuanxuan1.5.0'));
+        case '1.5.0' :
         case '1.6.0' : $this->execSQL($this->getUpgradeFile('xuanxuan1.6.0'));
         default : $this->loadModel('setting')->setItem('system.sys.xuanxuan.global.version', $this->config->xuanxuan->version);
     }
