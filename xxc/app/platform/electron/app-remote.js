@@ -1,6 +1,4 @@
 import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain, dialog} from 'electron';
-import fs from 'fs-extra';
-import path from 'path';
 import Lang from '../../lang';
 import Config from '../../config';
 import EVENT from './remote-events';

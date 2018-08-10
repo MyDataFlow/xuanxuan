@@ -22,7 +22,7 @@ import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
-import {strip} from '../../utils/html-helper';
+import {strip, linkify, escape} from '../../utils/html-helper';
 import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
 import {registerCommand, executeCommand} from '../commander';
@@ -546,7 +546,7 @@ const renderChatMessageContent = (messageContent, {renderMarkdown = false}) => {
         if (renderMarkdown) {
             messageContent = Markdown(messageContent);
         } else {
-            messageContent = strip(messageContent);
+            messageContent = linkify(escape(messageContent));
         }
         messageContent = Emojione.toImage(messageContent);
         if (onRenderChatMessageContentListener) {
@@ -639,7 +639,7 @@ addContextMenuCreator('message.text', ({message}) => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                let copyHtmlText = message._renderedTextContent;
+                let copyHtmlText = message.isPlainTextContent ? message.content : message._renderedTextContent;
                 if (copyHtmlText === undefined) {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
                     if (contentElement) {
@@ -650,7 +650,7 @@ addContextMenuCreator('message.text', ({message}) => {
                     copyHtmlText = message.renderedTextContent(renderChatMessageContent, linkMembersInText);
                 }
                 if (Platform.clipboard.write) {
-                    Platform.clipboard.write({text: strip(copyHtmlText), html: copyHtmlText});
+                    Platform.clipboard.write({text: message.isPlainTextContent ? copyHtmlText : strip(copyHtmlText), html: copyHtmlText});
                 } else {
                     (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(copyHtmlText);
                 }
