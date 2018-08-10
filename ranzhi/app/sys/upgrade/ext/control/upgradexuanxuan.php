@@ -22,7 +22,7 @@ class upgrade extends control
             $this->view->errors = $this->upgrade->getError();
         }
 
-        $this->view->title = $this->lang->upgrade->result;
+        $this->view->title = $this->lang->upgrade->upgradeXuanxuan;
         $this->display('upgrade', 'execute');
     }
 }
