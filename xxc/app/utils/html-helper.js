@@ -45,12 +45,13 @@ export const getSearchParam = (key, search = null) => {
 };
 
 export const strip = html => {
-    if (typeof document !== 'undefined') {
-        const tmp = document.createElement('DIV');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
-    }
     return html.replace(/<(?:.|\n)*?>/gm, '');
+};
+
+export const escape = html => {
+    const tmp = document.createElement('DIV');
+    tmp.innerText = html;
+    return tmp.innerHTML || '';
 };
 
 export const isWebUrl = url => {
