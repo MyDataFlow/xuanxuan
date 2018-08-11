@@ -1,25 +1,14 @@
-import pkg from '../package.json';
-import ZhcnLang from './zh-cn.json';
-import StringHelper from '../utils/string-helper';
+import Config from 'Config';
+import LANG_ZH_CN from './zh-cn.json';
+import {format} from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
-let langData = Object.assign({}, ZhcnLang);
-langData['app.company'] = pkg.company;
 const currentLangName = DEFAULT_LANG;
-
-const initLangData = data => {
-    const appTitle = langData['app.title'];
-    Object.keys(data).forEach(key => {
-        data[key] = data[key].replace(/\$\{title\}/g, appTitle);
-    });
-};
-
-initLangData(langData);
+let langData = Object.assign({}, LANG_ZH_CN, Config.lang[currentLangName]);
 
 const update = (newLangData) => {
     langData = Object.assign(langData, newLangData);
-    initLangData(langData);
 };
 
 /**
@@ -75,12 +64,14 @@ const error = err => {
         message = StringHelper.format(message, ...err.formats);
     }
     if (DEBUG) {
-        console.error('lang.error()', err);
+        console.collapse('LANG.error', message);
+        console.error(err);
+        console.groupEnd();
     }
     return message;
 };
 
-const lang = {
+export default {
     update,
     format,
     string,
@@ -94,7 +85,3 @@ const lang = {
         return currentLangName;
     }
 };
-
-if (DEBUG) global.$.Lang = lang;
-
-export default lang;
