@@ -1,6 +1,6 @@
 import Config from 'Config';
 import LANG_ZH_CN from './zh-cn.json';
-import {format} from '../utils/string-helper';
+import {format as formatString} from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
@@ -32,7 +32,7 @@ const format = (name, ...args) => {
     const str = string(name);
     if (args && args.length) {
         try {
-            return StringHelper.format(str, ...args);
+            return formatString(str, ...args);
         } catch (e) {
             throw new Error(`Cannot format lang string with key '${name}', the lang string is '${str}'.`);
         }
@@ -61,10 +61,10 @@ const error = err => {
         if (!Array.isArray(err.formats)) {
             err.formats = [err.formats];
         }
-        message = StringHelper.format(message, ...err.formats);
+        message = formatString(message, ...err.formats);
     }
     if (DEBUG) {
-        console.collapse('LANG.error', message);
+        console.collapse('LANG.error', 'redBg', message, 'redPale');
         console.error(err);
         console.groupEnd();
     }

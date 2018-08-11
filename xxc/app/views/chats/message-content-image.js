@@ -34,7 +34,6 @@ class MessageContentImage extends Component {
             download: null,
             url: message.attachFile ? message.attachFile.viewUrl : ''
         };
-        console.log('message.attachFile', message.attachFile);
     }
 
     componentDidMount() {
