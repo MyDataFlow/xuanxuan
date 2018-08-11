@@ -18,8 +18,9 @@ const platformMap = {
     '*': 'all',
     skipbuild: 'skipbuild'
 };
+
 const osPlatform = os.platform();
-let configName = process.argv[2];
+let configName = process.argv[7] || process.argv[2];
 if (!configName || configName === '-') {
     const defaultConfig = fse.readJsonSync('./build/build-config.default.json', {throws: false});
     if (defaultConfig) {
@@ -32,6 +33,7 @@ if (!platform || platform === '-') {
     platform = os.platform();
 }
 platform = platformMap[platform];
+const isSkipBuild = platform === 'skipbuild';
 let pkgArch = process.argv[4] || os.arch();
 if (!pkgArch || pkgArch === '-') {
     pkgArch = os.arch();
@@ -59,12 +61,12 @@ const config = Object.assign({
     resourcePath: 'resources',
     mediaPath: 'media/',
     copyOriginMedia: true,
-    buildVersion
+    buildVersion,
 }, (configName && configName !== '-') ? require(configName.includes('/') ? configName : `./build-config.${configName}.json`) : null);
 
 console.log('\nBuildConfig > config', config);
 
-const appPkg = {
+const appPkg = Object.assign({
     name: config.name,
     productName: config.name,
     displayName: config.productName,
@@ -78,8 +80,9 @@ const appPkg = {
     bugs: config.bugs,
     repository: config.repository,
     buildTime: new Date(),
-    buildVersion: config.buildVersion
-};
+    buildVersion: config.buildVersion,
+    configurations: config.configurations
+}, config.pkg || null);
 
 const electronBuilder = {
     productName: config.name,
@@ -151,60 +154,70 @@ const electronBuilder = {
     }
 };
 
-// 输出 electron builder 配置文件
-fse.outputJsonSync('./build/electron-builder.json', electronBuilder, {spaces: 4});
-console.log('\n\nBuildConfig > electron-builder.json generated success.');
+const outputConfigFiles = () => {
+    // 输出 electron builder 配置文件
+    fse.outputJsonSync('./build/electron-builder.json', electronBuilder, {spaces: 4});
+    console.log('\nBuildConfig > electron-builder.json generated success.');
+    
+    // 输出应用 package.json 文件
+    if (!isSkipBuild) {
+        fse.outputJsonSync('./app/package.json', Object.assign({}, oldPkg, appPkg), {spaces: 4});
+        console.log('BuildConfig > app/package.json generated success.');
+    }
+    
+    fse.outputJsonSync('./app/manifest.json', {
+        name: config.productName,
+        start_url: 'index.html',
+        display: 'standalone',
+        background_color: '#fff',
+        theme_color: '#3f51b5',
+        description: config.description,
+        icons: [{
+            src: 'resources/icons/48x48.png',
+            sizes: '48x48',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/64x64.png',
+            sizes: '64x64',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/96x96.png',
+            sizes: '96x96',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/128x128.png',
+            sizes: '128x128',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/144x144.png',
+            sizes: '144x144',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/256x256.png',
+            sizes: '256x256',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+        }],
+    }, {spaces: 4});
+    console.log('BuildConfig > app/manifest.json generated success.');
+}
 
-// 输出应用 package.json 文件
-fse.outputJsonSync('./app/package.json', Object.assign(oldPkg, appPkg), {spaces: 4});
-console.log('\n\nBuildConfig > app/package.json generated success.');
+const revertConfigFiles = () => {
+    fse.outputJsonSync('./app/package.json', oldPkg, {spaces: 4});
+    console.log('\nBuildConfig > app/package.json reverted.');
+};
 
-fse.outputJsonSync('./app/manifest.json', {
-    name: config.productName,
-    start_url: 'index.html',
-    display: 'standalone',
-    background_color: '#fff',
-    theme_color: '#3f51b5',
-    description: config.description,
-    icons: [{
-        src: 'resources/icons/48x48.png',
-        sizes: '48x48',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/64x64.png',
-        sizes: '64x64',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/96x96.png',
-        sizes: '96x96',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/128x128.png',
-        sizes: '128x128',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/144x144.png',
-        sizes: '144x144',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/192x192.png',
-        sizes: '192x192',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/256x256.png',
-        sizes: '256x256',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/512x512.png',
-        sizes: '512x512',
-        type: 'image/png'
-    }],
-}, {spaces: 4});
-console.log('\n\nBuildConfig > app/manifest.json generated success.');
 
 // type 可以为 '', 'debug' 或 'browser'
 const buildApp = (isDebugMode = isDebug) => {
-    console.log('\n\nBuildConfig > build app ', isDebug ? '[debug]' : '');
+    console.log('\nBuildConfig > build app ', isDebug ? '[debug]' : '');
     return new Promise((resolve, reject) => {
         spawn('npm', ['run', isDebugMode ? 'build-debug' : 'build'], {shell: true, env: process.env, stdio: 'inherit'})
             .on('close', code => resolve(code))
@@ -213,7 +226,7 @@ const buildApp = (isDebugMode = isDebug) => {
 };
 
 const createPackage = (osType, arch, debug = isDebug) => {
-    console.log('\n\nBuildConfig > create package: ', 'os=', osType, 'arch=', arch, 'debug=', debug);
+    console.log('\nBuildConfig > create package: ', 'os=', osType, 'arch=', arch, 'debug=', debug);
     return new Promise((resolve, reject) => {
         const params = [`--${osType}`];
         if (arch) {
@@ -234,13 +247,16 @@ const createPackage = (osType, arch, debug = isDebug) => {
     });
 };
 
-const build = async () => {
+const build = async (callback) => {
     if (config.copyOriginMedia && config.mediaPath !== 'media/') {
         await fse.emptyDir('./app/media-build');
         await fse.copy('./app/media', './app/media-build', {overwrite: true});
         await fse.copy(config.mediaPath, './app/media-build', {overwrite: true});
     }
     await buildApp();
+
+    revertConfigFiles();
+
     const buildPlatforms = platform === 'all' ? ['win', 'mac', 'linux'] : [platform];
     const archTypes = pkgArch === 'all' ? ['x64', 'ia32'] : (pkgArch.includes('32') ? ['ia32'] : ['x64']);
     for (let i = 0; i < buildPlatforms.length; ++i) {
@@ -251,9 +267,17 @@ const build = async () => {
             await createPackage(buildPlatforms[i], archTypes[j]);
         }
     }
+
+    const packagesPath = path.join(__dirname, '../release', config.name === 'xuanxuan' ? '' : configName);
+    console.log(`\nBuildConfig > All package build success, you can find your packages in "${packagesPath}".`);
+
+    if (callback) {
+        callback();
+    }
 };
 
-if (platform !== 'skipbuild') {
+outputConfigFiles();
+
+if (!isSkipBuild) {
     build();
 }
-
