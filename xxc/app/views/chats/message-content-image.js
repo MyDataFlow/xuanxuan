@@ -34,6 +34,7 @@ class MessageContentImage extends Component {
             download: null,
             url: message.attachFile ? message.attachFile.viewUrl : ''
         };
+        console.log('message.attachFile', message.attachFile);
     }
 
     componentDidMount() {
@@ -76,7 +77,8 @@ class MessageContentImage extends Component {
         showContextMenu('image', {
             event,
             url: this.state.url || this.imageUrl,
-            dataType: this.imageType
+            dataType: this.imageType,
+            file: this.props.message.attachFile
         });
     };
 
