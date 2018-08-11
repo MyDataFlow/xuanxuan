@@ -1,5 +1,5 @@
-import Config from 'Config';
 import Platform from 'Platform';
+import Config from '../../config';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import InputControl from '../../components/input-control';

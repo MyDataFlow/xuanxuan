@@ -1,5 +1,5 @@
 import Platform from 'Platform'; // eslint-disable-line
-import Config from 'Config'; // eslint-disable-line
+import Config from '../config'; // eslint-disable-line
 import Server from './server';
 import MemberProfileDialog from '../views/common/member-profile-dialog';
 import Messager from '../components/messager';

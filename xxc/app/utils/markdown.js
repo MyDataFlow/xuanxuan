@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../config';
 import Marked from 'marked';
 import HighlightJS from 'highlight.js';
 import HTMLParser from 'fast-html-parser';

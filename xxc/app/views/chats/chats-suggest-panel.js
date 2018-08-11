@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import Config from 'Config';
+import Config from '../../config';
 import {classes} from '../../utils/html-helper';
 import App from '../../core';
 import replaceViews from '../replace-views';

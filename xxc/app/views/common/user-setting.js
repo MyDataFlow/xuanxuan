@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Platform from 'Platform';
-import Config from 'Config';
+import Config from '../../config';
 import {classes} from '../../utils/html-helper';
 import {formatKeyDecoration} from '../../utils/shortcut';
 import HotkeyInputControl from '../../components/hotkey-input-control';

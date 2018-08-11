@@ -1,5 +1,5 @@
 import React from 'react';
-import Config from 'Config';
+import Config from '../../config';
 import Popover from '../../components/popover';
 import Icon from '../../components/icon';
 import App from '../../core';

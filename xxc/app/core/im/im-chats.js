@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../../config';
 import Md5 from 'md5';
 import Chat from '../models/chat';
 import ChatMessage from '../models/chat-message';

@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../../config';
 import ChatMessage from './chat-message';
 import Member from './member';
 import stringHelper from '../../utils/string-helper';

@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../../config';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {classes} from '../../utils/html-helper';

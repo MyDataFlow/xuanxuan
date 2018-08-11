@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../config';
 
 if (typeof DEBUG === 'undefined') {
     global.DEBUG = process.env.NODE_ENV === 'debug' || process.env.NODE_ENV === 'development';
