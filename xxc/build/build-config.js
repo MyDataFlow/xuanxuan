@@ -27,6 +27,7 @@ if (!configName || configName === '-') {
         configName = defaultConfig && defaultConfig.name;
     }
 }
+const isCustomConfig = configName && configName !== '-';
 
 let platform = process.argv[3] || osPlatform;
 if (!platform || platform === '-') {
@@ -62,7 +63,7 @@ const config = Object.assign({
     mediaPath: 'media/',
     copyOriginMedia: true,
     buildVersion,
-}, (configName && configName !== '-') ? require(configName.includes('/') ? configName : `./build-config.${configName}.json`) : null);
+}, isCustomConfig ? (configName.includes('/') ? require(configName) : fse.readJsonSync(`./build/build-config.${configName}.json`, {throws: false})) : null, isCustomConfig ? fse.readJsonSync(`./build/build.${configName}/build-config.json`, {throws: false}) : null);
 
 console.log('\nBuildConfig > config', config);
 
