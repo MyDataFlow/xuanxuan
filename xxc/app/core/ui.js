@@ -395,6 +395,9 @@ setTitle(Lang.string('app.title'));
 const urlMetaCaches = {};
 const maxUrlCacheSize = 20;
 export const getUrlMeta = (url, disableCache = false) => {
+    if (!Config.ui['chat.urlInspector']) {
+        return Promise.resolve({url, title: url});
+    }
     if (!disableCache) {
         const urlMetaCache = urlMetaCaches[url];
         if (urlMetaCache) {

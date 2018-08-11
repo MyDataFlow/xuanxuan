@@ -4,5 +4,6 @@
     "chat.flow.size": 20,
     "chat.markdown.html": true,
     "hotkey.sendMessageOptions": ["Enter", "Alt+Enter", "Ctrl+Enter", "Shift+Enter", "Ctrl+Shift+Enter", "Ctrl+Alt+Enter"],
-    "chat.suggestPanelShowTime": 10000
+    "chat.suggestPanelShowTime": 10000,
+    "chat.urlInspector": true
 }
