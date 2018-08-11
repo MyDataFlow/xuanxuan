@@ -7,7 +7,7 @@ const getOptions = options => {
     return optionsFilter ? optionsFilter(options) : options;
 };
 
-const request = (url, options) => {
+export const request = (url, options) => {
     return new Promise((resolve, reject) => {
         options = getOptions(options);
         fetch(url, options).then(response => {
@@ -45,13 +45,13 @@ const request = (url, options) => {
     });
 };
 
-const getText = (url, options) => {
+export const getText = (url, options) => {
     return request(url, options).then(response => {
         return response.text();
     });
 };
 
-const postText = (url, options) => {
+export const postText = (url, options) => {
     if (options instanceof FormData) {
         options = {body: options};
     }
@@ -61,13 +61,13 @@ const postText = (url, options) => {
 };
 
 
-const getJSON = (url, options) => {
+export const getJSON = (url, options) => {
     return request(url, options).then(response => {
         return response.json();
     });
 };
 
-const postJSON = (url, options) => {
+export const postJSON = (url, options) => {
     if (options instanceof FormData) {
         options = {body: options};
     }
@@ -76,7 +76,7 @@ const postJSON = (url, options) => {
     });
 };
 
-const getJSONData = (url, options) => {
+export const getJSONData = (url, options) => {
     return getJSON(url, options).then(json => {
         if (json) {
             const jsonResult = json.status || json.result;
@@ -95,7 +95,7 @@ const getJSONData = (url, options) => {
     });
 };
 
-const postJSONData = (url, options) => {
+export const postJSONData = (url, options) => {
     if (options instanceof FormData) {
         options = {body: options};
     }
@@ -104,7 +104,7 @@ const postJSONData = (url, options) => {
     }, options));
 };
 
-const downloadFile = (url, beforeSend, onprogress) => {
+export const downloadFile = (url, beforeSend, onprogress) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = e => {
@@ -158,7 +158,7 @@ const downloadFile = (url, beforeSend, onprogress) => {
  * @param {Function} beforeSend
  * @param {Function} onProgress
  */
-const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
+export const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = e => {
@@ -217,15 +217,15 @@ const uploadFile = (file, serverUrl, beforeSend = null, onProgress = null) => {
     });
 };
 
-const timeout = (promise, timeout = TIMEOUT_DEFAULT, errorText = 'timeout') => {
+export const timeout = (promise, timeout = TIMEOUT_DEFAULT, errorText = 'timeout') => {
     return limitTimePromise(promise, timeout, errorText);
 };
 
-const setFetchObject = fObj => {
+export const setFetchObject = fObj => {
     fetch = fObj;
 };
 
-const setOptionsFileter = filter => {
+export const setOptionsFileter = filter => {
     optionsFilter = filter;
 };
 

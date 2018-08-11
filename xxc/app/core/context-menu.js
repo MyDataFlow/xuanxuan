@@ -187,6 +187,7 @@ export const showContextMenu = (contextName, context) => {
         console.collapse('ContextMenu', 'greenBgLight', contextName, 'greenPale');
         console.log('context', context);
         console.log('items', items);
+        console.log('contextMenuCreators', contextMenuCreators);
         console.groupEnd();
     }
 
