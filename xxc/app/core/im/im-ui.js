@@ -639,7 +639,7 @@ addContextMenuCreator('message.text', ({message}) => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                let copyHtmlText = message.isPlainTextContent ? message.content : message._renderedTextContent;
+                let copyHtmlText = message.isPlainTextContent ? message.content : null;
                 let copyPlainText = message.content;
                 if (copyHtmlText === undefined) {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
