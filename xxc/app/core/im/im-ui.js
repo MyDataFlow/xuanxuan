@@ -640,10 +640,12 @@ addContextMenuCreator('message.text', ({message}) => {
             label: Lang.string('chat.message.copy'),
             click: () => {
                 let copyHtmlText = message.isPlainTextContent ? message.content : message._renderedTextContent;
+                let copyPlainText = message.content;
                 if (copyHtmlText === undefined) {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
                     if (contentElement) {
                         copyHtmlText = contentElement.innerHTML;
+                        copyHtmlText = contentElement.innerText;
                     }
                 }
                 if (copyHtmlText === undefined) {
@@ -651,8 +653,10 @@ addContextMenuCreator('message.text', ({message}) => {
                 }
                 if (Platform.clipboard.write) {
                     Platform.clipboard.write({text: message.isPlainTextContent ? copyHtmlText : strip(copyHtmlText), html: copyHtmlText});
-                } else {
-                    (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(copyHtmlText);
+                } else if (Platform.clipboard.writeHTML) {
+                    Platform.clipboard.writeHTML(copyHtmlText);
+                } else if (Platform.clipboard.writeText) {
+                    Platform.clipboard.writeText(copyPlainText);
                 }
             }
         });
