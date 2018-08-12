@@ -106,7 +106,7 @@ export default class MessageContentUrl extends PureComponent {
                             if (this.webview && this.webview.webview && this.webview.webview.openDevTools) {
                                 this.webview.webview.openDevTools();
                             } else if (DEBUG) {
-                                consle.warn('Cannot open dev tools for current webview.');
+                                console.warn('Cannot open dev tools for current webview.');
                             }
                         },
                         icon: 'mdi-auto-fix'

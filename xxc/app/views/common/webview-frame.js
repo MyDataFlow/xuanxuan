@@ -83,25 +83,25 @@ export default class WebViewFrame extends Component {
     };
 
     handleStopBtnClick = () => {
-        if (this.webview && this.webview.webview) {
+        if (this.webview && this.webview.webview && this.webview.webview.stop) {
             this.webview.webview.stop();
         }
     };
 
     handleGoBackBtnClick = () => {
-        if (this.webview && this.webview.webview) {
+        if (this.webview && this.webview.webview && this.webview.webview.goBack) {
             this.webview.webview.goBack();
         }
     };
 
     handleGoForwardBtnClick = () => {
-        if (this.webview && this.webview.webview) {
+        if (this.webview && this.webview.webview && this.webview.webview.goForward) {
             this.webview.webview.goForward();
         }
     };
 
     handleOpenBtnClick = () => {
-        if (this.webview && this.webview.webview) {
+        if (this.webview && this.webview.webview && this.webview.webview.getURL) {
             openUrlInBrowser(this.webview.webview.getURL());
         } else {
             openUrlInBrowser(this.props.src);
@@ -146,8 +146,8 @@ export default class WebViewFrame extends Component {
                 <nav className="nav" style={{marginRight: 40}}>
                     {DEBUG ? <a onClick={this.handleDevBtnClick}>{Icon.render('auto-fix')}</a> : null}
                     <a onClick={this.handleOpenBtnClick}>{Icon.render('open-in-new')}</a>
-                    <a className={webview && webview.canGoBack() ? '' : 'disabled'} onClick={this.handleGoBackBtnClick}>{Icon.render('arrow-left')}</a>
-                    <a className={webview && webview.canGoForward() ? '' : 'disabled'} onClick={this.handleGoForwardBtnClick}>{Icon.render('arrow-right')}</a>
+                    <a className={webview && webview.canGoBack && webview.canGoBack() ? '' : 'disabled'} onClick={this.handleGoBackBtnClick}>{Icon.render('arrow-left')}</a>
+                    <a className={webview && webview.canGoForward && webview.canGoForward() ? '' : 'disabled'} onClick={this.handleGoForwardBtnClick}>{Icon.render('arrow-right')}</a>
                     {this.state.loading ? <a onClick={this.handleStopBtnClick}>{Icon.render('close-circle-outline')}</a> : <a onClick={this.handleReloadBtnClick}>{Icon.render('reload')}</a>}
                     {displayId ? <a onClick={this.handleMaximizeBtnClick}>{Icon.render(isMaximize ? 'window-restore' : 'window-maximize')}</a> : null}
                 </nav>

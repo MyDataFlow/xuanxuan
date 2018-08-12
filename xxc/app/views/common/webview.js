@@ -277,7 +277,7 @@ export default class WebView extends Component {
             }
         }
 
-        this.setState({domReady: true});
+        this.setState({domReady: true, loading: false});
     };
 
     render() {
@@ -297,7 +297,7 @@ export default class WebView extends Component {
         if (isWebview) {
             webviewHtml = `<webview id="${this.webviewId}" src="${src}" class="dock fluid-v fluid" ${options && options.nodeintegration ? 'nodeintegration' : ''} ${options && options.preload ? (` preload="${options.preload}"`) : ''} />`;
         } else {
-            webviewHtml = `<iframe id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
+            webviewHtml = `<iframe sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-scripts" id="${this.webviewId}" src="${src}" scrolling="auto" allowtransparency="true" hidefocus frameborder="0" class="dock fluid-v fluid" />`;
         }
         if (this.state.errorCode) {
             webviewHtml += `<div class="dock box gray"><h1>ERROR ${this.state.errorCode}</h1><h2>${src}</h2><div>${this.state.errorDescription}</div></div>`;
