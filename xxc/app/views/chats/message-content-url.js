@@ -99,11 +99,15 @@ export default class MessageContentUrl extends PureComponent {
                     url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
                     icon: 'mdi-open-in-app'
                 });
-                if (DEBUG && content.type !== 'iframe' && this.webview.webview.openDevTools) {
+                if (DEBUG && content.type !== 'iframe') {
                     card.menu.push({
                         label: Lang.string('ext.app.openDevTools'),
                         click: () => {
-                            this.webview.webview.openDevTools();
+                            if (this.webview && this.webview.webview && this.webview.webview.openDevTools) {
+                                this.webview.webview.openDevTools();
+                            } else if (DEBUG) {
+                                consle.warn('Cannot open dev tools for current webview.');
+                            }
                         },
                         icon: 'mdi-auto-fix'
                     });
