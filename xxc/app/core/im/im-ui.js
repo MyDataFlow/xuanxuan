@@ -641,7 +641,7 @@ addContextMenuCreator('message.text', ({message}) => {
             click: () => {
                 let copyHtmlText = message.isPlainTextContent ? message.content : null;
                 let copyPlainText = message.content;
-                if (copyHtmlText === undefined) {
+                if (copyHtmlText === null) {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
                     if (contentElement) {
                         copyHtmlText = contentElement.innerHTML;
