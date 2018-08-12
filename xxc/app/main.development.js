@@ -1,6 +1,5 @@
 import {app as ElectronApp, Menu, shell} from 'electron';
-import Config from './config';
-import DEBUG from './utils/debug';
+import pkg from './package.json';
 import application from './platform/electron/app-remote';
 import Lang from './lang';
 
@@ -28,7 +27,7 @@ ElectronApp.on('window-all-closed', () => {
 const installExtensions = async () => {
     if (process.env.SKIP_INSTALL_EXTENSIONS) {
         console.log('>> Install electron development extensions. SKIPED.');
-        return;
+        return; 
     }
     console.log('>> Install electron development extensions. This will take a few minutes. If it take too long time, try close the terminal window and skip install extension by execute command "npm run start-hot-fast".');
     if (process.env.NODE_ENV === 'development') {
@@ -157,7 +156,7 @@ const createMenu = () => {
             submenu: [{
                 label: Lang.string('menu.website'),
                 click() {
-                    shell.openExternal(Config.pkg.homepage);
+                    shell.openExternal(pkg.homepage);
                 }
             }, {
                 label: Lang.string('menu.project'),
@@ -208,9 +207,9 @@ ElectronApp.on('activate', () => {
 if (typeof ElectronApp.setAboutPanelOptions === 'function') {
     ElectronApp.setAboutPanelOptions({
         applicationName: Lang.title,
-        applicationVersion: Config.pkg.version,
+        applicationVersion: pkg.version,
         copyright: 'Copyright (C) 2017 cnezsoft.com',
-        credits: `Licence: ${Config.pkg.license}`,
+        credits: `Licence: ${pkg.license}`,
         version: DEBUG ? '[debug]' : ''
     });
 }

@@ -1,8 +1,13 @@
 import electron, {BrowserWindow, app as ElectronApp, Tray, Menu, nativeImage, globalShortcut, ipcMain, dialog} from 'electron';
 import Lang from '../../lang';
-import Config from '../../config';
 import EVENT from './remote-events';
 import Events from './events';
+
+if (typeof DEBUG === 'undefined') {
+    global.DEBUG = process.env.NODE_ENV === 'debug' || process.env.NODE_ENV === 'development';
+} else {
+    global.DEBUG = DEBUG;
+}
 
 const IS_MAC_OSX = process.platform === 'darwin';
 const SHOW_LOG = DEBUG;
@@ -36,6 +41,7 @@ const INPUT_MENU = Menu.buildFromTemplate([
 class AppRemote {
     constructor() {
         this.windows = {};
+        this.appConfig = {};
 
         // Bind events
         ipcMain.on(EVENT.app_quit, e => {
@@ -94,6 +100,16 @@ class AppRemote {
             if (SHOW_LOG) console.log('\n>> REMOTE EVENT emit', eventId);
         });
 
+        ipcMain.on(EVENT.app_ready, (e, config) => {
+            Object.assign(this.appConfig, config);
+            const langInConfig = config.lang && config.lang[Lang.name];
+            if (langInConfig) {
+                Lang.update(langInConfig);
+            }
+            this.initTrayIcon();
+            if (SHOW_LOG) console.log('\n>> App ready.', config);
+        });
+
         ElectronApp.setName(Lang.string('app.title'));
     }
 
@@ -108,7 +124,6 @@ class AppRemote {
 
     ready() {
         this.openMainWindow();
-        this.initTrayIcon();
     }
 
     initTrayIcon() {
@@ -116,7 +131,7 @@ class AppRemote {
             this.tray.destroy();
         }
         // Make tray icon
-        const tray = new Tray(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`);
+        const tray = new Tray(`${this.entryPath}/${this.appConfig.media['image.path']}tray-icon-16.png`);
         const trayContextMenu = Menu.buildFromTemplate([
             {
                 label: Lang.string('common.open'),
@@ -139,8 +154,8 @@ class AppRemote {
         });
         this.tray = tray;
         this._trayIcons = [
-            nativeImage.createFromPath(`${this.entryPath}/${Config.media['image.path']}tray-icon-16.png`),
-            nativeImage.createFromPath(`${this.entryPath}/${Config.media['image.path']}tray-icon-transparent.png`)
+            nativeImage.createFromPath(`${this.entryPath}/${this.appConfig.media['image.path']}tray-icon-16.png`),
+            nativeImage.createFromPath(`${this.entryPath}/${this.appConfig.media['image.path']}tray-icon-transparent.png`)
         ];
         this._trayIconCounter = 0;
     }

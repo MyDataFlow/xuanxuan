@@ -1,5 +1,6 @@
 import {ipcRenderer} from 'electron';
 import EVENT from './remote-events';
+import Config from '../../config';
 
 if (process.type !== 'renderer') {
     if (DEBUG) console.error('\n>> Can not send event with ipc in main process, you can use AppRemote.sendToWindows method instead.');
@@ -155,6 +156,9 @@ const remoteOff = (...names) => {
 const onRequestQuit = listener => {
     return ipcOn(EVENT.remote_app_quit, listener);
 };
+
+// Send ready event
+ipcSend(EVENT.app_ready, Config);
 
 
 export default {

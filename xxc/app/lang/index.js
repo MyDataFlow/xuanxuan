@@ -1,11 +1,10 @@
-import Config from '../config';
 import LANG_ZH_CN from './zh-cn.json';
 import {format as formatString} from '../utils/string-helper';
 
 const DEFAULT_LANG = 'zh-cn';
 
 const currentLangName = DEFAULT_LANG;
-let langData = Object.assign({}, LANG_ZH_CN, Config.lang ? Config.lang[currentLangName] : null);
+let langData = Object.assign({}, LANG_ZH_CN);
 
 const update = (newLangData) => {
     langData = Object.assign(langData, newLangData);
