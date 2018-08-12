@@ -40,7 +40,7 @@ export default class WebViewFrame extends Component {
 
     componentDidMount() {
         const webview = this.webview.webview;
-        if (webview) {
+        if (webview && webview.addEventListener) {
             webview.addEventListener('page-favicon-updated', this.handleFaviconUpdated);
         }
     }

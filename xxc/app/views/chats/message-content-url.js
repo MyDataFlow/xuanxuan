@@ -99,7 +99,7 @@ export default class MessageContentUrl extends PureComponent {
                     url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
                     icon: 'mdi-open-in-app'
                 });
-                if (DEBUG && content.type !== 'iframe') {
+                if (DEBUG && content.type !== 'iframe' && this.webview.webview.openDevTools) {
                     card.menu.push({
                         label: Lang.string('ext.app.openDevTools'),
                         click: () => {

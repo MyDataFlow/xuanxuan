@@ -645,7 +645,7 @@ addContextMenuCreator('message.text', ({message}) => {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
                     if (contentElement) {
                         copyHtmlText = contentElement.innerHTML;
-                        copyHtmlText = contentElement.innerText;
+                        copyPlainText = contentElement.innerText;
                     }
                 }
                 if (copyHtmlText === undefined) {
