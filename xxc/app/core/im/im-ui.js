@@ -216,7 +216,7 @@ addContextMenuCreator('chat.sendbox.toolbar', context => {
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
         click: e => {
             EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, emoji => {
-                sendContentToChat(`${Emojione.convert(emoji.unicode)} `);
+                sendContentToChat(`${Emojione.convert(emoji.unicode || Emojione.emojioneList[emoji.shortname].uc_base)} `);
             });
         }
     }];
