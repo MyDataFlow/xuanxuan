@@ -242,29 +242,19 @@ const createAppContextMenu = appExt => {
             }
         });
     }
-    if (!appExt.buildIn) {
+
+    if (!appExt.buildIn && !appExt.isRemote) {
         if (items.length && items[items.length - 1].type !== 'separator') {
             items.push({type: 'separator'});
         }
-        if (appExt.buildIn) {
-            items.push({
-                label: Lang.string('ext.cannotUninstallBuidIn'),
-                disabled: true,
-            });
-        } else if (appExt.isRemote) {
-            items.push({
-                label: Lang.string('ext.cannotUninstallRemote'),
-                disabled: true,
-            });
-        } else {
-            items.push({
-                label: Lang.string('ext.uninstall'),
-                click: () => {
-                    uninstallExtension(appExt);
-                }
-            });
-        }
+        items.push({
+            label: Lang.string('ext.uninstall'),
+            click: () => {
+                uninstallExtension(appExt);
+            }
+        });
     }
+
     if (items.length && items[items.length - 1].type !== 'separator') {
         items.push({type: 'separator'});
     }
