@@ -161,16 +161,25 @@ if (DEBUG) {
             console.group(...formatOutput(args));
         };
 
-        console.expand(`XuanXuan ${Config.pkg.version} DEBUG`, ['h1', 'pink', `border-bottom: 3px solid #e91e63; display: block; text-shadow: 1px 1px 1px #e91e63; padding: 0 40px; background-image: url(https://github.com/easysoft/xuanxuan/blob/master/xxc/resources/icon.png?raw=true); background-size: 24px 24px; background-repeat: no-repeat; background-position: 0 2px`]);
+        console.expand(`XuanXuan ${Config.pkg.version} DEBUG${Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : ''}`, ['h1', 'pink', `border-bottom: 3px solid #e91e63; display: block; text-shadow: 1px 1px 1px #e91e63; padding: 0 40px; background-image: url(https://github.com/easysoft/xuanxuan/blob/master/xxc/resources/icon.png?raw=true); background-size: 24px 24px; background-repeat: no-repeat; background-position: 0 2px`]);
         console.color('\t  Company: ', 'pinkLight', Config.pkg.company, 'pinkDark');
         console.color('\t  License: ', 'pinkLight', Config.pkg.license, 'pinkDark');
         console.color('\t   Github: ', 'pinkLight', 'https://github.com/easysoft/xuanxuan', 'pinkDark');
         console.color('\t Homepage: ', 'pinkLight', Config.pkg.homepage, 'pinkDark');
         console.color('\t   Issues: ', 'pinkLight', Config.pkg.bugs.url, 'pinkDark');
         if (process.versions) {
-            console.color('\t Electron: ', 'pinkLight', process.versions.electron, 'pinkDark');
+            if (process.versions.electron) {
+                console.color('\t Electron: ', 'pinkLight', process.versions.electron, 'pinkDark');
+            } else if (process.versions.nw) {
+                console.color('\t     NWJS: ', 'pinkLight', process.versions.nw, 'pinkDark');
+            }
             console.color('\t   NodeJS: ', 'pinkLight', process.versions.node, 'pinkDark');
-            console.color('\t   Chrome: ', 'pinkLight', process.versions.chrome, 'pinkDark');
+            if (process.versions.chrome) {
+                console.color('\t   Chrome: ', 'pinkLight', process.versions.chrome, 'pinkDark');
+            } else if (process.versions.chromium) {
+                console.color('\t Chromium: ', 'pinkLight', process.versions.chromium, 'pinkDark');
+            }
+            console.color('\t  modules: ', 'pinkLight', process.versions.modules, 'pinkDark');
             console.color('\t       V8: ', 'pinkLight', process.versions.v8, 'pinkDark');
         }
         if (process.arch) {
