@@ -408,7 +408,7 @@ export default class Extension {
             this.callModuleMethod('onDetach', this);
         }
         const {mainFile} = this;
-        if (mainFile && mainFile !== 'BUILD-IN') {
+        if (mainFile && mainFile !== 'BUILD-IN' && __non_webpack_require__.cache) {
             delete __non_webpack_require__.cache[mainFile]; // eslint-disable-line
         }
         this._module = null;
