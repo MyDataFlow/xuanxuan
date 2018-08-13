@@ -1,7 +1,7 @@
-import Config from 'Config';
+import Config from '../config';
 import Marked from 'marked';
 import HighlightJS from 'highlight.js';
-import HTMLParser from 'fast-html-parser';
+import HTMLParser from 'htmlparser';
 import Lang from '../lang';
 import {strip} from './html-helper';
 
@@ -76,6 +76,8 @@ const allowedTags = {
     summary: commonAttrs,
     caption: commonAttrs,
 };
+
+const htmlParserHandler = new HTMLParser.DefaultHandler();
 const sanitizer = tag => {
     const isCloseTag = tag.startsWith('</');
     if (isCloseTag) {
@@ -94,9 +96,11 @@ const sanitizer = tag => {
     }
 
     const filterResult = [`<${tagName}`];
-    const element = HTMLParser.parse(`${tag}</${tagName}>`);
-    const firstChild = element && element.firstChild;
-    const attrs = firstChild && firstChild.attributes;
+    
+    const parser = new HTMLParser.Parser(htmlParserHandler);
+    parser.parseComplete(`${tag}</${tagName}>`);
+    const firstChild = htmlParserHandler.dom && htmlParserHandler.dom[0];
+    const attrs = firstChild && firstChild.attribs;
     if (attrs) {
         Object.keys(attrs).forEach(attrName => {
             if (allowedRule.has(attrName)) {

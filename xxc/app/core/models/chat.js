@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../../config';
 import Entity from './entity';
 import Status from '../../utils/status';
 import Lang from '../../lang';

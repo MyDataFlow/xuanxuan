@@ -17,7 +17,6 @@ if (DEBUG) {
 const userDataPath = Remote.app.getPath('userData');
 const browserWindow = Remote.getCurrentWindow();
 
-
 let onRequestQuitListener = null;
 
 const createUserDataPath = (user, fileName, dirName = 'images') => {

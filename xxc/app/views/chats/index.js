@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Config from 'Config';
+import Config from '../../config';
 import {Route, Redirect} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import {classes} from '../../utils/html-helper';

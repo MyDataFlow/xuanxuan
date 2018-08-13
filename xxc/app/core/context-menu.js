@@ -184,7 +184,11 @@ export const showContextMenu = (contextName, context) => {
     const items = getMenuItemsForContext(contextName, context);
 
     if (DEBUG) {
-        console.log('Show ContextMenu for context', contextName, items);
+        console.collapse('ContextMenu', 'greenBgLight', contextName, 'greenPale');
+        console.log('context', context);
+        console.log('items', items);
+        console.log('contextMenuCreators', contextMenuCreators);
+        console.groupEnd();
     }
 
     if (items.length) {

@@ -1,5 +1,5 @@
 import WS from 'ws';
-import Config from 'Config';
+import Config from '../../config';
 import crypto from './crypto';
 import Status from '../../utils/status';
 

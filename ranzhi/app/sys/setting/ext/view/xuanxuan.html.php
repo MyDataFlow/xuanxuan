@@ -19,7 +19,7 @@
     <table class='table table-form w-p40'>
       <tr>
         <th class='w-80px'><?php echo $lang->chat->version;?></th>
-        <td><?php echo $config->xuanxuan->version;?></td>
+        <td><?php echo $config->xuanxuan->global->version;?></td>
         <td></td>
       </tr>
       <tr>

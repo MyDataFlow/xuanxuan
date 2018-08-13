@@ -22,7 +22,7 @@ import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
-import {strip} from '../../utils/html-helper';
+import {strip, linkify, escape} from '../../utils/html-helper';
 import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
 import {registerCommand, executeCommand} from '../commander';
@@ -216,7 +216,7 @@ addContextMenuCreator('chat.sendbox.toolbar', context => {
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
         click: e => {
             EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, emoji => {
-                sendContentToChat(`${Emojione.convert(emoji.unicode)} `);
+                sendContentToChat(`${Emojione.convert(emoji.unicode || Emojione.emojioneList[emoji.shortname].uc_base)} `);
             });
         }
     }];
@@ -546,7 +546,7 @@ const renderChatMessageContent = (messageContent, {renderMarkdown = false}) => {
         if (renderMarkdown) {
             messageContent = Markdown(messageContent);
         } else {
-            messageContent = strip(messageContent);
+            messageContent = linkify(escape(messageContent));
         }
         messageContent = Emojione.toImage(messageContent);
         if (onRenderChatMessageContentListener) {
@@ -639,20 +639,24 @@ addContextMenuCreator('message.text', ({message}) => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                let copyHtmlText = message._renderedTextContent;
-                if (copyHtmlText === undefined) {
+                let copyHtmlText = message.isPlainTextContent ? message.content : null;
+                let copyPlainText = message.content;
+                if (copyHtmlText === null) {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
                     if (contentElement) {
                         copyHtmlText = contentElement.innerHTML;
+                        copyPlainText = contentElement.innerText;
                     }
                 }
                 if (copyHtmlText === undefined) {
                     copyHtmlText = message.renderedTextContent(renderChatMessageContent, linkMembersInText);
                 }
                 if (Platform.clipboard.write) {
-                    Platform.clipboard.write({text: strip(copyHtmlText), html: copyHtmlText});
-                } else {
-                    (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(copyHtmlText);
+                    Platform.clipboard.write({text: message.isPlainTextContent ? copyHtmlText : strip(copyHtmlText), html: copyHtmlText});
+                } else if (Platform.clipboard.writeHTML) {
+                    Platform.clipboard.writeHTML(copyHtmlText);
+                } else if (Platform.clipboard.writeText) {
+                    Platform.clipboard.writeText(copyPlainText);
                 }
             }
         });

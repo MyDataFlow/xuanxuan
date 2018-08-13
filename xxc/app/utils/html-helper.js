@@ -45,12 +45,13 @@ export const getSearchParam = (key, search = null) => {
 };
 
 export const strip = html => {
-    if (typeof document !== 'undefined') {
-        const tmp = document.createElement('DIV');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
-    }
     return html.replace(/<(?:.|\n)*?>/gm, '');
+};
+
+export const escape = html => {
+    const tmp = document.createElement('DIV');
+    tmp.innerText = html;
+    return tmp.innerHTML || '';
 };
 
 export const isWebUrl = url => {
@@ -60,6 +61,18 @@ export const isWebUrl = url => {
     return (/^(https?):\/\/[-A-Za-z0-9\u4e00-\u9fa5+&@#/%?=~_|!:,.;]+[-A-Za-z0-9\u4e00-\u9fa5+&@#/%=~_|]$/ig).test(url);
 };
 
+export const linkify = (text) => {
+    return (text || "").replace(
+        /([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi,
+        (match, space, url) => {
+            var hyperlink = url;
+            if (!hyperlink.match('^https?:\/\/')) {
+                hyperlink = 'http://' + hyperlink;
+            }
+            return space + '<a href="' + hyperlink + '">' + url + '</a>';
+        }
+    );
+};
 
 export default {
     classes,

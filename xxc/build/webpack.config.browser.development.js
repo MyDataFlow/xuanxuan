@@ -56,7 +56,7 @@ export default merge(baseConfig, {
         mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
         alias: {
             Platform: 'platform/browser',
-            Config: 'config/index.js',
+            Config: 'config/',
             ExtsRuntime: 'platform/browser/exts.js',
             ExtsView: 'platform/browser/exts.js',
         },

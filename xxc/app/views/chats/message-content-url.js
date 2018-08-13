@@ -103,7 +103,11 @@ export default class MessageContentUrl extends PureComponent {
                     card.menu.push({
                         label: Lang.string('ext.app.openDevTools'),
                         click: () => {
-                            this.webview.webview.openDevTools();
+                            if (this.webview && this.webview.webview && this.webview.webview.openDevTools) {
+                                this.webview.webview.openDevTools();
+                            } else if (DEBUG) {
+                                console.warn('Cannot open dev tools for current webview.');
+                            }
                         },
                         icon: 'mdi-auto-fix'
                     });

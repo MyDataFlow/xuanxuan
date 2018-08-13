@@ -1,4 +1,4 @@
-const plain = (obj) => {
+export default (obj) => {
     if (obj === undefined) obj = this;
     if (Array.isArray(obj)) {
         return obj.map(plain);
@@ -18,5 +18,3 @@ const plain = (obj) => {
     if (objType === 'function') return;
     return obj;
 };
-
-export default plain;

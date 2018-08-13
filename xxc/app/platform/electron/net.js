@@ -6,7 +6,7 @@ import {createUserDataPath} from './ui';
 const downloadFileOrigin = network.downloadFile;
 const uploadFileOrigin = network.uploadFile;
 
-const downloadFileWithRequest = (user, url, fileSavePath, onProgress) => {
+export const downloadFileWithRequest = (url, fileSavePath, onProgress) => {
     return downloadFileOrigin(url, null, onProgress).then(fileBuffer => {
         const buffer = new Buffer(new Uint8Array(fileBuffer));
         return fse.outputFile(fileSavePath, buffer);
@@ -61,7 +61,7 @@ const downloadFile = (user, file, onProgress) => {
         }
 
         fse.ensureDirSync(Path.dirname(fileSavePath));
-        return downloadFileWithRequest(user, url, fileSavePath, onProgress).then(() => {
+        return downloadFileWithRequest(url, fileSavePath, onProgress).then(() => {
             if (DEBUG) {
                 console.collapse('HTTP DOWNLOAD', 'blueBg', url, 'bluePale', 'OK', 'greenPale');
                 console.log('file', file);

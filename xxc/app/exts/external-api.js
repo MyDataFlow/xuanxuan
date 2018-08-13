@@ -11,7 +11,7 @@ import compareVersions from 'compare-versions';
 import hotkeys from 'hotkeys-js';
 import pinyin from 'pinyin';
 import uuid from 'uuid';
-import HTMLParser from 'fast-html-parser';
+import HTMLParser from 'htmlparser';
 import platform from 'Platform';
 import components from '../components';
 import lang from '../lang';

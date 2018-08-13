@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import Config from 'Config';
+import Config from '../../config';
 import HTML from '../../utils/html-helper';
 import {Form as LoginForm} from './form';
 import {BuildInfo} from '../common/build-info';

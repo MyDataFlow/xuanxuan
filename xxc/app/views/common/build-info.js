@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import Config from 'Config';
+import Config from '../../config';
 import Platform from 'Platform';
 import DateHelper from '../../utils/date-helper';
 import replaceViews from '../replace-views';

@@ -242,7 +242,8 @@ const createAppContextMenu = appExt => {
             }
         });
     }
-    if (!appExt.buildIn) {
+
+    if (!appExt.buildIn && !appExt.isRemote) {
         if (items.length && items[items.length - 1].type !== 'separator') {
             items.push({type: 'separator'});
         }
@@ -253,6 +254,7 @@ const createAppContextMenu = appExt => {
             }
         });
     }
+
     if (items.length && items[items.length - 1].type !== 'separator') {
         items.push({type: 'separator'});
     }
