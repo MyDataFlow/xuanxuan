@@ -5,5 +5,7 @@ if((strpos($fromVersion, 'pro') === false && $fromVersion < '4_1') or (strpos($f
 }
 else
 {
-    $this->upgradeXuanxuan();
+    $fromVersion = $this->upgrade->getXuanxuanVersion();
+
+    $this->upgradeXuanxuan($fromVersion);
 }
