@@ -136,7 +136,7 @@ const getUrlOpener = url => {
 };
 
 // Set replaceViews to global
-global.replaceViews = replaceViews;
+global.replaceViews = Object.assign(global.replaceViews || {}, replaceViews);
 
 export default {
     loadModules,
