@@ -299,5 +299,3 @@ export default class ChatHistory extends Component {
         </div>);
     }
 }
-
-export default ChatHistory;
