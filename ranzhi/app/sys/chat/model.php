@@ -891,6 +891,7 @@ class chatModel extends model
         }
 
         $_SERVER['SCRIPT_NAME'] = 'index.php';
+        $baseURL = commonModel::getSysURL() . $this->config->webRoot;
         foreach($entriesList as $entry)
         {
             $token = '';
@@ -904,10 +905,10 @@ class chatModel extends model
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
-            $data->webViewUrl  = strpos($entry->login, 'http') === false ? commonModel::getSysURL() . str_replace('../', '/', $entry->login) : $entry->login;
-            $data->download    = empty($entry->package) ? '' : commonModel::getSysURL() . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
+            $data->webViewUrl  = strpos($entry->login, 'http') === false ? str_replace('../', $baseURL, $entry->login) : $entry->login;
+            $data->download    = empty($entry->package) ? '' : $baseURL . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
-            $data->logo        = empty($entry->logo)    ? '' : commonModel::getSysURL() . '/' . $entry->logo;
+            $data->logo        = empty($entry->logo)    ? '' : $baseURL . $entry->logo;
 
             $entries[] = $data;
         }
