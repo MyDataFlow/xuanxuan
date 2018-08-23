@@ -114,7 +114,7 @@ class Socket {
         if (this.onConnectFail) {
             this.onConnectFail(e);
         }
-        if (this.options.onConnectFail) {
+        if (this.options && this.options.onConnectFail) {
             this.options.onConnectFail(e);
         }
     }
@@ -128,7 +128,7 @@ class Socket {
             console.groupEnd();
         }
 
-        if (this.options.onConnect) {
+        if (this.options && this.options.onConnect) {
             this.options.onConnect(this);
         }
 
@@ -150,7 +150,7 @@ class Socket {
             console.groupEnd();
         }
 
-        if (this.options.onClose) {
+        if (this.options && this.options.onClose) {
             this.options.onClose(this, code, reason, unexpected);
         }
 
@@ -169,7 +169,7 @@ class Socket {
             console.groupEnd();
         }
 
-        if (this.options.onError) {
+        if (this.options && this.options.onError) {
             this.options.onError(this, error);
         }
 
@@ -183,7 +183,7 @@ class Socket {
 
         let data = null;
         if (flags && flags.binary) {
-            if (this.options.encryptEnable) {
+            if (this.options && this.options.encryptEnable) {
                 data = crypto.decrypt(rawdata, this.options.userToken, this.options.cipherIV);
             } else {
                 data = rawdata.toString();
@@ -198,7 +198,7 @@ class Socket {
         //     console.groupEnd();
         // }
 
-        if (this.options.onData) {
+        if (this.options && this.options.onData) {
             this.options.onData(this, data, flags);
         }
 
@@ -209,7 +209,7 @@ class Socket {
 
     send(rawdata, callback) {
         let data = null;
-        if (this.options.encryptEnable) {
+        if (this.options && this.options.encryptEnable) {
             data = crypto.encrypt(rawdata, this.options.userToken, this.options.cipherIV);
             // if (DEBUG) {
             //     console.collapse('ENCRYPT data', 'blueBg', `length: ${data.length}`, 'bluePale');
@@ -220,7 +220,7 @@ class Socket {
         }
 
         this.client.send(data, {
-            binary: this.options.encryptEnable
+            binary: this.options && this.options.encryptEnable
         });
         if (callback) {
             callback();
