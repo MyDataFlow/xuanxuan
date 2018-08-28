@@ -4,7 +4,6 @@ import {classes} from '../../utils/html-helper';
 import DateHelper from '../../utils/date-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import ContextMenu from '../../components/context-menu';
 import Icon from '../../components/icon';
 import MemberProfileDialog from '../common/member-profile-dialog';
 import {UserAvatar} from '../common/user-avatar';
