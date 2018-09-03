@@ -24,9 +24,9 @@ renderer.code = (code, lang) => {
     return `<pre class="code-block" ${fileName ? (` data-name="${fileName}"`) : ''}><div class="hint--left btn-copy-code app-link" data-url="!copyCode/${lang || ''}" data-hint="${Lang.string('common.copyCode')}"><button class="btn iconbutton rounded primary-pale text-primary" type="button"><i class="icon mdi mdi-code-not-equal-variant icon-2x"></i></button></div><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
 };
 
-const commonAttrs = new Set(['class', 'style']);
+const commonAttrs = new Set(['class']);
 const allowedTags = {
-    a: new Set(['class', 'href', 'title', 'style']),
+    a: new Set(['class', 'href', 'title']),
     b: commonAttrs,
     blockquote: commonAttrs,
     code: true,
@@ -57,14 +57,14 @@ const allowedTags = {
     table: commonAttrs,
     tr: commonAttrs,
     thead: commonAttrs,
-    th: new Set(['class', 'style', 'colspan', 'rowspan']),
-    td: new Set(['class', 'style', 'colspan', 'rowspan']),
+    th: new Set(['class', 'colspan', 'rowspan']),
+    td: new Set(['class', 'colspan', 'rowspan']),
     tfoot: commonAttrs,
     tbody: commonAttrs,
-    img: new Set(['class', 'style', 'src', 'alt']),
-    video: new Set(['class', 'style', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
+    img: new Set(['class', 'src', 'alt']),
+    video: new Set(['class', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
     source: new Set(['src', 'type']),
-    audio: new Set(['class', 'style', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
+    audio: new Set(['class', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
     track: new Set(['default', 'kind', 'label', 'src', 'srclang']),
     div: commonAttrs,
     span: commonAttrs,
@@ -72,7 +72,7 @@ const allowedTags = {
     dt: commonAttrs,
     dd: commonAttrs,
     abbr: commonAttrs,
-    details: new Set(['class', 'style', 'open']),
+    details: new Set(['class', 'open']),
     summary: commonAttrs,
     caption: commonAttrs,
 };
@@ -96,7 +96,7 @@ const sanitizer = tag => {
     }
 
     const filterResult = [`<${tagName}`];
-    
+
     const parser = new HTMLParser.Parser(htmlParserHandler);
     parser.parseComplete(`${tag}</${tagName}>`);
     const firstChild = htmlParserHandler.dom && htmlParserHandler.dom[0];
