@@ -5,6 +5,7 @@ import {FileListItem} from './file-list-item';
 import replaceViews from '../replace-views';
 import ListItem from '../../components/list-item';
 import Lang from '../../lang';
+import Config from '../../config';
 
 class FileList extends Component {
     static get FileList() {
@@ -23,8 +24,8 @@ class FileList extends Component {
     static defaultProps = {
         className: null,
         listItemProps: null,
-        startPageSize: 20,
-        morePageSize: 10,
+        startPageSize: Config.ui['page.start.size'] || 20,
+        morePageSize: Config.ui['page.more.size'] || 20,
         defaultPage: 1,
     };
 

@@ -1,3 +1,14 @@
+/**
+ * 拼接元素类
+ *
+ * @param {...any} 参数
+ *
+ * @example
+ * const isActive = false;
+ * const isHidden = true;
+ * const divClass = classes('btn', ['lg', 'flex-none'], {active: isActive, 'is-hidden': isHidden});
+ * // 以上 divClass 最终值为 'btn lg flex-none is-hidden'
+ */
 export const classes = (...args) => (
     args.map(arg => {
         if (Array.isArray(arg)) {

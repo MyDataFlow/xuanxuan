@@ -1,6 +1,6 @@
 {
     "app.title": "喧喧",
-    
+
     "common.search": "搜索",
     "common.confirm": "确定",
     "common.cancel": "取消",
@@ -223,7 +223,7 @@
     "chat.deletedOne2OneTip": "对方账号已被从系统移除，你无法在此发送消息。",
     "chat.inviteMembersJoinChat.format": "{0} 邀请了 {1} 加入了会话。",
     "chat.createNewChat.format": "{0} 创建了讨论组 {1}。",
-    "chat.inviteAndCreateNewChat.format": "{0} 邀请你并创建了新的讨论组 {0}，点击讨论组名称，立即加入讨论吧。",
+    "chat.inviteAndCreateNewChat.format": "{0} 邀请你并创建了新的讨论组 {1}，点击讨论组名称，立即加入讨论吧。",
     "chat.membersCount.format": "{0}人",
     "chat.tempChat.name": "临时会话",
     "chat.group.name": "讨论组",
