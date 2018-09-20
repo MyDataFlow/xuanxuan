@@ -7,6 +7,7 @@ import replaceViews from '../replace-views';
 import ListItem from '../../components/list-item';
 import Lang from '../../lang';
 import App from '../../core';
+import Config from '../../config';
 
 class MemberList extends Component {
     static get MemberList() {
@@ -38,8 +39,8 @@ class MemberList extends Component {
         itemRender: null,
         contentRender: null,
         heading: null,
-        startPageSize: 20,
-        morePageSize: 10,
+        startPageSize: Config.ui['page.start.size'] || 20,
+        morePageSize: Config.ui['page.more.size'] || 20,
         defaultPage: 1,
         eventBindObject: null
     };
