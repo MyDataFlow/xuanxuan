@@ -20,6 +20,7 @@ class entry extends control
             $this->output->module = $this->moduleName;
             $this->output->method = $this->methodName;
             $this->output->result = 'success';
+            $this->output->data   = $referer;
             if(!$entry) die($this->app->encrypt($this->output));
 
             $user   = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($this->session->userID)->fetch();
