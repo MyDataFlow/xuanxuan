@@ -16,6 +16,12 @@ class entry extends control
 
         if(RUN_MODE == 'xuanxuan')
         {
+            $this->output = new stdclass();
+            $this->output->module = $this->moduleName;
+            $this->output->method = $this->methodName;
+            $this->output->result = 'success';
+            if(!$entry) die($this->app->encrypt($this->output));
+
             $user   = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($this->session->userID)->fetch();
             $groups = $this->loadModel('group')->getByAccount($user->account);
 
@@ -56,10 +62,6 @@ class entry extends control
             {
                 $location .= '&sessionid=' . base64_encode(json_encode(array('session_name' => session_name(), 'session_id' => session_id())));
             }
-            $this->output = new stdclass();
-            $this->output->module = $this->moduleName;
-            $this->output->method = $this->methodName;
-            $this->output->result = 'success';
             $this->output->data   = $entry->integration ? $location : $entry->login;
             $this->output->users  = array($this->session->userID);
             die($this->app->encrypt($this->output));
