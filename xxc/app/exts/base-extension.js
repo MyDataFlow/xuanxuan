@@ -167,6 +167,10 @@ export default class Extension {
         return this.entryID || this._pkg.entry;
     }
 
+    get serverData() {
+        return this._data.serverData;
+    }
+
     get download() {return this._pkg.download;}
 
     get isRemote() {return this._data.remote;}
