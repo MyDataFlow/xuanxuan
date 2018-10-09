@@ -323,7 +323,7 @@ const createUrlObjectMessage = (message, chat) => {
 };
 
 const sendTextMessage = (message, chat) => {
-    return sendChatMessage(isWebUrl(message) ? createUrlObjectMessage(message, chat) : createTextChatMessage(message, chat), chat);
+    return sendChatMessage(message && isWebUrl(message.trim()) ? createUrlObjectMessage(message, chat) : createTextChatMessage(message, chat), chat);
 };
 
 const createEmojiChatMessage = (emojicon, chat) => {
