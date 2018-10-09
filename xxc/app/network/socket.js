@@ -252,7 +252,7 @@ class AppSocket extends Socket {
 
     changeUserPassword(password) {
         return this.changeUser({
-            password: md5(password)
+            password: this.user.isVersionSupport('changePwdWithMD5') ? md5(password) : md5(`${md5(password)}${this.user.account}`)
         });
     }
 
