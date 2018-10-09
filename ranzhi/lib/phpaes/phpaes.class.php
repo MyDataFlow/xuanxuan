@@ -37,11 +37,11 @@ class phpAES
     {
         switch($this->aes->getEngine())
         {
-        case self::ENGINE_INTERNAL : return 'ENGINE_INTERNAL';
-        case self::ENGINE_EVAL     : return 'ENGINE_EVAL';
-        case self::ENGINE_MCRYPT   : return 'ENGINE_MCRYPT';
-        case self::ENGINE_OPENSSL  : return 'ENGINE_OPENSSL';
-        default: return 'error';
+            case self::ENGINE_INTERNAL : return 'ENGINE_INTERNAL';
+            case self::ENGINE_EVAL     : return 'ENGINE_EVAL';
+            case self::ENGINE_MCRYPT   : return 'ENGINE_MCRYPT';
+            case self::ENGINE_OPENSSL  : return 'ENGINE_OPENSSL';
+            default: return 'error';
         }
     }
 }
