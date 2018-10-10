@@ -184,7 +184,7 @@ class AppSocket extends Socket {
                     params: [
                         user.serverName,
                         user.account,
-                        user.passwordMD5,
+                        user.passwordForServer,
                         'online'
                     ]
                 });
