@@ -22,6 +22,7 @@ class MessageList extends Component {
         listItemCreator: PropTypes.func,
         header: PropTypes.any,
         onScroll: PropTypes.func,
+        sleepUrlCard: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -35,6 +36,7 @@ class MessageList extends Component {
         listItemCreator: null,
         header: null,
         onScroll: null,
+        sleepUrlCard: null,
     };
 
     componentDidMount() {
@@ -125,6 +127,7 @@ class MessageList extends Component {
             staticUI,
             header,
             onScroll,
+            sleepUrlCard,
             ...other
         } = this.props;
 
@@ -132,7 +135,7 @@ class MessageList extends Component {
         const messagesView = [];
         if (messages) {
             messages.forEach(message => {
-                const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem id={`message-${message.gid}`} staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps} />;
+                const messageListItem = listItemCreator ? listItemCreator(message, lastMessage) : <MessageListItem id={`message-${message.gid}`} staticUI={staticUI} font={font} showDateDivider={showDateDivider} lastMessage={lastMessage} key={message.gid} message={message} {...listItemProps} sleepUrlCard={sleepUrlCard} />;
                 lastMessage = message;
                 messagesView.unshift(messageListItem);
             });
