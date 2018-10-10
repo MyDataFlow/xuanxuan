@@ -438,6 +438,12 @@ export const getUrlMeta = (url, disableCache = false) => {
                 content: meta.description && meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
                 icon: favicons && favicons.length ? favicons[0].href : null
             };
+            if (cardMeta.image && cardMeta.image.startsWith('//')) {
+                cardMeta.image = `https:${cardMeta.image}`;
+            }
+            if (cardMeta.icon && cardMeta.icon.startsWith('//')) {
+                cardMeta.icon = `https:${cardMeta.icon}`;
+            }
             if (extInspector && extInspector.inspect) {
                 try {
                     cardMeta = extInspector.inspect(meta, cardMeta, url);
