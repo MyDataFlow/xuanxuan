@@ -95,6 +95,10 @@ export default class MessageContentUrl extends PureComponent {
                 card.content = <WebView className="relative" {...content} ref={e => {this.webview = e;}} />;
                 card.clickable = 'header';
                 card.menu.push({
+                    label: Lang.string('common.moreActions'),
+                    url: `!showContextMenu/link/?url=${encodeURIComponent(content.src)}`,
+                    icon: 'mdi-share',
+                }, {
                     label: Lang.string('ext.app.open'),
                     url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
                     icon: 'mdi-open-in-app'

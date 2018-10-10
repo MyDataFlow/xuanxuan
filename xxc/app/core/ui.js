@@ -14,7 +14,7 @@ import ImageViewer from '../components/image-viewer';
 import Store from '../utils/store';
 import {executeCommand, registerCommand} from './commander';
 import WebViewDialog from '../views/common/webview-dialog';
-import {addContextMenuCreator} from './context-menu';
+import {addContextMenuCreator, showContextMenu} from './context-menu';
 
 const EVENT = {
     app_link: 'app.link',
@@ -200,7 +200,7 @@ registerCommand('openUrlInBrowser', (context, url) => {
     return false;
 });
 
-export const openUrl = (url, targetElement) => {
+export const openUrl = (url, targetElement, event) => {
     if (isWebUrl(url)) {
         if (global.ExtsRuntime) {
             const extInspector = global.ExtsRuntime.getUrlOpener(url, targetElement);
@@ -223,7 +223,7 @@ export const openUrl = (url, targetElement) => {
         emitAppLinkClick(targetElement, ...params);
         return true;
     } else if (url[0] === '!') {
-        executeCommand(url.substr(1), {targetElement});
+        executeCommand(url.substr(1), {targetElement, event});
         return true;
     }
 };
@@ -236,7 +236,7 @@ document.addEventListener('click', e => {
 
     if (target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes.href || target.attributes['data-url'])) {
         const link = (target.attributes['data-url'] || target.attributes.href).value;
-        if (openUrl(link, target)) {
+        if (openUrl(link, target, e)) {
             e.preventDefault();
         }
     }
@@ -553,7 +553,12 @@ if (Platform.shortcut) {
     }
 }
 
-export const isSmallScreen = () => { 
+registerCommand('showContextMenu', (context, name) => {
+    const {options, event} = context;
+    showContextMenu(name, {options, event})
+});
+
+export const isSmallScreen = () => {
     return window.innerWidth < 768;
 };
 
