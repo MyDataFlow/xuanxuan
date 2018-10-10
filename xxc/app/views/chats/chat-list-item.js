@@ -76,7 +76,7 @@ class ChatListItem extends Component {
                 subname = `(${Lang.format('chat.membersCount.format', Lang.string('chat.all'))})`;
             }
         } else if (chat.isGroup) {
-            subname = `(${Lang.format('chat.membersCount.format', chat.membersCount)})`;
+            subname = `(${Lang.format('chat.membersCount.format', chat.getMembersCount(App.members))})`;
         }
 
         if (!badge && badge !== false) {
