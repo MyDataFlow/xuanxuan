@@ -96,7 +96,7 @@ export default class MessageContentUrl extends PureComponent {
                 card.clickable = 'header';
                 card.menu.push({
                     label: Lang.string('common.moreActions'),
-                    url: `!showContextMenu/link/?url=${encodeURIComponent(content.src)}`,
+                    url: `!showContextMenu/link/?url=${encodeURIComponent(url)}`,
                     icon: 'mdi-share',
                 }, {
                     label: Lang.string('ext.app.open'),
