@@ -244,6 +244,7 @@ class AppSocket extends Socket {
     }
 
     changeUser(userChangeData) {
+        userChangeData.account = this.user.account;
         return this.sendAndListen({
             method: 'userchange',
             params: [userChangeData]
@@ -251,6 +252,9 @@ class AppSocket extends Socket {
     }
 
     changeUserPassword(password) {
+        if (this.user.ldap) {
+            return Promise.reject(Lang.string('user.changePassword.notSupport'));
+        }
         return this.changeUser({
             password: this.user.isVersionSupport('changePwdWithMD5') ? md5(password) : md5(`${md5(password)}${this.user.account}`)
         });
