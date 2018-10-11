@@ -153,11 +153,11 @@ export default class Extension {
 
     get entryID() {return this._pkg.entryID;}
 
-    getEntryUrl(referer = '') {
+    getEntryUrl(referer = '', entryID = null) {
         if (global.ExtsRuntime) {
             const {getEntryVisitUrl} = global.ExtsRuntime;
             if (getEntryVisitUrl) {
-                return getEntryVisitUrl(this, referer);
+                return getEntryVisitUrl(entryID || this, referer);
             }
         }
         return Promise.resolve(this.entryUrl);

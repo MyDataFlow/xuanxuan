@@ -114,7 +114,8 @@ export default class MessageContentUrl extends PureComponent {
             }
             const {webviewContent, content} = card;
             if (webviewContent) {
-                card.content = <WebView className="relative" {...content} ref={e => {this.webview = e;}} />;
+                const {originSrc, ...webviewProps} = content;
+                card.content = <WebView className="relative" {...webviewProps} ref={e => {this.webview = e;}} />;
                 card.clickable = 'header';
                 card.menu.push({
                     label: Lang.string('common.moreActions'),
@@ -122,7 +123,7 @@ export default class MessageContentUrl extends PureComponent {
                     icon: 'mdi-share',
                 }, {
                     label: Lang.string('ext.app.open'),
-                    url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
+                    url: `!openUrlInDialog/${encodeURIComponent(originSrc || content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
                     icon: 'mdi-open-in-app'
                 });
                 if (DEBUG && content.type !== 'iframe') {
