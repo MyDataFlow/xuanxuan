@@ -189,7 +189,6 @@ export class UrlMeta {
             this._favicons = this.parseFavicons("shortcut icon").concat(
                 this.parseFavicons("icon"),
                 this.parseFavicons("apple-touch-icon"),
-                this.parseFavicons('favicon.ico'),
             ) || null;
         }
         return this._favicons;
