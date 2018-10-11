@@ -184,7 +184,7 @@ class Chat extends Entity {
             return name || Lang.string('chat.systemGroup.name');
         } else if (name !== undefined && name !== '') {
             if (includeMemberCount) {
-                return Lang.format('chat.groupName.format', name, this.membersCount);
+                return Lang.format('chat.groupName.format', name, this.getMembersCount(app.members));
             }
             return name;
         }
@@ -468,11 +468,6 @@ class Chat extends Entity {
         }
     }
 
-    get membersCount() {
-        const members = this.members;
-        return members ? (members.length || members.size) : 0;
-    }
-
     isMember(memberId) {
         if (typeof memberId === 'object') {
             memberId = memberId.id;
@@ -505,16 +500,21 @@ class Chat extends Entity {
     updateMembersSet(appMembers) {
         this._membersSet = Array.from(this.members).map(memberId => (appMembers.get(memberId)));
         if (this.isGroupOrSystem) {
-            this._membersSet = this._membersSet.filter(m => !m.temp);
+            this._membersSet = this._membersSet.filter(m => !m.temp && !m.isDeleted);
         }
+    }
+
+    getMembersCount(appMembers) {
+        return this.getMembersSet(appMembers).length;
     }
 
     getMembersSet(appMembers) {
         if (this.type === TYPES.system) {
             return appMembers.all.filter(x => !x.isDeleted);
         }
-        if (!this._membersSet) {
+        if (!this._membersSet || this._membersSetUpdateId !== this.updateId) {
             this.updateMembersSet(appMembers);
+            this._membersSetUpdateId = this.updateId;
         }
         return this._membersSet;
     }

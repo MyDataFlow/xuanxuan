@@ -261,6 +261,7 @@ export default class ChatHistory extends Component {
             lastMessage={lastMessage}
             key={message.gid}
             message={message}
+            sleepUrlCard={true}
             textContentConverter={this.convertContent}
         />);
     }

@@ -14,7 +14,7 @@ import ImageViewer from '../components/image-viewer';
 import Store from '../utils/store';
 import {executeCommand, registerCommand} from './commander';
 import WebViewDialog from '../views/common/webview-dialog';
-import {addContextMenuCreator} from './context-menu';
+import {addContextMenuCreator, showContextMenu} from './context-menu';
 
 const EVENT = {
     app_link: 'app.link',
@@ -200,7 +200,7 @@ registerCommand('openUrlInBrowser', (context, url) => {
     return false;
 });
 
-export const openUrl = (url, targetElement) => {
+export const openUrl = (url, targetElement, event) => {
     if (isWebUrl(url)) {
         if (global.ExtsRuntime) {
             const extInspector = global.ExtsRuntime.getUrlOpener(url, targetElement);
@@ -223,7 +223,7 @@ export const openUrl = (url, targetElement) => {
         emitAppLinkClick(targetElement, ...params);
         return true;
     } else if (url[0] === '!') {
-        executeCommand(url.substr(1), {targetElement});
+        executeCommand(url.substr(1), {targetElement, event});
         return true;
     }
 };
@@ -236,7 +236,7 @@ document.addEventListener('click', e => {
 
     if (target && (target.tagName === 'A' || target.classList.contains('app-link')) && (target.attributes.href || target.attributes['data-url'])) {
         const link = (target.attributes['data-url'] || target.attributes.href).value;
-        if (openUrl(link, target)) {
+        if (openUrl(link, target, e)) {
             e.preventDefault();
         }
     }
@@ -429,15 +429,31 @@ export const getUrlMeta = (url, disableCache = false) => {
             });
         }
         return getUrl().then(Platform.ui.getUrlMeta).then(meta => {
-            const {favicons} = meta;
+            const {favicon} = meta;
             let cardMeta = {
                 url,
                 title: meta.title,
-                subtitle: meta.title ? url : null,
                 image: meta.image,
+                subtitle: (meta.title && meta.title !== url) ? url : null,
                 content: meta.description && meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
-                icon: favicons && favicons.length ? favicons[0].href : null
+                icon: favicon ? favicon.href : null
             };
+            if (meta.isImage) {
+                cardMeta.contentUrl = url;
+                cardMeta.contentType = 'image';
+                cardMeta.icon = 'mdi-image text-green icon-2x';
+            } else if (meta.isVideo) {
+                cardMeta.contentUrl = url;
+                cardMeta.contentType = 'video';
+                cardMeta.clickable = 'title';
+                cardMeta.icon = 'mdi-video text-red icon-2x';
+            }
+            if (cardMeta.image && cardMeta.image.startsWith('//')) {
+                cardMeta.image = `https:${cardMeta.image}`;
+            }
+            if (cardMeta.icon && cardMeta.icon.startsWith('//')) {
+                cardMeta.icon = `https:${cardMeta.icon}`;
+            }
             if (extInspector && extInspector.inspect) {
                 try {
                     cardMeta = extInspector.inspect(meta, cardMeta, url);
@@ -460,21 +476,6 @@ export const getUrlMeta = (url, disableCache = false) => {
                     cardMeta.provider = extInspector.provider;
                     return Promise.resolve(cardMeta);
                 }
-            }
-            if (!cardMeta.title) {
-                const contentType = meta.response.headers['content-type'];
-                cardMeta.originContenttype = contentType;
-                if (contentType.startsWith('image')) {
-                    cardMeta.contentUrl = url;
-                    cardMeta.contentType = 'image';
-                    cardMeta.icon = 'mdi-image text-green icon-2x';
-                } else if (contentType.startsWith('video')) {
-                    cardMeta.contentUrl = url;
-                    cardMeta.contentType = 'video';
-                    cardMeta.clickable = 'title';
-                    cardMeta.icon = 'mdi-video text-red icon-2x';
-                }
-                cardMeta.title = url;
             }
 
             // Save cache
@@ -553,7 +554,12 @@ if (Platform.shortcut) {
     }
 }
 
-export const isSmallScreen = () => { 
+registerCommand('showContextMenu', (context, name) => {
+    const {options, event} = context;
+    showContextMenu(name, {options, event})
+});
+
+export const isSmallScreen = () => {
     return window.innerWidth < 768;
 };
 

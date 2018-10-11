@@ -140,7 +140,7 @@ const handleChatExtensions = msg => {
                 extPkg.appType = 'webView';
                 extPkg.webViewUrl = item.webViewUrl;
             }
-            const extData = {remote: true};
+            const extData = {remote: true, serverData: item.data};
             if (item.download) {
                 extData.remoteCachePath = Path.join(baseUserExtsDir, `${item.name}.zip`);
                 extData.localPath = Path.join(baseUserExtsDir, item.name);

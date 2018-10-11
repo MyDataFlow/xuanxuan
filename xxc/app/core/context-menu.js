@@ -214,11 +214,11 @@ export const showContextMenu = (contextName, context) => {
 };
 
 addContextMenuCreator('link', context => {
-    const {event} = context;
-    const link = event.target.href;
+    const {event, options} = context;
+    const link = options && options.url ? options.url : event.target.href;
     if (isWebUrl(link)) {
         let linkText = document.getSelection().toString().trim();
-        if (linkText === '') {
+        if (event && linkText === '') {
             linkText = event.target.innerText || (event.target.attributes.title ? event.target.attributes.title.value : '');
         }
         const items = [{

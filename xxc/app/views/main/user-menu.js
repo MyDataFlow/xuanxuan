@@ -86,8 +86,10 @@ class UserMenu extends Component {
             ...other
         } = this.props;
 
-        const userStatus = App.profile.userStatus;
+        const {user} = App.profile;
+        const userStatus = user && user.status;
         const userStatusName = userStatus && User.STATUS.getName(userStatus);
+        const isSupportChangePassword = !user.ldap;
 
         return (<ClickOutsideWrapper
             {...other}
@@ -105,7 +107,7 @@ class UserMenu extends Component {
             }
             <div className="divider" />
             <a className="item" onClick={this.handleUserProfileItemClick}><div className="title">{Lang.string('usermenu.openProfile')}</div></a>
-            <a className="item" onClick={this.handleChangePasswordClick}><div className="title">{Lang.string('usermenu.changePassword')}</div></a>
+            {isSupportChangePassword ? <a className="item" onClick={this.handleChangePasswordClick}><div className="title">{Lang.string('usermenu.changePassword')}</div></a> : null}
             <div className="divider" />
             <a className="item" onClick={this.handleAboutItemClick}><div className="title">{Lang.string('usermenu.about')}</div></a>
             <a className="item" onClick={this.handleSettingItemClick}><div className="title">{Lang.string('usermenu.setting')}</div></a>

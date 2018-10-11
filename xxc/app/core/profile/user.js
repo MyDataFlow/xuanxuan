@@ -13,6 +13,10 @@ const EVENT = {
     reconnect: 'user.reconnect',
 };
 
+export const isPasswordWithMD5Flag = password => {
+    return password && password.startsWith(PASSWORD_WITH_MD5_FLAG);
+};
+
 class User extends Member {
     static EVENT = EVENT;
     static SCHEMA = Member.SCHEMA.extend({
@@ -341,6 +345,14 @@ class User extends Member {
         this.$set('rememberPassword', rememberPassword);
     }
 
+    get ldap() {
+        return this.$get('ldap');
+    }
+
+    set ldap(ldap) {
+        this.$set('ldap', ldap);
+    }
+
     get avatar() {
         let avatar = this._avatar;
         if (!avatar) {
@@ -369,15 +381,19 @@ class User extends Member {
 
     get passwordMD5WithFlag() {
         let password = this.password;
-        if (password && !password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
+        if (password && !isPasswordWithMD5Flag(password)) {
             password = PASSWORD_WITH_MD5_FLAG + password;
         }
         return password;
     }
 
+    get passwordForServer() {
+        return this.ldap ? this.password : this.passwordMD5;
+    }
+
     get passwordMD5() {
         let password = this.password;
-        if (password.startsWith(PASSWORD_WITH_MD5_FLAG)) {
+        if (isPasswordWithMD5Flag(password)) {
             password = password.substr(PASSWORD_WITH_MD5_FLAG.length);
         } else {
             password = Md5(password);
@@ -386,7 +402,7 @@ class User extends Member {
     }
 
     set password(newPassword) {
-        if (newPassword && !newPassword.startsWith(PASSWORD_WITH_MD5_FLAG)) {
+        if (!this.ldap && newPassword && !isPasswordWithMD5Flag(newPassword)) {
             newPassword = PASSWORD_WITH_MD5_FLAG + Md5(newPassword);
         }
         this.$set('password', newPassword);

@@ -13,7 +13,7 @@ const requestServerInfo = user => {
         params: [
             user.serverName,
             user.account,
-            user.passwordMD5,
+            user.passwordForServer,
             ''
         ],
         v: Config.pkg.version

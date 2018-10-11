@@ -63,6 +63,7 @@ const checkVersionSupport = user => {
         remoteExtension: compareVersions(serverVersion, '1.5.0') > 0,
         muteChat: compareVersionValue3 > 0,
         hideChat: compareVersionValue3 > 0,
+        changePwdWithMD5: compareVersions(serverVersion, '2.0.0') > 0,
     };
 };
 
