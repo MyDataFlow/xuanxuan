@@ -47,7 +47,7 @@ export const request = (url, options) => {
 
 export const getTextFromResponse = response => {
     const contentType = response.headers.get('Content-Type');
-    if (contentType && contentType.toLowerCase().includes('charset=gbk')) {
+    if (contentType && contentType.toLowerCase().includes('charset=gb')) {
         return response.blob().then(blob => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
