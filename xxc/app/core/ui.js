@@ -429,15 +429,25 @@ export const getUrlMeta = (url, disableCache = false) => {
             });
         }
         return getUrl().then(Platform.ui.getUrlMeta).then(meta => {
-            const {favicons} = meta;
+            const {favicon} = meta;
             let cardMeta = {
                 url,
                 title: meta.title,
-                subtitle: meta.title ? url : null,
                 image: meta.image,
+                subtitle: (meta.title && meta.title !== url) ? url : null,
                 content: meta.description && meta.description.length > 200 ? `${meta.description.substring(0, 150)}...` : meta.description,
-                icon: favicons && favicons.length ? favicons[0].href : null
+                icon: favicon ? favicon.href : null
             };
+            if (meta.isImage) {
+                cardMeta.contentUrl = url;
+                cardMeta.contentType = 'image';
+                cardMeta.icon = 'mdi-image text-green icon-2x';
+            } else if (meta.isVideo) {
+                cardMeta.contentUrl = url;
+                cardMeta.contentType = 'video';
+                cardMeta.clickable = 'title';
+                cardMeta.icon = 'mdi-video text-red icon-2x';
+            }
             if (cardMeta.image && cardMeta.image.startsWith('//')) {
                 cardMeta.image = `https:${cardMeta.image}`;
             }
@@ -466,21 +476,6 @@ export const getUrlMeta = (url, disableCache = false) => {
                     cardMeta.provider = extInspector.provider;
                     return Promise.resolve(cardMeta);
                 }
-            }
-            if (!cardMeta.title) {
-                const contentType = meta.response.headers['content-type'];
-                cardMeta.originContenttype = contentType;
-                if (contentType.startsWith('image')) {
-                    cardMeta.contentUrl = url;
-                    cardMeta.contentType = 'image';
-                    cardMeta.icon = 'mdi-image text-green icon-2x';
-                } else if (contentType.startsWith('video')) {
-                    cardMeta.contentUrl = url;
-                    cardMeta.contentType = 'video';
-                    cardMeta.clickable = 'title';
-                    cardMeta.icon = 'mdi-video text-red icon-2x';
-                }
-                cardMeta.title = url;
             }
 
             // Save cache
