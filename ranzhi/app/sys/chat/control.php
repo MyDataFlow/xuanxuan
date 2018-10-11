@@ -161,7 +161,7 @@ class chat extends control
         if(dao::isError())
         {
             $this->output->result  = 'fail';
-            $this->output->message = 'Change name failed.';
+            $this->output->message = 'Change user failed.';
         }
         else
         {

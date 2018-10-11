@@ -109,20 +109,19 @@ class chatModel extends model
     public function getUserList($status = '', $idList = array(), $idAsKey = true)
     {
         $dao = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, phone, site, qq, deleted')
-            ->from(TABLE_USER)->where('1')
-            ->beginIF(!$idList)->andWhere('deleted')->eq('0')->fi()
+            ->from(TABLE_USER)
+            ->where(1)
+            ->beginIF(empty($idList))
+            ->andWhere('deleted')->eq('0')
+            ->andWhere('locked', true)->eq('0000-00-00 00:00:00')
+            ->orWhere('locked')->lt(helper::now())
+            ->markRight(1)
+            ->fi()
             ->beginIF($status && $status == 'online')->andWhere('status')->ne('offline')->fi()
             ->beginIF($status && $status != 'online')->andWhere('status')->eq($status)->fi()
             ->beginIF($idList)->andWhere('id')->in($idList)->fi();
-        if($idAsKey)
-        {
-            $users = $dao->fetchAll('id');
-        }
-        else
-        {
-            $users = $dao->fetchAll();
-        }
 
+        $users = $idAsKey ? $dao->fetchAll('id') : $dao->fetchAll();
         $users = $this->formatUsers($users);
 
         return $users;
@@ -138,7 +137,16 @@ class chatModel extends model
     public function editUser($user = null)
     {
         if(empty($user->id)) return null;
-        $this->dao->update(TABLE_USER)->data($user)->where('id')->eq($user->id)->exec();
+
+        $data = array();
+        foreach($this->config->chat->user->canEditFields as $field)
+        {
+            if(!empty($user->$field)) $data[$field] = $user->$field;
+        }
+        if(!empty($user->account) && !empty($user->password)) $data['password'] = md5($user->password . $user->account);
+        if(!$data) return null;
+
+        $this->dao->update(TABLE_USER)->data($data)->where('id')->eq($user->id)->exec();
         return $this->getUserByUserID($user->id);
     }
 
@@ -865,53 +873,50 @@ class chatModel extends model
      */
     public function getExtensionList($userID)
     {
-        $entries = array();
-        $fileIDs = array();
-        $files   = array();
-
-        $entriesList = $this->dao->select('*')->from(TABLE_ENTRY)
-            ->where('status')->eq('online')
-            ->orderBy('`order`, id')
-            ->fetchAll();
-
-        foreach($entriesList as $index => $entry)
-        {
-            if(strpos(',' . $entry->platform . ',', ',xuanxuan,') === false) unset($entriesList[$index]);
-            if($entry->package) $fileIDs[] = $entry->package;
-        }
-        if(empty($entriesList)) return $entries;
-
-        if($fileIDs)
-        {
-            $files = $this->dao->select('id,pathname,objectID')
-                ->from(TABLE_FILE)
-                ->where('objectType')->eq('entry')
-                ->andWhere('id')->in($fileIDs)
-                ->fetchAll('objectID');
-        }
+        $entries    = array();
+        $fileIDs    = array();
+        $files      = array();
+        $allEntries = array();
+        $time       = time();
 
         $_SERVER['SCRIPT_NAME'] = 'index.php';
-        $baseURL = commonModel::getSysURL() . $this->config->webRoot;
-        foreach($entriesList as $entry)
+        $baseURL   = commonModel::getSysURL() . $this->config->webRoot;
+        $entryList = $this->dao->select('*')->from(TABLE_ENTRY)->orderBy('`order`, id')->fetchAll();
+        $files     = $this->dao->select('id, pathname, objectID')->from(TABLE_FILE)->where('objectType')->eq('entry')->fetchAll('objectID');
+
+        foreach($entryList as $entry)
         {
+            $data = new stdclass();
+            $data->id     = $entry->id;
+            $data->url    = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL, $entry->login) : $entry->login;
+            $allEntries[] = $data;
+        }
+
+        foreach($entryList as $entry)
+        {
+            if($entry->status != 'online') continue;
+            if(strpos(',' . $entry->platform . ',', ',xuanxuan,') === false) continue;
+
             $token = '';
             if(isset($files[$entry->id]->pathname))
             {
-                $time  = time();
                 $token = '&time=' . $time . '&token=' . md5($files[$entry->id]->pathname . $time);
             }
             $data = new stdClass();
-            $data->entryID     = $entry->integration ? (int)$entry->id : 0;
+            $data->entryID     = (int)$entry->id;
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
-            $data->webViewUrl  = strpos($entry->login, 'http') === false ? str_replace('../', $baseURL, $entry->login) : $entry->login;
+            $data->webViewUrl  = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL, $entry->login) : $entry->login;
             $data->download    = empty($entry->package) ? '' : $baseURL . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
             $data->logo        = empty($entry->logo)    ? '' : $baseURL . $entry->logo;
 
+            if($entry->sso) $data->data = $allEntries;
+
             $entries[] = $data;
         }
+
         return $entries;
     }
 }
