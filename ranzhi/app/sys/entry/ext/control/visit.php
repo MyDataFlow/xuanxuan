@@ -18,13 +18,7 @@ class myEntry extends entry
             exit;
         }
 
-        $user   = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($this->session->userID)->fetch();
-        $groups = $this->loadModel('group')->getByAccount($user->account);
-        $user->ip     = $this->session->clientIP->IP;
-        $user->groups = array_keys($groups);
-        $user->rights = $this->loadModel('user')->authorize($user);
-        $this->session->set('user', $user);
-        $this->app->user = $this->session->user;
+        $referer = !empty($_GET['referer']) ? $this->get->referer : $referer;
 
         $output = new stdclass();
         $output->module = $this->moduleName;
@@ -32,55 +26,25 @@ class myEntry extends entry
         $output->result = 'success';
         $output->users  = array($this->session->userID);
 
-        $referer = !empty($_GET['referer']) ? $this->get->referer : $referer;
-        if($referer)
-        {
-            $matches  = array();
-            $pathinfo = pathinfo($referer);
-            $baseUrl  = $pathinfo['dirname'];
-            $entries  = $this->entry->getEntries();
-            foreach($entries as $entry)
-            {
-                if(!$entry->code or !$entry->login) continue;
-
-                if(strpos($entry->login, 'http') !== 0)
-                {
-                    $_SERVER['SCRIPT_NAME'] = 'index.php';
-                    $entry->login = commonModel::getSysURL() . str_replace('../', '/', $entry->login);
-                }
-
-                /*
-                 Must append index.php else the dirname of pathinfo won't contains the dir name of app.
-                 e.g.   $pathinfo = pathinfo('http://demo.ranzhi.org/crm/');
-                        $pathinfo['dirname'] = 'http://demo.ranzhi.org'; 
-                 */
-                $pathinfo = pathinfo(rtrim($entry->login, '/') . '/index.php');
-                $entryUrl = $pathinfo['dirname'];
-                
-                if($baseUrl == $entryUrl) $matches[] = $entry;
-            }
-
-            $entry = null;
-            foreach($matches as $match)
-            {
-                if(!$entry or !empty($match->zentao)) $entry = $match;
-            }
-        }
-        else
-        {
-            $entry = $this->entry->getById($entryID);
-            if(!empty($entry->login) && strpos($entry->login, 'http') !== 0)
-            {
-                $_SERVER['SCRIPT_NAME'] = 'index.php';
-                $entry->login = commonModel::getSysURL() . str_replace('../', '/', $entry->login);
-            }
-        }
-
+        $entry = $this->entry->getById($entryID);
         if(!$entry)
         {
             $output->data = $referer;
             die($this->app->encrypt($output));
         }
+        if(!empty($entry->login) && strpos($entry->login, 'http') !== 0)
+        {
+            $_SERVER['SCRIPT_NAME'] = 'index.php';
+            $entry->login = commonModel::getSysURL() . str_replace('../', '/', $entry->login);
+        }
+
+        $user   = $this->dao->select('*')->from(TABLE_USER)->where('id')->eq($this->session->userID)->fetch();
+        $groups = $this->loadModel('group')->getByAccount($user->account);
+        $user->ip     = $this->session->clientIP->IP;
+        $user->groups = array_keys($groups);
+        $user->rights = $this->loadModel('user')->authorize($user);
+        $this->session->set('user', $user);
+        $this->app->user = $this->session->user;
 
         $query = '';
         if($entry->integration)
