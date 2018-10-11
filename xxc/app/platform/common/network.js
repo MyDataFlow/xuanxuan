@@ -45,10 +45,25 @@ export const request = (url, options) => {
     });
 };
 
+export const getTextFromResponse = response => {
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.toLowerCase().includes('charset=gbk')) {
+        return response.blob().then(blob => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsText(blob, 'GBK');
+            });
+        });
+    }
+    return response.text();
+};
+
 export const getText = (url, options) => {
-    return request(url, options).then(response => {
-        return response.text();
-    });
+    return request(url, options).then(getTextFromResponse);
 };
 
 export const postText = (url, options) => {
