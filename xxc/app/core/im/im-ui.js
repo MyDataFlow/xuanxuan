@@ -531,7 +531,7 @@ const linkMembersInText = (text, {format = '<a class="app-link {className}" data
     if (text && text.indexOf('@') > -1) {
         const langAtAll = Lang.string('chat.message.atAll');
         const userAccount = profile.userAccount;
-        text = text.replace(/@(\w+)/g, (mentionAt, mention) => {
+        text = text.replace(/@([\w\u4e00-\u9fa5]+)/g, (mentionAt, mention) => {
             const m = members.guess(mention);
             if (m) {
                 return StringHelper.format(format, {displayName: m.displayName, id: m.id, account: m.account, className: m.account === userAccount ? 'at-me' : ''});
