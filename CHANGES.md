@@ -14,8 +14,8 @@
 * 优化 了扩展列表中远程扩展右键菜单；
 * 优化 了登录界面，当开机启动不可用时不显示相关功能菜单；
 * 优化 了Markdown 转换性能，并禁止了使用 Markdown 中的 HTML 元素上的 style 属性；
-* 优化 了聊天成员列表，现在当联系人从系统删除时，被删除的联系人自动从成员列表移除；
-* 优化 了网址转卡片性能（[BUG #62](http://xuan.5upm.com/bug-view-62.html)）；
+* 优化 了聊天成员列表，现在当联系人从系统删除时，被删除的联系人自动从成员列表移除（[BUG #62](http://xuan.5upm.com/bug-view-62.html)）；
+* 优化 了网址转卡片性能；
 * 优化 了 `@成员` 策略，现在匹配用户更准确（[BUG #64](http://xuan.5upm.com/bug-view-64.html)）;
 * 修复 了一些网址卡片显示为乱码的问题（例如淘宝和京东的商品链接，[BUG #59](http://xuan.5upm.com/bug-view-59.html)）；
 * 修复 了聊天侧边栏成员列表右键菜单失效的问题；
@@ -33,7 +33,7 @@
   - 增加 了新的打包配置机制；
   - 增加 了对服务器 `chat/extensions` 接口中扩展对象 `data` 属性的支持，通过扩展对象 `serverData` 访问；
 * 其他：
-  - 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）；
+  - 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）。
 
 
 ## v 2.0.0
@@ -260,7 +260,7 @@
   * 然之：[4.6.2 稳定版](http://www.ranzhi.org/dynamic/4.6.2.stable-1115.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/1.5/xuanxuan.ranzhi.1.5.0.zip)。
 
 
-## v 1.4.0 
+## v 1.4.0
 
 [2018-03-09]
 
