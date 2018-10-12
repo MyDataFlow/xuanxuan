@@ -42,17 +42,23 @@ public function upgradeXuanxuan($fromVersion)
  */
 public function processMessageStatus()
 {
+    $userMessages = array();
     $messagesList = $this->dao->select('*')->from($this->config->db->prefix . 'im_usermessage')->fetchAll();
-    if(!empty($messagesList)) foreach($messagesList as $messages)
+    foreach($messagesList as $messages)
     {
+        $user     = $messages->user;
         $messages = json_decode($messages->message);
         foreach($messages as $message)
         {
+            if(isset($userMessages[$user][$message->gid])) continue;
+
             $data = new stdClass();
-            $data->user   = $messages->uesr;
+            $data->user   = $user;
             $data->gid    = $message->gid;
             $data->status = 'waiting';
             $this->dao->insert(TABLE_IM_MESSAGESTATUS)->data($data)->exec();
+
+            $userMessages[$user][$message->gid] = $message->gid;
         }
     }
 
