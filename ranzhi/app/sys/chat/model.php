@@ -908,9 +908,9 @@ class chatModel extends model
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
             $data->webViewUrl  = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL, $entry->login) : $entry->login;
-            $data->download    = empty($entry->package) ? '' : $baseURL . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
+            $data->download    = empty($entry->package) ? '' : $baseURL . ltrim(helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token), '/');
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
-            $data->logo        = empty($entry->logo)    ? '' : $baseURL . $entry->logo;
+            $data->logo        = empty($entry->logo)    ? '' : $baseURL . ltrim($entry->logo, '/');
 
             if($entry->sso) $data->data = $allEntries;
 
