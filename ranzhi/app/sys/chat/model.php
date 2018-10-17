@@ -879,8 +879,10 @@ class chatModel extends model
         $allEntries = array();
         $time       = time();
 
-        $_SERVER['SCRIPT_NAME'] = 'index.php';
-        $baseURL   = commonModel::getSysURL() . $this->config->webRoot;
+        $_SERVER['SCRIPT_NAME'] = str_replace('xuanxuan.php', 'sys/xuanxuan.php', $_SERVER['SCRIPT_NAME']);
+        $this->config->webRoot  = getRanzhiWebRoot();
+
+        $baseURL   = commonModel::getSysURL();
         $entryList = $this->dao->select('*')->from(TABLE_ENTRY)->orderBy('`order`, id')->fetchAll();
         $files     = $this->dao->select('id, pathname, objectID')->from(TABLE_FILE)->where('objectType')->eq('entry')->fetchAll('objectID');
 
@@ -888,7 +890,7 @@ class chatModel extends model
         {
             $data = new stdclass();
             $data->id     = $entry->id;
-            $data->url    = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL, $entry->login) : $entry->login;
+            $data->url    = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL . $this->config->webRoot, $entry->login) : $entry->login;
             $allEntries[] = $data;
         }
 
@@ -907,10 +909,10 @@ class chatModel extends model
             $data->name        = $entry->code;
             $data->displayName = $entry->name;
             $data->abbrName    = $entry->abbr;
-            $data->webViewUrl  = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL, $entry->login) : $entry->login;
-            $data->download    = empty($entry->package) ? '' : $baseURL . ltrim(helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token), '/');
+            $data->webViewUrl  = strpos($entry->login, 'http') !== 0 ? str_replace('../', $baseURL . $this->config->webRoot, $entry->login) : $entry->login;
+            $data->download    = empty($entry->package) ? '' : $baseURL . helper::createLink('file', 'download', "fileID={$entry->package}&mouse=" . $token);
             $data->md5         = empty($entry->package) ? '' : md5($entry->package);
-            $data->logo        = empty($entry->logo)    ? '' : $baseURL . ltrim($entry->logo, '/');
+            $data->logo        = empty($entry->logo)    ? '' : $baseURL . $this->config->webRoot . ltrim($entry->logo, '/');
 
             if($entry->sso) $data->data = $allEntries;
 
