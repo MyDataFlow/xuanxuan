@@ -97,7 +97,7 @@ export default class MessageContentUrl extends PureComponent {
                 url,
                 title: url,
             };
-            const reloadBtn = (<div className="flex-none hint--top has-padding-sm" data-hint={Lang.string('chat.message.loadCard')}><Button onClick={this.loadSleep} className="iconbutton rounded" icon="mdi-cards-playing-outline" /></div>);
+            const reloadBtn = (<div className="flex-none hint--top has-padding-sm" data-hint={Lang.string('chat.message.loadCard')}><Button onClick={this.loadSleep} className="iconbutton rounded text-primary" icon="mdi-cards-playing-outline" /></div>);
             return <MessageContentCard header={reloadBtn} card={card} className={classes('app-message-content-url relative')} {...other} />;
         }
 
