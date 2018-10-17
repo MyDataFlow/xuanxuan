@@ -1,6 +1,6 @@
 <?php
 $config->xuanxuan = new stdclass();
-$config->xuanxuan->version = '2.0.0';
+$config->xuanxuan->version = '2.1.0';
 $config->xuanxuan->key     = '88888888888888888888888888888888'; //Set a 32 byte string as your key.
 
 if(!defined('TABLE_IM_CHAT'))          define('TABLE_IM_CHAT',          '`' . $config->db->prefix . 'im_chat`');
