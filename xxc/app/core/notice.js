@@ -47,7 +47,7 @@ const isMatchWindowCondition = condition => {
         return !PlatformUI.isWindowOpen;
     }
     if (condition === 'onWindowBlur') {
-        return !PlatformUI.isWindowsFocus;
+        return !PlatformUI.isWindowFocus;
     }
     return true;
 };

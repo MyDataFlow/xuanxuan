@@ -28,12 +28,12 @@
 * 修复 了邀请他人并创建新讨论组时广播消息错误的问题；
 * 修复 了与部分服务器后端集成时在客户端修改密码失败的问题（[BUG #60](http://xuan.5upm.com/bug-view-60.html)）；
 * 开发相关：
-  - 增加 了 `ui.chat.urlInspector` 配置开关，网址转卡片功能可以通过配置禁用；
-  - 增加 了 `ui.page.start.size` 和 `ui.page.more.size` 配置用于设置列表默认显示条目数目以及点击更多按钮加载的条目数目；
-  - 增加 了新的打包配置机制；
-  - 增加 了对服务器 `chat/extensions` 接口中扩展对象 `data` 属性的支持，通过扩展对象 `serverData` 访问；
+  * 增加 了 `ui.chat.urlInspector` 配置开关，网址转卡片功能可以通过配置禁用；
+  * 增加 了 `ui.page.start.size` 和 `ui.page.more.size` 配置用于设置列表默认显示条目数目以及点击更多按钮加载的条目数目；
+  * 增加 了新的打包配置机制；
+  * 增加 了对服务器 `chat/extensions` 接口中扩展对象 `data` 属性的支持，通过扩展对象 `serverData` 访问；
 * 其他：
-  - 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）。
+  * 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）。
 
 
 ## v 2.0.0
