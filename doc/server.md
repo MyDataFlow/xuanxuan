@@ -11,7 +11,7 @@
 
 1. 下载安装然之协同最新版：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
 2. 以管理员身份登录然之，进入后台 -> 系统 -> 喧喧 ，查看内置的喧喧版本号是否是最新版。如果是最新版执行第 5 步，否则执行第 3 步；
-3. 下载升级包：[http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan-ranzhi.2.0.0.zip](http://dl.cnezsoft.com/xuanxuan/2.0/xuanxuan-ranzhi.2.0.0.zip) ，解压并覆盖然之；
+3. 下载升级包：[http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan-ranzhi.2.1.0.zip](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan-ranzhi.2.1.0.zip) ，解压并覆盖然之；
 4. 通过浏览器访问然之 www 目录下的 upgradexuanxuan.php 进行升级。例如然之演示站的访问地址是 http://demo.ranzhi.net，则访问 http://demo.ranzhi.net/upgradexuanxuan.php 升级。如果已经是最新版，访问该页面会自动跳转到首页；
 5. 以管理员身份登录然之（一键安装包安装，默认用户名为 `admin`，密码为 `123456`），进入后台 -> 系统 -> 喧喧 ，设置一个长度为32的密钥，在xxd的config目录下配置文件中设置同样的密钥；
 6. 服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；

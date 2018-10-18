@@ -11,7 +11,7 @@ http://xuan.im
 
 ## 最近更新
 
-🎉 2.0 本次更新增加了大量实用功能，优化扩展机制，提升了使用体验。[查看更新详情→](https://github.com/easysoft/xuanxuan/releases/tag/v2.0.0)
+🎉 2.1 本次更新增加了对 LDAP 登录模式的支持，优化了界面交互，修复了大量已知问题。[查看更新详情→](https://github.com/easysoft/xuanxuan/releases/tag/v2.1.0)
 
 ## 特色功能
 
