@@ -19,6 +19,7 @@
 * 优化 了 `@成员` 策略，现在匹配用户更准确（[BUG #64](http://xuan.5upm.com/bug-view-64.html)）;
 * 修复 了一些网址卡片显示为乱码的问题（例如淘宝和京东的商品链接，[BUG #59](http://xuan.5upm.com/bug-view-59.html)）；
 * 修复 了聊天侧边栏成员列表右键菜单失效的问题；
+* 修复 了当客户端窗口已经激活时有时通知策略没有按照预期执行的问题；
 * 修复 了从 1.6.0 及以下版本升级时迁移数据导致启动过慢的问题；
 * 修复 了浏览器上激活消息输入框时提示剪切板图片的错误；
 * 修复 了当不启用 Markdown 格式时，消息中的链接没有自动转为可点击元素的问题；
@@ -26,14 +27,32 @@
 * 修复 了有时右键保存图片失效的问题；
 * 修复 了 socket 连接关闭时有可能引发错误的问题；
 * 修复 了邀请他人并创建新讨论组时广播消息错误的问题；
-* 修复 了与部分服务器后端集成时在客户端修改密码失败的问题（[BUG #60](http://xuan.5upm.com/bug-view-60.html)）；
+* 修复 了与部分服务器后端集成时在客户端修改密码失败的问题（[BUG #60]
+(http://xuan.5upm.com/bug-view-60.html)）；
 * 开发相关：
-  * 增加 了 `ui.chat.urlInspector` 配置开关，网址转卡片功能可以通过配置禁用；
-  * 增加 了 `ui.page.start.size` 和 `ui.page.more.size` 配置用于设置列表默认显示条目数目以及点击更多按钮加载的条目数目；
-  * 增加 了新的打包配置机制；
-  * 增加 了对服务器 `chat/extensions` 接口中扩展对象 `data` 属性的支持，通过扩展对象 `serverData` 访问；
-* 其他：
-  * 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）。
+  * 客户端：
+    * 增加 了 `ui.chat.urlInspector` 配置开关，网址转卡片功能可以通过配置禁用；
+    * 增加 了 `ui.page.start.size` 和 `ui.page.more.size` 配置用于设置列表默认显示条目数目以及点击更多按钮加载的条目数目；
+    * 增加 了新的打包配置机制；
+    * 增加 了对服务器 `chat/extensions` 接口中扩展对象 `data` 属性的支持，通过扩展对象 `serverData` 访问；
+  * XXB：
+    * 新增 了集成通用的免登录功能；
+    * 优化 了 `chat/extensions` 接口内容；
+  * 其他：
+    * 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）。
+
+### 下载地址
+
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win64.debug.setup.exe)；
+* MacOS：[xuanxuan.2.1.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.mac.dmg)；
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.ia32.rpm)；
+* 浏览器端：[xuanxuan.2.1.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.browser.zip)；
+* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.linux.ia32.tar.gz)；
+* 服务器端：
+  * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb-2.1-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb-2.1.deb)；
+  * 然之：[4.9.0 稳定版](https://www.ranzhi.org/download/4.9stable-133.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.ranzhi.2.1.0.zip)。
+  * 禅道：[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.zentao.2.1.0.zip)（扩展包可以在[禅道](http://www.zentao.net/)10.0上安装使用，使得喧喧使用禅道的账户体系、后续会与禅道进行深入集成。）
+
 
 
 ## v 2.0.0
