@@ -27,8 +27,7 @@
 * 修复 了有时右键保存图片失效的问题；
 * 修复 了 socket 连接关闭时有可能引发错误的问题；
 * 修复 了邀请他人并创建新讨论组时广播消息错误的问题；
-* 修复 了与部分服务器后端集成时在客户端修改密码失败的问题（[BUG #60]
-(http://xuan.5upm.com/bug-view-60.html)）；
+* 修复 了与部分服务器后端集成时在客户端修改密码失败的问题（[BUG #60](http://xuan.5upm.com/bug-view-60.html)）；
 * 开发相关：
   * 客户端：
     * 增加 了 `ui.chat.urlInspector` 配置开关，网址转卡片功能可以通过配置禁用；
@@ -43,17 +42,15 @@
 
 ### 下载地址
 
-* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.win64.debug.setup.exe)；
-* MacOS：[xuanxuan.2.1.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.mac.dmg)；
-* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.x64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.linux.ia32.rpm)；
-* 浏览器端：[xuanxuan.2.1.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.2.1.0.browser.zip)；
-* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1/xxd.2.1.0.linux.ia32.tar.gz)；
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win.debug.setup.exe)；
+* MacOS：[xuanxuan.2.1.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.mac.dmg)；
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.x86_64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.i686.rpm)；
+* 浏览器端：[xuanxuan.2.1.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.browser.zip)；
+* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.linux.ia32.tar.gz)；
 * 服务器端：
-  * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.win_64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.win_32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1/xxb.2.1.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb-2.1-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/2.1/xxb-2.1.deb)；
-  * 然之：[4.9.0 稳定版](https://www.ranzhi.org/download/4.9stable-133.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.ranzhi.2.1.0.zip)。
-  * 禅道：[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan.zentao.2.1.0.zip)（扩展包可以在[禅道](http://www.zentao.net/)10.0上安装使用，使得喧喧使用禅道的账户体系、后续会与禅道进行深入集成。）
-
-
+  * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.win64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.win32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb-2.1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb_2.1.0_1_all.deb)；
+  * 然之：[4.9.0 稳定版](https://www.ranzhi.org/download/4.9stable-133.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.ranzhi.2.1.0.zip)。
+  * 禅道：[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.zentao.2.1.0.zip)（扩展包可以在[禅道](http://www.zentao.net/)10.0上安装使用，使得喧喧使用禅道的账户体系、后续会与禅道进行深入集成。）
 
 ## v 2.0.0
 
