@@ -76,7 +76,8 @@ class MessageContentImage extends Component {
         showContextMenu('image', {
             event,
             url: this.state.url || this.imageUrl,
-            dataType: this.imageType
+            dataType: this.imageType,
+            file: this.props.message.attachFile
         });
     };
 

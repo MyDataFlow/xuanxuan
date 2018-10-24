@@ -1,7 +1,7 @@
-import Config from 'Config';
+import Config from '../config';
 import Marked from 'marked';
 import HighlightJS from 'highlight.js';
-import HTMLParser from 'fast-html-parser';
+import HTMLParser from 'htmlparser';
 import Lang from '../lang';
 import {strip} from './html-helper';
 
@@ -24,9 +24,9 @@ renderer.code = (code, lang) => {
     return `<pre class="code-block" ${fileName ? (` data-name="${fileName}"`) : ''}><div class="hint--left btn-copy-code app-link" data-url="!copyCode/${lang || ''}" data-hint="${Lang.string('common.copyCode')}"><button class="btn iconbutton rounded primary-pale text-primary" type="button"><i class="icon mdi mdi-code-not-equal-variant icon-2x"></i></button></div><code data-lang="${lang || ''}" class="lang-${result.language}">${result.value}</code></pre>`;
 };
 
-const commonAttrs = new Set(['class', 'style']);
+const commonAttrs = new Set(['class']);
 const allowedTags = {
-    a: new Set(['class', 'href', 'title', 'style']),
+    a: new Set(['class', 'href', 'title']),
     b: commonAttrs,
     blockquote: commonAttrs,
     code: true,
@@ -57,14 +57,14 @@ const allowedTags = {
     table: commonAttrs,
     tr: commonAttrs,
     thead: commonAttrs,
-    th: new Set(['class', 'style', 'colspan', 'rowspan']),
-    td: new Set(['class', 'style', 'colspan', 'rowspan']),
+    th: new Set(['class', 'colspan', 'rowspan']),
+    td: new Set(['class', 'colspan', 'rowspan']),
     tfoot: commonAttrs,
     tbody: commonAttrs,
-    img: new Set(['class', 'style', 'src', 'alt']),
-    video: new Set(['class', 'style', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
+    img: new Set(['class', 'src', 'alt']),
+    video: new Set(['class', 'controls', 'autoPlay', 'buffered', 'crossorigin', 'height', 'loop', 'muted', 'preload', 'poster', 'width', 'playsinline', 'src']),
     source: new Set(['src', 'type']),
-    audio: new Set(['class', 'style', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
+    audio: new Set(['class', 'autoplay', 'buffered', 'controls', 'crossorigin', 'loop', 'muted', 'preload', 'src']),
     track: new Set(['default', 'kind', 'label', 'src', 'srclang']),
     div: commonAttrs,
     span: commonAttrs,
@@ -72,10 +72,12 @@ const allowedTags = {
     dt: commonAttrs,
     dd: commonAttrs,
     abbr: commonAttrs,
-    details: new Set(['class', 'style', 'open']),
+    details: new Set(['class', 'open']),
     summary: commonAttrs,
     caption: commonAttrs,
 };
+
+const htmlParserHandler = new HTMLParser.DefaultHandler();
 const sanitizer = tag => {
     const isCloseTag = tag.startsWith('</');
     if (isCloseTag) {
@@ -94,9 +96,11 @@ const sanitizer = tag => {
     }
 
     const filterResult = [`<${tagName}`];
-    const element = HTMLParser.parse(`${tag}</${tagName}>`);
-    const firstChild = element && element.firstChild;
-    const attrs = firstChild && firstChild.attributes;
+
+    const parser = new HTMLParser.Parser(htmlParserHandler);
+    parser.parseComplete(`${tag}</${tagName}>`);
+    const firstChild = htmlParserHandler.dom && htmlParserHandler.dom[0];
+    const attrs = firstChild && firstChild.attribs;
     if (attrs) {
         Object.keys(attrs).forEach(attrName => {
             if (allowedRule.has(attrName)) {
@@ -115,12 +119,12 @@ const sanitizer = tag => {
  */
 Marked.setOptions({
     renderer,
-    breaks: false, //   If true, use GFM hard and soft line breaks. Requires gfm be true.
-    gfm: true, // If true, use approved GitHub Flavored Markdown (GFM) specification.
-    sanitize: true, // If true, sanitize the HTML passed into markdownString with the sanitizer function.
+    breaks: false,     // If true, use GFM hard and soft line breaks. Requires gfm be true.
+    gfm: true,         // If true, use approved GitHub Flavored Markdown (GFM) specification.
+    sanitize: true,    // If true, sanitize the HTML passed into markdownString with the sanitizer function.
     sanitizer: Config.ui['chat.markdown.html'] ? sanitizer : null, // A function to sanitize the HTML passed into markdownString.
     headerIds: false,
-    smartLists: true, // If true, use smarter list behavior than those found in markdown.pl.
+    smartLists: true,  // If true, use smarter list behavior than those found in markdown.pl.
     smartypants: true, // If true, use "smart" typographic punctuation for things like quotes and dashes.
 });
 

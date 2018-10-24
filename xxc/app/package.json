@@ -1,7 +1,7 @@
 {
     "name": "xuanxuan",
     "productName": "xuanxuan",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "企业即时通讯平台",
     "main": "./main.js",
     "author": {
@@ -18,8 +18,6 @@
         "type": "git",
         "url": "https://github.com/easysoft/xuanxuan.git"
     },
-    "buildTime": "2018-07-31T08:40:18.700Z",
-    "buildVersion": null,
     "dependencies": {
         "jquery": "^3.3.1"
     },

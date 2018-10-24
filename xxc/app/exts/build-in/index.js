@@ -1,5 +1,5 @@
 import {env, fs as fse} from 'Platform';
-import Config, {updateConfig} from 'Config';
+import Config, {updateConfig} from '../../config';
 import path from 'path';
 import Lang from '../../lang';
 

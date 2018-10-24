@@ -13,7 +13,7 @@ import {MessageList} from './message-list';
 import {MessageListItem} from './message-list-item';
 import replaceViews from '../replace-views';
 
-class ChatHistory extends Component {
+export default class ChatHistory extends Component {
     static propTypes = {
         chat: PropTypes.object,
         className: PropTypes.string,
@@ -257,10 +257,11 @@ class ChatHistory extends Component {
         return (<MessageListItem
             id={active ? this.activeMessageId : null}
             className={HTML.classes({active})}
-            staticUI
+            staticUI={true}
             lastMessage={lastMessage}
             key={message.gid}
             message={message}
+            sleepUrlCard={true}
             textContentConverter={this.convertContent}
         />);
     }
@@ -299,5 +300,3 @@ class ChatHistory extends Component {
         </div>);
     }
 }
-
-export default ChatHistory;

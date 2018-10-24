@@ -1,8 +1,4 @@
-console.log('DEBUG ENV', {
-    'global.DEBUG': global.DEBUG,
-    DEBUG: typeof DEBUG === 'undefined' ? undefined : DEBUG,
-    'process.env.NODE_ENV': process.env.NODE_ENV
-});
+import Config from '../config';
 
 if (typeof DEBUG === 'undefined') {
     global.DEBUG = process.env.NODE_ENV === 'debug' || process.env.NODE_ENV === 'development';
@@ -10,9 +6,7 @@ if (typeof DEBUG === 'undefined') {
     global.DEBUG = DEBUG;
 }
 
-if (global.DEBUG) {
-    console.log('DEBUG', global.DEBUG, process.env.NODE_ENV);
-
+if (DEBUG) {
     // Mute react router warning.
     console._error = console.error;
     console.error = (errMessage, ...args) => {
@@ -167,6 +161,38 @@ if (global.DEBUG) {
             console.group(...formatOutput(args));
         };
 
+        console.expand(`XuanXuan ${Config.pkg.version} DEBUG${Config.system.specialVersion ? ` for ${Config.system.specialVersion}` : ''}`, ['h1', 'pink', `border-bottom: 3px solid #e91e63; display: block; text-shadow: 1px 1px 1px #e91e63; padding: 0 40px; background-image: url(https://github.com/easysoft/xuanxuan/blob/master/xxc/resources/icon.png?raw=true); background-size: 24px 24px; background-repeat: no-repeat; background-position: 0 2px`]);
+        console.color('\t  Company: ', 'pinkLight', Config.pkg.company, 'pinkDark');
+        console.color('\t  License: ', 'pinkLight', Config.pkg.license, 'pinkDark');
+        console.color('\t   Github: ', 'pinkLight', 'https://github.com/easysoft/xuanxuan', 'pinkDark');
+        console.color('\t Homepage: ', 'pinkLight', Config.pkg.homepage, 'pinkDark');
+        console.color('\t   Issues: ', 'pinkLight', Config.pkg.bugs.url, 'pinkDark');
+        if (process.versions) {
+            if (process.versions.electron) {
+                console.color('\t Electron: ', 'pinkLight', process.versions.electron, 'pinkDark');
+            } else if (process.versions.nw) {
+                console.color('\t     NWJS: ', 'pinkLight', process.versions.nw, 'pinkDark');
+            }
+            console.color('\t   NodeJS: ', 'pinkLight', process.versions.node, 'pinkDark');
+            if (process.versions.chrome) {
+                console.color('\t   Chrome: ', 'pinkLight', process.versions.chrome, 'pinkDark');
+            } else if (process.versions.chromium) {
+                console.color('\t Chromium: ', 'pinkLight', process.versions.chromium, 'pinkDark');
+            }
+            console.color('\t  modules: ', 'pinkLight', process.versions.modules, 'pinkDark');
+            console.color('\t       V8: ', 'pinkLight', process.versions.v8, 'pinkDark');
+        }
+        if (process.arch) {
+            console.color('\t     Arch: ', 'pinkLight', process.arch, 'pinkDark');
+        }
+        if (process.env) {
+            console.color('\t  DIRNAME: ', 'pinkLight', process.env.PWD, 'pinkDark');
+            console.color('\t     LANG: ', 'pinkLight', process.env.LANG, 'pinkDark');
+            console.color('\t NODE_ENV: ', 'pinkLight', process.env.NODE_ENV, 'pinkDark');
+        }
+        console.log('%c\t    Config: ', 'color: #ff6090', Config);
+        console.groupEnd();
+
         const showHashPath = () => {
             console.color('➜', 'orangeBg', window.location.hash.substr(1), 'orangePale');
         };
@@ -175,8 +201,6 @@ if (global.DEBUG) {
     }
 
     global.$ = {};
-} else if (process.env.NODE_ENV !== 'production') {
-    console.log('DEBUG', global.DEBUG, process.env.NODE_ENV);
 }
 
 export default global.DEBUG;

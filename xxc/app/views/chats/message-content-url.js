@@ -6,6 +6,7 @@ import MessageContentCard from './message-content-card';
 import {getUrlMeta} from '../../core/ui';
 import WebView from '../common/webview';
 import Lang from '../../lang';
+import Button from '../../components/button';
 
 export default class MessageContentUrl extends PureComponent {
     static get MessageContentUrl() {
@@ -15,18 +16,20 @@ export default class MessageContentUrl extends PureComponent {
     static propTypes = {
         className: PropTypes.string,
         url: PropTypes.string.isRequired,
-        data: PropTypes.object
+        data: PropTypes.object,
+        sleep: PropTypes.bool,
     };
 
     static defaultProps = {
         className: null,
-        data: null
+        data: null,
+        sleep: false
     };
 
     constructor(props) {
         super(props);
-        const {data} = props;
-        this.state = {meta: data && data.title ? data : null};
+        const {data, sleep} = props;
+        this.state = {meta: data && data.title ? data : null, sleep};
     }
 
     componentDidMount() {
@@ -70,15 +73,34 @@ export default class MessageContentUrl extends PureComponent {
         });
     }
 
+    loadSleep = () => {
+        this.setState({sleep: false, loading: true}, () => {
+            this.getUrlMeta(true);
+        });
+    };
+
     render() {
         const {
             url,
             className,
             data,
+            sleep,
             ...other
         } = this.props;
 
         const {meta, loading} = this.state;
+
+        if (this.state.sleep) {
+            const card = {
+                icon: 'mdi-web icon-2x text-info',
+                clickable: 'title',
+                url,
+                title: url,
+            };
+            const reloadBtn = (<div className="flex-none hint--top has-padding-sm" data-hint={Lang.string('chat.message.loadCard')}><Button onClick={this.loadSleep} className="iconbutton rounded text-primary" icon="mdi-cards-playing-outline" /></div>);
+            return <MessageContentCard header={reloadBtn} card={card} className={classes('app-message-content-url relative')} {...other} />;
+        }
+
         const card = Object.assign({
             clickable: 'content',
             title: url,
@@ -92,18 +114,27 @@ export default class MessageContentUrl extends PureComponent {
             }
             const {webviewContent, content} = card;
             if (webviewContent) {
-                card.content = <WebView className="relative" {...content} ref={e => {this.webview = e;}} />;
+                const {originSrc, ...webviewProps} = content;
+                card.content = <WebView className="relative" {...webviewProps} ref={e => {this.webview = e;}} />;
                 card.clickable = 'header';
                 card.menu.push({
+                    label: Lang.string('common.moreActions'),
+                    url: `!showContextMenu/link/?url=${encodeURIComponent(url)}`,
+                    icon: 'mdi-share',
+                }, {
                     label: Lang.string('ext.app.open'),
-                    url: `!openUrlInDialog/${encodeURIComponent(content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
+                    url: `!openUrlInDialog/${encodeURIComponent(originSrc || content.src)}/?size=lg&insertCss=${encodeURIComponent(content.insertCss)}`,
                     icon: 'mdi-open-in-app'
                 });
                 if (DEBUG && content.type !== 'iframe') {
                     card.menu.push({
                         label: Lang.string('ext.app.openDevTools'),
                         click: () => {
-                            this.webview.webview.openDevTools();
+                            if (this.webview && this.webview.webview && this.webview.webview.openDevTools) {
+                                this.webview.webview.openDevTools();
+                            } else if (DEBUG) {
+                                console.warn('Cannot open dev tools for current webview.');
+                            }
                         },
                         icon: 'mdi-auto-fix'
                     });

@@ -16,7 +16,7 @@ export default {
             loader: 'babel-loader',
             exclude: /node_modules/
         }],
-        // noParse: [/ajv/, /BufferUtil/, /Validation/]
+        // noParse: [/BufferUtil/, /Validation/]
     },
 
     output: {
@@ -33,7 +33,7 @@ export default {
         mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
         alias: {
             Platform: 'platform/electron',
-            Config: 'config/index.js',
+            Config: 'config/',
             ExtsRuntime: 'exts/runtime.js',
             ExtsView: 'views/exts/index.js',
         },
@@ -45,5 +45,5 @@ export default {
 
     plugins: [],
 
-    externals: Object.keys(externals || {})
+    externals: Object.keys(externals || {}, {'electron-debug': 'electron-debug'})
 };

@@ -1,6 +1,6 @@
 import Platform from 'Platform'; // eslint-disable-line
 import md5 from 'md5';
-import Config from 'Config';
+import Config from '../config';
 
 /**
  * Request server infomation with https request
@@ -13,7 +13,7 @@ const requestServerInfo = user => {
         params: [
             user.serverName,
             user.account,
-            user.passwordMD5,
+            user.passwordForServer,
             ''
         ],
         v: Config.pkg.version

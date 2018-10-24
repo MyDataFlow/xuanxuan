@@ -18,20 +18,23 @@ const platformMap = {
     '*': 'all',
     skipbuild: 'skipbuild'
 };
+
 const osPlatform = os.platform();
-let configName = process.argv[2];
+let configName = process.argv[7] || process.argv[2];
 if (!configName || configName === '-') {
-    const defaultConfig = fse.readJsonSync('./build/build-config.default.json', {throws: false});
+    const defaultConfig = fse.readJsonSync(path.resolve(__dirname, './build-config.default.json'), {throws: false});
     if (defaultConfig) {
         configName = defaultConfig && defaultConfig.name;
     }
 }
+const isCustomConfig = configName && configName !== '-';
 
 let platform = process.argv[3] || osPlatform;
 if (!platform || platform === '-') {
     platform = os.platform();
 }
 platform = platformMap[platform];
+const isSkipBuild = platform === 'skipbuild';
 let pkgArch = process.argv[4] || os.arch();
 if (!pkgArch || pkgArch === '-') {
     pkgArch = os.arch();
@@ -43,9 +46,9 @@ const isDebug = process.argv[5] === 'debug' || process.argv[6] === 'debug';
 const isBeta = process.argv[6] === 'beta' || process.argv[5] === 'beta';
 const buildVersion = isBeta ? formatDate(new Date(), 'beta.yyyyMMddhhmm') : null;
 
-console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'isBeta=', isBeta, 'argv', process.argv);
+console.log('\nBuildConfig > configName=', configName, 'platform=', platform, 'arch=', pkgArch, 'isDebug=', isDebug, 'isBeta=', isBeta, 'argv', process.argv, '__dirname', __dirname);
 
-const config = Object.assign({
+const config = {
     name: pkg.name,
     productName: pkg.productName,
     description: pkg.description,
@@ -56,15 +59,30 @@ const config = Object.assign({
     author: pkg.author,
     bugs: pkg.bugs,
     repository: pkg.repository,
-    resourcePath: 'resources',
+    resourcePath: '',
+    stylePath: '',
     mediaPath: 'media/',
     copyOriginMedia: true,
-    buildVersion
-}, (configName && configName !== '-') ? require(configName.includes('/') ? configName : `./build-config.${configName}.json`) : null);
+    buildVersion,
+};
+let configDirPath = null;
+if (isCustomConfig) {
+    if (configName.includes('/')) {
+        const configFilePath = path.resolve(__dirname, configName);
+        configDirPath = path.dirname(configFilePath);
+        Object.assign(config, require(configFilePath));
+    } else if (fse.existsSync(path.resolve(__dirname, `./build-config.${configName}.json`))) {
+        Object.assign(config, fse.readJSONSync(path.resolve(__dirname, `./build-config.${configName}.json`), {throws: false}));
+        configDirPath = __dirname;
+    } else if (fse.existsSync(path.resolve(__dirname, `./build.${configName}/build-config.json`))) {
+        Object.assign(config, fse.readJSONSync(path.resolve(__dirname, `./build.${configName}/build-config.json`), {throws: false}));
+        configDirPath = path.join(__dirname, `./build.${configName}`);
+    }
+}
 
 console.log('\nBuildConfig > config', config);
 
-const appPkg = {
+const appPkg = Object.assign({
     name: config.name,
     productName: config.name,
     displayName: config.productName,
@@ -78,14 +96,15 @@ const appPkg = {
     bugs: config.bugs,
     repository: config.repository,
     buildTime: new Date(),
-    buildVersion: config.buildVersion
-};
+    buildVersion: config.buildVersion,
+    configurations: config.configurations
+}, config.pkg || null);
 
 const electronBuilder = {
     productName: config.name,
     appId: config.appid || `com.cnezsoft.${config.name}`,
     compression: 'maximum',
-    artifactName: '${name}.${version}${env.PKG_BETA}.${os}.${arch}.${ext}',
+    artifactName: config.name + '.${version}${env.PKG_BETA}.${os}.${arch}.${ext}',
     // electronVersion: '1.7.9',
     electronDownload: {mirror: 'https://npm.taobao.org/mirrors/electron/'},
     extraResources: [{
@@ -132,88 +151,106 @@ const electronBuilder = {
             'rpm',
             'tar.gz'
         ],
-        icon: path.join(config.resourcePath, 'icons/')
+        icon: 'icons'
     },
     mac: {
-        icon: path.join(config.resourcePath, 'icon.icns'),
-        artifactName: '${name}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
+        icon: 'icon.icns',
+        artifactName: config.name + '.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.${ext}'
     },
     nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,
-        artifactName: '${name}.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}',
+        artifactName: config.name + '.${version}${env.PKG_BETA}.${os}${env.PKG_ARCH}.setup.${ext}',
         deleteAppDataOnUninstall: false
     },
     directories: {
         app: 'app',
-        buildResources: config.resourcePath,
-        output: config.name === 'xuanxuan' ? 'release' : `release/${config.name}`
+        buildResources: config.resourcePath ? path.resolve(configDirPath || __dirname, config.resourcePath) : 'resources',
+        output: config.name === 'xuanxuan' ? `release/${config.version}` : `release/${config.name}-${config.version}`
     }
 };
 
-// 输出 electron builder 配置文件
-fse.outputJsonSync('./build/electron-builder.json', electronBuilder, {spaces: 4});
-console.log('\n\nBuildConfig > electron-builder.json generated success.');
+const outputConfigFiles = () => {
+    // 输出 electron builder 配置文件
+    fse.outputJsonSync('./build/electron-builder.json', electronBuilder, {spaces: 4});
+    console.log('\nBuildConfig > electron-builder.json generated success.');
 
-// 输出应用 package.json 文件
-fse.outputJsonSync('./app/package.json', Object.assign(oldPkg, appPkg), {spaces: 4});
-console.log('\n\nBuildConfig > app/package.json generated success.');
+    // 输出应用 package.json 文件
+    if (!isSkipBuild) {
+        fse.outputJsonSync('./app/package.json', Object.assign({}, oldPkg, appPkg), {spaces: 4});
+        console.log('BuildConfig > app/package.json generated success.');
+    }
 
-fse.outputJsonSync('./app/manifest.json', {
-    name: config.productName,
-    start_url: 'index.html',
-    display: 'standalone',
-    background_color: '#fff',
-    theme_color: '#3f51b5',
-    description: config.description,
-    icons: [{
-        src: 'resources/icons/48x48.png',
-        sizes: '48x48',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/64x64.png',
-        sizes: '64x64',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/96x96.png',
-        sizes: '96x96',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/128x128.png',
-        sizes: '128x128',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/144x144.png',
-        sizes: '144x144',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/192x192.png',
-        sizes: '192x192',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/256x256.png',
-        sizes: '256x256',
-        type: 'image/png'
-    }, {
-        src: 'resources/icons/512x512.png',
-        sizes: '512x512',
-        type: 'image/png'
-    }],
-}, {spaces: 4});
-console.log('\n\nBuildConfig > app/manifest.json generated success.');
+    fse.outputJsonSync('./app/manifest.json', {
+        name: config.productName,
+        start_url: 'index.html',
+        display: 'standalone',
+        background_color: '#fff',
+        theme_color: '#3f51b5',
+        description: config.description,
+        icons: [{
+            src: 'resources/icons/48x48.png',
+            sizes: '48x48',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/64x64.png',
+            sizes: '64x64',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/96x96.png',
+            sizes: '96x96',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/128x128.png',
+            sizes: '128x128',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/144x144.png',
+            sizes: '144x144',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/256x256.png',
+            sizes: '256x256',
+            type: 'image/png'
+        }, {
+            src: 'resources/icons/512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+        }],
+    }, {spaces: 4});
+    console.log('BuildConfig > app/manifest.json generated success.');
+}
+
+const revertConfigFiles = () => {
+    fse.outputJsonSync('./app/package.json', oldPkg, {spaces: 4});
+    console.log('\nBuildConfig > app/package.json reverted.');
+};
+
 
 // type 可以为 '', 'debug' 或 'browser'
 const buildApp = (isDebugMode = isDebug) => {
-    console.log('\n\nBuildConfig > build app ', isDebug ? '[debug]' : '');
+    console.log('\nBuildConfig > build app ', isDebug ? '[debug]' : '');
     return new Promise((resolve, reject) => {
+        if (config.stylePath) {
+            fse.outputFileSync(path.resolve(__dirname, '../app/style/custom.less'), `@import "${path.resolve(configDirPath || __dirname, config.stylePath)}";`);
+        }
         spawn('npm', ['run', isDebugMode ? 'build-debug' : 'build'], {shell: true, env: process.env, stdio: 'inherit'})
-            .on('close', code => resolve(code))
+            .on('close', code => {
+                if (config.stylePath) {
+                    fse.outputFileSync(path.resolve(__dirname, '../app/style/custom.less'), '');
+                }
+                resolve(code);
+            })
             .on('error', spawnError => reject(spawnError));
     });
 };
 
 const createPackage = (osType, arch, debug = isDebug) => {
-    console.log('\n\nBuildConfig > create package: ', 'os=', osType, 'arch=', arch, 'debug=', debug);
+    console.log('\nBuildConfig > create package: ', 'os=', osType, 'arch=', arch, 'debug=', debug);
     return new Promise((resolve, reject) => {
         const params = [`--${osType}`];
         if (arch) {
@@ -234,13 +271,17 @@ const createPackage = (osType, arch, debug = isDebug) => {
     });
 };
 
-const build = async () => {
+const build = async (callback) => {
     if (config.copyOriginMedia && config.mediaPath !== 'media/') {
-        await fse.emptyDir('./app/media-build');
-        await fse.copy('./app/media', './app/media-build', {overwrite: true});
-        await fse.copy(config.mediaPath, './app/media-build', {overwrite: true});
+        const mediaBuildPath = path.resolve(__dirname, '../app/media-build');
+        await fse.emptyDir(mediaBuildPath);
+        await fse.copy(path.resolve(__dirname, '../app/media'), mediaBuildPath, {overwrite: true});
+        await fse.copy(path.resolve(configDirPath || __dirname, config.mediaPath), mediaBuildPath, {overwrite: true});
     }
     await buildApp();
+
+    revertConfigFiles();
+
     const buildPlatforms = platform === 'all' ? ['win', 'mac', 'linux'] : [platform];
     const archTypes = pkgArch === 'all' ? ['x64', 'ia32'] : (pkgArch.includes('32') ? ['ia32'] : ['x64']);
     for (let i = 0; i < buildPlatforms.length; ++i) {
@@ -251,9 +292,17 @@ const build = async () => {
             await createPackage(buildPlatforms[i], archTypes[j]);
         }
     }
+
+    const packagesPath = path.join(__dirname, '../release', config.name === 'xuanxuan' ? '' : configName);
+    console.log(`\nBuildConfig > All package build success, you can find your packages in "${packagesPath}".`);
+
+    if (callback) {
+        callback();
+    }
 };
 
-if (platform !== 'skipbuild') {
+outputConfigFiles();
+
+if (!isSkipBuild) {
     build();
 }
-

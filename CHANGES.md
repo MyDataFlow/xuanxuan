@@ -1,5 +1,57 @@
 # 更新记录
 
+## v 2.1.0
+
+[2018-10-11]
+
+本次更新增加了对 LDAP 登录模式的支持，优化了界面交互，修复了大量已知问题。
+
+### 更新明细
+
+* 增加 了 LDAP 登录模式（需要服务器支持）；
+* 优化 了消息卡片交互，增加了右键菜单；
+* 优化 了消息卡片渲染策略，现在只对当天的消息卡片进行自动渲染，非当天发送的消息卡片需要手动点击加载按钮进行渲染；历史记录中的消息卡片不进行自动渲染，任何时候都需要手动点击进行渲染；
+* 优化 了扩展列表中远程扩展右键菜单；
+* 优化 了登录界面，当开机启动不可用时不显示相关功能菜单；
+* 优化 了Markdown 转换性能，并禁止了使用 Markdown 中的 HTML 元素上的 style 属性；
+* 优化 了聊天成员列表，现在当联系人从系统删除时，被删除的联系人自动从成员列表移除（[BUG #62](http://xuan.5upm.com/bug-view-62.html)）；
+* 优化 了网址转卡片性能；
+* 优化 了 `@成员` 策略，现在匹配用户更准确（[BUG #64](http://xuan.5upm.com/bug-view-64.html)）;
+* 修复 了一些网址卡片显示为乱码的问题（例如淘宝和京东的商品链接，[BUG #59](http://xuan.5upm.com/bug-view-59.html)）；
+* 修复 了聊天侧边栏成员列表右键菜单失效的问题；
+* 修复 了当客户端窗口已经激活时有时通知策略没有按照预期执行的问题；
+* 修复 了从 1.6.0 及以下版本升级时迁移数据导致启动过慢的问题；
+* 修复 了浏览器上激活消息输入框时提示剪切板图片的错误；
+* 修复 了当不启用 Markdown 格式时，消息中的链接没有自动转为可点击元素的问题；
+* 修复 了拷贝纯文本消息有时文本内容不正确的问题；
+* 修复 了有时右键保存图片失效的问题；
+* 修复 了 socket 连接关闭时有可能引发错误的问题；
+* 修复 了邀请他人并创建新讨论组时广播消息错误的问题；
+* 修复 了与部分服务器后端集成时在客户端修改密码失败的问题（[BUG #60](http://xuan.5upm.com/bug-view-60.html)）；
+* 开发相关：
+  * 客户端：
+    * 增加 了 `ui.chat.urlInspector` 配置开关，网址转卡片功能可以通过配置禁用；
+    * 增加 了 `ui.page.start.size` 和 `ui.page.more.size` 配置用于设置列表默认显示条目数目以及点击更多按钮加载的条目数目；
+    * 增加 了新的打包配置机制；
+    * 增加 了对服务器 `chat/extensions` 接口中扩展对象 `data` 属性的支持，通过扩展对象 `serverData` 访问；
+  * XXB：
+    * 新增 了集成通用的免登录功能；
+    * 优化 了 `chat/extensions` 接口内容；
+  * 其他：
+    * 通过[扩展](https://github.com/easysoft/xuanxuan/tree/master/xxc/examples/extensions/ranzhi)实现与然之后端深度集成（需要然之 4.9 以上版本）。
+
+### 下载地址
+
+* Windows 7+：[64 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win64.setup.exe)、[64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win64.zip.exe)、[32 位安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win32.setup.exe)、[32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win32.zip.exe)、[64 位 Debug 安装包（.exe）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.win.debug.setup.exe)；
+* MacOS：[xuanxuan.2.1.0.mac.dmg](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.mac.dmg)；
+* Linux：[64 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.x64.tar.gz)、[64 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.amd64.deb)、[64 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.x86_64.rpm)、[32 位（.tar.gz）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.ia32.tar.gz)、[32 位（.deb）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.i386.deb)、[32 位（.rpm）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.linux.i686.rpm)；
+* 浏览器端：[xuanxuan.2.1.0.browser.zip](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.2.1.0.browser.zip)；
+* XXD Server： [windows 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.win64.zip)、[windows 32 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.win32.zip)、[mac 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.mac.tar.gz)、[linux 64 位压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.linux.x64.tar.gz)、[linux 32 位 压缩包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxd.2.1.0.linux.ia32.tar.gz)；
+* 服务器端：
+  * XXB 1.2：[Windows 64位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.win64.exe)、[Windows 32位一键安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.win32.exe)、[Linux 64位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.zbox_64.tar.gz)、[Linux 32位一键安装包（Linux一键安装包必须直接解压到/opt目录下）](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb.2.1.0.zbox_32.tar.gz)、[Linux rpm安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb-2.1.0-1.noarch.rpm)、[Linux deb安装包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xxb_2.1.0_1_all.deb)；
+  * 然之：[4.9.0 稳定版](https://www.ranzhi.org/download/4.9stable-133.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.ranzhi.2.1.0.zip)。
+  * 禅道：[扩展包](http://dl.cnezsoft.com/xuanxuan/2.1.0/xuanxuan.zentao.2.1.0.zip)（扩展包可以在[禅道](http://www.zentao.net/)10.0上安装使用，使得喧喧使用禅道的账户体系、后续会与禅道进行深入集成。）
+
 ## v 2.0.0
 
 [2018-07-31]
@@ -34,7 +86,7 @@
 * 新增 切换发送消息快捷键功能，可以通过个人设置面板设置或者通过发送按钮右键菜单进行切换；
 * 新增 聊天免打扰功能，将聊天设置为免打扰后，将不会在后台收到显性通知（弹窗或声音提醒）；
 * 新增 聊天存档功能（仅支持讨论组），将聊天存档后将不会在最近聊天上显示，也不会在后台收到显性通知，在讨论组列表中会在已存档分组中显示；
-* 新增 一键发送剪切板图片功能，当窗口激活时如果检测到剪切板有新的图标会提示一键发送该图片；
+* 新增 一键发送剪切板图片功能，当聊天输入框激活时如果检测到剪切板有新的图片会提示一键发送该图片；
 * 新增 复制高清 Emoji 表情符功能，在消息中的高清 Emoji 图像上点击右键进行复制操作；
 * 新增 WebView 中右键菜单操作，包括复制、粘贴、撤销等操作，支持 WebView 打开的应用页面和对话框打开的第三方网页以及 Web 卡片界面；
 * 优化 拖放发送文件功能，现在可以一次性拖放多个文件到聊天窗口进行发送；
@@ -224,7 +276,7 @@
   * 然之：[4.6.2 稳定版](http://www.ranzhi.org/dynamic/4.6.2.stable-1115.html)、[扩展包](http://dl.cnezsoft.com/xuanxuan/1.5/xuanxuan.ranzhi.1.5.0.zip)。
 
 
-## v 1.4.0 
+## v 1.4.0
 
 [2018-03-09]
 

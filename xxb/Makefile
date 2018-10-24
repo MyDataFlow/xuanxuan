@@ -82,7 +82,7 @@ deb:
 	cd ~/buildroot/opt; unzip xxb.${VERSION}.zip; rm xxb.${VERSION}.zip
 	#sed -i 's/index.php/\/xxb\/sys\/index.php/' ~/buildroot/opt/xxb/www/sys/.htaccess
 	#sed -i 's/index.php/\/xxb\/oa\/index.php/' ~/buildroot/opt/xxb/www/oa/.htaccess
-	sudo dpkg -b ~/buildroot/ xxb-${VERSION}.deb
+	sudo dpkg -b ~/buildroot/ xxb_${VERSION}_1_all.deb
 	rm -rf ~/buildroot
 
 rpm:

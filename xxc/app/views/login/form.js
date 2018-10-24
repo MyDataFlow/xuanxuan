@@ -1,5 +1,5 @@
-import Config from 'Config';
 import Platform from 'Platform';
+import Config from '../../config';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import InputControl from '../../components/input-control';
@@ -14,6 +14,7 @@ import User from '../../core/profile/user';
 import SwapUserDialog from './swap-user-dialog';
 import replaceViews from '../replace-views';
 import Button from '../../components/button';
+import {isPasswordWithMD5Flag} from '../../core/profile/user';
 
 const simpleServerUrl = serverUrl => {
     if (serverUrl) {
@@ -67,6 +68,7 @@ class FormView extends PureComponent {
             state.serverUrl = entryParams.server;
             state.account = entryParams.account || '';
             state.password = entryParams.password || '';
+            state.ldap = entryParams.ldap;
         } else if (lastSavedUser) {
             if (!Config.ui.serverUrl) {
                 state.serverUrl = lastSavedUser.serverUrl || lastSavedUser.server || '';
@@ -75,6 +77,7 @@ class FormView extends PureComponent {
             state.password = lastSavedUser.rememberPassword ? lastSavedUser.password : '';
             state.rememberPassword = lastSavedUser.rememberPassword;
             state.autoLogin = lastSavedUser.autoLogin;
+            state.ldap = lastSavedUser.ldap;
         }
 
         if (state.serverUrl) {
@@ -102,7 +105,8 @@ class FormView extends PureComponent {
             account: this.state.account,
             password: this.state.password,
             rememberPassword: this.state.rememberPassword,
-            autoLogin: this.state.autoLogin
+            autoLogin: this.state.autoLogin,
+            ldap: this.state.ldap,
         }).then(() => {
             this.setState({logining: false});
         }).catch(error => {
@@ -129,6 +133,7 @@ class FormView extends PureComponent {
     handleRememberPasswordChanged = rememberPassword => {
         this.setState({
             rememberPassword,
+            ldap: rememberPassword ? false : this.state.ldap,
             autoLogin: !rememberPassword ? false : this.state.autoLogin
         });
     }
@@ -136,8 +141,43 @@ class FormView extends PureComponent {
     handleAutoLoginChanged = autoLogin => {
         this.setState({
             autoLogin,
+            ldap: autoLogin ? false : this.state.ldap,
             rememberPassword: autoLogin ? true : this.state.rememberPassword
         });
+    }
+
+    changeLDAP(ldap) {
+        this.setState({
+            ldap,
+            rememberPassword: ldap ? false : this.state.rememberPassword,
+            autoLogin: ldap ? false : this.state.autoLogin,
+        });
+        if (ldap && isPasswordWithMD5Flag(this.state.password)) {
+            this.handleInputFieldChange('password', '');
+        }
+    }
+
+    handleLDAPChanged = ldap => {
+        if (ldap && !this.hasShowedLDAPConfirm) {
+            Modal.confirm(Lang.string('login.ldap.confirm'), {
+                actions: [
+                    {type: 'cancel'},
+                    {type: 'submit', label: Lang.string('common.continue')},
+                ],
+                style: {maxWidth: 500},
+            }).then(result => {
+                if (result) {
+                    this.changeLDAP(ldap);
+                }
+                this.hasShowedLDAPConfirm = true;
+            }).catch(error => {
+                if (DEBUG) {
+                    console.error('Modal.confirm error', error);
+                }
+            });
+        } else {
+            this.changeLDAP(ldap);
+        }
     }
 
     handleLoginBtnClick = () => {
@@ -264,7 +304,8 @@ class FormView extends PureComponent {
             <div className="row">
                 <Checkbox disabled={this.state.logining} checked={this.state.rememberPassword} onChange={this.handleRememberPasswordChanged} className="cell" label={Lang.string('login.rememberPassword')} />
                 <Checkbox disabled={this.state.logining} checked={this.state.autoLogin} onChange={this.handleAutoLoginChanged} className="cell" label={Lang.string('login.autoLogin')} />
-                <div data-hint={Lang.string('login.moreLoginSettings')} className="hint--top"><Button className="iconbutton rounded" icon="settings-box" onClick={this.handleSettingBtnClick} /></div>
+                <Checkbox disabled={this.state.logining} checked={this.state.ldap} onChange={this.handleLDAPChanged} className="cell" label={'LDAP'} />
+                {Platform.ui.isOpenAtLogin ? <div data-hint={Lang.string('login.moreLoginSettings')} className="hint--top"><Button className="iconbutton rounded" icon="settings-box" onClick={this.handleSettingBtnClick} /></div> : null}
             </div>
         </div>);
     }

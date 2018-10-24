@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import Config from 'Config';
+import Config from '../../config';
 import HTML from '../../utils/html-helper';
 import Lang from '../../lang';
 import {BuildInfo} from '../common/build-info';
@@ -36,7 +36,7 @@ class About extends PureComponent {
                 {Config.pkg.license ? <div><a target="_blank" className="btn rounded" href="https://github.com/easysoft/xuanxuan/blob/master/LICENSE">{`Open source license ${Config.pkg.license}`}</a></div> : null}
                 {Config.pkg.company ? <div><a target="_blank" className="btn rounded" href="http://cnezsoft.com/">{Lang.format('common.copyrightFormat', {year: new Date().getFullYear(), name: Config.pkg.company})}</a></div> : null}
                 {Config.ui.about ? <div>{Config.ui.about}</div> : null}
-                <div><a target="_blank" className="btn rounded" href="http://emojione.com/">Emoji provided free by EmojiOne</a></div>
+                <div><a target="_blank" className="btn rounded" href="http://emojione.com/">Thanks to EmojiOne for providing free emoji icons</a></div>
             </section>
         </div>);
     }

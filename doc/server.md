@@ -10,11 +10,12 @@
 ### 然之协同服务器端
 
 1. 下载安装然之协同最新版：[http://www.ranzhico.com/download.html](http://www.ranzhico.com/download.html) ；
-2. 下载升级包：[http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan-ranzhi.1.4.0.zip](http://dl.cnezsoft.com/xuanxuan/1.4/xuanxuan-ranzhi.1.4.0.zip) ，解压并覆盖然之；
-3. 在数据库中执行 db/upgradexuanxuan1.3.0.sql；
-4. 以管理员身份登录然之，进入后台 -> 系统 -> 喧喧 ，设置一个长度为32的密钥，在xxd的config目录下配置文件中设置同样的密钥；
-5. 服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
-6. 调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
+2. 以管理员身份登录然之，进入后台 -> 系统 -> 喧喧 ，查看内置的喧喧版本号是否是最新版。如果是最新版执行第 5 步，否则执行第 3 步；
+3. 下载升级包：[http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan-ranzhi.2.1.0.zip](http://dl.cnezsoft.com/xuanxuan/2.1/xuanxuan-ranzhi.2.1.0.zip) ，解压并覆盖然之；
+4. 通过浏览器访问然之 www 目录下的 upgradexuanxuan.php 进行升级。例如然之演示站的访问地址是 http://demo.ranzhi.net，则访问 http://demo.ranzhi.net/upgradexuanxuan.php 升级。如果已经是最新版，访问该页面会自动跳转到首页；
+5. 以管理员身份登录然之（一键安装包安装，默认用户名为 `admin`，密码为 `123456`），进入后台 -> 系统 -> 喧喧 ，设置一个长度为32的密钥，在xxd的config目录下配置文件中设置同样的密钥；
+6. 服务器的登录地址为 xxd 的访问地址，登录帐号和密码为然之协同内对应用户的帐号和密码；
+7. 调试时设置 ranzhi/config/my.php 中 debug=true，在 ranzhi/tmp/log/xuanxuan.log.php 中查看日志。
 
 ### XXB独立服务器端
 
@@ -45,40 +46,58 @@ XXB主要用途是将然之会员管理模块独立成一个新的管理后台�
 
 ```ini
 [server]
-# 监听的服务器ip地址
-ip=192.168.1.164
+# 监听的服务器ip地址。
+# ip地址应该填写服务器的内网ip，生产环境请勿使用127.0.0.1。如果使用127.0.0.1，客户端只能通过127.0.0.1登录。
+ip=127.0.0.1
 
-# 与聊天客户端通讯的端口
+# 与聊天客户端通讯的端口。
 chatPort=11444
 
-# 是否启用https , 设置为0则使用http协议 1为https协议
-# 如果将此项设置为 0，则加密会失效，非加密模式仅用于测试环境，强烈建议不要在实际环境中禁用加密。
-isHttps=1
-
-# 通用端口，该端口用于客户端登录时验证，以及文件上传下载使用
+# 通用端口，该端口用于客户端登录时验证，以及文件上传下载使用。
 commonPort=11443
 
-# 上传文件的保存路径，最后的“/”不能省略，表示路径
+# 是否启用https，设置为0使用http协议，设置为1使用https协议。客户端登陆时http协议要和此处设置保持一致。
+# 如果启用https，xxd默认使用自己生成的证书。如果要通过浏览器访问，则需要使用官方认证的证书替换证书保存路径(证书保存路径在配置文件最后配置)下的证书。替换的证书要和原来的证书名保持一致。
+# 如果将此项设置为 0，则加密会失效，强烈建议在生产环境设置为 1。
+isHttps=1
+
+# 上传文件的保存路径，最后的“/”不能省略，表示路径。
+# 注意：Windows下路径中的‘\’需要转义写成‘\\’，例如‘D:\xxd\files’要写成‘D:\\xxd\\files’。
 uploadPath=tmpfile/
 
-# 上传文件的大小，支持：K,M,G
+# 上传文件的大小，支持：K,M,G。
 uploadFileSize=32M
 
-[ranzhi]
-# xuanxuan和ranzhiName是自定义然之服务器名称，客户端登录时需要
-# token从然之服务器中获取，长度为32个字符，强烈建议使用密码生成工具来生成 Token，默认 Token 将会使加密失效
-# 设置某个服务器为default后，客户端省略服务器名称时默认使用default
-# 地址格式为http[s]://addr/path/xuanxuan.php,token[,default]
-# ranzhiName=http[s]://ip:port/xuanxuan.php,tokenID8888888888888888888888888
-xuanxuan=http://192.168.1.164:8188/xuanxuan.php,88888888888888888888888888888888,default
+# 在线用户上限限制，0为不限制
+maxOnlineUser=0
 
-# NOTE: Windows accept / as path separator.
+[ranzhi]
+# xxd是一台消息转发服务器，可以连接到多个后端服务器。后端服务器配置信息格式如下([]表示此内容为选填项)：
+#
+# 服务器名称=传输协议://请求地址[:端口][/目录名称]/入口文件,密钥[,是否默认服务器]
+#
+# 服务器名称：必填。只能使用英文字母。可以配置多个后端服务器，客户端登录时根据服务器名称区分连接到哪个后端服务器。
+# 传输协议：必填。http 或者 https。此处的传输协议是xxd通过http请求连接到后端服务器时使用，使用哪种传输协议取决于后端服务器的配置，与上文中的isHttps配置无关。
+# 请求地址：必填。后端服务器的请求地址，可以是域名或者ip。根据后端服务器的配置不同，可能需要添加目录名称。
+# 端口：选填。默认使用80端口时可以不填写，否则需要填写端口。
+# 目录名称：选填。如果后端服务器配置的域名或者ip没有指向入口文件所在的目录，则必须添加目录名称。
+# 入口文件：必填。入口文件指xxd连接的后端服务器处理xxd请求的入口文件，固定为xuanxuan.php。
+# 密钥：必填。xxd和后端服务器通信的密钥，需要和后端服务器中的设置保持一致。
+# 是否默认服务器：选填。是默认服务器时填写default，否则不用填写。如果只配置了一台后端服务器，必须填写。如果客户端的登录地址不填写后端服务器名称，则连接到默认的后端服务器。
+#
+# 如果配置了多个后端服务器，则要保证xxd到每个后端服务器的网络连接都是通的，否则xxd无法启动。
+#
+# 下面是后端服务器的配置示例：
+localhost=http://127.0.0.1/xxb/xuanxuan.php,88888888888888888888888888888888,default
+# xuanxuan=http://192.168.1.100/xxb/xuanxuan.php,88888888888888888888888888888888
+# ranzhi=http://demo.ranzhi.net/xuanxuan.php,88888888888888888888888888888888
+
 [log]
-# 程序运行日志的保存路径
+# 程序运行日志的保存路径。
 logPath=log/
 
 [certificate]
-# 证书的保存路径，默认情况下xxd会生成自签名证书
+# 证书的保存路径，默认情况下xxd会生成自签名证书。
 crtPath=certificate/
 ```
 
@@ -134,4 +153,3 @@ crtPath=certificate/
 ### 5.升级XXB或服务端扩展
 将xxb(然之喧喧扩展包或禅道喧喧扩展包)源码包解压覆盖。
 然后访问``http://siteURL/upgradexuanxuan.php``根据提示完成升级即可。
-

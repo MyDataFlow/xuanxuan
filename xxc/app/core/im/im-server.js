@@ -1,5 +1,5 @@
-import Config from 'Config'; // eslint-disable-line
 import Platform from 'Platform'; // eslint-disable-line
+import Config from '../../config'; // eslint-disable-line
 import Server from '../server';
 import imServerHandlers from './im-server-handlers';
 import Events from '../events';
@@ -323,7 +323,7 @@ const createUrlObjectMessage = (message, chat) => {
 };
 
 const sendTextMessage = (message, chat) => {
-    return sendChatMessage(isWebUrl(message) ? createUrlObjectMessage(message, chat) : createTextChatMessage(message, chat), chat);
+    return sendChatMessage(message && isWebUrl(message.trim()) ? createUrlObjectMessage(message, chat) : createTextChatMessage(message, chat), chat);
 };
 
 const createEmojiChatMessage = (emojicon, chat) => {

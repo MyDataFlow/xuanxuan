@@ -11,7 +11,7 @@ import config from '../common/config';
 import net from './net';
 import setting from './setting';
 
-const platform = {
+export default {
     type: 'browser',
     setting,
     Socket,
@@ -26,9 +26,3 @@ const platform = {
     net,
     dialog,
 };
-
-if(DEBUG) {
-    global.$.Platform = platform;
-}
-
-export default platform;

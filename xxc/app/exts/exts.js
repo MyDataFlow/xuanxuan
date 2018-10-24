@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../config';
 import buildIns from './build-in/';
 import {createExtension} from './extension';
 import db from './extensions-db';

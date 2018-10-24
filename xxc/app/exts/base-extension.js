@@ -153,11 +153,11 @@ export default class Extension {
 
     get entryID() {return this._pkg.entryID;}
 
-    getEntryUrl(referer = '') {
+    getEntryUrl(referer = '', entryID = null) {
         if (global.ExtsRuntime) {
             const {getEntryVisitUrl} = global.ExtsRuntime;
             if (getEntryVisitUrl) {
-                return getEntryVisitUrl(this, referer);
+                return getEntryVisitUrl(entryID || this, referer);
             }
         }
         return Promise.resolve(this.entryUrl);
@@ -165,6 +165,10 @@ export default class Extension {
 
     get hasServerEntry() {
         return this.entryID || this._pkg.entry;
+    }
+
+    get serverData() {
+        return this._data.serverData;
     }
 
     get download() {return this._pkg.download;}
@@ -408,7 +412,7 @@ export default class Extension {
             this.callModuleMethod('onDetach', this);
         }
         const {mainFile} = this;
-        if (mainFile && mainFile !== 'BUILD-IN') {
+        if (mainFile && mainFile !== 'BUILD-IN' && __non_webpack_require__.cache) {
             delete __non_webpack_require__.cache[mainFile]; // eslint-disable-line
         }
         this._module = null;

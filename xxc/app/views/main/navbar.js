@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Route, Link} from 'react-router-dom';
-import Config from 'Config';
+import Config from '../../config';
 import ExtsRuntime from 'ExtsRuntime';
 import {rem, classes} from '../../utils/html-helper';
 import Lang from '../../lang';

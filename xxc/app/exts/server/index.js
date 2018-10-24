@@ -118,11 +118,11 @@ const processExtensions = async () => {
     }
 };
 
-export const getEntryVisitUrl = (ext, referer = '') => {
+export const getEntryVisitUrl = (extOrEntryID, referer = '') => {
     return server.socket.sendAndListen({
         module: 'entry',
         method: 'visit',
-        params: {entryID: ext.entryID || ext.name, referer}
+        params: {entryID: typeof extOrEntryID === 'object' ? (extOrEntryID.entryID || extOrEntryID.name) : extOrEntryID, referer}
     });
 };
 
@@ -140,7 +140,7 @@ const handleChatExtensions = msg => {
                 extPkg.appType = 'webView';
                 extPkg.webViewUrl = item.webViewUrl;
             }
-            const extData = {remote: true};
+            const extData = {remote: true, serverData: item.data};
             if (item.download) {
                 extData.remoteCachePath = Path.join(baseUserExtsDir, `${item.name}.zip`);
                 extData.localPath = Path.join(baseUserExtsDir, item.name);

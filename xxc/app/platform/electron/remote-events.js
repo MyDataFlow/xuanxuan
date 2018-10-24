@@ -5,5 +5,6 @@ export default {
     remote_emit: 'remote.emit',
     remote_send: 'remote.send',
     remote_app_quit: 'remote.app.quit',
-    capture_screen: 'capture.screen'
+    capture_screen: 'capture.screen',
+    app_ready: 'app.ready'
 };

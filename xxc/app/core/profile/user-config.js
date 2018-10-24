@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import Config from 'Config';
+import Config from '../../config';
 import DEFAULT from './user-default-config';
 import DelayAction from '../../utils/delay-action';
 import timeSequence from '../../utils/time-sequence';

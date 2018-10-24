@@ -1,8 +1,8 @@
 import StringHelper from './string-helper';
 
-const TIME_DAY = 24 * 60 * 60 * 1000;
+export const TIME_DAY = 24 * 60 * 60 * 1000;
 
-const createDate = date => {
+export const createDate = date => {
     if (!(date instanceof Date)) {
         if (typeof date === 'number' && date < 10000000000) {
             date *= 1000;
@@ -12,11 +12,11 @@ const createDate = date => {
     return date;
 };
 
-const createPhpTimestramp = date => {
+export const createPhpTimestramp = date => {
     return Math.floor(createDate(date) / 1000);
 };
 
-const isSameDay = (date1, date2) => {
+export const isSameDay = (date1, date2) => {
     if (!date2) {
         date2 = new Date();
     }
@@ -25,14 +25,14 @@ const isSameDay = (date1, date2) => {
     return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
 };
 
-const isSameYear = (date1, date2) => {
+export const isSameYear = (date1, date2) => {
     if (!date2) {
         date2 = new Date();
     }
     return createDate(date1).getFullYear() === createDate(date2).getFullYear();
 };
 
-const isSameMonth = (date1, date2) => {
+export const isSameMonth = (date1, date2) => {
     if (!date2) {
         date2 = new Date();
     }
@@ -41,11 +41,11 @@ const isSameMonth = (date1, date2) => {
     return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth();
 };
 
-const isToday = (date, now) => (isSameDay(now || new Date(), date));
+export const isToday = (date, now = null) => (isSameDay(now || new Date(), date));
 
-const isYestoday = (date, now) => (isSameDay((now || new Date()).getTime() - TIME_DAY, date));
+export const isYestoday = (date, now) => (isSameDay((now || new Date()).getTime() - TIME_DAY, date));
 
-const formatDate = (date, format = 'yyyy-MM-dd hh:ss') => {
+export const formatDate = (date, format = 'yyyy-MM-dd hh:ss') => {
     date = createDate(date);
 
     let dateInfo = {
@@ -69,7 +69,7 @@ const formatDate = (date, format = 'yyyy-MM-dd hh:ss') => {
     return format;
 };
 
-const formatSpan = (date1, date2, format) => {
+export const formatSpan = (date1, date2, format) => {
     format = Object.assign({full: 'yyyy-M-d', month: 'M-d', day: 'd', str: '{0} ~ {1}'}, format);
     const date1Str = formatDate(date1, isSameYear(date1) ? format.month : format.full);
     if (isSameDay(date1, date2)) {
@@ -79,7 +79,7 @@ const formatSpan = (date1, date2, format) => {
     return StringHelper.format(format.str, date1Str, date2Str);
 };
 
-const getTimeBeforeDesc = desc => {
+export const getTimeBeforeDesc = desc => {
     const now = new Date().getTime();
     switch (desc) {
     case 'oneWeek':

@@ -22,7 +22,7 @@ import db from '../db';
 import ChatAddCategoryDialog from '../../views/chats/chat-add-category-dialog';
 import TodoEditorDialog from '../../views/todo/todo-editor-dialog';
 import Todo from '../todo';
-import {strip} from '../../utils/html-helper';
+import {strip, linkify, escape} from '../../utils/html-helper';
 import {addContextMenuCreator, getMenuItemsForContext, tryAddDividerItem, tryRemoveLastDivider} from '../context-menu';
 import ui from '../ui';
 import {registerCommand, executeCommand} from '../commander';
@@ -225,7 +225,7 @@ addContextMenuCreator('chat.sendbox.toolbar', context => {
         label: Lang.string('chat.sendbox.toolbar.emoticon'),
         click: e => {
             EmojiPopover.show({x: e.pageX, y: e.pageY, target: e.target, placement: 'top'}, emoji => {
-                sendContentToChat(`${Emojione.convert(emoji.unicode)} `);
+                sendContentToChat(`${Emojione.convert(emoji.unicode || Emojione.emojioneList[emoji.shortname].uc_base)} `);
             });
         }
     }];
@@ -539,11 +539,15 @@ addContextMenuCreator('chat.member', ({member, chat}) => {
 const linkMembersInText = (text, {format = '<a class="app-link {className}" data-url="@Member/{id}">@{displayName}</a>'}) => {
     if (text && text.indexOf('@') > -1) {
         const langAtAll = Lang.string('chat.message.atAll');
-        text = text.replace(new RegExp(`@(all|${langAtAll})`, 'g'), `<span class="at-all">@${langAtAll}</span>`);
-
         const userAccount = profile.userAccount;
-        members.forEach(m => {
-            text = text.replace(new RegExp(`@(${m.account}|${m.realname})`, 'g'), StringHelper.format(format, {displayName: m.displayName, id: m.id, account: m.account, className: m.account === userAccount ? 'at-me' : ''}));
+        text = text.replace(/@([\w\u4e00-\u9fa5]+)/g, (mentionAt, mention) => {
+            const m = members.guess(mention);
+            if (m) {
+                return StringHelper.format(format, {displayName: m.displayName, id: m.id, account: m.account, className: m.account === userAccount ? 'at-me' : ''});
+            } else if (mention === 'all' || mention === langAtAll) {
+                return `<span class="at-all">@${langAtAll}</span>`;
+            }
+            return mentionAt;
         });
     }
     return text;
@@ -555,7 +559,7 @@ const renderChatMessageContent = (messageContent, {renderMarkdown = false}) => {
         if (renderMarkdown) {
             messageContent = Markdown(messageContent);
         } else {
-            messageContent = strip(messageContent);
+            messageContent = linkify(escape(messageContent));
         }
         messageContent = Emojione.toImage(messageContent);
         if (onRenderChatMessageContentListener) {
@@ -648,20 +652,24 @@ addContextMenuCreator('message.text', ({message}) => {
             icon: 'mdi-content-copy',
             label: Lang.string('chat.message.copy'),
             click: () => {
-                let copyHtmlText = message._renderedTextContent;
-                if (copyHtmlText === undefined) {
+                let copyHtmlText = message.isPlainTextContent ? message.content : null;
+                let copyPlainText = message.content;
+                if (copyHtmlText === null) {
                     const contentElement = document.getElementById(`message-content-${message.gid}`);
                     if (contentElement) {
                         copyHtmlText = contentElement.innerHTML;
+                        copyPlainText = contentElement.innerText;
                     }
                 }
                 if (copyHtmlText === undefined) {
                     copyHtmlText = message.renderedTextContent(renderChatMessageContent, linkMembersInText);
                 }
                 if (Platform.clipboard.write) {
-                    Platform.clipboard.write({text: strip(copyHtmlText), html: copyHtmlText});
-                } else {
-                    (Platform.clipboard.writeHTML || Platform.clipboard.writeText)(copyHtmlText);
+                    Platform.clipboard.write({text: message.isPlainTextContent ? copyHtmlText : strip(copyHtmlText), html: copyHtmlText});
+                } else if (Platform.clipboard.writeHTML) {
+                    Platform.clipboard.writeHTML(copyHtmlText);
+                } else if (Platform.clipboard.writeText) {
+                    Platform.clipboard.writeText(copyPlainText);
                 }
             }
         });
@@ -721,15 +729,17 @@ if (Platform.screenshot) {
     });
 }
 
-registerCommand('suggestClipboardImage', () => {
-    if (!profile.userConfig.listenClipboardImage) {
-        return;
-    }
-    const newImage = Platform.clipboard.getNewImage();
-    if (newImage) {
-        Events.emit(EVENT.suggestSendImage, newImage);
-    }
-});
+if (Platform.clipboard && Platform.clipboard.getNewImage) {
+    registerCommand('suggestClipboardImage', () => {
+        if (!profile.userConfig.listenClipboardImage) {
+            return;
+        }
+        const newImage = Platform.clipboard.getNewImage();
+        if (newImage) {
+            Events.emit(EVENT.suggestSendImage, newImage);
+        }
+    });
+}
 
 const onSuggestSendImage = (listener) => {
     return Events.on(EVENT.suggestSendImage, listener);

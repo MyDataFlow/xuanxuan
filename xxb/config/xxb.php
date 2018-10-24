@@ -1,31 +1,4 @@
 <?php
-$copyList = array();
-$copyList[] = 'framework/xuanxuan.class.php';
-$copyList[] = 'app/oa/attend/ext/lang/zh-cn/xuanxuan.php';
-$copyList[] = 'app/oa/attend/ext/lang/en/xuanxuan.php';
-$copyList[] = 'app/oa/attend/ext/model/hook/getClient.xuanxuan.php';
-$copyList[] = 'app/oa/attend/ext/model/hook/signIn.xuanxuan.php';
-$copyList[] = 'app/sys/setting/ext/css/xuanxuan/xuanxuan.css';
-$copyList[] = 'app/sys/setting/ext/view/xuanxuan.html.php';
-$copyList[] = 'app/sys/setting/ext/control/xuanxuan.php';
-$copyList[] = 'app/sys/action/ext/lang/zh-cn/xuanxuan.php';
-$copyList[] = 'app/sys/action/ext/lang/zh-tw/xuanxuan.php';
-$copyList[] = 'app/sys/action/ext/lang/en/xuanxuan.php';
-$copyList[] = 'app/sys/chat/lang/zh-cn.php';
-$copyList[] = 'app/sys/chat/lang/en.php';
-$copyList[] = 'app/sys/chat/model.php';
-$copyList[] = 'app/sys/chat/config.php';
-$copyList[] = 'app/sys/chat/control.php';
-$copyList[] = 'app/sys/upgrade/ext/model/hook/execute.xuanxuan.php';
-$copyList[] = 'app/sys/common/ext/lang/zh-cn/xuanxuan.php';
-$copyList[] = 'app/sys/common/ext/lang/en/xuanxuan.php';
-$copyList[] = 'app/sys/user/ext/model/xuanxuan.php';
-$copyList[] = 'app/sys/block/ext/view/dynamic.html.php';
-$copyList[] = 'db/upgradexuanxuan1.1.1.sql';
-$copyList[] = 'db/xuanxuan.sql';
-$copyList[] = 'db/upgradexuanxuan1.0.sql';
-$copyList[] = 'config/ext/xuanxuan.php';
-
 $tables = array();
 $tables[] = 'sys_action';
 $tables[] = 'sys_block';

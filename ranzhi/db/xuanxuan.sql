@@ -71,6 +71,6 @@ CREATE TABLE `im_messagestatus` (
   UNIQUE KEY `user` (`user`,`gid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline';
+ALTER TABLE `sys_entry` ADD `sso` enum('0', '1') NOT NULL DEFAULT '0';
 ALTER TABLE `sys_file` CHANGE `pathname` `pathname` char(100) NOT NULL;
-
+ALTER TABLE `sys_user` ADD `status` enum('online', 'away', 'busy', 'offline') NOT NULL DEFAULT 'offline';

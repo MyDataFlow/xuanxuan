@@ -1,4 +1,4 @@
-import Config from 'Config';
+import Config from '../../config';
 
 const createNotification = (title, options, onClick) => {
     if (typeof title === 'object') {

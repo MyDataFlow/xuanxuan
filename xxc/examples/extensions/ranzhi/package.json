@@ -1,0 +1,25 @@
+{
+    "name": "ranzhi",
+    "displayName": "然之集成",
+    "version": "1.0.0",
+    "description": "当然之作为喧喧后端时与然之进行集成。",
+    "type": "app",
+    "appType": "webView",
+    "webViewUrl": "http://demo.ranzhi.org/",
+    "icon": "assets/icon.png",
+    "accentColor": "#d02327",
+    "hot": true,
+    "main": "index.js",
+    "author": {
+        "name": "易软天创"
+    },
+    "publisher": "易软天创",
+    "homepage": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/ranzhi",
+    "repository": {
+        "url": "https://github.com/easysoft/xuanxuan/tree/master/examples/extensions/ranzhi",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/easysoft/xuanxuan/issues"
+    }
+}

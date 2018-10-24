@@ -43,14 +43,15 @@ xxc/app/dist
 xxc/app/web-dist
 xxc/app/package-lock.json
 xxc/app/manifest.json
-package-lock.json
+xxc/app/media-build
 
 # User custom files
 *.custom
 *-backup
-build-config.*.json
+xxc/build/build-config.*.json
 xxc/build/electron-config.json
 xxc/build/electron-builder.json
+xxc/build/build.*
 
 .idea
 xxc/.vscode/settings.json

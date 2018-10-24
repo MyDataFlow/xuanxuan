@@ -2,19 +2,18 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import HTML from '../../utils/html-helper';
 import Icon from '../../components/icon';
-import ContextMenu from '../../components/context-menu';
 import Lang from '../../lang';
 import App from '../../core';
 import Member from '../../core/models/member';
 import {MemberList} from '../common/member-list';
 import replaceViews from '../replace-views';
 import ChatInviteDialog from './chat-invite-dialog';
+import {showContextMenu} from '../../core/context-menu';
 
 const handleMemberItemClick = member => {
     App.im.ui.sendContentToChat(`@${member.displayName} `);
 };
-
-class ChatSidebarPeoples extends Component {
+export default class ChatSidebarPeoples extends Component {
     static propTypes = {
         className: PropTypes.string,
         chat: PropTypes.object,
@@ -57,13 +56,15 @@ class ChatSidebarPeoples extends Component {
             return <div>{committerIcon}{adminIcon}</div>;
         }
         return committerIcon || adminIcon;
-    }
+    };
 
-    handleItemContextMenu = (member, e) => {
-        const items = App.im.ui.createChatMemberContextMenuItems(member, this.props.chat);
-        ContextMenu.show({x: e.pageX, y: e.pageY}, items);
-        e.preventDefault();
-    }
+    handleItemContextMenu = (member, event) => {
+        showContextMenu('chat.member', {
+            member,
+            event,
+            chat: this.props.chat
+        });
+    };
 
     handleInviteBtnClick = e => {
         ChatInviteDialog.show(this.props.chat);
@@ -116,5 +117,3 @@ class ChatSidebarPeoples extends Component {
         </div>);
     }
 }
-
-export default ChatSidebarPeoples;

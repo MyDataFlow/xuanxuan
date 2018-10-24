@@ -1,13 +1,5 @@
 <?php
 include dirname(__DIR__) . '/config/xxb.php';
-$xxbPath = './xxb/';
-foreach($copyList as $file)
-{
-    $targetPath = $xxbPath . dirname($file);
-    if(!is_dir($targetPath)) `mkdir -p $targetPath`;
-    if(!is_file('xuanxuan/server/ranzhi/' . $file)) continue;
-    `cp xuanxuan/server/ranzhi/$file $targetPath`;
-}
 
 $ranzhiSQL = file_get_contents(dirname(__DIR__) . '/zdoo/db/ranzhi.sql');
 preg_match_all('/(--(.*)CREATE (.*));/isU', $ranzhiSQL, $matches);

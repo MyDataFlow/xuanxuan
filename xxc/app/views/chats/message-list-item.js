@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {classes} from '../../utils/html-helper';
-import DateHelper from '../../utils/date-helper';
+import {formatDate, isSameDay, isToday} from '../../utils/date-helper';
 import App from '../../core';
 import Lang from '../../lang';
-import ContextMenu from '../../components/context-menu';
 import Icon from '../../components/icon';
 import MemberProfileDialog from '../common/member-profile-dialog';
 import {UserAvatar} from '../common/user-avatar';
@@ -41,6 +40,7 @@ export default class MessageListItem extends Component {
         textContentConverter: PropTypes.func,
         className: PropTypes.string,
         children: PropTypes.any,
+        sleepUrlCard: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -55,6 +55,7 @@ export default class MessageListItem extends Component {
         dateFormater: 'hh:mm',
         ignoreStatus: false,
         textContentConverter: null,
+        sleepUrlCard: null,
     };
 
     constructor(props) {
@@ -186,6 +187,7 @@ export default class MessageListItem extends Component {
             avatarSize,
             children,
             staticUI,
+            sleepUrlCard,
             ...other
         } = this.props;
 
@@ -197,7 +199,7 @@ export default class MessageListItem extends Component {
             lineHeight: font.lineHeight,
         } : null;
         if (showDateDivider === 0) {
-            showDateDivider = !lastMessage || !DateHelper.isSameDay(message.date, lastMessage.date);
+            showDateDivider = !lastMessage || !isSameDay(message.date, lastMessage.date);
         }
 
         if (message.isBroadcast) {
@@ -237,7 +239,7 @@ export default class MessageListItem extends Component {
                 <UserAvatar size={avatarSize} className="state" user={sender} onContextMenu={this.handleUserContextMenu} onClick={isNotification ? null : MemberProfileDialog.show.bind(null, sender, null)} />
                 <header style={titleFontStyle}>
                     {isNotification ? <span className="title text-primary">{sender.displayName}</span> : <a className="title rounded text-primary" onContextMenu={staticUI ? null : this.handleUserContextMenu} onClick={staticUI ? MemberProfileDialog.show.bind(null, sender, null) : this.handleSenderNameClick.bind(this, sender, message)}>{sender.displayName}</a>}
-                    <small className="time">{DateHelper.formatDate(message.date, dateFormater)}</small>
+                    <small className="time">{formatDate(message.date, dateFormater)}</small>
                 </header>
             </div>);
         } else {
@@ -253,7 +255,8 @@ export default class MessageListItem extends Component {
         } else if (message.isObjectContent) {
             const objectContent = message.objectContent;
             if (objectContent && objectContent.type === ChatMessage.OBJECT_TYPES.url && objectContent.url) {
-                contentView = <MessageContentUrl url={objectContent.url} data={objectContent} />;
+                const sleep = sleepUrlCard === null ? !isToday(message.date) : sleepUrlCard;
+                contentView = <MessageContentUrl url={objectContent.url} data={objectContent} sleep={sleep} />;
                 this.isUrlContent = true;
             } else {
                 contentView = <div className="box red-pale">[Unknown Object]</div>;
@@ -268,7 +271,7 @@ export default class MessageListItem extends Component {
             if (hideHeader && !showDateDivider && lastMessage && message.date && (message.date - lastMessage.date) <= showTimeLabelInterval) {
                 hideTimeLabel = true;
             }
-            timeLabelView = <span className={classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{DateHelper.formatDate(message.date, 'hh:mm')}</span>;
+            timeLabelView = <span className={classes('app-message-item-time-label', {'as-dot': hideTimeLabel})}>{formatDate(message.date, 'hh:mm')}</span>;
         }
 
         if (!staticUI && !ignoreStatus && needResend) {
